@@ -1,0 +1,1585 @@
+﻿<Window x:Class="MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow.AddMatchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource WindowStyle}"
+        Background="#FF282C34"
+        Foreground="White"
+        MinHeight="450" MinWidth="800"
+        Height="850" Width="1450"
+        Title="Добавить матч">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ResourceDictionary>
+
+            <!--Базовый стиль для кнопок заголовка окна-->
+            <Style x:Key="CaptionButtonStyle" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="40">
+                                <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
+                            Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  TextOptions.TextFormattingMode="Display"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
+                                    <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE949;"/>
+            </Style>
+
+            <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE739;"/>
+            </Style>
+
+            <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE923;"/>
+            </Style>
+
+            <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE106;"/>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!--#region Разметка для Window chrome -->
+
+    <!--Команды для кнопок управление-->
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
+        <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Maximize" />
+        <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Minimize" />
+        <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Restore" />
+    </Window.CommandBindings>
+
+    <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
+        <Grid x:Name="parentContainer" Background="#FF282C34">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height ="Auto"/>
+                <RowDefinition Height ="*"/>
+            </Grid.RowDefinitions>
+
+            <!--Window chrome область-->
+            <Grid Grid.Row="0" Height="40" Background="#F999">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                    <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
+                           Width="35" Margin="2" 
+                           HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                    <TextBlock Text="{Binding Title}" 
+                           FontSize="20" 
+                           VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!--Кнопки управления окном-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                    <Button Style="{StaticResource MinimizeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Minimize"
+                     Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
+                    <Button x:Name="RestoreButton" Visibility="Collapsed" Style="{StaticResource RestoreButtonStyle}" 
+                     Command="{x:Static SystemCommands.RestoreWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Restore"/>
+                    <Button x:Name="MaximizeButton" Visibility="Visible" Style="{StaticResource MaximizeButtonStyle}" 
+                     Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
+                    <Button Style="{StaticResource CloseButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
+                     Command="{x:Static SystemCommands.CloseWindowCommand}"/>
+                </StackPanel>
+            </Grid>
+            <!--#endregion-->
+
+            <!--Контент окна-->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="320"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="410"/>
+                </Grid.ColumnDefinitions>
+
+                <ListView ItemsSource="{Binding CompressedImagesList}"
+                          SelectedItem="{Binding fgreg}"
+                          Background="#282C34"
+                          BorderBrush="White"
+                          BorderThickness="1"
+                          Foreground="White" 
+                          FontSize="15" 
+                          ScrollViewer.CanContentScroll="False"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          HorizontalContentAlignment="Center" Margin="5,5,0,4.7">
+
+                    <ListView.Resources>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <Border Name="Border" Padding="2" SnapsToDevicePixels="true">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+
+                                            <Trigger Property="IsSelected" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="Gray"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                            </Trigger>
+
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="Gray"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.Resources>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Image Source="{Binding PathImage}"
+                                       Width="290"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.ContextMenu>
+                        <ContextMenu BorderBrush="Black">
+                            <MenuItem Header="Добавить 'Итоговую таблицу'"/>
+                            <MenuItem Header="Добавить 'Начало игры'"/>
+                            <MenuItem Header="Добавить 'Конец игры' за Убийцу"/>
+                            <MenuItem Header="Добавить 'Конец игры' за Выжившего"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+
+                <Border Grid.Row="1" Grid.ColumnSpan="2" Width="450" HorizontalAlignment="Left" Background="Gray" CornerRadius="10" Margin="3">
+                    <StackPanel  VerticalAlignment="Center" Orientation="Horizontal" Margin="10,0,10,5">
+                        <TextBlock>
+                            <fa:ImageAwesome Icon="Solid_QuestionCircle" Width="14" Foreground="White" ToolTip="Укажите путь к изображениям"/>
+                            <Run FontSize="15">Путь:</Run>
+                        </TextBlock>
+
+                        <TextBox Width="300" Margin="15,0,0,0"/>
+
+                        <Button Content="Выбрать" Margin="15,0,0,0"/>
+                    </StackPanel>
+                </Border>
+                
+                <!--<GridSplitter Grid.Column="1"
+                              Background="Gray"
+                              Width="4"
+                              Cursor="SizeWE"
+                              ShowsPreview="False" Grid.RowSpan="2"/>-->
+
+                <!--#region Отображение выбранных изображений -->
+                
+                <ScrollViewer Grid.Column="1" Grid.RowSpan="1" Margin="0,0,0,0">
+                    <StackPanel>
+
+                        <!--#region Итоговая таблица -->
+                        <StackPanel>
+
+                            <StackPanel>
+                                <Border Height="30" Background="#50545C" CornerRadius="10" Margin="10">
+                                    <TextBlock Text="Итоговая таблица" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                                </Border>
+                            </StackPanel>
+
+                            <GroupBox Header="Таблица счета" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top" Width="650" MaxWidth="800" Height="550" MaxHeight="900" Margin="10,0,10,0">
+                                <Image Source="C:\Users\light\OneDrive\Desktop\Таблица готовая.jpg" Margin="10"/>
+                            </GroupBox>
+
+                        </StackPanel>
+                        <!--#endregion-->
+
+                        <!--#region Начало игры -->
+                        <StackPanel>
+
+                            <StackPanel>
+                                <Border Height="30" Background="#50545C" CornerRadius="10" Margin="10">
+                                    <TextBlock Text="Начало игры" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                                </Border>
+                            </StackPanel>
+
+                            <GroupBox Header="Начало игры" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top" Width="630" MaxWidth="800" Height="350" MaxHeight="900" Margin="10,0,10,0">
+                                <Image Source="C:\Users\light\OneDrive\Desktop\Начало игры готовое.jpg" Margin="10"/>
+                            </GroupBox>
+
+                        </StackPanel>
+                        <!--#endregion-->
+
+                        <!--#region Конец игры -->
+                        <StackPanel>
+
+                            <StackPanel>
+                                <Border Height="30" Background="#50545C" CornerRadius="10" Margin="10">
+                                    <TextBlock Text="Конец игры" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                                </Border>
+                            </StackPanel>
+
+                            <GroupBox Header="Завершение игры" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top" Width="630" MaxWidth="800" Height="500" MaxHeight="900" Margin="10,0,10,0">
+                                <Image Source="C:\Users\light\OneDrive\Desktop\Повесы Готовое.jpg" Margin="10"/>
+                            </GroupBox>
+
+                        </StackPanel>
+                        <!--#endregion-->
+
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!--<StackPanel Grid.Row="1" Grid.Column="1">
+                    <Button Content="Удалить выбранные изображения" Width="250" Height="30" FontSize="15" HorizontalAlignment="Center" Margin="0,5,0,0" />
+                </StackPanel>-->
+                
+                <!--#endregion-->
+
+                <!--#region Поля для добавление данных в БД -->
+
+                <Border Grid.Column="2" Grid.Row="0" BorderBrush="Gray">
+                    <ScrollViewer >
+
+                        <StackPanel>
+
+                            <!--#region Информация об убийце -->
+
+                            <StackPanel>
+                                <Border Height="30" Background="#50545C" CornerRadius="10" Margin="10">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="40"/>
+                                    </Border.Effect>
+                                    <TextBlock Text="Убийца" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                        <StackPanel>
+                                            <TextBlock Text="Основная информация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                        </StackPanel>
+                                    </DockPanel>
+
+                                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Киллер:" Height="25" Foreground="White" FontSize="20"/>
+                                            <fa:SvgAwesome Icon="Solid_QuestionCircle" Width="20" VerticalAlignment="Center" Foreground="White"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Платформа:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Счет:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Режим:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Бот:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                        </DockPanel>
+
+                                    </StackPanel>
+
+                                    <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,2"/>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                        <StackPanel>
+                                            <TextBlock Text="Билд киллера" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                        </StackPanel>
+                                    </DockPanel>
+
+                                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Перк I" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Перк II" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Перк III" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Перк IV" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Улучшение I" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Улучшение II" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Подношение" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+
+                                    </StackPanel>
+
+                                    <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                        <StackPanel>
+                                            <TextBlock Text="Ассоциация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                        </StackPanel>
+                                    </DockPanel>
+
+                                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                        <DockPanel Margin="50,15,0,10" HorizontalAlignment="Left">
+                                            <TextBlock Text="Кто играл на убийце?" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                        <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                            <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                        </StackPanel>
+
+                                    </StackPanel>
+
+                                    <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,10"/>
+                                </Grid>
+
+                            </StackPanel>
+
+                            <!--#endregion-->
+
+                            <!--#region Информация об выживших -->
+
+                            <StackPanel>
+                                <Border Height="30" Background="#50545C" CornerRadius="10" Margin="10">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="40"/>
+                                    </Border.Effect>
+                                    <TextBlock Text="Выжившие" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                                </Border>
+                            </StackPanel>
+
+                            <TabControl Background="#282C34" BorderThickness="0" HorizontalAlignment="Center" Margin="0,10,0,0">
+                                <TabItem>
+                                    <TabItem.Header>
+                                        <TextBlock Text="Выживший I" FontSize="14"/>
+                                    </TabItem.Header>
+
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Основная информация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Выживший:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Платформа:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Как умер:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Счет:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Режим:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Бот:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,2"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Билд выжившего" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк I" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк II" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк III" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк IV" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+                                                
+                                                <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Предмет" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Улучшение I" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Улучшение II" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Подношение" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+                                                
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+                                                
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Ассоциация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,10" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Кто играл на выжившем?" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Тимейт" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                    <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                </StackPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                        </Grid>
+
+                                    </StackPanel>
+                                    
+                                </TabItem>
+
+                                <TabItem>
+                                    <TabItem.Header>
+                                        <TextBlock Text="Выживший II" FontSize="14"/>
+                                    </TabItem.Header>
+
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Основная информация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Выживший:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Платформа:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Как умер:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Счет:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Режим:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Бот:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,2"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Билд выжившего" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк I" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк II" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк III" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк IV" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Предмет" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Улучшение I" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Улучшение II" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Подношение" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Ассоциация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,10" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Кто играл на выжившем?" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Тимейт" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                    <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                </StackPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                        </Grid>
+
+                                    </StackPanel>
+
+                                </TabItem>
+
+                                <TabItem>
+                                    <TabItem.Header>
+                                        <TextBlock Text="Выживший III" FontSize="14"/>
+                                    </TabItem.Header>
+
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Основная информация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Выживший:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Платформа:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Как умер:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Счет:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Режим:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Бот:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,2"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Билд выжившего" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк I" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк II" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк III" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк IV" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Предмет" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Улучшение I" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Улучшение II" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Подношение" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Ассоциация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,10" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Кто играл на выжившем?" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Тимейт" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                    <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                </StackPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                        </Grid>
+
+                                    </StackPanel>
+                                    
+                                </TabItem>
+
+                                <TabItem>
+                                    <TabItem.Header>
+                                        <TextBlock Text="Выживший IV" FontSize="14"/>
+                                    </TabItem.Header>
+
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Основная информация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Выживший:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Платформа:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Как умер:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Счет:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Режим:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Бот:" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,2"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Билд выжившего" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк I" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк II" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк III" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Перк IV" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Предмет" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Улучшение I" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Улучшение II" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="50,30,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Подношение" Height="25" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                                <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
+                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                                <StackPanel>
+                                                    <TextBlock Text="Ассоциация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                                <DockPanel Margin="50,15,0,10" HorizontalAlignment="Left">
+                                                    <TextBlock Text="Кто играл на выжившем?" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Foreground="White" FontSize="20"/>
+                                                </DockPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                                <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Тимейт" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                    <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                </StackPanel>
+
+                                            </StackPanel>
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                        </Grid>
+
+                                    </StackPanel>
+
+                                </TabItem>
+                                
+                            </TabControl>
+
+                            <!--#endregion-->
+
+                            <!--#region Конец игры -->
+
+                            <StackPanel Margin="0,15,0,0">
+                                <Border Height="30" Background="#50545C" CornerRadius="10" Margin="10">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="40"/>
+                                    </Border.Effect>
+                                    <TextBlock Text="Игра" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                        <StackPanel>
+                                            <TextBlock Text="Основная информация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                        </StackPanel>
+                                    </DockPanel>
+
+                                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Дата игры:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Длительность:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Кол-во килов:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Кол-во повесов:" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="50,15,0,10" HorizontalAlignment="Left">
+                                            <TextBlock Text="Кол-во оставшихся генераторов:" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <DatePicker Width="150" Height="25" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <TextBox Width="150" Height="25" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <TextBox Width="150" Height="25" FontSize="17" HorizontalAlignment="Left" TextAlignment="Center"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <TextBox Width="150" Height="25" FontSize="17" HorizontalAlignment="Left" TextAlignment="Center"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <TextBox Width="150" Height="25" FontSize="17" HorizontalAlignment="Left" TextAlignment="Center"/>
+                                        </DockPanel>
+
+                                    </StackPanel>
+
+                                    <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                        <StackPanel>
+                                            <TextBlock Text="Доп. инфа" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                        </StackPanel>
+                                    </DockPanel>
+
+                                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,192,0" Grid.RowSpan="2">
+
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Патч" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Режим игры" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Игровой ивент" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Кто поставил карту?" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Чья карта выпала?" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Grid.Row="1">
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                        
+                                        <DockPanel Margin="0,45,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                        
+                                    </StackPanel>
+
+                                    <Separator Grid.Row="3" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <DockPanel Grid.Row="0" Grid.ColumnSpan="2" >
+                                        <StackPanel>
+                                            <TextBlock Text="Описание" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30"/>
+                                        </StackPanel>
+                                    </DockPanel>
+
+                                    <StackPanel Grid.Row="1">
+
+                                        <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <TextBox Width="380" Height="200" FontSize="20" HorizontalAlignment="Left" TextAlignment="Center" Background="Gray"/>
+                                        </StackPanel>
+
+                                    </StackPanel>
+
+                                    <Separator Grid.Row="3" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                </Grid>
+
+                            </StackPanel>
+
+                            <!--#endregion-->
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+                </Border>
+
+                <Border Grid.Column="2" Grid.Row="1" Background="Gray" CornerRadius="10" Margin="3">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button Content="Сохранить" Command="{Binding LoadImageCommand}" Width="150" Height="30" FontSize="20"/>
+                    </StackPanel>
+                </Border>
+                
+                <!--#endregion-->
+                
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

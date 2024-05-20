@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <!--<Nullable>enable</Nullable>-->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\LogoDBD.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Color_dead_by_daylight_logo.ico" />
+    <None Remove="Resources\icons8-dead-by-daylight-256.png" />
+    <None Remove="Resources\KillerRol.png" />
+    <None Remove="Resources\KillerRolRead.png" />
+    <None Remove="Resources\LogoDBD.ico" />
+    <None Remove="Resources\SurvivorRol.png" />
+    <None Remove="Resources\SurvivorRolBlue.png" />
+    <None Remove="Resources\Котозила.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\LogoDBD.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MVVM\Model\MSSQL_DB\" />
+    <Folder Include="MVVM\View\Pages\" />
+    <Folder Include="Services\DialogService\" />
+    <Folder Include="Services\NavigationService\" />
+    <Folder Include="Utils\ValueConverters\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FontAwesome5" Version="2.1.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Color_dead_by_daylight_logo.ico" />
+    <Resource Include="Resources\icons8-dead-by-daylight-256.png" />
+    <Resource Include="Resources\KillerRol.png" />
+    <Resource Include="Resources\KillerRolRead.png" />
+    <Resource Include="Resources\LogoDBD.ico" />
+    <Resource Include="Resources\SurvivorRol.png" />
+    <Resource Include="Resources\SurvivorRolBlue.png" />
+    <Resource Include="Resources\Котозила.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,164 @@
+﻿<Window x:Class="MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow.AddKillerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow"
+        mc:Ignorable="d"
+        Style="{StaticResource WindowStyle}"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Title="Добавить убийцу" Height="550" Width="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="Убийцы" FontSize="20" HorizontalAlignment="Center"/>
+
+        <ListView Grid.Column="0" Grid.Row="1" Margin="10" FontSize="15">
+            <TextBlock Text="Охотник"/>
+            <TextBlock Text="Призрак"/>
+            <TextBlock Text="Деревеньщина"/>
+            <TextBlock Text="Медсестра"/>
+            <TextBlock Text="Тень"/>
+            <TextBlock Text="Ведьма"/>
+            <TextBlock Text="Доктор"/>
+            <TextBlock Text="Охотница"/>
+            <TextBlock Text="Канибал"/>
+            <TextBlock Text="Кошмар"/>
+            <TextBlock Text="Свинья"/>
+            <TextBlock Text="Клоун"/>
+            <TextBlock Text="Дух"/>
+            <TextBlock Text="Легион"/>
+            <TextBlock Text="Чума"/>
+            <TextBlock Text="Гостфейс"/>
+            <TextBlock Text="Демогоргон"/>
+        </ListView>
+
+        <StackPanel Visibility="Visible" Grid.Column="0" Grid.Row="2" Orientation="Horizontal">
+            <StackPanel HorizontalAlignment="Center" Margin="20,0,0,0" >
+
+                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,15">
+                    <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
+                        <TextBlock Text="Имя убийцы" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBox Width="150" Height="20"/>
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
+                    <Button Content="Сохранить" Width="90" Height="20"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Right" Margin="20,0,20,0">
+                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                    <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
+                        <TextBlock Text="Портрет" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center">
+                    <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
+                        <Image Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Портреты килеров\24_Немезис.png" Width="130" Height="130"/>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
+                    <Button Content="Выбрать" Width="90" Height="20" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Right" Margin="20,0,20,0">
+                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                    <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
+                        <TextBlock Text="Сила" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center">
+                    <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
+                        <Image Source="C:\Users\light\Downloads\640e74e8-2651-43d0-ab76-e17a36f12051.png" Width="130" Height="130"/>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
+                    <Button Content="Выбрать" Width="90" Height="20" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+
+        <TextBlock Grid.Column="1" Grid.Row="0" Text="Аддоны" FontSize="20" HorizontalAlignment="Center"/>
+
+        <ListView Grid.Column="1" Grid.Row="1" Margin="10" FontSize="15">
+            <TextBlock Text="Аддон 45"/>
+            <TextBlock Text="Аддон 45775"/>
+            <TextBlock Text="Аддон 45"/>
+            <TextBlock Text="АддонАддонАддон 5"/>
+            <TextBlock Text="Аддон 45"/>
+            <TextBlock Text="Аддон 454545"/>
+            <TextBlock Text="Аддон 45"/>
+            <TextBlock Text="Аддон 45"/>
+            <TextBlock Text="Аддон 4456"/>
+            <TextBlock Text="Аддон 4456"/>
+            <TextBlock Text="Аддон 4456"/>
+            <TextBlock Text="Аддон 4445"/>
+            <TextBlock Text="Аддон 4445"/>
+        </ListView>
+
+        <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="20,0,0,0">
+            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,10">
+                <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
+                    <TextBlock Text="Добавить аддон" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,5">
+                <TextBlock Text="Выбрать киллера"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                <ComboBox Width="150" Height="20" />
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,5">
+                <TextBlock Text="Название аддона"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center">
+                <TextBox Width="150" Height="20"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="Сохранить" Width="90" Height="20"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,20,0">
+            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
+                    <TextBlock Text="Изображение" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center">
+                <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
+                    <Image Source="C:\Users\light\Downloads\12acc1ec-da5a-4d02-b5bd-f52d99b1f375.png" Width="130" Height="130"/>
+                </Border>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="Выбрать" Width="90" Height="20" />
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</Window>

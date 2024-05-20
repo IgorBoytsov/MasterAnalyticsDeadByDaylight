@@ -1,0 +1,397 @@
+﻿<Window x:Class="MasterAnalyticsDeadByDaylight.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Style="{StaticResource WindowStyle}"
+        Title="Аналитика статистики"
+        Height="675" Width="1200"
+        MinHeight="600" MinWidth="1000">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        
+        <!--#region Стили для кнопок в строке заголовка -->
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
+                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
+                                       Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
+                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE949;"/>
+        </Style>
+
+        <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE739;"/>
+        </Style>
+
+        <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE923;"/>
+        </Style>
+
+        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE106;"/>
+        </Style>
+        <!--#endregion-->
+        
+    </Window.Resources>
+
+    <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height ="Auto"/>
+                <RowDefinition Height ="*"/>
+            </Grid.RowDefinitions>
+
+            <!--#region Разметка для Window chrome -->
+
+            <Grid Grid.Row="0" Height="40" Background="#F999">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                    <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
+                           Width="35" Margin="2" 
+                           HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                    <TextBlock Text="{Binding Titel}" 
+                               FontSize="20" 
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Кнопки для управления окном -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+
+                    <Button Width="40" Height="40" Margin="0,0,20,0">
+                        <Image Source="/Resources/Котозила.jpg" />
+                    </Button>
+
+                    <Button Command="{Binding MinimizeAppCommand}"
+                            Style="{StaticResource MinimizeButtonStyle}" 
+                            WindowChrome.IsHitTestVisibleInChrome="True" 
+                            ToolTip="Minimize"/>
+
+                    <Button x:Name="RestoreButton" 
+                            Command="{Binding RestoreAppCommand}" 
+                            Style="{StaticResource RestoreButtonStyle}"  
+                            WindowChrome.IsHitTestVisibleInChrome="True" 
+                            ToolTip="Restore"
+                            Visibility="Collapsed" />
+
+                    <Button x:Name="MaximizeButton"
+                            Command="{Binding MaximizeAppCommand}" 
+                            Style="{StaticResource MaximizeButtonStyle}" 
+                            Visibility="Visible"   
+                            WindowChrome.IsHitTestVisibleInChrome="True" 
+                            ToolTip="Maximize" />
+
+                    <Button Command="{Binding CloseAppCommand}"
+                            Style="{StaticResource CloseButtonStyle}"
+                            WindowChrome.IsHitTestVisibleInChrome="True" 
+                            ToolTip="Close"/>
+                </StackPanel>
+
+            </Grid>
+            <!--#endregion-->
+
+            <!-- Контент приложения -->
+            <Grid Grid.Row="1">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--#region Меню -->
+                <Menu FontSize="15"
+                      Foreground="White"
+                      Background="#FF282C34">
+
+                    <MenuItem Header="Добавить"
+                              Style="{DynamicResource MenuItemStyle}"
+                              Foreground="White">
+
+                        <MenuItem Header="Добавить матч"
+                                  Command="{Binding OpenAddMatchWindowCommand}"
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <Separator/>
+
+                        <MenuItem Header="Добавить убийцу" 
+                                  Command="{Binding OpenAddKillerWindowCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <MenuItem Header="Добавить выжившиго" 
+                                  Command="{Binding OpenAddSurvivorWindowCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <Separator/>
+
+                        <MenuItem Header="Добавить перк" 
+                                  Command="{Binding OpenAddPerkWindowCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <MenuItem Header="Добавить карту" 
+                                  Command="{Binding OpenAddMapWindowCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <MenuItem Header="Добавить подношение" 
+                                  Command="{Binding OpenAddOfferingWindowCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <MenuItem Header="Добавить предмет" 
+                                  Command="{Binding OpenAddItemWindowCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <Separator/>
+
+                        <MenuItem Header="Добавить доп. данные" 
+                                  Command="{Binding OpenAdditionalDataWindowCommand}"
+                                  Style="{DynamicResource MenuItemStyle}"/>
+                        
+                        <Separator/>
+
+                        <MenuItem Header="Выход из приложение" 
+                                  Command="{Binding CloseAppCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <MenuItem Header="Свернуть в трей" 
+                                  Command="{Binding}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+                    </MenuItem>
+
+                    <MenuItem Header="Создать">
+
+                        <MenuItem Header="Отчет"
+                                  Command="{Binding OpenReportCreationWindowCommand}"
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <MenuItem Header="Отправить на почту"
+                                  Command="{Binding}"
+                                  Style="{DynamicResource MenuItemStyle}"/>
+                    </MenuItem>
+
+                    <MenuItem Header="Справка">
+
+                        <MenuItem Header="Как пользоватся?" 
+                                  Command="{Binding OpenHowToUseWindowCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+
+                        <MenuItem Header="О программе" 
+                                  Command="{Binding OpenAboutTheProgramWindowCommand}" 
+                                  Style="{DynamicResource MenuItemStyle}"/>
+                    </MenuItem>
+
+                </Menu>
+                <!--#endregion-->
+                
+                
+                <!--Вариант с TabControl-->
+                <TabControl Visibility="Visible" Grid.Row="1" TabStripPlacement="Left" Background="#FF282C34" BorderBrush="#FF282C34" Margin="5,10,0,0">
+
+                    <!--#region "Информация за роль Убийц"-->
+                    <TabItem Style="{DynamicResource TabItemLeftStyle}" Width="120" Height="120">
+                        <TabItem.Header>
+                            <StackPanel>
+                                <Image Source="/Resources/KillerRol.png" Width="90"/>
+                                <TextBlock Text="Убийца" HorizontalAlignment="Center" Foreground="White" FontSize="20"/>
+                            </StackPanel>
+                        </TabItem.Header>
+
+                        <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
+
+                            <!--#region Матчи -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Solid_ListOl" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Матчи" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+                                <Image Source="D:\Портреты килеров\15_Чума.png"/>
+                            </TabItem>
+                            <!--#endregion-->
+
+                            <!--#region Убийцы -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Solid_SkullCrossbones" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Убийцы" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+                                <Image Source="D:\Портреты килеров\9_Канибал.png"/>
+                            </TabItem>
+                            <!--#endregion-->
+
+                            <!--#region Карты -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Regular_Map" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Карты" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+                                <Image Source="D:\Портреты килеров\29_Кукловод.png"/>
+                            </TabItem>
+                            <!--#endregion-->
+
+                            <!--#region Билды (Пикрейт билдов) -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Solid_Wrench" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Билды" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+                                <Image Source="D:\Портреты килеров\5_Тень.png"/>
+                            </TabItem>
+                            <!--#endregion-->
+
+                        </TabControl>
+                    </TabItem>
+
+                    <!--#endregion-->
+
+                    <!--#region "Информация за роль Выживших"-->
+                    <TabItem Style="{DynamicResource TabItemLeftStyle}" Width="120" Height="120">
+                        <TabItem.Header>
+                            <StackPanel>
+                                <Image Source="/Resources/SurvivorRol.png" Width="90"/>
+                                <TextBlock Text="Выживший" HorizontalAlignment="Center" Foreground="White" FontSize="20"/>
+                            </StackPanel>
+
+                        </TabItem.Header>
+
+                        <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
+
+                            <!--#region Матчи -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Solid_ListOl" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Матчи" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+
+                            </TabItem>
+                            <!--#endregion-->
+
+                            <!--#region Выжившие -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Solid_Walking" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Выжившие" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+
+                            </TabItem>
+                            <!--#endregion-->
+
+                            <!--#region Карты -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Regular_Map" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Карты" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+
+                            </TabItem>
+                            <!--#endregion-->
+
+                            <!--#region Билды (Пикрейт билдов) -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Solid_Wrench" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Билды" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+
+                            </TabItem>
+                            <!--#endregion-->
+
+                        </TabControl>
+                    </TabItem>
+
+                    <!--#endregion-->
+
+                    <!--#region "Рандомайзер билдов"-->
+
+                    <TabItem Style="{DynamicResource TabItemLeftStyle}" Width="120" Height="120">
+                        <TabItem.Header>
+                            <StackPanel>
+                                <fa:ImageAwesome Icon="Solid_Random" Height="90" Foreground="#FFFFFE"/>
+                                <TextBlock Text="Рандомайзер" HorizontalAlignment="Center" Foreground="White" FontSize="20"/>
+                            </StackPanel>
+                        </TabItem.Header>
+
+                        <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
+
+                            <!--#region Рандомайзер для Убийц -->                            
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Solid_SkullCrossbones" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Убийцы" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+
+                            </TabItem>
+                            <!--#endregion-->
+
+                            <!--#region Рандомайзер для Выживших -->
+                            <TabItem Style="{DynamicResource TabItemTopStyle}">
+                                <TabItem.Header>
+                                    <DockPanel>
+                                        <fa:ImageAwesome Icon="Solid_Walking" Foreground="White" Height="15"/>
+                                        <TextBlock Text="Выжившие" Foreground="White" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </TabItem.Header>
+
+
+                            </TabItem>
+                            <!--#endregion-->
+
+                        </TabControl>
+
+                    </TabItem>
+                    <!--#endregion-->
+
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
