@@ -42,208 +42,29 @@
         <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
             <Setter Property="Content" Value="&#xE106;"/>
         </Style>
-        <Style x:Key="FocusVisual">
-            <Setter Property="Control.Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <LinearGradientBrush x:Key="TabItem.Static.Background" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#F0F0F0" Offset="0.0"/>
-            <GradientStop Color="#E5E5E5" Offset="1.0"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="TabItem.Static.Border" Color="#ACACAC"/>
-        <LinearGradientBrush x:Key="TabItem.MouseOver.Background" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#ECF4FC" Offset="0.0"/>
-            <GradientStop Color="#DCECFC" Offset="1.0"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="TabItem.MouseOver.Border" Color="#7EB4EA"/>
-        <SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC"/>
-        <SolidColorBrush x:Key="TabItem.Disabled.Background" Color="#F0F0F0"/>
-        <SolidColorBrush x:Key="TabItem.Disabled.Border" Color="#D9D9D9"/>
-        <Style x:Key="TabItemStyleAdditionalDataWindow" TargetType="{x:Type TabItem}">
-            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="Background" Value="{StaticResource TabItem.Static.Background}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource TabItem.Static.Border}"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="Padding" Value="6,2,6,2"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <!--#endregion-->
+
+        <!--#region ListViewStyle -->
+        <Style TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TabItem}">
-                        <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
-                            <Border x:Name="mainBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1,1,1,0" Margin="0">
-                                <Border x:Name="innerBorder" Background="{StaticResource TabItem.Selected.Background}" BorderBrush="{StaticResource TabItem.Selected.Border}" BorderThickness="1,1,1,0" Margin="-1" Opacity="0"/>
-                            </Border>
-                            <ContentPresenter x:Name="contentPresenter" ContentSource="Header" Focusable="False" HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                        </Grid>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Name="border" Background="#FF282C34" Padding="2" SnapsToDevicePixels="true">
+                            <ContentPresenter/>
+                        </Border>
                         <ControlTemplate.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,0,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,0,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,0,1,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,0,1,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,1,1,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,1,1,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,1,0"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,0,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,0,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,0,1,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,0,1,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,1,1,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,1,1,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
-                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,1,0"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,0,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,0,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Panel.ZIndex" Value="1"/>
-                                <Setter Property="Margin" Value="-2,-2,0,-2"/>
-                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,0,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,0,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,0,1,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,0,1,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Panel.ZIndex" Value="1"/>
-                                <Setter Property="Margin" Value="-2,0,-2,-2"/>
-                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,0,1,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,0,1,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,1,1,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,1,1,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Panel.ZIndex" Value="1"/>
-                                <Setter Property="Margin" Value="0,-2,-2,-2"/>
-                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,1,1,1"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,1,1,1"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,1,0"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0"/>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
-                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Panel.ZIndex" Value="1"/>
-                                <Setter Property="Margin" Value="-2,-2,-2,0"/>
-                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
-                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,1,0"/>
-                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0"/>
-                            </MultiDataTrigger>
+
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="Gray"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="Gray"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -286,7 +107,7 @@
 
         </Grid>
 
-        <TabControl Grid.Row="1" HorizontalAlignment="Center" Background="#FF282C34"  BorderThickness="0" Margin="0,4,0,0">
+        <TabControl Grid.Row="1" SelectedIndex="0" HorizontalAlignment="Center" Background="#FF282C34" BorderThickness="0" Margin="0,4,0,0">
 
             <TabItem Style="{DynamicResource TabItemStyleAdditional}">
                 <TabItem.Header>
@@ -299,56 +120,23 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border BorderBrush="#F0F1F3" BorderThickness="2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
 
                         <ListView Grid.Row="0" Grid.Column="0" 
                           Background="#FF282C34" BorderThickness="0"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          ItemsSource="{Binding GameMode}" d:ItemsSource="{d:SampleData ItemCount=5}">
-
-                            <ListView.Resources>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ListViewItem">
-                                                <Border Name="border" Background="#FF282C34" Padding="2" SnapsToDevicePixels="true">
-                                                    <ContentPresenter/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-
-                                                    <Trigger Property="IsSelected" Value="true">
-                                                        <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                                        <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                                                        <Setter Property="Foreground" Value="Black"/>
-                                                    </Trigger>
-
-                                                    <Trigger Property="IsMouseOver" Value="true">
-                                                        <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                                        <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                                                        <Setter Property="Foreground" Value="Black"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ListView.Resources>
+                          ItemsSource="{Binding GameModeList}" SelectedItem="{Binding SelectedGameModeItem}">
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-
-                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
-
+                                    <Border BorderBrush="White" Height="40" BorderThickness="1">
                                         <StackPanel Orientation="Horizontal" Margin="10">
-
                                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding}"/>
+                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding GameModeName}"/>
                                                 </StackPanel>
                                             </StackPanel>
-
                                         </StackPanel>
-
                                     </Border>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -356,25 +144,26 @@
                     </Border>
 
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Название" Foreground="White" FontSize="20"
+                        <TextBlock Text="Режим" Foreground="White" FontSize="20"
                                    HorizontalAlignment="Center" Margin="0,10,0,0"/>
 
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 Text="{Binding TextBoxGameModeName}"
                                  FontSize="18"
                                  Width="200" Height="32" Margin="0,10,0,0"/>
 
-                        <TextBlock Text="Описание" Foreground="White" FontSize="20" 
+                        <TextBlock Text="Описание режима" Foreground="White" FontSize="20" 
                                    HorizontalAlignment="Center"  Margin="0,10,0,0"/>
 
                         <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 FontSize="18"
-                                 Width="200" Height="150" Margin="0,10,0,0"/>
+                                 Text="{Binding TextBoxGameDescription}" FontSize="18"
+                                 Width="200" Height="130" Margin="0,10,0,0"/>
 
-                        <Button Template="{StaticResource ControlButton}" 
+                        <Button Template="{StaticResource ControlButton}"
+                                Command="{Binding SaveGameModeCommand}"
                                 Content="Сохранить" 
                                 Width="130" Height="30" Margin="0,10,0,0"/>
                     </StackPanel>
-
                 </Grid>
 
             </TabItem>
@@ -390,21 +179,49 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <ListView>
-                        <TextBlock Text="Нету"/>
-                        <TextBlock Text="Кровавые очки Х1.5"/>
-                        <TextBlock Text="Кровавые очки Х2"/>
-                        <TextBlock Text="Кровавые очки Х3"/>
-                        <TextBlock Text="Годовщина"/>
-                        <TextBlock Text="Хэлоуин"/>
-                    </ListView>
+                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                        <TextBlock Text="Название" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Margin="0,10,0,0"/>
-                        <TextBlock Text="Описание" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Height="100" Margin="0,10,0,0"/>
-                        <Button Content="Сохранить" Width="100" Margin="0,10,0,0"/>
+                        <ListView Grid.Row="0" Grid.Column="0" 
+                                  Background="#FF282C34" BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ItemsSource="{Binding GameEventList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
+                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding GameEventName}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Событие" Foreground="White" FontSize="20"
+                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 Text="{Binding TextBoxGameEventName}"
+                                 FontSize="18"
+                                 Width="200" Height="32" Margin="0,10,0,0"/>
+
+                        <TextBlock Text="Описание события" Foreground="White" FontSize="20" 
+                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 FontSize="18"
+                                 Width="200" Height="150" Margin="0,10,0,0"/>
+
+                        <Button Template="{StaticResource ControlButton}"
+                                Command="{Binding SaveGameEventCommand}"
+                                Content="Сохранить" 
+                                Width="130" Height="30" Margin="0,10,0,0"/>
                     </StackPanel>
 
                 </Grid>
@@ -422,17 +239,49 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <ListView>
-                        <TextBlock Text="Стим"/>
-                        <TextBlock Text="Консоль \ Эпик"/>
-                    </ListView>
+                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                        <TextBlock Text="Название" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Margin="0,10,0,0"/>
-                        <TextBlock Text="Описание" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Height="100" Margin="0,10,0,0"/>
-                        <Button Content="Сохранить" Width="100" Margin="0,10,0,0"/>
+                        <ListView Grid.Row="0" Grid.Column="0" 
+                                  Background="#FF282C34" BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ItemsSource="{Binding PlatformList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
+                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PlatformName}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Платформа" Foreground="White" FontSize="20"
+                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
+                                 Text="{Binding TextBoxPlatformName}"
+                                 FontSize="18"
+                                 Width="200" Height="32" Margin="0,10,0,0"/>
+
+                        <TextBlock Text="Описание платформы" Foreground="White" FontSize="20" 
+                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 FontSize="18"
+                                 Width="200" Height="150" Margin="0,10,0,0"/>
+
+                        <Button Template="{StaticResource ControlButton}"
+                                Command="{Binding SavePlatformCommand}"
+                                Content="Сохранить" 
+                                Width="130" Height="30" Margin="0,10,0,0"/>
                     </StackPanel>
 
                 </Grid>
@@ -443,25 +292,56 @@
                 <TabItem.Header>
                     <TextBlock Text="Асоциация" FontSize="14" Foreground="White"/>
                 </TabItem.Header>
-
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <ListView>
-                        <TextBlock Text="Я"/>
-                        <TextBlock Text="Тимейт"/>
-                        <TextBlock Text="Рандом"/>
-                    </ListView>
+                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                        <TextBlock Text="Название" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Margin="0,10,0,0"/>
-                        <TextBlock Text="Описание" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Height="100" Margin="0,10,0,0"/>
-                        <Button Content="Сохранить" Width="100" Margin="0,10,0,0"/>
+                        <ListView Grid.Row="0" Grid.Column="0" 
+                                  Background="#FF282C34" BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ItemsSource="{Binding AssociationList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
+                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PlayerAssociationName}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Асоциация" Foreground="White" FontSize="20"
+                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 Text="{Binding TextBoxPlayerAssociationName}"
+                                 FontSize="18"
+                                 Width="200" Height="32" Margin="0,10,0,0"/>
+
+                        <TextBlock Text="Описание асоциация" Foreground="White" FontSize="20" 
+                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 FontSize="18"
+                                 Width="200" Height="150" Margin="0,10,0,0"/>
+
+                        <Button Template="{StaticResource ControlButton}" 
+                                Command="{Binding SavePlayerAssociationCommand}"
+                                Content="Сохранить" 
+                                Width="130" Height="30" Margin="0,10,0,0"/>
                     </StackPanel>
 
                 </Grid>
@@ -479,21 +359,54 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <ListView>
-                        <TextBlock Text="7.1.0"/>
-                        <TextBlock Text="7.2.0"/>
-                        <TextBlock Text="7.3.0"/>
-                        <TextBlock Text="8.0.0"/>
-                    </ListView>
+                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                        <TextBlock Text="Номер патча" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Margin="0,10,0,0"/>
-                        <Button Content="Сохранить" Width="100" Margin="0,10,0,0"/>
+                        <ListView Grid.Row="0" Grid.Column="0" 
+                                  Background="#FF282C34" BorderThickness="0"
+                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  ItemsSource="{Binding PatchList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="White" Height="auto" BorderThickness="2">
+                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Vertical">
+                                                    <TextBlock Text="Номер патча:" Foreground="White" FontSize="17"/>
+                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PatchNumber}"/>
+                                                    <TextBlock Text="Дата выхода патча:" Foreground="White" FontSize="17"/>
+                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PatchDateRelease, StringFormat='{}{0:MM.dd.yyyy}'}" Margin="5,0,0,0"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Патч" Foreground="White" FontSize="20"
+                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
+                                 Text="{Binding TextBoxPatchNumber}"
+                                 FontSize="18"
+                                 Width="200" Height="32" Margin="0,10,0,0"/>
+
+                        <TextBlock Text="Дата выхода патча" Foreground="White" FontSize="20" 
+                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+
+                        <DatePicker FontSize="18"
+                                    SelectedDate="{Binding DatePickerPatchDateRelease}"
+                                    Width="200" Height="32" Margin="0,10,0,0"/>
+
+                        <Button Template="{StaticResource ControlButton}" 
+                                Command="{Binding SavePatchCommand}"
+                                Content="Сохранить" 
+                                Width="130" Height="30" Margin="0,10,0,0"/>
                     </StackPanel>
-
                 </Grid>
-
 
             </TabItem>
 
@@ -508,20 +421,49 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <ListView>
-                        <TextBlock Text="Крюк"/>
-                        <TextBlock Text="Земли"/>
-                        <TextBlock Text="Мементо"/>
-                        <TextBlock Text="Способность убийцы"/>
-                        <TextBlock Text="Калапс"/>
-                    </ListView>
+                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                        <TextBlock Text="Название" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Margin="0,10,0,0"/>
-                        <TextBlock Text="Описание" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Height="100" Margin="0,10,0,0"/>
-                        <Button Content="Сохранить" Width="100" Margin="0,10,0,0"/>
+                        <ListView Grid.Row="0" Grid.Column="0" 
+                                  Background="#FF282C34" BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ItemsSource="{Binding DeathList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
+                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding TypeDeathName}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Тип смерти" Foreground="White" FontSize="20"
+                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
+                                 Text="{Binding TextBoxTypeDeath}"
+                                 FontSize="18"
+                                 Width="200" Height="32" Margin="0,10,0,0"/>
+
+                        <TextBlock Text="Описание типа смерти" Foreground="White" FontSize="20" 
+                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 FontSize="18"
+                                 Width="200" Height="150" Margin="0,10,0,0"/>
+
+                        <Button Template="{StaticResource ControlButton}" 
+                                Command="{Binding SaveTypeDeathCommand}"
+                                Content="Сохранить" 
+                                Width="130" Height="30" Margin="0,10,0,0"/>
                     </StackPanel>
 
                 </Grid>
@@ -532,24 +474,56 @@
                 <TabItem.Header>
                     <TextBlock Text="Игровая роль" FontSize="14" Foreground="White"/>
                 </TabItem.Header>
-
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <ListView>
-                        <TextBlock Text="Убийца"/>
-                        <TextBlock Text="Выживший"/>
-                    </ListView>
+                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                        <TextBlock Text="Название" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Margin="0,10,0,0"/>
-                        <TextBlock Text="Описание" HorizontalAlignment="Center" Foreground="White" Margin="0,10,0,0"/>
-                        <TextBox Width="150" Height="100" Margin="0,10,0,0"/>
-                        <Button Content="Сохранить" Width="100" Margin="0,10,0,0"/>
+                        <ListView Grid.Row="0" Grid.Column="0" 
+                                  Background="#FF282C34" BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ItemsSource="{Binding GameRoleList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
+                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding RoleName}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Роль" Foreground="White" FontSize="20"
+                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
+                                 Text="{Binding TextBoxRole}"
+                                 FontSize="18"
+                                 Width="200" Height="32" Margin="0,10,0,0"/>
+
+                        <TextBlock Text="Описание роли" Foreground="White" FontSize="20" 
+                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 FontSize="18"
+                                 Width="200" Height="150" Margin="0,10,0,0"/>
+
+                        <Button Template="{StaticResource ControlButton}" 
+                                Command="{Binding SaveRoleCommand}"
+                                Content="Сохранить" 
+                                Width="130" Height="30" Margin="0,10,0,0"/>
                     </StackPanel>
 
                 </Grid>

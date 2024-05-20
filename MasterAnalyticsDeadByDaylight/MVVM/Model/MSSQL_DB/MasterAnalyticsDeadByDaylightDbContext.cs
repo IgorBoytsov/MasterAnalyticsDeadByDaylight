@@ -459,10 +459,9 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.ToTable("TypeDeath");
 
             entity.Property(e => e.IdTypeDeath).HasColumnName("id_TypeDeath");
-            entity.Property(e => e.TypeDeath1)
+            entity.Property(e => e.TypeDeathName)
                 .IsRequired()
-                .HasMaxLength(50)
-                .HasColumnName("TypeDeath");
+                .HasMaxLength(50);
         });
 
         modelBuilder.Entity<WhoPlacedMap>(entity =>

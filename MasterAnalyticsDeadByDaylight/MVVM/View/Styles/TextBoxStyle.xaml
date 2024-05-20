@@ -11,9 +11,10 @@
 
     <ControlTemplate x:Key="SettingTextBoxTemplate" TargetType="TextBox" >
         <Border x:Name="border" 
-        BorderBrush="White" 
-        BorderThickness="2" 
-        Background="#FF595958" 
+        BorderBrush="White"
+        CornerRadius="5"
+        BorderThickness="1" 
+        Background="#787C84"
         SnapsToDevicePixels="True">
             <ScrollViewer x:Name="PART_ContentHost" 
                   Focusable="false"
@@ -24,13 +25,15 @@
 
         <ControlTemplate.Triggers>
             <Trigger Property="IsFocused" Value="True">
-                <Setter TargetName="border" Property="Background" Value="#727271"/>
+                <Setter TargetName="border" Property="Background" Value="#787C84"/>
                 <Setter TargetName="border" Property="BorderBrush" Value="lightBlue"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="border" Property="Background" Value="#727271"/>
+                <Setter TargetName="border" Property="Background" Value="#787C84"/>
                 <Setter TargetName="border" Property="BorderBrush" Value="lightBlue"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+
+    <!--Background="#FF595958"-->
 </ResourceDictionary>
