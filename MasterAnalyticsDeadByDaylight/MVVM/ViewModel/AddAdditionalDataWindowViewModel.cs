@@ -1,11 +1,7 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Eventing.Reader;
-using System.Net.NetworkInformation;
-using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel

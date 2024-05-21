@@ -569,7 +569,7 @@
                 <TabItem.Header>
                     <TextBlock Text="Игровая роль" FontSize="14" Foreground="White"/>
                 </TabItem.Header>
-                
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -634,11 +634,9 @@
                                     Width="130" Height="30" Margin="10,10,0,0"/>
 
                         </StackPanel>
-                        
+
                     </StackPanel>
-
                 </Grid>
-
             </TabItem>
         </TabControl>
     </Grid>

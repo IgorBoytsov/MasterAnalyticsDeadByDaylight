@@ -13,5 +13,7 @@ public partial class Item
 
     public string ItemDescription { get; set; }
 
+    public virtual ICollection<ItemAddon> ItemAddons { get; set; } = new List<ItemAddon>();
+
     public virtual ICollection<SurvivorInfo> SurvivorInfos { get; set; } = new List<SurvivorInfo>();
 }

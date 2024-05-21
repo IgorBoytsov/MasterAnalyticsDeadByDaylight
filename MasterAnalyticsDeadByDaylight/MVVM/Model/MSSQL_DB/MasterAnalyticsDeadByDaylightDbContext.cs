@@ -177,6 +177,11 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.Property(e => e.IdItemAddon).HasColumnName("id_ItemAddon");
             entity.Property(e => e.IdItem).HasColumnName("id_item");
             entity.Property(e => e.ItemAddonName).IsRequired();
+
+            entity.HasOne(d => d.IdItemNavigation).WithMany(p => p.ItemAddons)
+                .HasForeignKey(d => d.IdItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ItemAddon_Item");
         });
 
         modelBuilder.Entity<Killer>(entity =>
@@ -450,6 +455,11 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.Property(e => e.IdSurvivorPerk).HasColumnName("id_SurvivorPerk");
             entity.Property(e => e.IdSurvivor).HasColumnName("id_Survivor");
             entity.Property(e => e.PerkName).IsRequired();
+
+            entity.HasOne(d => d.IdSurvivorNavigation).WithMany(p => p.SurvivorPerks)
+                .HasForeignKey(d => d.IdSurvivor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SurvivorPerk_Survivor");
         });
 
         modelBuilder.Entity<TypeDeath>(entity =>

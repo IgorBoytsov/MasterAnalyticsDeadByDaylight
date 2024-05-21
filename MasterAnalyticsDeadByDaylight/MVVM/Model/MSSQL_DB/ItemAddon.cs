@@ -15,6 +15,8 @@ public partial class ItemAddon
 
     public string ItemAddonDescription { get; set; }
 
+    public virtual Item IdItemNavigation { get; set; }
+
     public virtual ICollection<SurvivorInfo> SurvivorInfoIdAddon1Navigations { get; set; } = new List<SurvivorInfo>();
 
     public virtual ICollection<SurvivorInfo> SurvivorInfoIdAddon2Navigations { get; set; } = new List<SurvivorInfo>();

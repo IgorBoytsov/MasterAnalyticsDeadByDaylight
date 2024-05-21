@@ -3,61 +3,147 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow"
+        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow" 
+        xmlns:viewmodel="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:AddMapWindowViewModel}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
         Style="{StaticResource WindowStyle}"
         WindowStartupLocation="CenterScreen"
-        Title="Добавить карту" Height="480" Width="400">
+        Title="Добавить карту"
+        Height="700" Width="1200">
+
+    <Window.Resources>
+
+        <!--#region Стили для кнопок в строке заголовка -->
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
+                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
+                               Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
+                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE106;"/>
+        </Style>
+        <!--#endregion-->
+
+        <!--#region ListViewStyle -->
+        <Style TargetType="ListViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Name="border" Background="#FF282C34" Padding="2" >
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="Gray"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="Gray"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--#endregion-->
+
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="250"/>
+            <RowDefinition Height="320"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" Orientation="Horizontal">
-            <TextBlock Text="Поиск" FontSize="17" Margin="0,0,15,0"/>
-            <TextBox Width="150" Height="20"/>
+        <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Orientation="Horizontal">
+            <TextBlock Text="Поиск" FontSize="25" Margin="0,0,15,0"/>
+            <TextBox Template="{StaticResource SettingTextBoxTemplate}" Text="{Binding TextBoxSearch, UpdateSourceTrigger=PropertyChanged}" Width="400" Height="25" FontSize="18" Foreground="White"/>
         </StackPanel>
-        
-        <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="10,5,10,0" Background="Gray">
-            <ListViewItem Content="Заросли Дварки - Площадка Тоба"/>
-            <ListViewItem Content="Гнилое болото - Бледная Роза"/>
-            <ListViewItem Content="Гнилое болото - Чудовищная Кладовая"/>
-            <ListViewItem Content="Заброшенное кладбище - Воронье гнездовье"/>
-            <ListViewItem Content="Зачахший остров - Площадь Гринвилла"/>
-            <ListViewItem Content="Свалка Автохевен - Зона свалки"/>
-            <ListViewItem Content="Свалка Автохевен - Место упокоения Азарова"/>
-            <ListViewItem Content="Секущий крюк: Резонанс боли"/>
-            <ListViewItem Content="Свалка Автохевен - Место упокоения Азарова"/>
-            <ListViewItem Content="Раккун-Сити - Западное крыло Полицейского участка"/>
-            <ListViewItem Content="Раккун-Сити - Западное крыло Полицейского участка"/>
-            <ListViewItem Content="Раккун-Сити - Западное крыло Полицейского участка"/>
-            <ListViewItem Content="Вмешательство скверны"/>
-            <ListViewItem Content="Раккун-Сити - Западное крыло Полицейского участка"/>
-            <ListViewItem Content="Раккун-Сити - Западное крыло Полицейского участка"/>
-        </ListView>
 
-        <StackPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <StackPanel Margin="10,0,0,0">
-                <TextBlock Text="Название" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-                <TextBox Width="150" />
+        <Border Grid.Row="1" Grid.RowSpan="2" BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
 
-                <TextBlock Text="Изображение" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-                <Border Width="250" Height="150" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
-                    <Image Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Карты\Заросли Дварки - Площадка Тобаpng.png" Width="245" Height="145"/>
-                </Border>
+            <ListView Background="#FF282C34" BorderThickness="0"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.CanContentScroll="False"
+                      HorizontalContentAlignment="Center"
+                      ItemsSource="{Binding MapList}" SelectedItem="{Binding SelectedMapItem}" d:ItemsSource="{d:SampleData ItemCount=10}">
 
-                <StackPanel HorizontalAlignment="Center" Margin="0,5,0,0" Orientation="Horizontal">
-                    <Button Content="Выбрать" Width="90" Height="20" />
-                    <Button Content="Сохранить" Width="90" Height="20" Margin="10,0,0,0"/>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding MapName}" Foreground="White" FontSize="20"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="10,0,10,10">
+                                <Image Source="{Binding MapImage}" Width="auto" Height="auto"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Удалить" Command="{Binding DeleteMapItemCommand}"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+
+            </ListView>
+        </Border>
+
+        <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="White" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7">
+            <StackPanel HorizontalAlignment="Center" Grid.ColumnSpan="2" Orientation="Horizontal">
+                <StackPanel>
+                    <TextBlock Text="Название" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+                    <TextBox Text="{Binding TextBoxMapName}" FontSize="20" Height="30" Width="440"
+                 Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                    <TextBlock Text="Изображение" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+                    <Border Width="450" Height="250" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="0,0,0,5">
+                        <Image Source="{Binding ImageMap}" Width="435" Height="245"/>
+                    </Border>
+
+                    <TextBlock Text="Описание" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+                    <StackPanel>
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                     Text="{Binding TextBoxMapDescription}"
+                     FontSize="18" TextWrapping="WrapWithOverflow"
+                     Width="440" Height="120" Margin="0,10,0,0"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button Content="Выбрать" Command="{Binding SelectImageCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" />
+                        <Button Content="Сохранить" Command="{Binding SaveMapItemCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" Margin="10,0,0,0"/>
+                        <Button Content="Обновить" Command="{Binding UpdateMapItemCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" Margin="10,0,0,0"/>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
-        </StackPanel>
+        </Border>
+        
     </Grid>
 </Window>

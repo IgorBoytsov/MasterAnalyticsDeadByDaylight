@@ -23,11 +23,15 @@
 
         <ControlTemplate.Triggers>
             <Trigger Property="IsFocused" Value="True">
-                <Setter TargetName="border" Property="Background" Value="#787C84"/>
+                <!--<Setter TargetName="border" Property="Background" Value="#787C84"/>-->
+                <Setter TargetName="border" Property="Margin" Value="-2,-2,-2,2"/>
+                <Setter TargetName="border" Property="BorderThickness" Value="2,2,2,2"/>
                 <Setter TargetName="border" Property="BorderBrush" Value="lightBlue"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="border" Property="Background" Value="#787C84"/>
+                <!--<Setter TargetName="border" Property="Background" Value="#787C84"/>-->
+                <Setter TargetName="border" Property="Margin" Value="-2,-2,-2,2"/>
+                <Setter TargetName="border" Property="BorderThickness" Value="2,2,2,2"/>
                 <Setter TargetName="border" Property="BorderBrush" Value="lightBlue"/>
             </Trigger>
         </ControlTemplate.Triggers>

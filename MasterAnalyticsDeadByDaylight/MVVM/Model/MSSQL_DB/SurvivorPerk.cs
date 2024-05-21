@@ -15,6 +15,8 @@ public partial class SurvivorPerk
 
     public string PerkDescription { get; set; }
 
+    public virtual Survivor IdSurvivorNavigation { get; set; }
+
     public virtual ICollection<SurvivorInfo> SurvivorInfoIdPerk1Navigations { get; set; } = new List<SurvivorInfo>();
 
     public virtual ICollection<SurvivorInfo> SurvivorInfoIdPerk2Navigations { get; set; } = new List<SurvivorInfo>();

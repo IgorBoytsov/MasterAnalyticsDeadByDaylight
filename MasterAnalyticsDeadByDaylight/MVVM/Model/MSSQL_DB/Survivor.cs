@@ -14,4 +14,6 @@ public partial class Survivor
     public string SurvivorDescription { get; set; }
 
     public virtual ICollection<SurvivorInfo> SurvivorInfos { get; set; } = new List<SurvivorInfo>();
+
+    public virtual ICollection<SurvivorPerk> SurvivorPerks { get; set; } = new List<SurvivorPerk>();
 }
