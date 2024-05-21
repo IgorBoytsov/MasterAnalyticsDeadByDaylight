@@ -12,10 +12,8 @@
     <ControlTemplate x:Key="SettingTextBoxTemplate" TargetType="TextBox" >
         <Border x:Name="border" 
         BorderBrush="White"
-        CornerRadius="5"
-        BorderThickness="1" 
-        Background="#787C84"
-        SnapsToDevicePixels="True">
+        CornerRadius="0"
+        BorderThickness="0,0,0,2">
             <ScrollViewer x:Name="PART_ContentHost" 
                   Focusable="false"
                   Foreground="#F0F1F3"
@@ -36,4 +34,5 @@
     </ControlTemplate>
 
     <!--Background="#FF595958"-->
+    <!--Background="#787C84"-->
 </ResourceDictionary>

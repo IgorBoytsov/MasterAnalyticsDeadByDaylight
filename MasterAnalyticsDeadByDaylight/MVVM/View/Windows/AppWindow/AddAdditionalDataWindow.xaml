@@ -140,6 +140,13 @@
                                     </Border>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить" Command="{Binding DeleteGameModeItemCommand}"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            
                         </ListView>
                     </Border>
 
@@ -158,11 +165,18 @@
                         <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
                                  Text="{Binding TextBoxGameDescription}" FontSize="18"
                                  Width="200" Height="130" Margin="0,10,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding SaveGameModeCommand}"
+                                    Content="Сохранить" 
+                                    Width="130" Height="30" Margin="0,10,0,0"/>
 
-                        <Button Template="{StaticResource ControlButton}"
-                                Command="{Binding SaveGameModeCommand}"
-                                Content="Сохранить" 
-                                Width="130" Height="30" Margin="0,10,0,0"/>
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding UpdateGameModeItemCommand}"
+                                    Content="Обновить" 
+                                    Width="130" Height="30" Margin="10,10,0,0"/>
+                        </StackPanel>
+                        
                     </StackPanel>
                 </Grid>
 
@@ -184,7 +198,7 @@
                         <ListView Grid.Row="0" Grid.Column="0" 
                                   Background="#FF282C34" BorderThickness="0"
                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding GameEventList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                                  ItemsSource="{Binding GameEventList}" SelectedItem="{Binding SelectedGameEventItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -199,6 +213,13 @@
                                     </Border>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить" Command="{Binding DeleteGameEventItemCommand}"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            
                         </ListView>
                     </Border>
 
@@ -217,11 +238,21 @@
                         <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
                                  FontSize="18"
                                  Width="200" Height="150" Margin="0,10,0,0"/>
-
+                        
+                        <StackPanel Orientation="Horizontal">
+                            
                         <Button Template="{StaticResource ControlButton}"
                                 Command="{Binding SaveGameEventCommand}"
                                 Content="Сохранить" 
                                 Width="130" Height="30" Margin="0,10,0,0"/>
+
+                            <Button Template="{StaticResource ControlButton}"
+                                Command="{Binding UpdateGameEventItemCommand}"
+                                Content="Обновить" 
+                                Width="130" Height="30" Margin="10,10,0,0"/>
+
+                        </StackPanel>
+                        
                     </StackPanel>
 
                 </Grid>
@@ -244,7 +275,7 @@
                         <ListView Grid.Row="0" Grid.Column="0" 
                                   Background="#FF282C34" BorderThickness="0"
                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding PlatformList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                                  ItemsSource="{Binding PlatformList}" SelectedItem="{Binding SelectedPlatformItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -259,6 +290,12 @@
                                     </Border>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить" Command="{Binding DeletePlatformItemCommand}"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
                         </ListView>
                     </Border>
 
@@ -278,10 +315,20 @@
                                  FontSize="18"
                                  Width="200" Height="150" Margin="0,10,0,0"/>
 
-                        <Button Template="{StaticResource ControlButton}"
-                                Command="{Binding SavePlatformCommand}"
-                                Content="Сохранить" 
-                                Width="130" Height="30" Margin="0,10,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding SavePlatformCommand}"
+                                    Content="Сохранить" 
+                                    Width="130" Height="30" Margin="0,10,0,0"/>
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding UpdatePlatformItemCommand}"
+                                    Content="Обновить" 
+                                    Width="130" Height="30" Margin="10,10,0,0"/>
+
+                        </StackPanel>
+
                     </StackPanel>
 
                 </Grid>
@@ -304,7 +351,7 @@
                         <ListView Grid.Row="0" Grid.Column="0" 
                                   Background="#FF282C34" BorderThickness="0"
                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding AssociationList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                                  ItemsSource="{Binding AssociationList}" SelectedItem="{Binding SelectedAssociationItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -319,6 +366,12 @@
                                     </Border>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить" Command="{Binding DeletePlayerAssociationItemCommand}"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
                         </ListView>
                     </Border>
 
@@ -338,10 +391,20 @@
                                  FontSize="18"
                                  Width="200" Height="150" Margin="0,10,0,0"/>
 
-                        <Button Template="{StaticResource ControlButton}" 
-                                Command="{Binding SavePlayerAssociationCommand}"
-                                Content="Сохранить" 
-                                Width="130" Height="30" Margin="0,10,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding SavePlayerAssociationCommand}"
+                                    Content="Сохранить" 
+                                    Width="130" Height="30" Margin="0,10,0,0"/>
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding UpdatePlayerAssociationItemCommand}"
+                                    Content="Обновить" 
+                                    Width="130" Height="30" Margin="10,10,0,0"/>
+
+                        </StackPanel>
+                        
                     </StackPanel>
 
                 </Grid>
@@ -364,7 +427,7 @@
                         <ListView Grid.Row="0" Grid.Column="0" 
                                   Background="#FF282C34" BorderThickness="0"
                                   ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                  ItemsSource="{Binding PatchList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                                  ItemsSource="{Binding PatchList}" SelectedItem="{Binding SelectedPatchItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -382,6 +445,12 @@
                                     </Border>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить" Command="{Binding DeletePatchItemCommand}"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
                         </ListView>
                     </Border>
 
@@ -401,10 +470,20 @@
                                     SelectedDate="{Binding DatePickerPatchDateRelease}"
                                     Width="200" Height="32" Margin="0,10,0,0"/>
 
-                        <Button Template="{StaticResource ControlButton}" 
-                                Command="{Binding SavePatchCommand}"
-                                Content="Сохранить" 
-                                Width="130" Height="30" Margin="0,10,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding SavePatchCommand}"
+                                    Content="Сохранить" 
+                                    Width="130" Height="30" Margin="0,10,0,0"/>
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding UpdatePatchItemCommand}"
+                                    Content="Обновить" 
+                                    Width="130" Height="30" Margin="10,10,0,0"/>
+
+                        </StackPanel>
+                        
                     </StackPanel>
                 </Grid>
 
@@ -426,7 +505,7 @@
                         <ListView Grid.Row="0" Grid.Column="0" 
                                   Background="#FF282C34" BorderThickness="0"
                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding DeathList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                                  ItemsSource="{Binding DeathList}" SelectedItem="{Binding SelectedTypeDeathItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -441,6 +520,12 @@
                                     </Border>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить" Command="{Binding DeleteTypeDeathItemCommand}"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
                         </ListView>
                     </Border>
 
@@ -459,11 +544,21 @@
                         <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
                                  FontSize="18"
                                  Width="200" Height="150" Margin="0,10,0,0"/>
+                        
+                        <StackPanel Orientation="Horizontal">
 
-                        <Button Template="{StaticResource ControlButton}" 
-                                Command="{Binding SaveTypeDeathCommand}"
-                                Content="Сохранить" 
-                                Width="130" Height="30" Margin="0,10,0,0"/>
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding SaveTypeDeathCommand}"
+                                    Content="Сохранить" 
+                                    Width="130" Height="30" Margin="0,10,0,0"/>
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding UpdateTypeDeathItemCommand}"
+                                    Content="Обновить" 
+                                    Width="130" Height="30" Margin="10,10,0,0"/>
+
+                        </StackPanel>
+
                     </StackPanel>
 
                 </Grid>
@@ -486,7 +581,7 @@
                         <ListView Grid.Row="0" Grid.Column="0" 
                                   Background="#FF282C34" BorderThickness="0"
                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding GameRoleList}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                                  ItemsSource="{Binding GameRoleList}" SelectedItem="{Binding SelectedRoleItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -501,6 +596,12 @@
                                     </Border>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить" Command="{Binding DeleteRoleItemCommand}"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
                         </ListView>
                     </Border>
 
@@ -520,10 +621,20 @@
                                  FontSize="18"
                                  Width="200" Height="150" Margin="0,10,0,0"/>
 
-                        <Button Template="{StaticResource ControlButton}" 
-                                Command="{Binding SaveRoleCommand}"
-                                Content="Сохранить" 
-                                Width="130" Height="30" Margin="0,10,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding SaveRoleCommand}"
+                                    Content="Сохранить" 
+                                    Width="130" Height="30" Margin="0,10,0,0"/>
+
+                            <Button Template="{StaticResource ControlButton}"
+                                    Command="{Binding UpdateRoleItemCommand}"
+                                    Content="Обновить" 
+                                    Width="130" Height="30" Margin="10,10,0,0"/>
+
+                        </StackPanel>
+                        
                     </StackPanel>
 
                 </Grid>
