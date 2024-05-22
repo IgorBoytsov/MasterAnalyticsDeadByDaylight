@@ -614,8 +614,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         GameModeList.Clear();
                         GetGameModeData();
                         SelectedGameModeItem = null;
-                        TextBoxGameModeName = string.Empty;
-                    }       
+                        TextBoxGameModeName = string.Empty;                  }       
                 }
                 else { MessageBox.Show("Нечего обновлять"); }
             }

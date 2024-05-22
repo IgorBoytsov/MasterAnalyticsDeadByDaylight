@@ -69,17 +69,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             get => _textBoxSearch;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    GetMapData();
-                }
-                else 
-                {
-                    _textBoxSearch = value;
-                    SearchMap();
-                    OnPropertyChanged();
-                }
-                
+                _textBoxSearch = value;
+                SearchMap();
+                OnPropertyChanged();             
             }
         }
 
@@ -169,7 +161,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
                         entityToUpdate.MapName = TextBoxMapName;
-                        entityToUpdate.MapDescription = _textBoxMapDescription;
+                        entityToUpdate.MapDescription = TextBoxMapDescription;
                         entityToUpdate.MapImage = ImageMap;
                         context.SaveChanges();
                         MapList.Clear();
