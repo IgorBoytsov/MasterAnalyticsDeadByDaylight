@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
         public AddItemWindow()
         {
             InitializeComponent();
+            DataContext = new AddItemWindowViewModel();
         }
     }
 }

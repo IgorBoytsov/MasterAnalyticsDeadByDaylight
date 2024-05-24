@@ -1,7 +1,9 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
