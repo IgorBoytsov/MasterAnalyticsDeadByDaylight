@@ -213,7 +213,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
                 if (SelectedKillerItem == null)
                 {
-                    Addons = await context.KillerAddons.ToListAsync();
+                    KillerAddonList.Clear();
                 }
                 else
                 {
