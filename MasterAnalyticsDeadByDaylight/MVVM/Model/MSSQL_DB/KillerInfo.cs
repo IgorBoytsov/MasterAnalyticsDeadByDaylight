@@ -27,9 +27,13 @@ public partial class KillerInfo
 
     public int? IdKillerOffering { get; set; }
 
-    public int KillerAccount { get; set; }
+    public int Prestige { get; set; }
 
-    public int Presige { get; set; }
+    public bool Bot { get; set; }
+
+    public bool AnonymousMode { get; set; }
+
+    public int KillerAccount { get; set; }
 
     public virtual ICollection<GameStatistic> GameStatistics { get; set; } = new List<GameStatistic>();
 

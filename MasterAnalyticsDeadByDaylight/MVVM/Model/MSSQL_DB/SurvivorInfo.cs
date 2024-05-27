@@ -31,9 +31,9 @@ public partial class SurvivorInfo
 
     public int? IdSurvivorOffering { get; set; }
 
-    public string Presige { get; set; }
+    public string Prestige { get; set; }
 
-    public bool? Bot { get; set; }
+    public bool Bot { get; set; }
 
     public bool AnonymousMode { get; set; }
 

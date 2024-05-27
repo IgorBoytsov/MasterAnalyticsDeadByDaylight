@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow"
-        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:fa="http://schemas.fontawesome.com/icons/" 
+        xmlns:viewmodel="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:AddMatchWindowViewModel}"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource WindowStyle}"
@@ -323,27 +325,55 @@
                                     <StackPanel Grid.Column="1" Grid.Row="1">
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25"
+                                                      ItemsSource="{Binding KillerList}"
+                                                      SelectedItem="{Binding SelectedKiller}"
+                                                      DisplayMemberPath="KillerName"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding PlatformList}" 
+                                                      SelectedItem="{Binding SelectedKillerPlatform}"
+                                                      DisplayMemberPath="PlatformName"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                            <TextBox Width="150" Height="25"
+                                                     Text="{Binding KillerInfoPrestige}"
+                                                     TextAlignment="Center" 
+                                                     FontSize="17" 
+                                                     HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                            <TextBox Width="150" Height="25" 
+                                                     Text="{Binding KillerInfoAccount}"
+                                                     TextAlignment="Center" 
+                                                     FontSize="17" 
+                                                     HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                            <CheckBox Content="Анонимный?"
+                                                      Width="153" FontSize="20" 
+                                                      IsChecked="{Binding KillerInfoAnonymousMode}"
+                                                      Foreground="White" 
+                                                      VerticalContentAlignment="Center"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                            <CheckBox Content="Игрок вышел?" 
+                                                      Width="153" FontSize="20" 
+                                                      IsChecked="{Binding KillerInfoBot}"
+                                                      Foreground="White" 
+                                                      VerticalContentAlignment="Center"/>
                                         </DockPanel>
 
                                     </StackPanel>
@@ -403,31 +433,73 @@
                                     <StackPanel Grid.Column="1" Grid.Row="1">
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25"
+                                                      ItemsSource="{Binding KillerPerkList}"
+                                                      SelectedItem="{Binding SelectedKillerFirstPerk}"
+                                                      DisplayMemberPath="PerkName"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25"
+                                                      ItemsSource="{Binding KillerPerkList}"
+                                                      SelectedItem="{Binding SelectedKillerSecondPerk}"
+                                                      DisplayMemberPath="PerkName" 
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding KillerPerkList}"
+                                                      SelectedItem="{Binding SelectedKillerThirdPerk}"
+                                                      DisplayMemberPath="PerkName"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding KillerPerkList}"
+                                                      SelectedItem="{Binding SelectedKillerFourthPerk}"
+                                                      DisplayMemberPath="PerkName" 
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding KillerAddonList}"
+                                                      SelectedItem="{Binding SelectedKillerFirstAddon}"
+                                                      DisplayMemberPath="AddonName"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding KillerAddonList}" 
+                                                      SelectedItem="{Binding SelectedKillerSecondAddon}"
+                                                      DisplayMemberPath="AddonName" 
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding OfferingList}"
+                                                      SelectedItem="{Binding SelectedKillerOffering}"
+                                                      DisplayMemberPath="OfferingName"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                     </StackPanel>
@@ -463,8 +535,19 @@
                                     <StackPanel Grid.Column="1" Grid.Row="1">
 
                                         <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
-                                            <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                            <CheckBox Content="Рандом" 
+                                                      Width="150"
+                                                      IsChecked="{Binding KillerPlayerAssociation}"
+                                                      FontSize="20" 
+                                                      Foreground="White" 
+                                                      VerticalContentAlignment="Center"/>
+                                            
+                                            <CheckBox Content="Я" 
+                                                      Width="150"
+                                                      IsChecked="{Binding KillerPlayerAssociation}"
+                                                      FontSize="20" 
+                                                      Foreground="White" 
+                                                      VerticalContentAlignment="Center" Margin="0,5,0,0"/>
                                         </StackPanel>
 
                                     </StackPanel>
@@ -546,31 +629,67 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivor}"
+                                                              DisplayMemberPath="SurvivorName"
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding PlatformList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorPlatform}"
+                                                              DisplayMemberPath="PlatformName"
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding FirstSurvivorPrestige}"
+                                                             TextAlignment="Center" 
+                                                             FontSize="17" 
+                                                             HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding TypeDeathList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorTypeDeath}"
+                                                              DisplayMemberPath="TypeDeathName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding FirstSurvivorAccount}"
+                                                             TextAlignment="Center" 
+                                                             FontSize="17" 
+                                                             HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Анонимный?" 
+                                                              IsChecked="{Binding FirstSurvivorAnonymousMode}"
+                                                              Width="153" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Игрок вышел?"
+                                                              IsChecked="{Binding FirstSurvivorBot}"
+                                                              Width="153" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
                                                 </DockPanel>
 
                                             </StackPanel>
@@ -634,35 +753,83 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25"
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorFirstPerk}"
+                                                              DisplayMemberPath="PerkName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorSecondPerk}"
+                                                              DisplayMemberPath="PerkName" 
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
                                                 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorThirdPerk}"
+                                                              DisplayMemberPath="PerkName"  
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorFourthPerk}"
+                                                              DisplayMemberPath="PerkName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorItem}" 
+                                                              DisplayMemberPath="ItemName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemAddonList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorFirstItemAddon}" 
+                                                              DisplayMemberPath="ItemAddonName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemAddonList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorSecondItemAddon}" 
+                                                              DisplayMemberPath="ItemAddonName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding OfferingList}"
+                                                              SelectedItem="{Binding SelectedFirstSurvivorOffering}"
+                                                              DisplayMemberPath="OfferingName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True"
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                             </StackPanel>
@@ -698,9 +865,28 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
-                                                    <CheckBox Content="Тимейт" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
-                                                    <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                    <CheckBox Content="Рандом" 
+                                                              IsChecked="{Binding SelectedFirstSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+                                                    
+                                                    <CheckBox Content="Тимейт"
+                                                              IsChecked="{Binding SelectedFirstSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center" 
+                                                              Margin="0,5,0,0"/>
+                                                    
+                                                    <CheckBox Content="Я" 
+                                                              IsChecked="{Binding SelectedFirstSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center" 
+                                                              Margin="0,5,0,0"/>
                                                 </StackPanel>
 
                                             </StackPanel>
@@ -770,31 +956,66 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivor}"
+                                                              DisplayMemberPath="SurvivorName"
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding PlatformList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorPlatform}"
+                                                              DisplayMemberPath="PlatformName"
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding SecondSurvivorPrestige}"
+                                                             TextAlignment="Center" 
+                                                             FontSize="17" 
+                                                             HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding TypeDeathList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorTypeDeath}"
+                                                              DisplayMemberPath="TypeDeathName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding SecondSurvivorAccount}"
+                                                             TextAlignment="Center" FontSize="17" 
+                                                             HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Анонимный?" 
+                                                              IsChecked="{Binding SecondSurvivorAnonymousMode}"
+                                                              Width="153" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Игрок вышел?"
+                                                              IsChecked="{Binding SecondSurvivorBot}"
+                                                              Width="153" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
                                                 </DockPanel>
 
                                             </StackPanel>
@@ -858,35 +1079,83 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25"
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorFirstPerk}"
+                                                              DisplayMemberPath="PerkName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorSecondPerk}"
+                                                              DisplayMemberPath="PerkName" 
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorThirdPerk}"
+                                                              DisplayMemberPath="PerkName"  
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorFourthPerk}"
+                                                              DisplayMemberPath="PerkName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorItem}" 
+                                                              DisplayMemberPath="ItemName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemAddonList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorFirstItemAddon}" 
+                                                              DisplayMemberPath="ItemAddonName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemAddonList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorSecondItemAddon}" 
+                                                              DisplayMemberPath="ItemAddonName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding OfferingList}"
+                                                              SelectedItem="{Binding SelectedSecondSurvivorOffering}"
+                                                              DisplayMemberPath="OfferingName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True"
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                             </StackPanel>
@@ -922,14 +1191,33 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
-                                                    <CheckBox Content="Тимейт" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
-                                                    <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                    <CheckBox Content="Рандом" 
+                                                              IsChecked="{Binding SelectedSecondSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <CheckBox Content="Тимейт"
+                                                              IsChecked="{Binding SelectedSecondSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center" 
+                                                              Margin="0,5,0,0"/>
+
+                                                    <CheckBox Content="Я" 
+                                                              IsChecked="{Binding SelectedSecondSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center" 
+                                                              Margin="0,5,0,0"/>
                                                 </StackPanel>
 
                                             </StackPanel>
 
-                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,0"/>
                                         </Grid>
 
                                     </StackPanel>
@@ -994,31 +1282,66 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivor}"
+                                                              DisplayMemberPath="SurvivorName"
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding PlatformList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorPlatform}"
+                                                              DisplayMemberPath="PlatformName"
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding ThirdSurvivorPrestige}"
+                                                             TextAlignment="Center"                          
+                                                             FontSize="17" 
+                                                             HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding TypeDeathList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorTypeDeath}"
+                                                              DisplayMemberPath="TypeDeathName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding ThirdSurvivorAccount}"
+                                                             TextAlignment="Center" FontSize="17" 
+                                                             HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Анонимный?" 
+                                                              IsChecked="{Binding ThirdSurvivorAnonymousMode}"
+                                                              Width="153" 
+                                                              FontSize="20"                                                             
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Игрок вышел?"
+                                                              IsChecked="{Binding ThirdSurvivorBot}"
+                                                              Width="153" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
                                                 </DockPanel>
 
                                             </StackPanel>
@@ -1082,35 +1405,83 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25"
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorFirstPerk}"
+                                                              DisplayMemberPath="PerkName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorSecondPerk}"
+                                                              DisplayMemberPath="PerkName" 
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorThirdPerk}"
+                                                              DisplayMemberPath="PerkName"  
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorFourthPerk}"
+                                                              DisplayMemberPath="PerkName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorItem}" 
+                                                              DisplayMemberPath="ItemName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemAddonList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorFirstItemAddon}" 
+                                                              DisplayMemberPath="ItemAddonName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemAddonList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorSecondItemAddon}" 
+                                                              DisplayMemberPath="ItemAddonName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding OfferingList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorOffering}"
+                                                              DisplayMemberPath="OfferingName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True"
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                             </StackPanel>
@@ -1146,18 +1517,37 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
-                                                    <CheckBox Content="Тимейт" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
-                                                    <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                    <CheckBox Content="Рандом" 
+                                                              IsChecked="{Binding SelectedThirdSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <CheckBox Content="Тимейт"
+                                                              IsChecked="{Binding SelectedThirdSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center" 
+                                                              Margin="0,5,0,0"/>
+
+                                                    <CheckBox Content="Я" 
+                                                              IsChecked="{Binding SelectedThirdSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White"                                                              
+                                                              VerticalContentAlignment="Center" 
+                                                              Margin="0,5,0,0"/>
                                                 </StackPanel>
 
                                             </StackPanel>
 
-                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,0"/>
                                         </Grid>
 
                                     </StackPanel>
-                                    
+
                                 </TabItem>
 
                                 <TabItem>
@@ -1218,31 +1608,66 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}"  IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivor}"
+                                                              DisplayMemberPath="SurvivorName"
+                                                              IsTextSearchEnabled="True"                                                             
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding PlatformList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorPlatform}"
+                                                              DisplayMemberPath="PlatformName"
+                                                              IsTextSearchEnabled="True"
+                                                             IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding FourthSurvivorPrestige}"
+                                                             TextAlignment="Center"                          
+                                                             FontSize="17" 
+                                                             HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding TypeDeathList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorTypeDeath}"
+                                                              DisplayMemberPath="TypeDeathName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25" TextAlignment="Center" FontSize="17" HorizontalAlignment="Left"/>
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding FourthSurvivorAccount}"
+                                                             TextAlignment="Center" FontSize="17" 
+                                                             HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Анонимный?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Анонимный?" 
+                                                              IsChecked="{Binding FourthSurvivorAnonymousMode}"
+                                                              Width="153" 
+                                                              FontSize="20"                                                             
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Игрок вышел?" Width="153" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
+                                                    <CheckBox Content="Игрок вышел?"
+                                                              IsChecked="{Binding FourthSurvivorBot}"
+                                                              Width="153" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
                                                 </DockPanel>
 
                                             </StackPanel>
@@ -1306,35 +1731,84 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25"
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorFirstPerk}"
+                                                              DisplayMemberPath="PerkName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorSecondPerk}"
+                                                              DisplayMemberPath="PerkName" 
+                                                              IsTextSearchEnabled="True"
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorThirdPerk}"
+                                                              DisplayMemberPath="PerkName"  
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding SurvivorPerkList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorFourthPerk}"
+                                                              DisplayMemberPath="PerkName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorItem}" 
+                                                              DisplayMemberPath="ItemName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemAddonList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorFirstItemAddon}" 
+                                                              DisplayMemberPath="ItemAddonName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding ItemAddonList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorSecondItemAddon}" 
+                                                              DisplayMemberPath="ItemAddonName" 
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True" 
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,30,0,0" HorizontalAlignment="Center">
-                                                    <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                                    <ComboBox Width="150" Height="25" 
+                                                              ItemsSource="{Binding OfferingList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorOffering}"
+                                                              DisplayMemberPath="OfferingName"
+                                                              IsTextSearchEnabled="True" 
+                                                              IsEditable="True"
+                                                              HorizontalAlignment="Left"/>
                                                 </DockPanel>
 
                                             </StackPanel>
@@ -1370,14 +1844,33 @@
                                             <StackPanel Grid.Column="1" Grid.Row="1">
 
                                                 <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <CheckBox Content="Рандом" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center"/>
-                                                    <CheckBox Content="Тимейт" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
-                                                    <CheckBox Content="Я" Width="150" FontSize="20" Foreground="White" VerticalContentAlignment="Center" Margin="0,5,0,0"/>
+                                                    <CheckBox Content="Рандом" 
+                                                              IsChecked="{Binding SelectedFourthSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <CheckBox Content="Тимейт"
+                                                              IsChecked="{Binding SelectedFourthSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center" 
+                                                              Margin="0,5,0,0"/>
+
+                                                    <CheckBox Content="Я" 
+                                                              IsChecked="{Binding SelectedFourthSurvivorPlayerAssociation}"
+                                                              Width="150" 
+                                                              FontSize="20" 
+                                                              Foreground="White"                                                              
+                                                              VerticalContentAlignment="Center" 
+                                                              Margin="0,5,0,0"/>
                                                 </StackPanel>
 
                                             </StackPanel>
 
-                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5"  VerticalAlignment="Bottom" Margin="0,10,0,0"/>
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,0"/>
                                         </Grid>
 
                                     </StackPanel>
@@ -1445,23 +1938,38 @@
                                     <StackPanel Grid.Column="1" Grid.Row="1">
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <DatePicker Width="150" Height="25" HorizontalAlignment="Left"/>
+                                            <DatePicker Width="150" Height="25" 
+                                                        SelectedDate="{Binding SelectedDateTimeMatch}"
+                                                        HorizontalAlignment="Left"/>
                                         </DockPanel>
                                         
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <!--НАДО УЗНАТЬ ЧТО СЮДА ПИСАТЬ-->
                                             <TextBox Width="150" Height="25" HorizontalAlignment="Left"/>
                                         </DockPanel>
                                         
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <TextBox Width="150" Height="25" FontSize="17" HorizontalAlignment="Left" TextAlignment="Center"/>
+                                            <TextBox Width="150" Height="25"
+                                                     Text="{Binding CountKills}"
+                                                     FontSize="17" 
+                                                     HorizontalAlignment="Left" 
+                                                     TextAlignment="Center"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <TextBox Width="150" Height="25" FontSize="17" HorizontalAlignment="Left" TextAlignment="Center"/>
+                                            <TextBox Width="150" Height="25" 
+                                                     Text="{Binding CountHooks}"
+                                                     FontSize="17" 
+                                                     HorizontalAlignment="Left" 
+                                                     TextAlignment="Center"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <TextBox Width="150" Height="25" FontSize="17" HorizontalAlignment="Left" TextAlignment="Center"/>
+                                            <TextBox Width="150" Height="25"
+                                                     Text="{Binding CountNumberRecentGenerators}"
+                                                     FontSize="17" 
+                                                     HorizontalAlignment="Left" 
+                                                     TextAlignment="Center"/>
                                         </DockPanel>
 
                                     </StackPanel>
@@ -1514,23 +2022,53 @@
                                     <StackPanel Grid.Column="1" Grid.Row="1">
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding PatchList}"
+                                                      SelectedItem="{Binding SelectedPatch}"
+                                                      DisplayMemberPath="PatchNumber"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
                                         
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding GameModeList}"
+                                                      SelectedItem="{Binding SelectedGameMode}"
+                                                      DisplayMemberPath="GameModeName"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
                                         
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding GameEventList}"
+                                                      SelectedItem="{Binding SelectedGameEvent}"
+                                                      DisplayMemberPath="GameEventName"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
                                         
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding WhoPlacedMapList}"
+                                                      SelectedItem="{Binding SelectedWhoPlacedMap}"
+                                                      DisplayMemberPath="SelectedWhoPlacedMap"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
                                         
                                         <DockPanel Margin="0,45,0,0" HorizontalAlignment="Center">
-                                            <ComboBox Width="150" Height="25" ItemsSource="{Binding Killers}" IsTextSearchEnabled="True" IsEditable="True" HorizontalAlignment="Left"/>
+                                            <ComboBox Width="150" Height="25" 
+                                                      ItemsSource="{Binding WhoPlacedMapList}"
+                                                      SelectedItem="{Binding SelectedWhoPlacedMapWin}"
+                                                      DisplayMemberPath="SelectedWhoPlacedMap"
+                                                      IsTextSearchEnabled="True" 
+                                                      IsEditable="True" 
+                                                      HorizontalAlignment="Left"/>
                                         </DockPanel>
                                         
                                     </StackPanel>
@@ -1554,7 +2092,11 @@
                                     <StackPanel Grid.Row="1">
 
                                         <StackPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <TextBox Width="380" Height="200" FontSize="20" HorizontalAlignment="Left" TextAlignment="Center" Background="Gray"/>
+                                            <TextBox Width="380" Height="200"
+                                                     Text="{Binding DescriptionGame}"
+                                                     FontSize="20" 
+                                                     HorizontalAlignment="Left" 
+                                                     TextAlignment="Center" Background="Gray"/>
                                         </StackPanel>
 
                                     </StackPanel>

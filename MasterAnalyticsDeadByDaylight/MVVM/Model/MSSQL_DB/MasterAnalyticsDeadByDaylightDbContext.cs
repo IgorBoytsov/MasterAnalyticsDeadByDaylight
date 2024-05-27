@@ -389,7 +389,8 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.Property(e => e.IdSurvivor).HasColumnName("id_Survivor");
             entity.Property(e => e.IdSurvivorOffering).HasColumnName("id_SurvivorOffering");
             entity.Property(e => e.IdTypeDeath).HasColumnName("id_Type_death");
-            entity.Property(e => e.Presige)
+            entity.Property(e => e.Prestige)
+                .IsRequired()
                 .HasMaxLength(10)
                 .IsFixedLength();
 
