@@ -185,7 +185,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
         <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
             <Grid.ColumnDefinitions>
@@ -238,7 +238,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
         <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
             <Grid.ColumnDefinitions>
@@ -306,5 +306,4 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
 </ResourceDictionary>
