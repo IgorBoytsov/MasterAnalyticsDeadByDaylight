@@ -10,11 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\add-file-1151197.png" />
+    <None Remove="Resources\add-folder-3979527.png" />
     <None Remove="Resources\Color_dead_by_daylight_logo.ico" />
+    <None Remove="Resources\delete-7391435.png" />
     <None Remove="Resources\icons8-dead-by-daylight-256.png" />
     <None Remove="Resources\KillerRol.png" />
     <None Remove="Resources\KillerRolRead.png" />
     <None Remove="Resources\LogoDBD.ico" />
+    <None Remove="Resources\settings-945147.png" />
     <None Remove="Resources\SurvivorRol.png" />
     <None Remove="Resources\SurvivorRolBlue.png" />
     <None Remove="Resources\Котозила.jpg" />
@@ -51,11 +55,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\add-file-1151197.png" />
+    <Resource Include="Resources\add-folder-3979527.png" />
     <Resource Include="Resources\Color_dead_by_daylight_logo.ico" />
+    <Resource Include="Resources\delete-7391435.png" />
     <Resource Include="Resources\icons8-dead-by-daylight-256.png" />
     <Resource Include="Resources\KillerRol.png" />
     <Resource Include="Resources\KillerRolRead.png" />
     <Resource Include="Resources\LogoDBD.ico" />
+    <Resource Include="Resources\settings-945147.png" />
     <Resource Include="Resources\SurvivorRol.png" />
     <Resource Include="Resources\SurvivorRolBlue.png" />
     <Resource Include="Resources\Котозила.jpg" />

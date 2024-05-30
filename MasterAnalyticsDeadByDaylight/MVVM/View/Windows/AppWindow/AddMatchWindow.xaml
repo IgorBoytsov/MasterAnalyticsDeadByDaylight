@@ -146,6 +146,7 @@
             <!--Контент окна-->
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
@@ -155,35 +156,66 @@
                     <ColumnDefinition MinWidth="450" MaxWidth="700" Width="450"/>
                 </Grid.ColumnDefinitions>
 
-                <ListView ItemsSource="{Binding CompressedImagesList}"
-                          SelectedItem="{Binding fgreg}"
+                <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0" Orientation="Horizontal">
+
+                    <Button Template="{StaticResource ControlButton}" ToolTip="Добавить файл"
+                            Command="{Binding LoadImageCommand}"
+                            Width="40" Height="30" Margin="10,0,0,0">
+                        <Image Source="/Resources/add-file-1151197.png" />
+                    </Button>
+
+                    <Button Template="{StaticResource ControlButton}" ToolTip="Очистить список"
+                            Command="{Binding ClearImageListCommand}"
+                            Width="40" Height="30" Margin="10,0,0,0">
+                        <Image Source="/Resources/delete-7391435.png" />
+                    </Button>
+                    
+                    <Button Template="{StaticResource ControlButton}" ToolTip="Настройки"
+                            Command="{Binding }"
+                            Width="40" Height="30" Margin="10,0,0,0">
+                        <Image Source="/Resources/settings-945147.png" />
+                    </Button>
+                    
+                </StackPanel>
+
+                <!--#region Отображение списока изображение -->
+
+                <ListView ItemsSource="{Binding ImagesList}" d:ItemsSource="{d:SampleData ItemCount=5}"
+                          SelectedItem="{Binding SelectedImage}"
+                          Grid.Row="1"
                           Background="#282C34"
                           BorderBrush="White"
                           BorderThickness="1"
                           Foreground="White" 
                           FontSize="15" 
-                          ScrollViewer.CanContentScroll="False"
+                          HorizontalContentAlignment="Center" 
+                          Margin="5,5,0,4.7"
+                          ScrollViewer.CanContentScroll="True"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           VirtualizingPanel.IsVirtualizing="True"
-                          HorizontalContentAlignment="Center" Margin="5,5,0,4.7">
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          VirtualizingPanel.CacheLength="15,15"
+                          VirtualizingPanel.CacheLengthUnit="Item"
+                          VirtualizingPanel.ScrollUnit="Pixel">
 
                     <ListView.Resources>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListViewItem">
-                                        <Border Name="Border" Padding="2" SnapsToDevicePixels="true">
+                                        <Border Name="Border" Padding="2" BorderThickness="3" SnapsToDevicePixels="true">
                                             <ContentPresenter/>
                                         </Border>
                                         <ControlTemplate.Triggers>
 
                                             <Trigger Property="IsSelected" Value="true">
-                                                <Setter TargetName="Border" Property="Background" Value="Gray"/>
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="Yellow"/>
                                                 <Setter Property="Foreground" Value="Black"/>
                                             </Trigger>
 
                                             <Trigger Property="IsMouseOver" Value="true">
                                                 <Setter TargetName="Border" Property="Background" Value="Gray"/>
-                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -194,35 +226,22 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
-                                <Image Source="{Binding PathImage}"
-                                       Width="290"/>
-                            </StackPanel>
+                            <Image Source="{Binding ResizeImage}" Width="auto" Height="auto"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
                     <ListView.ContextMenu>
                         <ContextMenu BorderBrush="Black">
-                            <MenuItem Header="Добавить 'Итоговую таблицу'"/>
-                            <MenuItem Header="Добавить 'Начало игры'"/>
-                            <MenuItem Header="Добавить 'Конец игры' за Убийцу"/>
-                            <MenuItem Header="Добавить 'Конец игры' за Выжившего"/>
+                            <MenuItem Header="Добавить 'Итоговую таблицу'" Command="{Binding LoadResultMatchImageCommand}"/>
+                            <MenuItem Header="Добавить 'Начало игры'" Command="{Binding LoadStartMatchImageCommand}"/>
+                            <MenuItem Header="Добавить 'Конец игры' за Убийцу" Command="{Binding LoadEndMatchImageCommand}"/>
                         </ContextMenu>
                     </ListView.ContextMenu>
                 </ListView>
 
-                <Border Grid.Row="1" Grid.ColumnSpan="2" Width="450" HorizontalAlignment="Left" Background="Gray" CornerRadius="10" Margin="3">
-                    <StackPanel  VerticalAlignment="Center" Orientation="Horizontal" Margin="10,0,10,5">
-                        <TextBlock>
-                            <fa:ImageAwesome Icon="Solid_QuestionCircle" Width="14" Foreground="White" ToolTip="Укажите путь к изображениям"/>
-                            <Run FontSize="15">Путь:</Run>
-                        </TextBlock>
-
-                        <TextBox Width="300" Margin="15,0,0,0"/>
-
-                        <Button Content="Выбрать" Margin="15,0,0,0"/>
-                    </StackPanel>
-                </Border>
+                <!--#endregion-->
+                
+                <TextBlock Text="{Binding PathsText}" Height="25" FontSize="18" Grid.Row="2" Grid.ColumnSpan="2"/>
 
                 <GridSplitter Grid.Column="1"
                               Background="Gray"
@@ -232,7 +251,7 @@
 
                 <!--#region Отображение выбранных изображений -->
 
-                <ScrollViewer Grid.Column="1" Grid.RowSpan="1" Margin="0,0,15,0">
+                <ScrollViewer Grid.Column="1" Grid.Row="1" Margin="0,0,15,0">
                     <StackPanel>
 
                         <!--#region Итоговая таблица -->
@@ -243,11 +262,12 @@
                                     <TextBlock Text="Итоговая таблица" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
                                 </Border>
                             </StackPanel>
-
-                            <GroupBox Header="Таблица счета" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top" Width="650" MaxWidth="800" Height="550" MaxHeight="900" Margin="10,0,10,0">
-                                <Image Source="C:\Users\light\OneDrive\Desktop\Таблица готовая.jpg" Margin="10"/>
+                            <StackPanel>
+                                
+                            </StackPanel>
+                            <GroupBox Header="Таблица счета" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top" MinWidth="630" MaxWidth="1200" MinHeight="350" MaxHeight="1000" Margin="10,0,10,0">
+                                <Image Source="{Binding ResultMatchImage}" Margin="10"/>
                             </GroupBox>
-
                         </StackPanel>
                         <!--#endregion-->
 
@@ -260,8 +280,8 @@
                                 </Border>
                             </StackPanel>
 
-                            <GroupBox Header="Начало игры" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top" Width="630" MaxWidth="800" Height="350" MaxHeight="900" Margin="10,0,10,0">
-                                <Image Source="C:\Users\light\OneDrive\Desktop\Начало игры готовое.jpg" Margin="10"/>
+                            <GroupBox Header="Начало игры" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top" Width="630" MaxWidth="1100" Height="350" MaxHeight="500" Margin="10,0,10,0">
+                                <Image Source="{Binding StartMatchImage}" Margin="10"/>
                             </GroupBox>
 
                         </StackPanel>
@@ -276,8 +296,8 @@
                                 </Border>
                             </StackPanel>
 
-                            <GroupBox Header="Завершение игры" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top" Width="630" MaxWidth="800" Height="500" MaxHeight="900" Margin="10,0,10,0">
-                                <Image Source="C:\Users\light\OneDrive\Desktop\Повесы Готовое.jpg" Margin="10"/>
+                            <GroupBox Header="Завершение игры" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Top"  MinWidth="630" MaxWidth="1440" MinHeight="350" MaxHeight="1000" Margin="10,0,10,0">
+                                <Image Source="{Binding EndMatchImage}" Margin="10"/>
                             </GroupBox>
 
                         </StackPanel>
@@ -286,15 +306,11 @@
                     </StackPanel>
                 </ScrollViewer>
 
-                <!--<StackPanel Grid.Row="1" Grid.Column="1">
-                    <Button Content="Удалить выбранные изображения" Width="250" Height="30" FontSize="15" HorizontalAlignment="Center" Margin="0,5,0,0" />
-                </StackPanel>-->
-
                 <!--#endregion-->
 
                 <!--#region Поля для добавление данных в БД -->
 
-                <Border Grid.Column="2" Grid.Row="0" BorderBrush="Gray">
+                <Border Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" BorderBrush="Gray">
                     <ScrollViewer>
                         <StackPanel>
 
@@ -530,9 +546,14 @@
 
                                     <ListView Grid.Row="0" Grid.Column="0" 
                                               Background="#FF282C34" BorderThickness="0"
+                                              ItemsSource="{Binding KillerPerkList}" SelectedItem="{Binding SelectedListViewKillerPerk}"
+                                              ScrollViewer.CanContentScroll="True"
                                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                              ScrollViewer.CanContentScroll="False"
-                                              ItemsSource="{Binding KillerPerkList}" SelectedItem="{Binding SelectedListViewKillerPerk}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                              VirtualizingPanel.IsVirtualizing="True"
+                                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                              VirtualizingPanel.CacheLength="15,15"
+                                              VirtualizingPanel.CacheLengthUnit="Item"
+                                              VirtualizingPanel.ScrollUnit="Pixel">
 
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
@@ -657,9 +678,14 @@
 
                                     <ListView Grid.Row="0" Grid.Column="0" 
                                               Background="#FF282C34" BorderThickness="0"
+                                              ItemsSource="{Binding KillerAddonList}" SelectedItem="{Binding SelectedListViewKillerAddon}"
+                                              ScrollViewer.CanContentScroll="True"
                                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                              ScrollViewer.CanContentScroll="False"
-                                              ItemsSource="{Binding KillerAddonList}" SelectedItem="{Binding SelectedListViewKillerAddon}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                              VirtualizingPanel.IsVirtualizing="True"
+                                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                              VirtualizingPanel.CacheLength="15,15"
+                                              VirtualizingPanel.CacheLengthUnit="Item"
+                                              VirtualizingPanel.ScrollUnit="Pixel">
 
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
@@ -780,9 +806,14 @@
 
                                     <ListView Grid.Row="0" Grid.Column="0" 
                                               Background="#FF282C34" BorderThickness="0"
+                                              ItemsSource="{Binding KillerOfferingList}" SelectedItem="{Binding SelectedListViewKillerOffering}" 
+                                              ScrollViewer.CanContentScroll="True"
                                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                              ScrollViewer.CanContentScroll="False"
-                                              ItemsSource="{Binding KillerOfferingList}" SelectedItem="{Binding SelectedListViewKillerOffering}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                              VirtualizingPanel.IsVirtualizing="True"
+                                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                              VirtualizingPanel.CacheLength="15,15"
+                                              VirtualizingPanel.CacheLengthUnit="Item"
+                                              VirtualizingPanel.ScrollUnit="Pixel">
 
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
@@ -1109,9 +1140,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedListViewSurvivorPerk}"
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ScrollViewer.CanContentScroll="False"
-                                                          ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedListViewSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -1274,9 +1310,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedListViewItemAddon}"
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ScrollViewer.CanContentScroll="False"
-                                                          ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedListViewItemAddon}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -1396,9 +1437,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewFirstSurvivorOffering}"
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ScrollViewer.CanContentScroll="False"
-                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewFirstSurvivorOffering}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -1717,8 +1763,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedListViewSurvivorPerk}" 
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedListViewSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -1881,8 +1933,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedListViewItemAddon}"
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedListViewItemAddon}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -2002,8 +2060,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewSecondSurvivorOffering}" 
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewSecondSurvivorOffering}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -2321,8 +2385,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedListViewSurvivorPerk}"
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedListViewSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -2485,8 +2555,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedListViewItemAddon}" 
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedListViewItemAddon}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -2605,8 +2681,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewThirdSurvivorOffering}"
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewThirdSurvivorOffering}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -2924,8 +3006,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedListViewSurvivorPerk}" 
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedListViewSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -3086,9 +3174,15 @@
                                                     Width="316" Height="400">
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
-                                                          Background="#FF282C34" BorderThickness="0"
+                                                          Background="#FF282C34" BorderThickness="0"                                                          
+                                                          ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedListViewItemAddon}" 
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedListViewItemAddon}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -3207,8 +3301,14 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
+                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewFourthSurvivorOffering}"
+                                                          ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewFourthSurvivorOffering}" d:ItemsSource="{d:SampleData ItemCount=15}">
+                                                          VirtualizingPanel.IsVirtualizing="True"
+                                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                          VirtualizingPanel.CacheLength="15,15"
+                                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                                          VirtualizingPanel.ScrollUnit="Pixel">
 
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
@@ -3516,7 +3616,7 @@
                     </ScrollViewer>
                 </Border>
                 
-                <Border Grid.Column="2" Grid.Row="1" Background="Gray" CornerRadius="10" Margin="3">
+                <Border Grid.Column="2" Grid.Row="2" Background="Gray" CornerRadius="10" Margin="3">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Button Content="Сохранить" Command="{Binding LoadImageCommand}" Width="150" Height="30" FontSize="20"/>
                     </StackPanel>

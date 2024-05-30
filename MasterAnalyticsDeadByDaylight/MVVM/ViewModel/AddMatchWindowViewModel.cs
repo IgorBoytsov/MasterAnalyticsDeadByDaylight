@@ -1,9 +1,17 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Reflection;
 using System.Windows;
+
+using System.Windows.Media.Imaging;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 {
@@ -24,7 +32,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         #endregion
 
         #region Коллекции для выживших      
- 
+
         public ObservableCollection<Survivor> SurvivorList { get; set; }
 
         public ObservableCollection<SurvivorPerk> SurvivorPerkList { get; set; }
@@ -709,7 +717,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
-        
+
         /// <summary>
         /// Свойство для поиска по списку улучшений для предмета у четвертого выжившего
         /// </summary
@@ -1564,7 +1572,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         #endregion
 
         #region Билд - Подношение Выжившего №2 - Свойства
- 
+
         /// <summary>
         /// Свойство для хранение информации о выбранном подношение у первого выжившего
         /// </summary>
@@ -2534,7 +2542,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     _сountKills = value;
                     OnPropertyChanged();
                 }
-                
+
             }
         }
 
@@ -2556,10 +2564,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     _countHooks = value;
                     OnPropertyChanged();
                 }
-                
+
             }
         }
-        
+
         /// <summary>
         /// Количество генераторов, которое осталось на момент окончания игры
         /// </summary>
@@ -2578,7 +2586,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     _countNumberRecentGenerators = value;
                     OnPropertyChanged();
                 }
-                
+
             }
         }
 
@@ -2607,7 +2615,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 _selectedGameMode = value;
             }
         }
-        
+
         private Patch _selectedGameEvent;
         public Patch SelectedGameEvent
         {
@@ -2618,7 +2626,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 _selectedGameEvent = value;
             }
         }
-        
+
         private Patch _selectedWhoPlacedMap;
         public Patch SelectedWhoPlacedMap
         {
@@ -2629,7 +2637,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 _selectedWhoPlacedMap = value;
             }
         }
-        
+
         private Patch _selectedWhoPlacedMapWin;
         public Patch SelectedWhoPlacedMapWin
         {
@@ -2682,14 +2690,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
-
-        #endregion
-
-        #region Свойства для загрузки и выбора изображений
-
-        public ObservableCollection<ImageInformation> CompressedImagesList { get; set; } = [];
-
-        public ObservableCollection<string> NormalImagesList { get; set; } = [];
 
         #endregion
 
@@ -2842,7 +2842,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         private RelayCommand _listViewKillerPerkVisibilityCommand;
         public RelayCommand ListViewKillerPerkVisibilityCommand
         {
-            get => _listViewKillerPerkVisibilityCommand ??= new(obj => 
+            get => _listViewKillerPerkVisibilityCommand ??= new(obj =>
             {
                 if (ListViewKillerPerkVisibility == Visibility.Collapsed)
                 {
@@ -2911,7 +2911,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 }
             });
         }
-        
+
         private RelayCommand _listViewSurvivorItemAddonVisibilityCommand;
         public RelayCommand ListViewSurvivorItemAddonVisibilityCommand
         {
@@ -3075,7 +3075,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 }
             }
         }
-        
+
         private async void SearchSecondSurvivorItemAddon()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -3097,7 +3097,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 }
             }
         }
-        
+
         private async void SearchThirdSurvivorItemAddon()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -3119,7 +3119,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 }
             }
         }
-        
+
         private async void SearchFourthSurvivorItemAddon()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -3176,7 +3176,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         {
             GetGameModeListData();
             GetGameEventListData();
-            GetMapListData();            
+            GetMapListData();
             GetPatchListData();
             GetPlatformListData();
             GetPlayerAssociationListData();
@@ -3379,7 +3379,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         foreach (var entity in entities)
                         {
                             RoleList.Add(entity);
-                        }  
+                        }
                     });
                 }
             }).Start();
@@ -3602,7 +3602,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     if (SelectedComboBoxFirstSurvivorItem == null)
                     {
                         var entities = context.ItemAddons.ToList();
-                        
+
                         App.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
@@ -3615,7 +3615,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     else
                     {
                         var entities = context.ItemAddons.Where(ia => ia.IdItem == SelectedComboBoxFirstSurvivorItem.IdItem).ToList();
-                        
+
                         App.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
@@ -3625,7 +3625,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                             }
                         });
                     }
-                    
+
                 }
             }).Start();
         }
@@ -3771,88 +3771,165 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         }
         #endregion
 
-        ///// <summary>
-        ///// Загрузка сжатых изображений из папки "thumbnails", которая находится в основной папки с скриншотами игры. 
-        ///// </summary>
-        ///// <returns></returns>
-        //private async Task UploadCompressedImages()
+        #region Блок "Изображение"
+
+        #region Свойства
+
+        public ObservableCollection<ImageInformation> ImagesList { get; set; } = [];
+
+        private ImageInformation _selectedImage;
+        public ImageInformation SelectedImage
+        {
+            get => _selectedImage;
+            set
+            {
+                if (value == null) { return; }
+                _selectedImage = value;
+            }
+        }
+
+        private string _pathToFolder;
+        public string PathToFolder
+        {
+            get => _pathToFolder;
+            set
+            {
+                _pathToFolder = value;
+            }
+        }
+
+        private string _pathsText;
+        public string PathsText
+        {
+            get => _pathsText;
+            set
+            {
+                _pathsText = value;
+            }
+        }
+
+        private BitmapImage _resultMatchImage;
+        public BitmapImage ResultMatchImage
+        {
+            get => _resultMatchImage;
+            set
+            {
+                _resultMatchImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private BitmapImage _startMatchImage;
+        public BitmapImage StartMatchImage
+        {
+            get => _startMatchImage;
+            set
+            {
+                _startMatchImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private BitmapImage _endMatchImage;
+        public BitmapImage EndMatchImage
+        {
+            get => _endMatchImage;
+            set
+            {
+                _endMatchImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region Команды
+
+        private RelayCommand _loadImageCommand;
+        public RelayCommand LoadImageCommand { get => _loadImageCommand ??= new(async obj => { await GetImageAsync(); }); }
+
+        private RelayCommand _loadResultMatchImageCommand;
+        public RelayCommand LoadResultMatchImageCommand { get => _loadResultMatchImageCommand ??= new(async obj => { ResultMatchImage = await ImageHelper.GetResultMatchImageAsync(SelectedImage.PathImage); }); }
+
+        private RelayCommand _loadStartMatchImageCommand;
+        public RelayCommand LoadStartMatchImageCommand { get => _loadStartMatchImageCommand ??= new(async obj => { StartMatchImage = await ImageHelper.GetStartMatchImageAsync(SelectedImage.PathImage); }); }
+
+        private RelayCommand _loadEndMatchImageCommand;
+        public RelayCommand LoadEndMatchImageCommand { get => _loadEndMatchImageCommand ??= new(async obj => { EndMatchImage = await ImageHelper.GetEndMatchImageAsync(SelectedImage.PathImage); }); }
+        
+        private RelayCommand _clearImageListCommandCommand;
+        public RelayCommand ClearImageListCommandCommand { get => _clearImageListCommandCommand ??= new(obj => { ImagesList.Clear(); }); }
+
+        #endregion
+
+        #region Методы 
+
+        private async Task GetImageAsync()
+        {
+            string[] files = Directory.GetFiles(@"D:\Steam\userdata\189964443\760\remote\381210\screenshots");
+
+            ImagesList.Clear();
+
+            foreach (var item in files)
+            {
+                FileInfo fileInfo = new(item);
+                ImagesList.Add(new ImageInformation
+                {
+                    PathImage = item,
+                    ResizeImage = await GetResizeImageFromDirectoryTumbnails(Path.GetFileName(item)),
+                    FileName = Path.GetFileName(item),
+                    FileCreatedTime = fileInfo.CreationTime.ToString()
+                });
+            }
+        }
+
+        private static async Task<string> GetResizeImageFromDirectoryTumbnails(string searchImageName)
+        {
+            return await Task.Run(() =>
+            {
+                string[] TumbnailsImagePaths = Directory.GetFiles(@"D:\Steam\userdata\189964443\760\remote\381210\screenshots\thumbnails")
+                    .Where(file => Path.GetFileName(file) == searchImageName).ToArray();
+
+                if (TumbnailsImagePaths.Length > 0)
+                {
+                    return TumbnailsImagePaths[0];
+                }
+                else
+                {
+                    return null;
+                }
+
+            });
+        }
+
+        //private async Task GetImageAsync()
         //{
-        //    string[] compressedImagePaths = Directory.GetFiles(@"D:\Steam\userdata\189964443\760\remote\381210\screenshots\thumbnails");
-
-        //    List<Task<ImageInformation>> tasks = new List<Task<ImageInformation>>();
-
-        //    foreach (var path in compressedImagePaths)
+        //    OpenFileDialog openFileDialog = new()
         //    {
-        //        tasks.Add(Task.Run(() => GetImageInformation(path)));
-        //    }
+        //        Multiselect = true,
+        //        Filter = "Изображения (*.jpg; *.jpeg; *.png)|*.jpg; *.jpeg; *.png",
+        //        InitialDirectory = @"D:\Steam\userdata\189964443\760\remote\381210\screenshots"
+        //    };
 
-        //    var imageInfoList = await Task.WhenAll(tasks);
-        //    foreach (var item in imageInfoList)
+        //    if (openFileDialog.ShowDialog() == true)
         //    {
-        //        CompressedImagesList.Add(item);
-        //    }
-
-        //    UploadNormalImage();
-        //}
-
-        //private Task<BitmapImage> RemoveHalfPixel(string path)
-        //{
-        //    //Получить путь к изображению
-        //    //Проверить является ли файл изображением
-        //    //Превратить его в Bitmap
-        //    Bitmap bitmap = new(path);
-        //    //Сжать в меньший размер( в 2-4 раза)
-        //    //Вернуть изображение в формате BitmapImage
-
-        //    BitmapImage bitmapImage = new();
-
-        //    return Task.Run(() => 
-        //    {
-        //        return bitmapImage;
-        //    });
-        //}
-
-        ///// <summary>
-        ///// Получение информации о изображение.
-        ///// </summary>
-        ///// <param name="path"></param>
-        ///// <returns></returns>
-        //private ImageInformation GetImageInformation(string path)
-        //{
-        //    try
-        //    {   
-        //        using (FileStream fs = File.OpenRead(path))
+        //        foreach (var item in openFileDialog.FileNames)
         //        {
-        //            return new ImageInformation
+        //            FileInfo fileInfo = new(item);
+        //            ImagesList.Add(new ImageInformation
         //            {
-        //                PathImage = path,
-        //                FileName = Path.GetFileName(path),
-        //                //Image = bitmap
-        //            };                    
+        //                PathImage = item,
+        //                ResizeImage = await GetResizeImageFromDirectoryTumbnails(Path.GetFileName(item)),
+        //                FileName = Path.GetFileName(item),
+        //                FileCreatedTime = fileInfo.CreationTime.ToString()
+        //            });
         //        }
         //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Ошибка загрузки: {path}. Ошибка: {ex.Message}");
-        //        return null;
-        //    }
         //}
 
-        ///// <summary>
-        ///// Создание списка с изображениями нормального разрешение. Которые находятся в основной папке с скриншотами.
-        ///// </summary>
-        //private void UploadNormalImage()
-        //{
-        //    string[] NormalImagePaths = Directory.GetFiles(@"D:\Steam\userdata\189964443\760\remote\381210\screenshots");
+        #endregion
 
-        //    foreach (var item in NormalImagePaths)
-        //    {
-        //        NormalImagesList.Add(item);
-        //    }
-        //}
-
-        //private RelayCommand _loadImageCommand;
-        //public RelayCommand LoadImageCommand { get => _loadImageCommand ??= new(async obj => await UploadCompressedImages()); }
+        #endregion  
 
     }
 }

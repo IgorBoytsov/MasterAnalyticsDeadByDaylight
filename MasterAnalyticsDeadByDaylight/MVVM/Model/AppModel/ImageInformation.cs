@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using System.Windows.Media.Imaging;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 {
@@ -12,11 +12,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         /// <summary>
         /// Сжатое изображение. Нужно для отображение в списке.
         /// </summary>
-        public Bitmap ResizeImage { get; set; }
+        public string ResizeImage { get; set; }
         
         /// <summary>
         /// Имя файла, без расширения
         /// </summary>
         public string FileName { get; set; }
+
+        /// <summary>
+        /// Время создание файла
+        /// </summary>
+        public string FileCreatedTime { get; set; }
     }
 }
