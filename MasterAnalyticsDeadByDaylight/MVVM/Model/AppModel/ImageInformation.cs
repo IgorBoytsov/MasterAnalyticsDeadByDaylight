@@ -22,6 +22,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         /// <summary>
         /// Время создание файла
         /// </summary>
-        public string FileCreatedTime { get; set; }
+        public DateTime FileCreatedTime { get; set; }
     }
 }

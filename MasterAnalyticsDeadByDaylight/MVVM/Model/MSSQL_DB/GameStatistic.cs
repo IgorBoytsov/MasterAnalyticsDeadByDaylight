@@ -29,9 +29,9 @@ public partial class GameStatistic
 
     public int IdSurvivors4 { get; set; }
 
-    public DateTime DateTimeMatch { get; set; }
+    public DateTime? DateTimeMatch { get; set; }
 
-    public DateTime GameTimeMatch { get; set; }
+    public string GameTimeMatch { get; set; }
 
     public int CountKills { get; set; }
 

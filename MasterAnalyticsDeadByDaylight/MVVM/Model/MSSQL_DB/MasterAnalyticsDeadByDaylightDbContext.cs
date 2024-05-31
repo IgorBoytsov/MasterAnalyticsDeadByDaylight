@@ -89,7 +89,6 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
             entity.Property(e => e.IdGameStatistic).HasColumnName("id_GameStatistic");
             entity.Property(e => e.DateTimeMatch).HasColumnType("datetime");
-            entity.Property(e => e.GameTimeMatch).HasColumnType("datetime");
             entity.Property(e => e.IdGameEvent).HasColumnName("id_GameEvent");
             entity.Property(e => e.IdGameMode).HasColumnName("id_GameMode");
             entity.Property(e => e.IdKiller).HasColumnName("id_Killer");
@@ -389,10 +388,6 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.Property(e => e.IdSurvivor).HasColumnName("id_Survivor");
             entity.Property(e => e.IdSurvivorOffering).HasColumnName("id_SurvivorOffering");
             entity.Property(e => e.IdTypeDeath).HasColumnName("id_Type_death");
-            entity.Property(e => e.Prestige)
-                .IsRequired()
-                .HasMaxLength(10)
-                .IsFixedLength();
 
             entity.HasOne(d => d.IdAddon1Navigation).WithMany(p => p.SurvivorInfoIdAddon1Navigations)
                 .HasForeignKey(d => d.IdAddon1)

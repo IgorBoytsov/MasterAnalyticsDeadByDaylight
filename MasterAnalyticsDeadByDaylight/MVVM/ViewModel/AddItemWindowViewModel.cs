@@ -302,7 +302,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                bool exists = context.ItemAddons.Any(itemAddon => itemAddon.ItemAddonName.ToLower() == newItemAddon.ItemAddonName.ToLower());
+                bool exists = context.ItemAddons.Where(ia => ia.IdItem == ComboBoxSelectedItem.IdItem).Any(itemAddon => itemAddon.ItemAddonName.ToLower() == newItemAddon.ItemAddonName.ToLower());
 
                 if (exists || string.IsNullOrWhiteSpace(TextBoxItemName))
                 {

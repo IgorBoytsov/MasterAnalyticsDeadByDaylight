@@ -160,7 +160,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 if (string.IsNullOrWhiteSpace(OfferingNameTextBox)) { return; }
-                bool exists = context.Offerings.Any(off => off.OfferingName.ToLower() == newOffering.OfferingName.ToLower());
+                bool exists = context.Offerings.Where(off => off.IdRole == SelectedRole.IdRole).Any(off => off.OfferingName.ToLower() == newOffering.OfferingName.ToLower());
 
                 if (exists || string.IsNullOrWhiteSpace(OfferingNameTextBox))
                 {

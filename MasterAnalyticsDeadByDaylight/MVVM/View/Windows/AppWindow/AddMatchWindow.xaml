@@ -13,7 +13,7 @@
         Background="#FF282C34"
         Foreground="White"
         MinHeight="450" MinWidth="800"
-        Height="850" Width="1500"
+        Height="850" Width="1500" d:Height="auto"
         Title="Добавить матч">
 
     <WindowChrome.WindowChrome>
@@ -375,6 +375,7 @@
                                         <ComboBox Width="150" Height="25"
                                                   ItemsSource="{Binding KillerList}"
                                                   SelectedItem="{Binding SelectedKiller}"
+                                                  SelectedIndex="0"
                                                   DisplayMemberPath="KillerName" 
                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                   FontSize="16" Foreground="White"/>
@@ -384,6 +385,7 @@
                                         <ComboBox Width="150" Height="25" 
                                                   ItemsSource="{Binding PlatformList}" 
                                                   SelectedItem="{Binding SelectedKillerPlatform}"
+                                                  SelectedIndex="0"
                                                   DisplayMemberPath="PlatformName"
                                                   Style="{DynamicResource ComboBoxStyleApp}"
                                                   FontSize="16" Foreground="White"/>
@@ -766,7 +768,7 @@
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                             <ComboBox Width="150" Height="25"
-                                                      ItemsSource="{Binding RoleList}"
+                                                      ItemsSource="{Binding KillerRoleList}"
                                                       SelectedItem="{Binding SelectedComboBoxRoleKiller}"
                                                       SelectedIndex="2"
                                                       DisplayMemberPath="RoleName" 
@@ -777,7 +779,7 @@
                                 </Grid>
                             </StackPanel>
                             
-                            <!--#endregion-->
+                            <!--#endregion--> 
 
                             <!--#region ListView - Список подношений-->
 
@@ -806,7 +808,8 @@
 
                                     <ListView Grid.Row="0" Grid.Column="0" 
                                               Background="#FF282C34" BorderThickness="0"
-                                              ItemsSource="{Binding KillerOfferingList}" SelectedItem="{Binding SelectedListViewKillerOffering}" 
+                                              ItemsSource="{Binding KillerOfferingList}" 
+                                              SelectedItem="{Binding SelectedListViewKillerOffering}" 
                                               ScrollViewer.CanContentScroll="True"
                                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                               VirtualizingPanel.IsVirtualizing="True"
@@ -870,6 +873,7 @@
                                             <ComboBox Width="150" Height="25"
                                                       ItemsSource="{Binding PlayerAssociationList}"
                                                       SelectedItem="{Binding SelectedKillerPlayerAssociation}"
+                                                      SelectedIndex="0"
                                                       DisplayMemberPath="PlayerAssociationName" 
                                                       Style="{DynamicResource ComboBoxStyleApp}"  
                                                       FontSize="16" Foreground="White"/>
@@ -959,6 +963,7 @@
                                                     <ComboBox Width="150" Height="25"
                                                               ItemsSource="{Binding SurvivorList}"
                                                               SelectedItem="{Binding SelectedFirstSurvivor}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="SurvivorName" 
                                                               Style="{DynamicResource ComboBoxStyleApp}"  
                                                               FontSize="16" Foreground="White"/>
@@ -968,6 +973,7 @@
                                                     <ComboBox Width="150" Height="25" 
                                                               ItemsSource="{Binding PlatformList}" 
                                                               SelectedItem="{Binding SelectedFirstSurvivorPlatform}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="PlatformName"
                                                               Style="{DynamicResource ComboBoxStyleApp}"
                                                               FontSize="16" Foreground="White"/>
@@ -986,10 +992,11 @@
                                                     <ComboBox Width="150" Height="25"  
                                                               ItemsSource="{Binding TypeDeathList}"
                                                               SelectedItem="{Binding SelectedFirstSurvivorTypeDeath}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="TypeDeathName"
                                                               Style="{StaticResource ComboBoxStyleApp}" 
                                                               Template="{StaticResource ComboBoxTemplate}"
-                                                              FontSize="17"/>
+                                                              FontSize="17" Foreground="White"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -1214,7 +1221,7 @@
                                                         <ComboBox Width="150" Height="25"
                                                                   ItemsSource="{Binding ItemList}"                                                            
                                                                   SelectedItem="{Binding SelectedComboBoxFirstSurvivorItem}"
-                                                                  SelectedIndex="0"
+                                                                  SelectedIndex="6"
                                                                   DisplayMemberPath="ItemName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -1397,9 +1404,9 @@
 
                                                     <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                                         <ComboBox Width="150" Height="25"
-                                                                  ItemsSource="{Binding RoleList}"
-                                                                  SelectedItem="{Binding SelectedComboBoxRoleSurvivor}"
-                                                                  SelectedIndex="2"
+                                                                  ItemsSource="{Binding SurvivorRoleList}"
+                                                                  SelectedItem="{Binding SelectedComboBoxRoleFirstSurvivor}"
+                                                                  SelectedIndex="0"
                                                                   DisplayMemberPath="RoleName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -1427,7 +1434,7 @@
                                                 <TextBlock Text="Поиск:" FontSize="25" Foreground="White"/>
                                                 <TextBox Style="{StaticResource SettingTextBoxStyle}" 
                                                          Template="{StaticResource SettingTextBoxTemplate}"
-                                                         Text="{Binding TextBoxSearchSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                         Text="{Binding TextBoxSearchFirstSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
                                                          Width="300" FontSize="16" Margin="10,0,0,0"/>
                                             </StackPanel>
 
@@ -1437,7 +1444,8 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
-                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewFirstSurvivorOffering}"
+                                                          ItemsSource="{Binding FirstSurvivorOfferingList}" 
+                                                          SelectedItem="{Binding SelectedListViewFirstSurvivorOffering}"
                                                           ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                           VirtualizingPanel.IsVirtualizing="True"
@@ -1501,6 +1509,7 @@
                                                         <ComboBox Width="150" Height="25"
                                                                   ItemsSource="{Binding PlayerAssociationList}"
                                                                   SelectedItem="{Binding SelectedFirstSurvivorPlayerAssociation}"
+                                                                  SelectedIndex="2"
                                                                   DisplayMemberPath="PlayerAssociationName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -1582,6 +1591,7 @@
                                                     <ComboBox Width="150" Height="25"
                                                               ItemsSource="{Binding SurvivorList}"
                                                               SelectedItem="{Binding SelectedSecondSurvivor}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="SurvivorName" 
                                                               Style="{DynamicResource ComboBoxStyleApp}"  
                                                               FontSize="16" Foreground="White"/>
@@ -1591,6 +1601,7 @@
                                                     <ComboBox Width="150" Height="25" 
                                                               ItemsSource="{Binding PlatformList}" 
                                                               SelectedItem="{Binding SelectedSecondSurvivorPlatform}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="PlatformName"
                                                               Style="{DynamicResource ComboBoxStyleApp}"
                                                               FontSize="16" Foreground="White"/>
@@ -1609,10 +1620,11 @@
                                                     <ComboBox Width="150" Height="25"  
                                                               ItemsSource="{Binding TypeDeathList}"
                                                               SelectedItem="{Binding SelectedSecondSurvivorTypeDeath}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="TypeDeathName"
                                                               Style="{StaticResource ComboBoxStyleApp}" 
                                                               Template="{StaticResource ComboBoxTemplate}"
-                                                              FontSize="17"/>
+                                                              FontSize="17" Foreground="White"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -1837,7 +1849,7 @@
                                                         <ComboBox Width="150" Height="25"
                                                                   ItemsSource="{Binding ItemList}"                                                            
                                                                   SelectedItem="{Binding SelectedComboBoxSecondSurvivorItem}"
-                                                                  SelectedIndex="0"
+                                                                  SelectedIndex="6"
                                                                   DisplayMemberPath="ItemName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -2020,8 +2032,8 @@
 
                                                     <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                                         <ComboBox Width="150" Height="25"                               
-                                                                  ItemsSource="{Binding RoleList}"
-                                                                  SelectedItem="{Binding SelectedComboBoxRoleSurvivor}"
+                                                                  ItemsSource="{Binding SurvivorRoleList}"
+                                                                  SelectedItem="{Binding SelectedComboBoxRoleSecondSurvivor}"
                                                                   SelectedIndex="2"
                                                                   DisplayMemberPath="RoleName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
@@ -2050,7 +2062,7 @@
                                                 <TextBlock Text="Поиск:" FontSize="25" Foreground="White"/>
                                                 <TextBox Style="{StaticResource SettingTextBoxStyle}" 
                                                          Template="{StaticResource SettingTextBoxTemplate}"
-                                                         Text="{Binding TextBoxSearchSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                         Text="{Binding TextBoxSearchSecondSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
                                                          Width="300" FontSize="16" Margin="10,0,0,0"/>
                                             </StackPanel>
 
@@ -2060,7 +2072,8 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
-                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewSecondSurvivorOffering}" 
+                                                          ItemsSource="{Binding SecondSurvivorOfferingList}" 
+                                                          SelectedItem="{Binding SelectedListViewSecondSurvivorOffering}" 
                                                           ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                           VirtualizingPanel.IsVirtualizing="True"
@@ -2124,6 +2137,7 @@
                                                         <ComboBox Width="150" Height="25"
                                                                   ItemsSource="{Binding PlayerAssociationList}"
                                                                   SelectedItem="{Binding SelectedSecondSurvivorPlayerAssociation}"
+                                                                  SelectedIndex="2"
                                                                   DisplayMemberPath="PlayerAssociationName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -2204,6 +2218,7 @@
                                                     <ComboBox Width="150" Height="25"
                                                               ItemsSource="{Binding SurvivorList}"
                                                               SelectedItem="{Binding SelectedThirdSurvivor}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="SurvivorName" 
                                                               Style="{DynamicResource ComboBoxStyleApp}"  
                                                               FontSize="16" Foreground="White"/>
@@ -2213,6 +2228,7 @@
                                                     <ComboBox Width="150" Height="25" 
                                                               ItemsSource="{Binding PlatformList}" 
                                                               SelectedItem="{Binding SelectedThirdSurvivorPlatform}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="PlatformName"
                                                               Style="{DynamicResource ComboBoxStyleApp}"
                                                               FontSize="16" Foreground="White"/>
@@ -2231,10 +2247,11 @@
                                                     <ComboBox Width="150" Height="25"  
                                                               ItemsSource="{Binding TypeDeathList}"
                                                               SelectedItem="{Binding SelectedThirdSurvivorTypeDeath}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="TypeDeathName"
                                                               Style="{StaticResource ComboBoxStyleApp}" 
                                                               Template="{StaticResource ComboBoxTemplate}"
-                                                              FontSize="17"/>
+                                                              FontSize="17" Foreground="White"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -2459,7 +2476,7 @@
                                                         <ComboBox Width="150" Height="25" 
                                                                   ItemsSource="{Binding ItemList}"                                                            
                                                                   SelectedItem="{Binding SelectedComboBoxThirdSurvivorItem}"
-                                                                  SelectedIndex="0"
+                                                                  SelectedIndex="6"
                                                                   DisplayMemberPath="ItemName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -2641,8 +2658,8 @@
 
                                                     <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                                         <ComboBox Width="150" Height="25"                               
-                                                                  ItemsSource="{Binding RoleList}"
-                                                                  SelectedItem="{Binding SelectedComboBoxRoleSurvivor}"
+                                                                  ItemsSource="{Binding SurvivorRoleList}"
+                                                                  SelectedItem="{Binding SelectedComboBoxRoleThirdSurvivor}"
                                                                   SelectedIndex="2"
                                                                   DisplayMemberPath="RoleName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
@@ -2671,7 +2688,7 @@
                                                 <TextBlock Text="Поиск:" FontSize="25" Foreground="White"/>
                                                 <TextBox Style="{StaticResource SettingTextBoxStyle}" 
                                                          Template="{StaticResource SettingTextBoxTemplate}"
-                                                         Text="{Binding TextBoxSearchSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                         Text="{Binding TextBoxSearchThirdSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
                                                          Width="300" FontSize="16" Margin="10,0,0,0"/>
                                             </StackPanel>
 
@@ -2681,7 +2698,8 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
-                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewThirdSurvivorOffering}"
+                                                          ItemsSource="{Binding ThirdSurvivorOfferingList}" 
+                                                          SelectedItem="{Binding SelectedListViewThirdSurvivorOffering}"
                                                           ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                           VirtualizingPanel.IsVirtualizing="True"
@@ -2745,6 +2763,7 @@
                                                         <ComboBox Width="150" Height="25"  
                                                                   ItemsSource="{Binding PlayerAssociationList}"
                                                                   SelectedItem="{Binding SelectedThirdSurvivorPlayerAssociation}"
+                                                                  SelectedIndex="2"
                                                                   DisplayMemberPath="PlayerAssociationName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -2825,6 +2844,7 @@
                                                     <ComboBox Width="150" Height="25"             
                                                               ItemsSource="{Binding SurvivorList}"
                                                               SelectedItem="{Binding SelectedFourthSurvivor}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="SurvivorName" 
                                                               Style="{DynamicResource ComboBoxStyleApp}"  
                                                               FontSize="16" Foreground="White"/>
@@ -2834,6 +2854,7 @@
                                                     <ComboBox Width="150" Height="25" 
                                                               ItemsSource="{Binding PlatformList}" 
                                                               SelectedItem="{Binding SelectedFourthSurvivorPlatform}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="PlatformName"
                                                               Style="{DynamicResource ComboBoxStyleApp}"
                                                               FontSize="16" Foreground="White"/>
@@ -2852,10 +2873,11 @@
                                                     <ComboBox Width="150" Height="25"  
                                                               ItemsSource="{Binding TypeDeathList}"
                                                               SelectedItem="{Binding SelectedFourthSurvivorTypeDeath}"
+                                                              SelectedIndex="0"
                                                               DisplayMemberPath="TypeDeathName"
                                                               Style="{StaticResource ComboBoxStyleApp}" 
                                                               Template="{StaticResource ComboBoxTemplate}"
-                                                              FontSize="17"/>
+                                                              FontSize="17" Foreground="White"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -3080,7 +3102,7 @@
                                                         <ComboBox Width="150" Height="25" 
                                                                   ItemsSource="{Binding ItemList}"                                                            
                                                                   SelectedItem="{Binding SelectedComboBoxFourthSurvivorItem}"
-                                                                  SelectedIndex="0"
+                                                                  SelectedIndex="6"
                                                                   DisplayMemberPath="ItemName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -3261,8 +3283,8 @@
 
                                                     <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                                         <ComboBox Width="150" Height="25"                               
-                                                                  ItemsSource="{Binding RoleList}"
-                                                                  SelectedItem="{Binding SelectedComboBoxRoleSurvivor}"
+                                                                  ItemsSource="{Binding SurvivorRoleList}"
+                                                                  SelectedItem="{Binding SelectedComboBoxRoleFourthSurvivor}"
                                                                   SelectedIndex="2"
                                                                   DisplayMemberPath="RoleName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
@@ -3291,7 +3313,7 @@
                                                 <TextBlock Text="Поиск:" FontSize="25" Foreground="White"/>
                                                 <TextBox Style="{StaticResource SettingTextBoxStyle}" 
                                                          Template="{StaticResource SettingTextBoxTemplate}"
-                                                         Text="{Binding TextBoxSearchSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                         Text="{Binding TextBoxSearchFourthSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
                                                          Width="300" FontSize="16" Margin="10,0,0,0"/>
                                             </StackPanel>
 
@@ -3301,7 +3323,8 @@
 
                                                 <ListView Grid.Row="0" Grid.Column="0" 
                                                           Background="#FF282C34" BorderThickness="0"
-                                                          ItemsSource="{Binding SurvivorOfferingList}" SelectedItem="{Binding SelectedListViewFourthSurvivorOffering}"
+                                                          ItemsSource="{Binding FourthSurvivorOfferingList}" 
+                                                          SelectedItem="{Binding SelectedListViewFourthSurvivorOffering}"
                                                           ScrollViewer.CanContentScroll="True"
                                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                           VirtualizingPanel.IsVirtualizing="True"
@@ -3365,6 +3388,7 @@
                                                         <ComboBox Width="150" Height="25"     
                                                                   ItemsSource="{Binding PlayerAssociationList}"
                                                                   SelectedItem="{Binding SelectedFourthSurvivorPlayerAssociation}"
+                                                                  SelectedIndex="2"
                                                                   DisplayMemberPath="PlayerAssociationName" 
                                                                   Style="{DynamicResource ComboBoxStyleApp}"  
                                                                   FontSize="16" Foreground="White"/>
@@ -3384,6 +3408,8 @@
                                 <!--#endregion-->
                                 
                             </TabControl>
+                            
+                            <!--#endregion-->
                             
                             <Separator Height="5" VerticalAlignment="Bottom" Margin="0,10,0,10"/>
                             
@@ -3436,25 +3462,28 @@
                                             <TextBlock Text="Кол-во повесов:" Height="25" Foreground="White" FontSize="20"/>
                                         </DockPanel>
 
+                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Text="Карта" Height="25" Foreground="White" FontSize="20"/>
+                                        </DockPanel>
+
                                         <DockPanel Margin="50,15,0,10" HorizontalAlignment="Left">
                                             <TextBlock Text="Кол-во оставшихся генераторов:" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="20"/>
                                         </DockPanel>
-
-
+                                       
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="1" Grid.Row="1">
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                             <DatePicker Width="150" Height="25" 
-                                                        SelectedDate="{Binding SelectedDateTimeMatch}"
+                                                        SelectedDate="{Binding SelectedDateTimeGameMatch}"
                                                         HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                            <DatePicker Width="150" Height="25" 
-                                                        SelectedDate="{Binding SelectedDurationMatch}"
-                                                        HorizontalAlignment="Left"/>
+                                            <TextBlock Width="150" Height="25" 
+                                                       Text="{Binding DurationMatch}"
+                                                       HorizontalAlignment="Left"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -3471,6 +3500,17 @@
                                                      FontSize="17" 
                                                      HorizontalAlignment="Left" 
                                                      TextAlignment="Center"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                            <ComboBox Width="150" Height="25"
+                                                      ItemsSource="{Binding MapList}"
+                                                      SelectedItem="{Binding SelectedMap}"
+                                                      IsEditable="True"
+                                                      IsTextSearchEnabled="True"
+                                                      DisplayMemberPath="MapName" 
+                                                      Style="{DynamicResource ComboBoxStyleApp}"  
+                                                      FontSize="16" Foreground="Black"/>
                                         </DockPanel>
 
                                         <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -3540,6 +3580,7 @@
                                             <ComboBox Width="150" Height="25" 
                                                       ItemsSource="{Binding PatchList}"
                                                       SelectedItem="{Binding SelectedPatch}"
+                                                      SelectedIndex="0"
                                                       DisplayMemberPath="PatchNumber"
                                                       HorizontalAlignment="Left"/>
                                         </DockPanel>
@@ -3548,6 +3589,7 @@
                                             <ComboBox Width="150" Height="25" 
                                                       ItemsSource="{Binding GameModeList}"
                                                       SelectedItem="{Binding SelectedGameMode}"
+                                                      SelectedIndex="0"
                                                       DisplayMemberPath="GameModeName"
                                                       HorizontalAlignment="Left"/>
                                         </DockPanel>
@@ -3564,6 +3606,7 @@
                                             <ComboBox Width="150" Height="25" 
                                                       ItemsSource="{Binding WhoPlacedMapList}"
                                                       SelectedItem="{Binding SelectedWhoPlacedMap}"
+                                                      SelectedIndex="0"
                                                       DisplayMemberPath="WhoPlacedMapName"
                                                       HorizontalAlignment="Left"/>
                                         </DockPanel>
@@ -3572,6 +3615,7 @@
                                             <ComboBox Width="150" Height="25" 
                                                       ItemsSource="{Binding WhoPlacedMapList}"
                                                       SelectedItem="{Binding SelectedWhoPlacedMapWin}"
+                                                      SelectedIndex="0"
                                                       DisplayMemberPath="WhoPlacedMapName"
                                                       HorizontalAlignment="Left"/>
                                         </DockPanel>
@@ -3607,22 +3651,23 @@
                             <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,0"/>
                             
                             <!--#endregion-->
-                            
-                            <!--#endregion-->
-                            
+                                                      
                             <Separator Grid.Row="2" Grid.ColumnSpan="2" Height="5" VerticalAlignment="Bottom" Margin="0,10,0,0"/>
                             
                         </StackPanel>
                     </ScrollViewer>
                 </Border>
                 
+                <!--#endregion-->
+
+                <!--#endregion-->
+                
                 <Border Grid.Column="2" Grid.Row="2" Background="Gray" CornerRadius="10" Margin="3">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Button Content="Сохранить" Command="{Binding LoadImageCommand}" Width="150" Height="30" FontSize="20"/>
+                        <Button Content="Сохранить" Command="{Binding AddMatchCommand}" Width="150" Height="30" FontSize="20"/>
                     </StackPanel>
                 </Border>
 
-                <!--#endregion-->
 
             </Grid>
         </Grid>
