@@ -1,6 +1,10 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
+using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow;
 using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.ModalWindow;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
@@ -104,25 +108,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         #endregion
 
-        public MainWindowViewModel()
-        {
-            SetTitle();
-            SetVisibility();
-        }
-
-        #region Свойства
-
-
-        #endregion
-
-        #region Переменные
-
-        #endregion
-
-        #region Команды
-
-        #endregion
-
         #region Команды для открытие Window
 
         private RelayCommand _openErrorWindowCommand;
@@ -166,7 +151,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         #endregion
 
-        #region Методы
+        #region Методы для открытие Window
 
         private static void OpenErrorWindow(string error)
         {
@@ -180,7 +165,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             notification.ShowDialog();
         }
 
-        private static void OpenAddMatchWindow()
+        private void OpenAddMatchWindow()
         {
             AddMatchWindow addMatchWindow = new AddMatchWindow();
             addMatchWindow.Show();
@@ -239,25 +224,111 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             AddItemWindow addItemWindow = new AddItemWindow();
             addItemWindow.ShowDialog();
         }
-        
+
         private static void OpenAddAdditionalDataWindow()
         {
             AddAdditionalDataWindow addAdditionalDataWindow = new AddAdditionalDataWindow();
             addAdditionalDataWindow.ShowDialog();
-        }    
+        }
 
         private void SetTitle()
         {
             Titel = "Аналитика статистики";
         }
 
-        /// <summary>
-        /// Устанавливает свойство Visibility у кнопки закрытие приложение
-        /// </summary>           
-        private void SetVisibility()
+        #endregion  
+
+        public MainWindowViewModel()
         {
-            MyControlVisibility = Visibility.Visible;
+            GameMatchList = [];
+            SetTitle();
+            GetGameStatisticData();
         }
+
+        #region Матчи Киллера
+
+        #region Колекции 
+
+        public ObservableCollection<GameStatistic> GameMatchList { get; set; }
+
+        #endregion
+
+        #region Команды
+
+        private RelayCommand _updateMatchCommand;
+        public RelayCommand UpdateMatchCommand { get => _updateMatchCommand ??= new(obj => { GetGameStatisticData(); }); }
+
+        #endregion
+
+        #region Методы Получение данных
+
+        private void GetGameStatisticData()
+        {
+            new Thread(() =>
+            {
+                using (MasterAnalyticsDeadByDaylightDbContext context = new())
+                {
+                    var games = 
+                    context.GameStatistics
+      
+                    .Include(killerInfo => killerInfo.IdKillerNavigation)
+                    .ThenInclude(killer => killer.IdKillerNavigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdPerk1Navigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdPerk2Navigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdPerk3Navigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdPerk4Navigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdAddon1Navigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdAddon2Navigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdAssociationNavigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdPlatformNavigation)
+
+                    .Include(killer => killer.IdKillerNavigation)
+                    .ThenInclude(KillerPerk => KillerPerk.IdKillerOfferingNavigation)
+
+                    .Include(survivor => survivor.IdSurvivors1Navigation)
+                    .ThenInclude(survivor => survivor.IdSurvivorNavigation)
+
+                    .Include(survivor => survivor.IdSurvivors2Navigation)
+                    .ThenInclude(survivor => survivor.IdSurvivorNavigation)
+
+                    .Include(survivor => survivor.IdSurvivors3Navigation)
+                    .ThenInclude(survivor => survivor.IdSurvivorNavigation)
+
+                    .Include(survivor => survivor.IdSurvivors4Navigation)
+                    .ThenInclude(survivor => survivor.IdSurvivorNavigation)
+
+                    .ToList();
+  
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        GameMatchList.Clear();
+                        foreach (var entity in games)
+                        {
+                            GameMatchList.Add(entity);
+                        }
+                    });
+                }
+            }).Start();
+        }
+
+        #endregion
+
 
         #endregion
     }

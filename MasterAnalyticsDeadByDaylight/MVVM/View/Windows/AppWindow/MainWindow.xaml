@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight"
-        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:fa="http://schemas.fontawesome.com/icons/" 
+        xmlns:viewmodel="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
@@ -18,7 +20,7 @@
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
-        
+
         <!--#region Стили для кнопок в строке заголовка -->
         <Style x:Key="CaptionButtonStyle" TargetType="Button">
             <Setter Property="Template">
@@ -56,7 +58,7 @@
             <Setter Property="Content" Value="&#xE106;"/>
         </Style>
         <!--#endregion-->
-        
+
     </Window.Resources>
 
     <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
@@ -169,7 +171,7 @@
                         <MenuItem Header="Добавить доп. данные" 
                                   Command="{Binding OpenAdditionalDataWindowCommand}"
                                   Style="{DynamicResource MenuItemStyle}"/>
-                        
+
                         <Separator/>
 
                         <MenuItem Header="Выход из приложение" 
@@ -205,8 +207,7 @@
 
                 </Menu>
                 <!--#endregion-->
-                
-                
+
                 <!--Вариант с TabControl-->
                 <TabControl Visibility="Visible" Grid.Row="1" TabStripPlacement="Left" Background="#FF282C34" BorderBrush="#FF282C34" Margin="5,10,0,0">
 
@@ -222,6 +223,7 @@
                         <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
 
                             <!--#region Матчи -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -229,12 +231,102 @@
                                         <TextBlock Text="Матчи" Foreground="White" Margin="10,0,0,0"/>
                                     </DockPanel>
                                 </TabItem.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <Image Source="D:\Портреты килеров\15_Чума.png"/>
+                                    <Button Content="Обновить данные" Command="{Binding UpdateMatchCommand}"/>
+
+                                    <GridSplitter Grid.Column="0"
+                                                  Grid.Row="1"
+                                                  Width="4"
+                                                  Cursor="SizeWE"
+                                                  ShowsPreview="False"/>
+
+                                    <DataGrid Grid.Column="0" Grid.Row="1" Margin="10" 
+                                              ItemsSource="{Binding GameMatchList}" d:ItemsSource="{d:SampleData ItemCount=5}" 
+                                              AutoGenerateColumns="False"
+                                              CanUserSortColumns="True"
+                                              ScrollViewer.CanContentScroll="False">
+                                        <DataGrid.Columns>
+
+                                            <DataGridTemplateColumn Header="Дата и время игры" CanUserSort="True">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <TextBlock Text="Дата сыгранной игры" Margin="0,0,0,15" />
+                                                            <TextBlock Text="{Binding DateTimeMatch, StringFormat='yyy:MM:dd'}" Margin="0,0,0,15" />
+                                                            <TextBlock Text="Время игры" Margin="0,0,0,15" />
+                                                            <TextBlock Text="{Binding GameTimeMatch}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTemplateColumn Header="Убийца" CanUserSort="False">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <Image Source="{Binding IdKillerNavigation.IdKillerNavigation.KillerImage}" Width="100" Height="100" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding IdKillerNavigation.IdKillerNavigation.KillerName}" HorizontalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTemplateColumn Header="Выжившие" CanUserSort="False">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding IdSurvivors1Navigation.IdSurvivorNavigation.SurvivorName}"/>
+                                                            <TextBlock Text="{Binding IdSurvivors2Navigation.IdSurvivorNavigation.SurvivorName}" />
+                                                            <TextBlock Text="{Binding IdSurvivors3Navigation.IdSurvivorNavigation.SurvivorName}" />
+                                                            <TextBlock Text="{Binding IdSurvivors4Navigation.IdSurvivorNavigation.SurvivorName}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <!--<ListView ItemsSource="{Binding GameMatchList}" d:ItemsSource="{d:SampleData ItemCount=5}"
+                                              Grid.Column="0" Grid.Row="1" Margin="10">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="{Binding IdKillerNavigation.IdKillerNavigation.KillerImage}" Width="100" Height="100"/>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding IdKillerNavigation.IdKillerNavigation.KillerName}"/>
+                                                        <TextBlock Text="{Binding IdKillerNavigation.IdPerk1Navigation.PerkName}"/>
+                                                        <TextBlock Text="{Binding IdKillerNavigation.IdAddon1Navigation.AddonName}"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="Убийств: "/>
+                                                            <TextBlock Text="{Binding CountKills}"/>
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="Повесов: "/>
+                                                            <TextBlock Text="{Binding CountHooks}"/>
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>-->
+
+                                </Grid>
                             </TabItem>
+
                             <!--#endregion-->
 
                             <!--#region Убийцы -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -245,9 +337,11 @@
 
                                 <Image Source="D:\Портреты килеров\9_Канибал.png"/>
                             </TabItem>
+
                             <!--#endregion-->
 
                             <!--#region Карты -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -258,9 +352,11 @@
 
                                 <Image Source="D:\Портреты килеров\29_Кукловод.png"/>
                             </TabItem>
+
                             <!--#endregion-->
 
                             <!--#region Билды (Пикрейт билдов) -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -271,6 +367,7 @@
 
                                 <Image Source="D:\Портреты килеров\5_Тень.png"/>
                             </TabItem>
+
                             <!--#endregion-->
 
                         </TabControl>
@@ -279,6 +376,7 @@
                     <!--#endregion-->
 
                     <!--#region "Информация за роль Выживших"-->
+
                     <TabItem Style="{DynamicResource TabItemLeftStyle}" Width="120" Height="120">
                         <TabItem.Header>
                             <StackPanel>
@@ -291,6 +389,7 @@
                         <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
 
                             <!--#region Матчи -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -301,9 +400,11 @@
 
 
                             </TabItem>
+
                             <!--#endregion-->
 
                             <!--#region Выжившие -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -314,9 +415,11 @@
 
 
                             </TabItem>
+
                             <!--#endregion-->
 
                             <!--#region Карты -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -327,9 +430,11 @@
 
 
                             </TabItem>
+
                             <!--#endregion-->
 
                             <!--#region Билды (Пикрейт билдов) -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -340,6 +445,7 @@
 
 
                             </TabItem>
+
                             <!--#endregion-->
 
                         </TabControl>
@@ -359,7 +465,8 @@
 
                         <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
 
-                            <!--#region Рандомайзер для Убийц -->                            
+                            <!--#region Рандомайзер для Убийц -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -370,9 +477,11 @@
 
 
                             </TabItem>
+
                             <!--#endregion-->
 
                             <!--#region Рандомайзер для Выживших -->
+
                             <TabItem Style="{DynamicResource TabItemTopStyle}">
                                 <TabItem.Header>
                                     <DockPanel>
@@ -383,11 +492,13 @@
 
 
                             </TabItem>
+
                             <!--#endregion-->
 
                         </TabControl>
 
                     </TabItem>
+
                     <!--#endregion-->
 
                 </TabControl>

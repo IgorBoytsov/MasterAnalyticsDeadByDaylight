@@ -9,11 +9,15 @@ public partial class Offering
 
     public int IdRole { get; set; }
 
+    public int? IdRarity { get; set; }
+
     public string OfferingName { get; set; }
 
     public byte[] OfferingImage { get; set; }
 
     public string OfferingDescription { get; set; }
+
+    public virtual Rarity IdRarityNavigation { get; set; }
 
     public virtual Role IdRoleNavigation { get; set; }
 

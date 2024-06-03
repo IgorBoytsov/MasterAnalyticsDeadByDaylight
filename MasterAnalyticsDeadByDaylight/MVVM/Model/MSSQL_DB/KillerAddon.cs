@@ -9,6 +9,8 @@ public partial class KillerAddon
 
     public int IdKiller { get; set; }
 
+    public int? IdRarity { get; set; }
+
     public string AddonName { get; set; }
 
     public byte[] AddonImage { get; set; }
@@ -16,6 +18,8 @@ public partial class KillerAddon
     public string AddonDescription { get; set; }
 
     public virtual Killer IdKillerNavigation { get; set; }
+
+    public virtual Rarity IdRarityNavigation { get; set; }
 
     public virtual ICollection<KillerInfo> KillerInfoIdAddon1Navigations { get; set; } = new List<KillerInfo>();
 

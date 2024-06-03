@@ -95,15 +95,30 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             }
         }
 
+        public ObservableCollection<Rarity> RarityList { get; set; }
+
+        private Rarity _comboBoxSelectedRarity;
+        public Rarity ComboBoxSelectedRarity
+        {
+            get => _comboBoxSelectedRarity;
+            set
+            {
+                _comboBoxSelectedRarity = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         public AddOfferingWindowViewModel() 
         {
             RoleList = new ObservableCollection<Role>();
             OfferingList = new ObservableCollection<Offering>();
+            RarityList = new ObservableCollection<Rarity>();
 
             GetOfferingData();
             GetRoleData();
+            GetRaritiData();
 
             SelectedRole = RoleList.FirstOrDefault();
         }
@@ -130,13 +145,35 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (SelectedRole == null) { return; }
 
-                var offerings = await context.Offerings.Where(off => off.IdRole == SelectedRole.IdRole).ToListAsync();             
-                foreach (var item in offerings)
+                List<Offering> offering = new();
+
+                if (SelectedRole == null)
+                {
+                    OfferingList.Clear();
+                }
+                else
+                {
+                    offering = await context.Offerings.Include(rarity => rarity.IdRarityNavigation).Where(ia => ia.IdRole == SelectedRole.IdRole).ToListAsync();
+                }
+
+                OfferingList.Clear();
+
+                foreach (var item in offering)
                 {
                     OfferingList.Add(item);
                 }
+
+                //if (SelectedRole == null) 
+                //{
+                //    return;
+                //}
+
+                //var offerings = await context.Offerings.Include(offering => offering.IdRarityNavigation).Where(off => off.IdRole == SelectedRole.IdRole).ToListAsync();             
+                //foreach (var item in offerings)
+                //{
+                //    OfferingList.Add(item);
+                //}
             }
         }
 
@@ -153,9 +190,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             }
         }
 
+        private async void GetRaritiData()
+        {
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                var rarities = await context.Rarities.ToListAsync();
+
+                foreach (var item in rarities)
+                {
+                    RarityList.Add(item);
+                }
+            }
+        }
+
         private void AddOffering()
         {
-            var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingNameTextBox, OfferingDescription = OfferingDescriptionTextBox};
+            var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingNameTextBox, OfferingDescription = OfferingDescriptionTextBox, IdRarity = ComboBoxSelectedRarity.IdRarity};
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -212,6 +262,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         entityToUpdate.OfferingDescription = OfferingDescriptionTextBox;
                         entityToUpdate.OfferingImage = ImageOffering;
                         entityToUpdate.IdRole = SelectedRole.IdRole;
+                        entityToUpdate.IdRarity = ComboBoxSelectedRarity.IdRarity;
                         context.SaveChanges();
                         OfferingList.Clear();
                         GetOfferingData();

@@ -86,17 +86,33 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
             });
         }
 
-        public static async Task<BitmapImage> GetResultMatchImageAsync(string ImagePath)
+        public static async Task<(BitmapImage Killer, BitmapImage FirstSurvivor, BitmapImage SecondSurvivor, BitmapImage ThirdSurvivor, BitmapImage FourthSurvivor, BitmapImage ResultMatchImage)> GetResultMatchImageAsync(string ImagePath)
         {
-            Bitmap bitmap = new(ImagePath);
+            Bitmap ResultMatch = new(ImagePath);
 
-            bitmap = CropImage(bitmap, 0, 0, 1200, 1200);
+            Bitmap Killer = new(ImagePath);
+            Bitmap FirstSurvivor = new(ImagePath);
+            Bitmap SecondSurvivor = new(ImagePath);
+            Bitmap ThirdSurvivor = new(ImagePath);
+            Bitmap FourthSurvivor = new(ImagePath);
+            Bitmap ResultMatchImage = new(ImagePath);
 
-            BitmapImage bitmapImage = new();
+            Killer = CropImage(ResultMatch, 100, 900, 920, 150);
+            FirstSurvivor = CropImage(ResultMatch, 100, 400, 920, 150);
+            SecondSurvivor = CropImage(ResultMatch, 100, 520, 920, 150);
+            ThirdSurvivor = CropImage(ResultMatch, 100, 650, 920, 150);
+            FourthSurvivor = CropImage(ResultMatch, 100, 770, 920, 150);
+            ResultMatchImage = CropImage(ResultMatch, 0, 0, 1100, 1300);
 
             return await Task.Run(() =>
             {
-                return GetBitmapImage(bitmap);
+                return 
+                (GetBitmapImage(Killer), 
+                GetBitmapImage(FirstSurvivor), 
+                GetBitmapImage(SecondSurvivor), 
+                GetBitmapImage(ThirdSurvivor), 
+                GetBitmapImage(FourthSurvivor),
+                GetBitmapImage(ResultMatchImage));
             });
         }
 

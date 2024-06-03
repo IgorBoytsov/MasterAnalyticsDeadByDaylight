@@ -43,6 +43,8 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
     public virtual DbSet<PlayerAssociation> PlayerAssociations { get; set; }
 
+    public virtual DbSet<Rarity> Rarities { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Survivor> Survivors { get; set; }
@@ -175,12 +177,17 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
             entity.Property(e => e.IdItemAddon).HasColumnName("id_ItemAddon");
             entity.Property(e => e.IdItem).HasColumnName("id_item");
+            entity.Property(e => e.IdRarity).HasColumnName("id_Rarity");
             entity.Property(e => e.ItemAddonName).IsRequired();
 
             entity.HasOne(d => d.IdItemNavigation).WithMany(p => p.ItemAddons)
                 .HasForeignKey(d => d.IdItem)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ItemAddon_Item");
+
+            entity.HasOne(d => d.IdRarityNavigation).WithMany(p => p.ItemAddons)
+                .HasForeignKey(d => d.IdRarity)
+                .HasConstraintName("FK_ItemAddon_Rarity");
         });
 
         modelBuilder.Entity<Killer>(entity =>
@@ -202,11 +209,16 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.Property(e => e.IdKillerAddon).HasColumnName("id_KillerAddon");
             entity.Property(e => e.AddonName).IsRequired();
             entity.Property(e => e.IdKiller).HasColumnName("id_Killer");
+            entity.Property(e => e.IdRarity).HasColumnName("id_Rarity");
 
             entity.HasOne(d => d.IdKillerNavigation).WithMany(p => p.KillerAddons)
                 .HasForeignKey(d => d.IdKiller)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_KillerAddon_Killer");
+
+            entity.HasOne(d => d.IdRarityNavigation).WithMany(p => p.KillerAddons)
+                .HasForeignKey(d => d.IdRarity)
+                .HasConstraintName("FK_KillerAddon_Rarity");
         });
 
         modelBuilder.Entity<KillerInfo>(entity =>
@@ -304,8 +316,13 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.ToTable("Offering");
 
             entity.Property(e => e.IdOffering).HasColumnName("id_Offering");
+            entity.Property(e => e.IdRarity).HasColumnName("id_Rarity");
             entity.Property(e => e.IdRole).HasColumnName("id_Role");
             entity.Property(e => e.OfferingName).IsRequired();
+
+            entity.HasOne(d => d.IdRarityNavigation).WithMany(p => p.Offerings)
+                .HasForeignKey(d => d.IdRarity)
+                .HasConstraintName("FK_Offering_Rarity");
 
             entity.HasOne(d => d.IdRoleNavigation).WithMany(p => p.Offerings)
                 .HasForeignKey(d => d.IdRole)
@@ -345,6 +362,18 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
             entity.Property(e => e.IdPlayerAssociation).HasColumnName("id_PlayerAssociation");
             entity.Property(e => e.PlayerAssociationName).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Rarity>(entity =>
+        {
+            entity.HasKey(e => e.IdRarity);
+
+            entity.ToTable("Rarity");
+
+            entity.Property(e => e.IdRarity).HasColumnName("idRarity");
+            entity.Property(e => e.RarityName)
+                .IsRequired()
+                .HasMaxLength(50);
         });
 
         modelBuilder.Entity<Role>(entity =>

@@ -9,6 +9,8 @@ public partial class ItemAddon
 
     public int IdItem { get; set; }
 
+    public int? IdRarity { get; set; }
+
     public string ItemAddonName { get; set; }
 
     public byte[] ItemAddonImage { get; set; }
@@ -16,6 +18,8 @@ public partial class ItemAddon
     public string ItemAddonDescription { get; set; }
 
     public virtual Item IdItemNavigation { get; set; }
+
+    public virtual Rarity IdRarityNavigation { get; set; }
 
     public virtual ICollection<SurvivorInfo> SurvivorInfoIdAddon1Navigations { get; set; } = new List<SurvivorInfo>();
 

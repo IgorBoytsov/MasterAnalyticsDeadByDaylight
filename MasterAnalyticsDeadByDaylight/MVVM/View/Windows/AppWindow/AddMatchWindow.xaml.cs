@@ -1,5 +1,6 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow

@@ -10,7 +10,7 @@
         Style="{StaticResource WindowStyle}"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Title="Добавить предмет" Height="550" Width="720">
+        Title="Добавить предмет" Height="670" Width="720">
 
     <Window.Resources>
 
@@ -87,7 +87,7 @@
 
             <ListView  Background="#FF282C34" BorderThickness="0"
                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                       ItemsSource="{Binding ItemList}" SelectedItem="{Binding SelectedItem}">
+                       ItemsSource="{Binding ItemList}" SelectedItem="{Binding SelectedItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -229,15 +229,18 @@
 
             <ListView  Background="#FF282C34" BorderThickness="0"
                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                       ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedItemAddon}">
+                       ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=5}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="White" Height="40" BorderThickness="1">
+                        <Border BorderBrush="White" Height="60" BorderThickness="1">
                             <StackPanel Orientation="Horizontal" Margin="10">
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding ItemAddonName}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding IdRarityNavigation.RarityName}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>
@@ -268,6 +271,14 @@
             <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
                 <ComboBox ItemsSource="{Binding ItemList}" DisplayMemberPath="ItemName"
                           SelectedItem="{Binding ComboBoxSelectedItem}"
+                          Style="{DynamicResource ComboBoxStyleApp}" 
+                          Foreground="White"
+                          Width="150" Height="25" FontSize="16" Margin="0,0,0,20"/>
+
+                <TextBlock Text="Выбрать качество" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+
+                <ComboBox ItemsSource="{Binding RarityList}" DisplayMemberPath="RarityName"
+                          SelectedItem="{Binding ComboBoxSelectedRarity}"
                           Style="{DynamicResource ComboBoxStyleApp}" 
                           Foreground="White"
                           Width="150" Height="25" FontSize="16"/>

@@ -134,15 +134,30 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             }
         }
 
+        public ObservableCollection<Rarity> RarityList {  get; set; }
+
+        private Rarity _comboBoxSelectedRarity;
+        public Rarity ComboBoxSelectedRarity
+        {
+            get => _comboBoxSelectedRarity;
+            set
+            {
+                _comboBoxSelectedRarity = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         public AddItemWindowViewModel() 
         { 
             ItemList = new ObservableCollection<Item>();
             ItemAddonList = new ObservableCollection<ItemAddon>();
+            RarityList = new ObservableCollection<Rarity>();
 
             GetItemData();
             GetItemAddonData();
+            GetRarityData();
         }
 
         #region Команды
@@ -187,6 +202,20 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 foreach (var item in items)
                 {
                     ItemList.Add(item);
+                }
+            }
+        }
+
+        private async void GetRarityData()
+        {
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                var items = await context.Rarities.ToListAsync();
+                ItemList.Clear();
+
+                foreach (var item in items)
+                {
+                    RarityList.Add(item);
                 }
             }
         }
@@ -284,7 +313,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 }
                 else
                 {
-                    Addons = await context.ItemAddons.Where(ia => ia.IdItem == SelectedItem.IdItem).ToListAsync();
+                    Addons = await context.ItemAddons.Include(rarity => rarity.IdRarityNavigation).Where(ia => ia.IdItem == SelectedItem.IdItem).ToListAsync();
                 }
 
                 ItemAddonList.Clear();
@@ -298,7 +327,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void AddItemAddon()
         {
-            var newItemAddon = new ItemAddon() { IdItem = ComboBoxSelectedItem.IdItem, ItemAddonName = TextBoxItemAddonName, ItemAddonDescription = TextBoxItemAddonDescription, ItemAddonImage = ImageItemAddon};
+            var newItemAddon = new ItemAddon() { IdItem = ComboBoxSelectedItem.IdItem, ItemAddonName = TextBoxItemAddonName, ItemAddonDescription = TextBoxItemAddonDescription, ItemAddonImage = ImageItemAddon, IdRarity = ComboBoxSelectedRarity.IdRarity};
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -342,6 +371,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         entityToUpdate.ItemAddonName = TextBoxItemAddonName;
                         entityToUpdate.ItemAddonDescription = TextBoxItemAddonDescription;
                         entityToUpdate.ItemAddonImage = ImageItemAddon;
+                        entityToUpdate.IdRarity = ComboBoxSelectedRarity.IdRarity;
                         context.SaveChanges();
 
                         GetItemAddonData();
