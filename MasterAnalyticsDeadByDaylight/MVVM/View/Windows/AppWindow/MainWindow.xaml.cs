@@ -1,5 +1,6 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow;
-using MasterAnalyticsDeadByDaylight.MVVM.ViewModel;
+using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation;
 using System.Windows;
 using System.Windows.Navigation;
@@ -15,7 +16,7 @@ namespace MasterAnalyticsDeadByDaylight
         {
             InitializeComponent();
             StateChanged += MainWindowStateChangeRaised;
-            DataContext = new MainWindowViewModel();
+            DataContext = new MainWindowViewModel(new PageNavigationService(MainFrame));
         }
 
         private void MainWindowStateChangeRaised(object sender, EventArgs e)

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     class AddAdditionalDataWindowViewModel : BaseViewModel
     {
@@ -291,19 +291,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private RelayCommand _updateGameEvenItemCommand;
         public RelayCommand UpdateGameEventItemCommand { get => _updateGameEvenItemCommand ??= new(obj => UpdateGameEventItem()); }
-        
+
         private RelayCommand _updatePlatformItemCommand;
         public RelayCommand UpdatePlatformItemCommand { get => _updatePlatformItemCommand ??= new(obj => UpdatePlatformItem()); }
-        
+
         private RelayCommand _updatePlayerAssociationItemCommand;
         public RelayCommand UpdatePlayerAssociationItemCommand { get => _updatePlayerAssociationItemCommand ??= new(obj => UpdatePlayerAssociationItem()); }
-        
+
         private RelayCommand _updatePatchItemCommand;
         public RelayCommand UpdatePatchItemCommand { get => _updatePatchItemCommand ??= new(obj => UpdatePatchItem()); }
-        
+
         private RelayCommand _updateTypeDeathItemCommand;
         public RelayCommand UpdateTypeDeathItemCommand { get => _updateTypeDeathItemCommand ??= new(obj => UpdateTypeDeathItem()); }
-        
+
         private RelayCommand _updateRoleItemCommand;
         public RelayCommand UpdateRoleItemCommand { get => _updateRoleItemCommand ??= new(obj => UpdateRoleItem()); }
 
@@ -605,7 +605,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         return;
                     }
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedGameModeItem.GameModeName} на {TextBoxGameModeName} ?", 
+                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedGameModeItem.GameModeName} на {TextBoxGameModeName} ?",
                         "Предупреждение",
                         MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
@@ -614,7 +614,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         GameModeList.Clear();
                         GetGameModeData();
                         SelectedGameModeItem = null;
-                        TextBoxGameModeName = string.Empty;                  }       
+                        TextBoxGameModeName = string.Empty;
+                    }
                 }
                 else { MessageBox.Show("Нечего обновлять"); }
             }
@@ -654,7 +655,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 else { MessageBox.Show("Нечего обновлять"); }
             }
         }
-        
+
         private void UpdatePlatformItem()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -689,7 +690,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 else { MessageBox.Show("Нечего обновлять"); }
             }
         }
-        
+
         private void UpdatePlayerAssociationItem()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -760,7 +761,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 else { MessageBox.Show("Нечего обновлять"); }
             }
         }
-        
+
         private void UpdateTypeDeathItem()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -795,7 +796,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 else { MessageBox.Show("Нечего обновлять"); }
             }
         }
-        
+
         private void UpdateRoleItem()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -835,7 +836,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         #region Методы удаления данных из БД
 
         private void DeleteGameModeItem()
-        {          
+        {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var entityToDelete = context.GameModes.Find(SelectedGameModeItem.IdGameMode);
@@ -845,7 +846,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     context.SaveChanges();
                     GameModeList.Clear();
                     GetGameModeData();
-                }             
+                }
             }
         }
 
@@ -869,7 +870,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var entityToDelete = context.Platforms.Find(SelectedPlatformItem.IdPlatform);
-                if (entityToDelete !=null)
+                if (entityToDelete != null)
                 {
                     context.Remove(entityToDelete);
                     context.SaveChanges();

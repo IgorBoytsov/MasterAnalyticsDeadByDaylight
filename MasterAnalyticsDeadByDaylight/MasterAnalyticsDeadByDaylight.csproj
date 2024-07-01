@@ -30,10 +30,8 @@
 
   <ItemGroup>
     <Folder Include="MVVM\Model\MSSQL_DB\" />
-    <Folder Include="MVVM\View\Pages\" />
     <Folder Include="Services\DialogService\" />
     <Folder Include="Utils\ValueConverters\" />
-    <Folder Include="Utils\SearchDataForImage\" />
   </ItemGroup>
 
   <ItemGroup>

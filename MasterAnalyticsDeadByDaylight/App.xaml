@@ -11,6 +11,8 @@
                 <ResourceDictionary Source="MVVM\View\Styles\MenuStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\ScrollViewerStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\TabControlItemAdditionalDataWindow.xaml"/>
+                <ResourceDictionary Source="MVVM\View\Styles\TabControlItemStatPage.xaml"/>
+                <ResourceDictionary Source="MVVM\View\Styles\TabControlStatPage.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\TabControlStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\TextBlockStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\TextBoxStyle.xaml"/>

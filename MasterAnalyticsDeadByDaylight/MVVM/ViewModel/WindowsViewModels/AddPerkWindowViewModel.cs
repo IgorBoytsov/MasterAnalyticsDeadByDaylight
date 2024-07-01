@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     public class AddPerkWindowViewModel : BaseViewModel
     {
@@ -93,7 +93,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
-        
+
         private string _perkNameTextBox;
         public string PerkNameTextBox
         {
@@ -118,7 +118,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         #endregion
 
-        public AddPerkWindowViewModel() 
+        public AddPerkWindowViewModel()
         {
             KillerList = new ObservableCollection<Killer>();
             KillerPerkList = new ObservableCollection<KillerPerk>();
@@ -138,13 +138,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private RelayCommand _addPerkCommand;
         public RelayCommand AddPerkCommand { get => _addPerkCommand ??= new(obj => { AddPerk(); }); }
-     
+
         private RelayCommand _deletePerkCommand;
         public RelayCommand DeletePerkCommand { get => _deletePerkCommand ??= new(obj => { DeletePerk(); }); }
 
         private RelayCommand _updatePerkCommand;
         public RelayCommand UpdatePerkCommand { get => _updatePerkCommand ??= new(obj => { UpdatePerk(); }); }
-        
+
         private RelayCommand _selectImagePerkCommand;
         public RelayCommand SelectImagePerkCommand { get => _selectImagePerkCommand ??= new(obj => { SelectImagePerk(); }); }
 
@@ -180,7 +180,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 }
 
                 ComboBoxCharacterIsActive = true;
-            }           
+            }
         }
 
         private void GetPerkData()
@@ -191,17 +191,17 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
                 if (SelectedRole == null) { return; }
 
-                else if (SelectedRole.RoleName == "Убийца") 
+                else if (SelectedRole.RoleName == "Убийца")
                 {
                     PerkList.Clear();
-                    GetKillerPerkData();                   
+                    GetKillerPerkData();
                 }
 
-                else if (SelectedRole.RoleName == "Выживший") 
+                else if (SelectedRole.RoleName == "Выживший")
                 {
                     PerkList.Clear();
                     GetSurvivorPerkData();
-                }          
+                }
             }
         }
 
@@ -216,9 +216,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     RoleList.Add(item);
                 }
-            } 
+            }
         }
-        
+
         private async void GetKillerData()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -251,7 +251,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (SelectedCharacter == null) 
+                if (SelectedCharacter == null)
                 {
                     var items = await context.KillerPerks.ToListAsync();
 
@@ -286,15 +286,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
                         PerkList.Add(perks);
                     }
-                }             
+                }
             }
         }
-        
+
         private async void GetSurvivorPerkData()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (SelectedCharacter == null) 
+                if (SelectedCharacter == null)
                 {
                     var items = await context.SurvivorPerks.ToListAsync();
                     foreach (var item in items)
@@ -327,7 +327,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
                         PerkList.Add(perks);
                     }
-                }              
+                }
             }
         }
 
@@ -337,7 +337,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void AddPerk()
         {
-            if (SelectedRole == null){ MessageBox.Show("Вы не выбрали игровую роль"); return; }
+            if (SelectedRole == null) { MessageBox.Show("Вы не выбрали игровую роль"); return; }
             if (SelectedCharacter == null) { MessageBox.Show("Вы не выбрали персонажа"); return; }
             if (SelectedRole.RoleName == "Убийца") { AddKillerPerk(); }
             if (SelectedRole.RoleName == "Выживший") { AddSurvivorPerk(); }
@@ -345,7 +345,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void AddSurvivorPerk()
         {
-            var newPerk = new SurvivorPerk() { IdSurvivor = SelectedCharacter.IdCharacter, PerkName = PerkNameTextBox, PerkImage = ImagePerk, PerkDescription = PerkDescriptionTextBox};
+            var newPerk = new SurvivorPerk() { IdSurvivor = SelectedCharacter.IdCharacter, PerkName = PerkNameTextBox, PerkImage = ImagePerk, PerkDescription = PerkDescriptionTextBox };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -370,7 +370,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void AddKillerPerk()
         {
-            var newPerk = new KillerPerk() { IdKiller = SelectedCharacter.IdCharacter, PerkName = PerkNameTextBox, PerkImage = ImagePerk, PerkDescription = PerkDescriptionTextBox};
+            var newPerk = new KillerPerk() { IdKiller = SelectedCharacter.IdCharacter, PerkName = PerkNameTextBox, PerkImage = ImagePerk, PerkDescription = PerkDescriptionTextBox };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -438,8 +438,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         private void UpdatePerk()
         {
             if (SelectedPerk == null) { return; }
-            if (SelectedRole.RoleName == "Общая") { MessageBox.Show("Вы не выбрали роль"); return; } 
-            if (SelectedCharacter == null) { MessageBox.Show("Вы не выбрали персонажа"); return; } 
+            if (SelectedRole.RoleName == "Общая") { MessageBox.Show("Вы не выбрали роль"); return; }
+            if (SelectedCharacter == null) { MessageBox.Show("Вы не выбрали персонажа"); return; }
 
             if (SelectedRole.RoleName == "Убийца") { UpdateKillerPerk(); }
             if (SelectedRole.RoleName == "Выживший") { UpdateSurvivorPerk(); }

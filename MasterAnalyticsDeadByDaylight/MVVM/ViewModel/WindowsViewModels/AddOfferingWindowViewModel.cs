@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     public class AddOfferingWindowViewModel : BaseViewModel
     {
@@ -72,7 +72,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
-     
+
         private string _offeringNameTextBox;
         public string OfferingNameTextBox
         {
@@ -110,7 +110,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         #endregion
 
-        public AddOfferingWindowViewModel() 
+        public AddOfferingWindowViewModel()
         {
             RoleList = new ObservableCollection<Role>();
             OfferingList = new ObservableCollection<Offering>();
@@ -126,7 +126,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         #region Команды
 
         private RelayCommand _addOfferingCommand;
-        public RelayCommand AddOfferingCommand { get => _addOfferingCommand ??= new(obj => { AddOffering(); }); }     
+        public RelayCommand AddOfferingCommand { get => _addOfferingCommand ??= new(obj => { AddOffering(); }); }
 
         private RelayCommand _deleteOfferingCommand;
         public RelayCommand DeleteOfferingCommand { get => _deleteOfferingCommand ??= new(obj => { DeleteOffering(); }); }
@@ -205,7 +205,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void AddOffering()
         {
-            var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingNameTextBox, OfferingDescription = OfferingDescriptionTextBox, IdRarity = ComboBoxSelectedRarity.IdRarity};
+            var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingNameTextBox, OfferingDescription = OfferingDescriptionTextBox, IdRarity = ComboBoxSelectedRarity.IdRarity };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {

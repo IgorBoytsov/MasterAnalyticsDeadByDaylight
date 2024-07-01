@@ -13,13 +13,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     public class AddSurvivorWindowViewModel : BaseViewModel
     {
         #region Свойства
 
-        public ObservableCollection<Survivor> SurvivorList {  get; set; }
+        public ObservableCollection<Survivor> SurvivorList { get; set; }
 
         private Survivor _selectedSurvivorItem;
         public Survivor SelectedSurvivorItem
@@ -122,7 +122,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void SaveSurvivor()
         {
-            var newSurvivor = new Survivor() { SurvivorName = TextBoxSurvivorName, SurvivorImage = ImageSurvivor, SurvivorDescription = TextBoxSurvivorDescription};
+            var newSurvivor = new Survivor() { SurvivorName = TextBoxSurvivorName, SurvivorImage = ImageSurvivor, SurvivorDescription = TextBoxSurvivorDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -141,8 +141,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     TextBoxSurvivorDescription = string.Empty;
                     ImageSurvivor = null;
                     SelectedSurvivorItem = null;
-                }              
-            }  
+                }
+            }
         }
 
         private void UpdateSurvivor()
@@ -190,7 +190,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     GetSurvivorData();
                 }
             }
-            
+
         }
         #endregion
     }

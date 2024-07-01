@@ -7,14 +7,14 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     public class AddKillerWindowViewModel : BaseViewModel
     {
 
         #region Свойства для Киллера
 
-        public ObservableCollection<Killer> KillerList {  get; set; }
+        public ObservableCollection<Killer> KillerList { get; set; }
 
         private Killer _selectedKillerItem;
         public Killer SelectedKillerItem
@@ -31,7 +31,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 //KillerAddonList.Clear();
 
                 TextBoxKillerAddonName = string.Empty;
-                ImageKillerAddon = null;  
+                ImageKillerAddon = null;
                 GetKillerAddonData();
             }
         }
@@ -138,7 +138,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         #endregion
 
-        public AddKillerWindowViewModel() 
+        public AddKillerWindowViewModel()
         {
             KillerList = new ObservableCollection<Killer>();
             KillerAddonList = new ObservableCollection<KillerAddon>();
@@ -153,7 +153,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         public RelayCommand SelectImageKillerCommand { get => _selectImageKillerCommand ??= new(obj => { SelectImageKiller(); }); }
 
         private RelayCommand _selectImageKillerAbilityCommand;
-        public RelayCommand SelectImageKillerAbilityCommand { get => _selectImageKillerAbilityCommand ??= new(obj => { SelectImageKillerAbility();}); }
+        public RelayCommand SelectImageKillerAbilityCommand { get => _selectImageKillerAbilityCommand ??= new(obj => { SelectImageKillerAbility(); }); }
 
         private RelayCommand _selectImageKillerAddonCommand;
         public RelayCommand SelectImageKillerAddonCommand { get => _selectImageKillerAddonCommand ??= new(obj => { SelectImageKillerAddon(); }); }
@@ -306,7 +306,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     KillerList.Clear();
                     GetKillerData();
                 }
-            }            
+            }
         }
 
         private void DeleteKillerAddon()

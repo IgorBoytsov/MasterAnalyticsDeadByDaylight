@@ -1,4 +1,4 @@
-﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel;
+﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using System.Windows;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.ModalWindow

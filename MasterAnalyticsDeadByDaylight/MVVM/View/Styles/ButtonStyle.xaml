@@ -25,4 +25,60 @@
 
         </ControlTemplate.Triggers>
     </ControlTemplate>
+
+    <ControlTemplate TargetType="Button" x:Key="ButtonSideMenu">
+        <Border x:Name="buttonBorder"
+                Width="{TemplateBinding Width}"
+                Height="{TemplateBinding Height}"
+                Background="#2A2A2A"
+                BorderBrush="LightGray"
+                BorderThickness="0,0,0,1">
+
+            <!--<VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="Pressed">
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetName="buttonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="LightGray" Duration="0:0:0.1" />
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Clicked">
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetName="buttonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="Green" Duration="0:0:0.1" />
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>-->
+
+            <ContentControl HorizontalAlignment="Left" 
+                            VerticalAlignment="Center"
+                            Margin="5,0,0,0"
+                            FontSize="16"
+                            Foreground="#F0F1F3"
+                            Content="{TemplateBinding Content}"/>
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="buttonBorder" Property="BorderBrush" Value="#FF9FB0C0"/>
+                <Setter TargetName="buttonBorder" Property="BorderThickness" Value="0,0,0,3"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="true">
+                <Setter TargetName="buttonBorder" Property="BorderBrush" Value="#FF9FB0C0"/>
+                <Setter TargetName="buttonBorder" Property="CornerRadius" Value="20,0,20,0"/>
+                <Setter TargetName="buttonBorder" Property="Background" Value="#FF9FB0C0"/>
+            </Trigger>
+
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="Button" x:Key="ButtonSideMenuStyle">
+        <Setter Property="Width" Value="150"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Margin" Value="0,10,0,0"/>
+    </Style>
 </ResourceDictionary>

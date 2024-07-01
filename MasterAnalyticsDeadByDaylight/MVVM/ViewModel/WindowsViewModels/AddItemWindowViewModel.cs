@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     class AddItemWindowViewModel : BaseViewModel
     {
@@ -134,7 +134,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             }
         }
 
-        public ObservableCollection<Rarity> RarityList {  get; set; }
+        public ObservableCollection<Rarity> RarityList { get; set; }
 
         private Rarity _comboBoxSelectedRarity;
         public Rarity ComboBoxSelectedRarity
@@ -149,8 +149,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         #endregion
 
-        public AddItemWindowViewModel() 
-        { 
+        public AddItemWindowViewModel()
+        {
             ItemList = new ObservableCollection<Item>();
             ItemAddonList = new ObservableCollection<ItemAddon>();
             RarityList = new ObservableCollection<Rarity>();
@@ -222,7 +222,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void AddItem()
         {
-            var newItem = new Item() { ItemName = TextBoxItemName, ItemImage = ImageItem, ItemDescription = TextBoxItemDescription};
+            var newItem = new Item() { ItemName = TextBoxItemName, ItemImage = ImageItem, ItemDescription = TextBoxItemDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -327,7 +327,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void AddItemAddon()
         {
-            var newItemAddon = new ItemAddon() { IdItem = ComboBoxSelectedItem.IdItem, ItemAddonName = TextBoxItemAddonName, ItemAddonDescription = TextBoxItemAddonDescription, ItemAddonImage = ImageItemAddon, IdRarity = ComboBoxSelectedRarity.IdRarity};
+            var newItemAddon = new ItemAddon() { IdItem = ComboBoxSelectedItem.IdItem, ItemAddonName = TextBoxItemAddonName, ItemAddonDescription = TextBoxItemAddonDescription, ItemAddonImage = ImageItemAddon, IdRarity = ComboBoxSelectedRarity.IdRarity };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -409,8 +409,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     ImageItem = ImageHelper.ImageToByteArray(image);
                 }
             }
-        } 
-        
+        }
+
         private void SelectImageItemAddon()
         {
             OpenFileDialog openFileDialog = new() { Filter = "Изображения (*.jpg; *.jpeg; *.png)|*.jpg; *.jpeg; *.png" };

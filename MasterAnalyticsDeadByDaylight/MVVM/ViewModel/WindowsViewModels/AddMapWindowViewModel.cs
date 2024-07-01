@@ -7,7 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     public class AddMapWindowViewModel : BaseViewModel
     {
@@ -71,7 +71,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             {
                 _textBoxSearch = value;
                 SearchMap();
-                OnPropertyChanged();             
+                OnPropertyChanged();
             }
         }
 
@@ -93,7 +93,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private RelayCommand _deleteMapItemCommand;
         public RelayCommand DeleteMapItemCommand { get => _deleteMapItemCommand ??= new(obj => DeleteMap()); }
-        
+
         private RelayCommand _updateMapItemCommand;
         public RelayCommand UpdateMapItemCommand { get => _updateMapItemCommand ??= new(obj => UpdateMap()); }
 
@@ -120,7 +120,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void AddMap()
         {
-            var newMap = new Map { MapName = TextBoxMapName, MapImage = ImageMap, MapDescription = TextBoxMapDescription};
+            var newMap = new Map { MapName = TextBoxMapName, MapImage = ImageMap, MapDescription = TextBoxMapDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {

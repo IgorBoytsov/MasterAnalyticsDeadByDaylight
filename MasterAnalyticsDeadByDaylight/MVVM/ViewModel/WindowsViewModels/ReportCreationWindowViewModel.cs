@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
-    public class HowToUseWindowViewModel : BaseViewModel
+    public class ReportCreationWindowViewModel : BaseViewModel
     {
     }
 }

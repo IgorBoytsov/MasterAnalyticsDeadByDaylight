@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
-    public class NotificationWindowViewModel : BaseViewModel
+    internal class MapPageViewModel
     {
     }
 }

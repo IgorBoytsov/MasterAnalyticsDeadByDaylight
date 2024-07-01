@@ -8,7 +8,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     public class AddMatchWindowViewModel : BaseViewModel
     {
@@ -442,11 +442,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         {
             get => _selectedKillerFirstAddon;
             set
-            {     
+            {
                 if (value != null)
                 {
                     _selectedKillerFirstAddon = value;
-                    SelectedKillerFirstAddonName = value.AddonName;                   
+                    SelectedKillerFirstAddonName = value.AddonName;
                 }
                 else { SelectedKillerFirstAddonName = string.Empty; }
                 OnPropertyChanged();
@@ -462,7 +462,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             get => _selectedKillerSecondAddon;
             set
             {
-                 if (value != null)
+                if (value != null)
                 {
                     _selectedKillerSecondAddon = value;
                     SelectedKillerSecondAddonName = value.AddonName;
@@ -531,7 +531,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedKillerSecondAddonCommand;
-        public RelayCommand SelectedKillerSecondAddonCommand { get => _selectedKillerSecondAddonCommand ??= new(obj => { SelectedKillerSecondAddon = SelectedListViewKillerAddon; });}
+        public RelayCommand SelectedKillerSecondAddonCommand { get => _selectedKillerSecondAddonCommand ??= new(obj => { SelectedKillerSecondAddon = SelectedListViewKillerAddon; }); }
 
         #endregion
 
@@ -787,7 +787,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             get => _firstSurvivorPrestige;
             set
             {
-                _firstSurvivorPrestige = value;
+                if (value > 100 | value < 0)
+                {
+                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                }
+                else
+                {
+                    _firstSurvivorPrestige = value;
+                    OnPropertyChanged();
+                }
+
             }
         }
 
@@ -855,7 +864,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         {
             get => _selectedFirstSurvivorFirstPerk;
             set
-            {               
+            {
                 if (value != null)
                 {
                     _selectedFirstSurvivorFirstPerk = value;
@@ -878,7 +887,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 if (value != null)
                 {
                     _selectedFirstSurvivorSecondPerk = value;
-                    SelectedFirstSurvivorSecondPerkName = value.PerkName; 
+                    SelectedFirstSurvivorSecondPerkName = value.PerkName;
                 }
                 else { SelectedFirstSurvivorSecondPerkName = string.Empty; }
                 OnPropertyChanged();
@@ -989,7 +998,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         /// </summary>
         private RelayCommand _selectedFirstSurvivorFirstPerkCommand;
         public RelayCommand SelectedFirstSurvivorFirstPerkCommand
-        {  get => _selectedFirstSurvivorFirstPerkCommand ??= new(obj => { SelectedFirstSurvivorFirstPerk = SelectedListViewSurvivorPerk; }); }
+        { get => _selectedFirstSurvivorFirstPerkCommand ??= new(obj => { SelectedFirstSurvivorFirstPerk = SelectedListViewSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 2 позицию для ContextMenu у элемента ListView SurvivorPerk.
@@ -1003,7 +1012,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFirstSurvivorThirdPerkCommand;
-        public RelayCommand SelectedFirstSurvivorThirdPerkCommand { get => _selectedFirstSurvivorThirdPerkCommand ??= new(obj => { SelectedFirstSurvivorThirdPerk = SelectedListViewSurvivorPerk;}); }
+        public RelayCommand SelectedFirstSurvivorThirdPerkCommand { get => _selectedFirstSurvivorThirdPerkCommand ??= new(obj => { SelectedFirstSurvivorThirdPerk = SelectedListViewSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 4 позицию для ContextMenu у элемента ListView SurvivorPerk.
@@ -1241,7 +1250,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             get => _secondSurvivorPrestige;
             set
             {
-                _secondSurvivorPrestige = value;
+                if (value > 100 | value < 0)
+                {
+                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                }
+                else
+                {
+                    _secondSurvivorPrestige = value;
+                    OnPropertyChanged();
+                }
+
             }
         }
 
@@ -1693,7 +1711,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             get => _thirdSurvivorPrestige;
             set
             {
-                _thirdSurvivorPrestige = value;
+                if (value > 100 | value < 0)
+                {
+                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                }
+                else
+                {
+                    _thirdSurvivorPrestige = value;
+                    OnPropertyChanged();
+                }
+
             }
         }
 
@@ -2146,7 +2173,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             get => _fourthSurvivorPrestige;
             set
             {
-                _fourthSurvivorPrestige = value;
+                if (value > 100 | value < 0)
+                {
+                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                }
+                else
+                {
+                    _fourthSurvivorPrestige = value;
+                    OnPropertyChanged();
+                }
+
             }
         }
 
@@ -2850,7 +2886,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 AddThirdSurvivorInfo();
                 AddFourthSurvivorInfo();
 
-                var lastIDKiller = 
+                var lastIDKiller =
                     context.KillerInfos.
                     OrderByDescending(killer => killer.IdKillerInfo)
                     .FirstOrDefault();
@@ -2870,7 +2906,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 secondSurvivor = lastFourRecords[1];
                 thirdSurvivor = lastFourRecords[2];
                 fourthSurvivor = lastFourRecords[3];
-       
+
                 var newGameStatistic = new GameStatistic()
                 {
                     IdKiller = lastIDKiller.IdKillerInfo,
@@ -2994,7 +3030,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 context.SurvivorInfos.Add(newSurvivorInfo);
                 context.SaveChanges();
             }
-            
+
         }
 
         private void AddThirdSurvivorInfo()
@@ -3051,7 +3087,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             {
                 context.SurvivorInfos.Add(newSurvivorInfo);
                 context.SaveChanges();
-            }         
+            }
         }
 
         #endregion
@@ -3578,9 +3614,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             SurvivorInfoList = [];
 
             FirstSurvivorOfferingList = [];
-            SecondSurvivorOfferingList= [];
-            ThirdSurvivorOfferingList= [];
-            FourthSurvivorOfferingList= [];
+            SecondSurvivorOfferingList = [];
+            ThirdSurvivorOfferingList = [];
+            FourthSurvivorOfferingList = [];
 
             TypeDeathList = [];
             ItemList = [];
@@ -3635,10 +3671,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 KillerInfoBot = false;
 
                 //var defaultPerk = context.KillerPerks.Where(perk => perk.PerkName == "Отсутствует").FirstOrDefault();
-                SelectedKillerFirstPerk = null;
-                SelectedKillerSecondPerk = null;
-                SelectedKillerThirdPerk = null;
-                SelectedKillerFourthPerk = null;
+                //SelectedKillerFirstPerk = null;
+                //SelectedKillerSecondPerk = null;
+                //SelectedKillerThirdPerk = null;
+                //SelectedKillerFourthPerk = null;
 
                 //var defaultAddon = context.KillerAddons.Where(addon => addon.AddonName == "Отсутствует").FirstOrDefault();
                 SelectedKillerFirstAddon = null;
@@ -3713,7 +3749,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 SelectedListViewSecondSurvivorOffering = null;
                 SelectedListViewThirdSurvivorOffering = null;
                 SelectedListViewFourthSurvivorOffering = null;
-            }          
+            }
         }
 
         private void GetGameModeListData()
@@ -3724,7 +3760,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.GameModes.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -3743,7 +3779,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.GameEvents.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -3762,7 +3798,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.Maps.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -3788,7 +3824,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         KillerOfferingList.Clear();
                         foreach (var entity in entities)
@@ -3811,19 +3847,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         return;
                     }
 
-                    var noOffering = context.Offerings
-                    .Where(off => off.OfferingName == "Отсутствует")
-                    .OrderBy(off => off.IdRarity)
-                    .FirstOrDefault();
+                    //var noOffering = context.Offerings
+                    //.Where(off => off.OfferingName == "Отсутствует")
+                    //.OrderBy(off => off.IdRarity)
+                    //.FirstOrDefault();
 
                     var entities = context.Offerings
                     .Where(off => off.IdRole == SelectedComboBoxRoleFirstSurvivor.IdRole)
                     .ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         FirstSurvivorOfferingList.Clear();
-                        FirstSurvivorOfferingList.Add(noOffering);
+                        //FirstSurvivorOfferingList.Add(noOffering);
                         foreach (var entity in entities)
                         {
                             FirstSurvivorOfferingList.Add(entity);
@@ -3844,19 +3880,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         return;
                     }
 
-                    var noOffering = context.Offerings
-                    .Where(off => off.OfferingName == "Отсутствует")
-                    .FirstOrDefault();
+                    //var noOffering = context.Offerings
+                    //.Where(off => off.OfferingName == "Отсутствует")
+                    //.FirstOrDefault();
 
                     var entities = context.Offerings
                     .Where(off => off.IdRole == SelectedComboBoxRoleSecondSurvivor.IdRole)
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         SecondSurvivorOfferingList.Clear();
-                        SecondSurvivorOfferingList.Add(noOffering);
+                        //SecondSurvivorOfferingList.Add(noOffering);
                         foreach (var entity in entities)
                         {
                             SecondSurvivorOfferingList.Add(entity);
@@ -3877,19 +3913,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         return;
                     }
 
-                    var noOffering = context.Offerings
-                    .Where(off => off.OfferingName == "Отсутствует")
-                    .FirstOrDefault();
+                    //var noOffering = context.Offerings
+                    //.Where(off => off.OfferingName == "Отсутствует")
+                    //.FirstOrDefault();
 
                     var entities = context.Offerings
                     .Where(off => off.IdRole == SelectedComboBoxRoleThirdSurvivor.IdRole)
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         ThirdSurvivorOfferingList.Clear();
-                        ThirdSurvivorOfferingList.Add(noOffering);
+                        //ThirdSurvivorOfferingList.Add(noOffering);
                         foreach (var entity in entities)
                         {
                             ThirdSurvivorOfferingList.Add(entity);
@@ -3910,19 +3946,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         return;
                     }
 
-                    var noOffering = context.Offerings
-                    .Where(off => off.OfferingName == "Отсутствует")
-                    .FirstOrDefault();
+                    //var noOffering = context.Offerings
+                    //.Where(off => off.OfferingName == "Отсутствует")
+                    //.FirstOrDefault();
 
                     var entities = context.Offerings
                     .Where(off => off.IdRole == SelectedComboBoxRoleFourthSurvivor.IdRole)
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         FourthSurvivorOfferingList.Clear();
-                        FourthSurvivorOfferingList.Add(noOffering);
+                        //FourthSurvivorOfferingList.Add(noOffering);
                         foreach (var entity in entities)
                         {
                             FourthSurvivorOfferingList.Add(entity);
@@ -3941,7 +3977,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     var entities = context.Patches.ToList();
                     entities.Reverse();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -3960,7 +3996,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.Platforms.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -3979,7 +4015,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.PlayerAssociations.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -3998,7 +4034,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.Roles.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4008,19 +4044,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 }
             }).Start();
         }
-        
+
         private void GetKillerRoleListData()
         {
             new Thread(() =>
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    var entities = 
+                    var entities =
                     context.Roles.Where(role => role.RoleName == "Убийца")
                     .Union(context.Roles.Where(role => role.RoleName == "Общая"))
                     .ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4037,12 +4073,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    var entities = 
+                    var entities =
                     context.Roles.Where(role => role.RoleName == "Выживший")
                     .Union(context.Roles.Where(role => role.RoleName == "Общая"))
                     .ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4061,7 +4097,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.WhoPlacedMaps.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4080,7 +4116,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.Killers.Skip(1).ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4101,7 +4137,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     {
                         var entities = context.KillerAddons.ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             KillerAddonList.Clear();
                             foreach (var entity in entities)
@@ -4116,7 +4152,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         .Where(ka => ka.IdKiller == SelectedKiller.IdKiller)
                         .ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             KillerAddonList.Clear();
                             foreach (var entity in entities)
@@ -4142,7 +4178,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
                     var entities = context.KillerPerks.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         KillerPerkList.Clear();
                         //KillerPerkList.Add(noPerk);
@@ -4164,7 +4200,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.KillerInfos.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4185,7 +4221,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     .Skip(1)
                     .ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4209,7 +4245,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
                     var entities = context.SurvivorPerks.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         SurvivorPerkList.Clear();
                         SurvivorPerkList.Add(noPerk);
@@ -4231,7 +4267,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.SurvivorInfos.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4250,7 +4286,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.TypeDeaths.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4269,7 +4305,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 {
                     var entities = context.Items.ToList();
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (var entity in entities)
                         {
@@ -4291,7 +4327,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     {
                         var entities = context.ItemAddons.ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
                             foreach (var entity in entities)
@@ -4306,7 +4342,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         .Where(ia => ia.IdItem == SelectedComboBoxFirstSurvivorItem.IdItem)
                         .ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
                             foreach (var entity in entities)
@@ -4322,7 +4358,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
                                 SelectedFirstSurvivorSecondItemAddon = context.ItemAddons
                                 .Where(ia => ia.ItemAddonName == "Отсутствует")
-                                .FirstOrDefault();                      
+                                .FirstOrDefault();
                             }
                         });
                     }
@@ -4340,7 +4376,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     {
                         var entities = context.ItemAddons.ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
                             foreach (var entity in entities)
@@ -4355,7 +4391,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         .Where(ia => ia.IdItem == SelectedComboBoxSecondSurvivorItem.IdItem)
                         .ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
                             foreach (var entity in entities)
@@ -4389,7 +4425,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     {
                         var entities = context.ItemAddons.ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
                             foreach (var entity in entities)
@@ -4404,7 +4440,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         .Where(ia => ia.IdItem == SelectedComboBoxThirdSurvivorItem.IdItem)
                         .ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
                             foreach (var entity in entities)
@@ -4438,7 +4474,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                     {
                         var entities = context.ItemAddons.ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
                             foreach (var entity in entities)
@@ -4453,7 +4489,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                         .Where(ia => ia.IdItem == SelectedComboBoxFourthSurvivorItem.IdItem)
                         .ToList();
 
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             ItemAddonList.Clear();
                             foreach (var entity in entities)
@@ -4659,7 +4695,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
         public RelayCommand LoadImageCommand { get => _loadImageCommand ??= new(async obj => { await GetImageAsync(); }); }
 
         private RelayCommand _loadResultMatchImageCommand;
-        public RelayCommand LoadResultMatchImageCommand { get => _loadResultMatchImageCommand ??= new(async obj => 
+        public RelayCommand LoadResultMatchImageCommand
+        {
+            get => _loadResultMatchImageCommand ??= new(async obj =>
         {
             var result = await ImageHelper.GetResultMatchImageAsync(SelectedImage.PathImage);
 
@@ -4670,25 +4708,29 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             ResultMatchFourthSurvivorImage = result.FourthSurvivor;
             ResultMatchImage = result.ResultMatchImage;
 
-            EndTime = SelectedImage.FileCreatedTime; 
+            EndTime = SelectedImage.FileCreatedTime;
             SubstactTime();
             SelectedDateTimeGameMatch = SelectedImage.FileCreatedTime;
-        }); }
+        });
+        }
 
         private RelayCommand _loadStartMatchImageCommand;
-        public RelayCommand LoadStartMatchImageCommand { get => _loadStartMatchImageCommand ??= new(async obj => 
-        { 
-            StartMatchImage = await ImageHelper.GetStartMatchImageAsync(SelectedImage.PathImage); 
-            StartTime = SelectedImage.FileCreatedTime; 
-            SubstactTime(); 
-        }); }
+        public RelayCommand LoadStartMatchImageCommand
+        {
+            get => _loadStartMatchImageCommand ??= new(async obj =>
+        {
+            StartMatchImage = await ImageHelper.GetStartMatchImageAsync(SelectedImage.PathImage);
+            StartTime = SelectedImage.FileCreatedTime;
+            SubstactTime();
+        });
+        }
 
         private RelayCommand _loadEndMatchImageCommand;
         public RelayCommand LoadEndMatchImageCommand { get => _loadEndMatchImageCommand ??= new(async obj => { EndMatchImage = await ImageHelper.GetEndMatchImageAsync(SelectedImage.PathImage); }); }
-        
+
         private RelayCommand _clearImageListCommandCommand;
-        public RelayCommand ClearImageListCommandCommand { get => _clearImageListCommandCommand ??= new(obj => { ImagesList.Clear(); }); } 
-        
+        public RelayCommand ClearImageListCommandCommand { get => _clearImageListCommandCommand ??= new(obj => { ImagesList.Clear(); }); }
+
         private RelayCommand _deleteSelectedImageCommand;
         public RelayCommand DeleteSelectedImageCommand { get => _deleteSelectedImageCommand ??= new(obj => { DeleteSelectImage(); }); }
 
@@ -4761,7 +4803,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
                 ResultMatchImage = null;
                 StartMatchImage = null;
                 EndMatchImage = null;
-            }         
+            }
         }
 
         //private async Task GetImageAsync()

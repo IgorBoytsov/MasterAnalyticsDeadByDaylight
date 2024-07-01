@@ -5,14 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight"
         xmlns:fa="http://schemas.fontawesome.com/icons/" 
-        xmlns:viewmodel="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel" 
-        d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
+        xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" 
+        d:DataContext="{d:DesignInstance Type=windowsviewmodels:MainWindowViewModel}"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         Style="{StaticResource WindowStyle}"
+        Background="#121212"
         Title="Аналитика статистики"
-        Height="675" Width="1200"
+        Height="900" Width="1700"
         MinHeight="600" MinWidth="1000">
 
     <WindowChrome.WindowChrome>
@@ -22,6 +23,7 @@
     <Window.Resources>
 
         <!--#region Стили для кнопок в строке заголовка -->
+        
         <Style x:Key="CaptionButtonStyle" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -57,27 +59,33 @@
         <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
             <Setter Property="Content" Value="&#xE106;"/>
         </Style>
+        
         <!--#endregion-->
 
     </Window.Resources>
 
     <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height ="Auto"/>
+                <RowDefinition Height ="25"/>
                 <RowDefinition Height ="*"/>
             </Grid.RowDefinitions>
 
             <!--#region Разметка для Window chrome -->
 
-            <Grid Grid.Row="0" Height="40" Background="#F999">
+            <Grid Grid.Row="0" Height="40" Background="#F999" Grid.ColumnSpan="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
                     <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
                            Width="35" Margin="2" 
                            HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                    <TextBlock Text="{Binding Titel}" 
+                    <TextBlock Text="{Binding Title}" 
                                FontSize="20" 
                                VerticalAlignment="Center"/>
                 </StackPanel>
@@ -115,394 +123,106 @@
                 </StackPanel>
 
             </Grid>
+
             <!--#endregion-->
 
-            <!-- Контент приложения -->
-            <Grid Grid.Row="1">
+            <!--#region Меню -->
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <Menu Grid.Row="1" FontSize="15" Foreground="White" Background="#121212" Grid.ColumnSpan="2">
 
-                <!--#region Меню -->
-                <Menu FontSize="15"
-                      Foreground="White"
-                      Background="#FF282C34">
+                <MenuItem Header="Добавить" Style="{DynamicResource MenuItemStyle}" Foreground="White">
 
-                    <MenuItem Header="Добавить"
-                              Style="{DynamicResource MenuItemStyle}"
-                              Foreground="White">
+                    <MenuItem Header="Добавить матч" Command="{Binding OpenAddMatchWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
 
-                        <MenuItem Header="Добавить матч"
-                                  Command="{Binding OpenAddMatchWindowCommand}"
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <Separator/>
-
-                        <MenuItem Header="Добавить убийцу" 
-                                  Command="{Binding OpenAddKillerWindowCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <MenuItem Header="Добавить выжившиго" 
-                                  Command="{Binding OpenAddSurvivorWindowCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <Separator/>
-
-                        <MenuItem Header="Добавить перк" 
-                                  Command="{Binding OpenAddPerkWindowCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <MenuItem Header="Добавить карту" 
-                                  Command="{Binding OpenAddMapWindowCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <MenuItem Header="Добавить подношение" 
-                                  Command="{Binding OpenAddOfferingWindowCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <MenuItem Header="Добавить предмет" 
-                                  Command="{Binding OpenAddItemWindowCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <Separator/>
-
-                        <MenuItem Header="Добавить доп. данные" 
-                                  Command="{Binding OpenAdditionalDataWindowCommand}"
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <Separator/>
-
-                        <MenuItem Header="Выход из приложение" 
-                                  Command="{Binding CloseAppCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <MenuItem Header="Свернуть в трей" 
-                                  Command="{Binding}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-                    </MenuItem>
-
-                    <MenuItem Header="Создать">
-
-                        <MenuItem Header="Отчет"
-                                  Command="{Binding OpenReportCreationWindowCommand}"
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <MenuItem Header="Отправить на почту"
-                                  Command="{Binding}"
-                                  Style="{DynamicResource MenuItemStyle}"/>
-                    </MenuItem>
-
-                    <MenuItem Header="Справка">
-
-                        <MenuItem Header="Как пользоватся?" 
-                                  Command="{Binding OpenHowToUseWindowCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-
-                        <MenuItem Header="О программе" 
-                                  Command="{Binding OpenAboutTheProgramWindowCommand}" 
-                                  Style="{DynamicResource MenuItemStyle}"/>
-                    </MenuItem>
-
-                </Menu>
-                <!--#endregion-->
-
-                <!--Вариант с TabControl-->
-                <TabControl Visibility="Visible" Grid.Row="1" TabStripPlacement="Left" Background="#FF282C34" BorderBrush="#FF282C34" Margin="5,10,0,0">
-
-                    <!--#region "Информация за роль Убийц"-->
-                    <TabItem Style="{DynamicResource TabItemLeftStyle}" Width="120" Height="120">
-                        <TabItem.Header>
-                            <StackPanel>
-                                <Image Source="/Resources/KillerRol.png" Width="90"/>
-                                <TextBlock Text="Убийца" HorizontalAlignment="Center" Foreground="White" FontSize="20"/>
-                            </StackPanel>
-                        </TabItem.Header>
-
-                        <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
-
-                            <!--#region Матчи -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Solid_ListOl" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Матчи" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="50"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <Button Content="Обновить данные" Command="{Binding UpdateMatchCommand}"/>
-
-                                    <GridSplitter Grid.Column="0"
-                                                  Grid.Row="1"
-                                                  Width="4"
-                                                  Cursor="SizeWE"
-                                                  ShowsPreview="False"/>
-
-                                    <DataGrid Grid.Column="0" Grid.Row="1" Margin="10" 
-                                              ItemsSource="{Binding GameMatchList}" d:ItemsSource="{d:SampleData ItemCount=5}" 
-                                              AutoGenerateColumns="False"
-                                              CanUserSortColumns="True"
-                                              ScrollViewer.CanContentScroll="False">
-                                        <DataGrid.Columns>
-
-                                            <DataGridTemplateColumn Header="Дата и время игры" CanUserSort="True">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel>
-                                                            <TextBlock Text="Дата сыгранной игры" Margin="0,0,0,15" />
-                                                            <TextBlock Text="{Binding DateTimeMatch, StringFormat='yyy:MM:dd'}" Margin="0,0,0,15" />
-                                                            <TextBlock Text="Время игры" Margin="0,0,0,15" />
-                                                            <TextBlock Text="{Binding GameTimeMatch}" />
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-
-                                            <DataGridTemplateColumn Header="Убийца" CanUserSort="False">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel>
-                                                            <Image Source="{Binding IdKillerNavigation.IdKillerNavigation.KillerImage}" Width="100" Height="100" HorizontalAlignment="Center"/>
-                                                            <TextBlock Text="{Binding IdKillerNavigation.IdKillerNavigation.KillerName}" HorizontalAlignment="Center"/>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-
-                                            <DataGridTemplateColumn Header="Выжившие" CanUserSort="False">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel>
-                                                            <TextBlock Text="{Binding IdSurvivors1Navigation.IdSurvivorNavigation.SurvivorName}"/>
-                                                            <TextBlock Text="{Binding IdSurvivors2Navigation.IdSurvivorNavigation.SurvivorName}" />
-                                                            <TextBlock Text="{Binding IdSurvivors3Navigation.IdSurvivorNavigation.SurvivorName}" />
-                                                            <TextBlock Text="{Binding IdSurvivors4Navigation.IdSurvivorNavigation.SurvivorName}" />
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                    <!--<ListView ItemsSource="{Binding GameMatchList}" d:ItemsSource="{d:SampleData ItemCount=5}"
-                                              Grid.Column="0" Grid.Row="1" Margin="10">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Image Source="{Binding IdKillerNavigation.IdKillerNavigation.KillerImage}" Width="100" Height="100"/>
-                                                    <StackPanel>
-                                                        <TextBlock Text="{Binding IdKillerNavigation.IdKillerNavigation.KillerName}"/>
-                                                        <TextBlock Text="{Binding IdKillerNavigation.IdPerk1Navigation.PerkName}"/>
-                                                        <TextBlock Text="{Binding IdKillerNavigation.IdAddon1Navigation.AddonName}"/>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="Убийств: "/>
-                                                            <TextBlock Text="{Binding CountKills}"/>
-                                                        </StackPanel>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="Повесов: "/>
-                                                            <TextBlock Text="{Binding CountHooks}"/>
-                                                        </StackPanel>
-
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>-->
-
-                                </Grid>
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                            <!--#region Убийцы -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Solid_SkullCrossbones" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Убийцы" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-                                <Image Source="D:\Портреты килеров\9_Канибал.png"/>
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                            <!--#region Карты -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Regular_Map" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Карты" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-                                <Image Source="D:\Портреты килеров\29_Кукловод.png"/>
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                            <!--#region Билды (Пикрейт билдов) -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Solid_Wrench" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Билды" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-                                <Image Source="D:\Портреты килеров\5_Тень.png"/>
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                        </TabControl>
-                    </TabItem>
-
-                    <!--#endregion-->
-
-                    <!--#region "Информация за роль Выживших"-->
-
-                    <TabItem Style="{DynamicResource TabItemLeftStyle}" Width="120" Height="120">
-                        <TabItem.Header>
-                            <StackPanel>
-                                <Image Source="/Resources/SurvivorRol.png" Width="90"/>
-                                <TextBlock Text="Выживший" HorizontalAlignment="Center" Foreground="White" FontSize="20"/>
-                            </StackPanel>
-
-                        </TabItem.Header>
-
-                        <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
-
-                            <!--#region Матчи -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Solid_ListOl" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Матчи" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                            <!--#region Выжившие -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Solid_Walking" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Выжившие" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                            <!--#region Карты -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Regular_Map" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Карты" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                            <!--#region Билды (Пикрейт билдов) -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Solid_Wrench" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Билды" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                        </TabControl>
-                    </TabItem>
-
-                    <!--#endregion-->
-
-                    <!--#region "Рандомайзер билдов"-->
-
-                    <TabItem Style="{DynamicResource TabItemLeftStyle}" Width="120" Height="120">
-                        <TabItem.Header>
-                            <StackPanel>
-                                <fa:ImageAwesome Icon="Solid_Random" Height="90" Foreground="#FFFFFE"/>
-                                <TextBlock Text="Рандомайзер" HorizontalAlignment="Center" Foreground="White" FontSize="20"/>
-                            </StackPanel>
-                        </TabItem.Header>
-
-                        <TabControl Background="#FF282C34" BorderBrush="#FF282C34" FontSize="20" Margin="10,0,0,0">
-
-                            <!--#region Рандомайзер для Убийц -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Solid_SkullCrossbones" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Убийцы" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                            <!--#region Рандомайзер для Выживших -->
-
-                            <TabItem Style="{DynamicResource TabItemTopStyle}">
-                                <TabItem.Header>
-                                    <DockPanel>
-                                        <fa:ImageAwesome Icon="Solid_Walking" Foreground="White" Height="15"/>
-                                        <TextBlock Text="Выжившие" Foreground="White" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </TabItem.Header>
-
-
-                            </TabItem>
-
-                            <!--#endregion-->
-
-                        </TabControl>
-
-                    </TabItem>
-
-                    <!--#endregion-->
-
-                </TabControl>
-            </Grid>
+                    <Separator/>
+
+                    <MenuItem Header="Добавить убийцу"  Command="{Binding OpenAddKillerWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
+
+                    <MenuItem Header="Добавить выжившиго"  Command="{Binding OpenAddSurvivorWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
+
+                    <Separator/>
+
+                    <MenuItem Header="Добавить перк"  Command="{Binding OpenAddPerkWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+
+                    <MenuItem Header="Добавить карту"  Command="{Binding OpenAddMapWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
+
+                    <MenuItem Header="Добавить подношение" Command="{Binding OpenAddOfferingWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
+
+                    <MenuItem Header="Добавить предмет"  Command="{Binding OpenAddItemWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
+
+                    <Separator/>
+
+                    <MenuItem Header="Добавить доп. данные" Command="{Binding OpenAdditionalDataWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+
+                    <Separator/>
+
+                    <MenuItem Header="Выход из приложение" Command="{Binding CloseAppCommand}" Style="{DynamicResource MenuItemStyle}"/>
+
+                    <MenuItem Header="Свернуть в трей"  Command="{Binding}" Style="{DynamicResource MenuItemStyle}"/>
+                </MenuItem>
+
+                <MenuItem Header="Создать">
+
+                    <MenuItem Header="Отчет" Command="{Binding OpenReportCreationWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+
+                    <MenuItem Header="Отправить на почту" Command="{Binding}" Style="{DynamicResource MenuItemStyle}"/>
+                </MenuItem>
+
+                <MenuItem Header="Справка">
+
+                    <MenuItem Header="Как пользоватся?"  Command="{Binding OpenHowToUseWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+
+                    <MenuItem Header="О программе"  Command="{Binding OpenAboutTheProgramWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                </MenuItem>
+
+            </Menu>
+
+            <!--#endregion-->
+
+            <!--#region Боковое меню -->
+
+            <Border Grid.Row="2" Background="#2A2A2A" CornerRadius="20" Margin="10">
+                <ScrollViewer>
+                    <StackPanel Margin="0,10,0,0">
+
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToMatchPageCommand}">
+                            <Button.Content>
+                                <DockPanel >
+                                    <fa:ImageAwesome Icon="Solid_ListOl" Foreground="White" Height="20"/>
+                                    <TextBlock Text="Матчи" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                                </DockPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToKillerPageCommand}">
+                            <DockPanel>
+                                <fa:ImageAwesome Icon="Solid_SkullCrossbones" Foreground="White" Height="20"/>
+                                <TextBlock Text="Убийцы" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToSurvivorPageCommand}">
+                            <DockPanel>
+                                <fa:ImageAwesome Icon="Solid_PeopleArrows" Foreground="White" Height="20"/>
+                                <TextBlock Text="Выжившие" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToMapPageCommand}">
+                            <DockPanel>
+                                <fa:ImageAwesome Icon="Regular_Map" Foreground="White" Height="20"/>
+                                <TextBlock Text="Карты" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+                        
+                    </StackPanel>
+                </ScrollViewer> 
+            </Border>
+            
+            <!--#endregion-->
+
+            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Grid.Row="2" Grid.Column="1" />
+            
         </Grid>
     </Border>
 </Window>

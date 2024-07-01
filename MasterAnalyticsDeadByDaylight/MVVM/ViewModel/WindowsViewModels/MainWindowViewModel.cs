@@ -1,13 +1,10 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
-using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow;
 using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.ModalWindow;
-using MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
 using System.Windows;
 
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
+namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
@@ -93,7 +90,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
             SystemCommands.MinimizeWindow(Application.Current.MainWindow);
         }
 
-        public string Titel { get; set; }
+        private string _title;
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
 
         private Visibility _myControlVisibility;
         public Visibility MyControlVisibility
@@ -233,103 +239,60 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel
 
         private void SetTitle()
         {
-            Titel = "Аналитика статистики";
+            Title = "Аналитика статистики";
         }
 
         #endregion  
 
-        public MainWindowViewModel()
+        private readonly IPageNavigationService _pageNavigationService;
+
+        public MainWindowViewModel(PageNavigationService pageNavigationService)
         {
-            GameMatchList = [];
+            _pageNavigationService = pageNavigationService ?? throw new ArgumentNullException(nameof(pageNavigationService));
+
             SetTitle();
-            GetGameStatisticData();
         }
 
-        #region Матчи Киллера
+        #region Команды навигации по страницам
 
-        #region Колекции 
+        private RelayCommand _navigateToMatchPageCommand;
+        public RelayCommand NavigateToMatchPageCommand { get => _navigateToMatchPageCommand ??= new(obj => { NavigateToMatchPage(); }); }
 
-        public ObservableCollection<GameStatistic> GameMatchList { get; set; }
+        private RelayCommand _navigateToKillerPageCommand;
+        public RelayCommand NavigateToKillerPageCommand { get => _navigateToKillerPageCommand ??= new(obj => { NavigateToKillerPage(); }); }
 
+        private RelayCommand _navigateToSurvivorPageCommand;
+        public RelayCommand NavigateToSurvivorPageCommand { get => _navigateToSurvivorPageCommand ??= new(obj => { NavigateToSurvivorPage(); }); }
+
+        private RelayCommand _navigateToMapPageCommand;
+        public RelayCommand NavigateToMapPageCommand { get => _navigateToMapPageCommand ??= new(obj => { NavigateToMapPage(); }); }
         #endregion
 
-        #region Команды
+        #region Методы навигации по страницам
 
-        private RelayCommand _updateMatchCommand;
-        public RelayCommand UpdateMatchCommand { get => _updateMatchCommand ??= new(obj => { GetGameStatisticData(); }); }
-
-        #endregion
-
-        #region Методы Получение данных
-
-        private void GetGameStatisticData()
+        private void NavigateToMatchPage()
         {
-            new Thread(() =>
-            {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var games = 
-                    context.GameStatistics
-      
-                    .Include(killerInfo => killerInfo.IdKillerNavigation)
-                    .ThenInclude(killer => killer.IdKillerNavigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdPerk1Navigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdPerk2Navigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdPerk3Navigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdPerk4Navigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdAddon1Navigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdAddon2Navigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdAssociationNavigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdPlatformNavigation)
-
-                    .Include(killer => killer.IdKillerNavigation)
-                    .ThenInclude(KillerPerk => KillerPerk.IdKillerOfferingNavigation)
-
-                    .Include(survivor => survivor.IdSurvivors1Navigation)
-                    .ThenInclude(survivor => survivor.IdSurvivorNavigation)
-
-                    .Include(survivor => survivor.IdSurvivors2Navigation)
-                    .ThenInclude(survivor => survivor.IdSurvivorNavigation)
-
-                    .Include(survivor => survivor.IdSurvivors3Navigation)
-                    .ThenInclude(survivor => survivor.IdSurvivorNavigation)
-
-                    .Include(survivor => survivor.IdSurvivors4Navigation)
-                    .ThenInclude(survivor => survivor.IdSurvivorNavigation)
-
-                    .ToList();
-  
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        GameMatchList.Clear();
-                        foreach (var entity in games)
-                        {
-                            GameMatchList.Add(entity);
-                        }
-                    });
-                }
-            }).Start();
+            _pageNavigationService.NavigateTo("MatchPage");
+            Title = "Аналитика статистики - Матчи";
         }
 
-        #endregion
+        private void NavigateToKillerPage()
+        {
+            _pageNavigationService.NavigateTo("KillerPage");
+            Title = "Аналитика статистики - Убийцы";
+        }
 
+        private void NavigateToSurvivorPage()
+        {
+            _pageNavigationService.NavigateTo("SurvivorPage");
+            Title = "Аналитика статистики - Выжившие";
+        }
 
+        private void NavigateToMapPage()
+        {
+            _pageNavigationService.NavigateTo("MapPage");
+            Title = "Аналитика статистики - Карты";
+        }
         #endregion
     }
 
