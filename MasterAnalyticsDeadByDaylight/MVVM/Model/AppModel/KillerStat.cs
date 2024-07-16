@@ -18,7 +18,7 @@
         public byte[] KillerImage { get; set;}
 
         /// <summary>
-        /// Колличество сыгранных игр за данного персонажа в %
+        /// Количество сыгранных игр за данного персонажа в %
         /// </summary>
         public double KillerCountGame { get; set; }
 
@@ -28,7 +28,7 @@
         public double KillerPickRate { get; set; }
 
         /// <summary>
-        /// Килрейт киллера, Среднее колличество киллов
+        /// Килрейт киллера, Среднее количество киллов
         /// </summary>
         public double KillerKillRate { get; set; }
 
@@ -43,7 +43,7 @@
         public double KillerWinRate { get; set; }
 
         /// <summary>
-        /// Колличество выигранных матчей
+        /// Количество выигранных матчей
         /// </summary>
         public double KillerMatchWin{ get; set; }
 

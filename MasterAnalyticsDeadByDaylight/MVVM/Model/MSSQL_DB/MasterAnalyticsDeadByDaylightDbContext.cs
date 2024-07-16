@@ -35,6 +35,8 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
     public virtual DbSet<Map> Maps { get; set; }
 
+    public virtual DbSet<Measurement> Measurements { get; set; }
+
     public virtual DbSet<Offering> Offerings { get; set; }
 
     public virtual DbSet<Patch> Patches { get; set; }
@@ -306,7 +308,24 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.ToTable("Map");
 
             entity.Property(e => e.IdMap).HasColumnName("id_Map");
+            entity.Property(e => e.IdMeasurement).HasColumnName("id_measurement");
             entity.Property(e => e.MapName).IsRequired();
+
+            entity.HasOne(d => d.IdMeasurementNavigation).WithMany(p => p.Maps)
+                .HasForeignKey(d => d.IdMeasurement)
+                .HasConstraintName("FK_Map_Measurement");
+        });
+
+        modelBuilder.Entity<Measurement>(entity =>
+        {
+            entity.HasKey(e => e.IdMeasurement);
+
+            entity.ToTable("Measurement");
+
+            entity.Property(e => e.IdMeasurement).HasColumnName("id_measurement");
+            entity.Property(e => e.MeasurementName)
+                .IsRequired()
+                .HasMaxLength(50);
         });
 
         modelBuilder.Entity<Offering>(entity =>

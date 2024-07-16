@@ -11,6 +11,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         /// <summary>
         /// Название карты
         /// </summary>
+        public int idMap { get; set; }
+
+        /// <summary>
+        /// Название карты
+        /// </summary>
         public string MapName { get; set; }
 
         /// <summary>
@@ -24,14 +29,29 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         public double CountGame { get; set; }
 
         /// <summary>
-        /// % выпадение карт без использования подношения
+        /// Количество сыгранных игр на карте
+        /// </summary>
+        public double PickRateMap { get; set; }
+
+        /// <summary>
+        /// Выпадение карт без использования подношения
         /// </summary>
         public double FalloutMapRandom { get; set; }
 
         /// <summary>
-        /// % выпадение карт с использованием подношений
+        /// Выпадение карт с использованием подношений
         /// </summary>
         public double FalloutMapOffering { get; set; }
+
+        /// <summary>
+        /// % выпадение карт без использования подношения
+        /// </summary>
+        public double FalloutMapRandomPercent { get; set; }
+
+        /// <summary>
+        /// % выпадение карт с использованием подношений
+        /// </summary>
+        public double FalloutMapOfferingPercent { get; set; }
 
         /// <summary>
         /// % убийств на карте

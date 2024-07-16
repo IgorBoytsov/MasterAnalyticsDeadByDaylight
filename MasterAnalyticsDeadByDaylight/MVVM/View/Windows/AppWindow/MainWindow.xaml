@@ -214,7 +214,14 @@
                                 <TextBlock Text="Карты" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
                             </DockPanel>
                         </Button>
-                        
+
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToMapPageCommand}">
+                            <DockPanel>
+                                <fa:ImageAwesome Icon="Solid_Random" Foreground="White" Height="20"/>
+                                <TextBlock Text="Рандомайзер" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+
                     </StackPanel>
                 </ScrollViewer> 
             </Border>

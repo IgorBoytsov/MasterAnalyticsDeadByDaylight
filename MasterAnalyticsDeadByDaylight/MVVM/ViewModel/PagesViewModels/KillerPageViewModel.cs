@@ -1,12 +1,12 @@
-﻿using MasterAnalyticsDeadByDaylight.Command;
+﻿using LiveCharts.Wpf;
+using LiveCharts;
+using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using System.Reflection.Metadata;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
@@ -18,6 +18,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private ObservableCollection<KillerStat> KillerStatList { get; set; }
 
         public ObservableCollection<KillerStat> KillerStatSortedList { get; set; }
+
+        public ObservableCollection<PlayerAssociation> PlayerAssociationList { get; set; }
 
         public ObservableCollection<string> SortingList { get; set; } = 
             [
@@ -37,7 +39,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private string _selectedKillerStatSortItem;
         public string SelectedKillerStatSortItem
         {
-            get { return _selectedKillerStatSortItem; }
+            get  => _selectedKillerStatSortItem;
             set
             {
                 _selectedKillerStatSortItem = value;
@@ -46,17 +48,40 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             }
         }
 
+        private PlayerAssociation _selectedPlayerAssociationStatItem;
+        public PlayerAssociation SelectedPlayerAssociationStatItem
+        {
+            get => _selectedPlayerAssociationStatItem; 
+            set
+            {
+                _selectedPlayerAssociationStatItem = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private KillerStat _selectedKiller;
+        public KillerStat SelectedKiller
+        {
+            get => _selectedKiller; 
+            set
+            {
+                _selectedKiller = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         #endregion
 
         #region Свойства Visibility
 
-        private Visibility _listViewVisibility;
-        public Visibility ListViewVisibility
+        private Visibility _killerListVisibility;
+        public Visibility KillerListVisibility
         {
-            get => _listViewVisibility;
+            get => _killerListVisibility;
             set
             {
-                _listViewVisibility = value;
+                _killerListVisibility = value;
                 OnPropertyChanged();
             }
         }
@@ -72,20 +97,20 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             }
         }
 
-        private Visibility _backMenuVisibility;
-        public Visibility BackMenuVisibility
+        private Visibility _detailedInformationVisibility;
+        public Visibility DetailedInformationVisibility
         {
-            get => _backMenuVisibility;
+            get => _detailedInformationVisibility;
             set
             {
-                _backMenuVisibility = value;
+                _detailedInformationVisibility = value;
                 OnPropertyChanged();
             }
         }
 
         #endregion
 
-        #region Свойства для поиска по KillerStatSortedList
+        #region Свойство для поиска по KillerStatSortedList
 
         private string _searchTextBox;
         public string SearchTextBox
@@ -112,21 +137,23 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #region Команды
 
-        private RelayCommand _showNameCommand;
-        public RelayCommand ShowNameCommand => _showNameCommand ??= new RelayCommand(ShowNameKiller);
-
         private RelayCommand _showDetailsKillerCommand;
-        public RelayCommand ShowDetailsKillerCommand { get => _showDetailsKillerCommand ??= new(obj => { ListViewVisibility = Visibility.Collapsed; SortMenuVisibility = Visibility.Collapsed; BackMenuVisibility = Visibility.Visible; }); }
+        public RelayCommand ShowDetailsKillerCommand => _showDetailsKillerCommand ??= new RelayCommand(ShowDetailsKiller);
 
         private RelayCommand _backToListViewCommand;
-        public RelayCommand BackToListViewCommand { get => _backToListViewCommand ??= new(obj => { ListViewVisibility = Visibility.Visible; SortMenuVisibility = Visibility.Visible; BackMenuVisibility = Visibility.Collapsed; }); }
+        public RelayCommand BackToListViewCommand { get => _backToListViewCommand ??= new(obj => 
+        { 
+            KillerListVisibility = Visibility.Visible; 
+            SortMenuVisibility = Visibility.Visible; 
+            DetailedInformationVisibility = Visibility.Collapsed;
+        });}
         
         private RelayCommand _reloadDataCommand;
         public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { GetKillerStatisticData(); SortKillerStatsByDescendingOrder(); SearchTextBox = string.Empty; }); }
 
         #endregion
-
-        #region Методы
+       
+        #region Получение данных по киллерам
 
         private void GetKillerStatisticData()
         {
@@ -135,9 +162,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             {
                 List<Killer> KillerList = context.Killers.Skip(1).ToList();
 
-                //Количество матчей в базе данных, в которых я играл за киллера
-                int CountMatch =
-                    context.GameStatistics
+                int CountMatch = context.GameStatistics
                     .Include(gs => gs.IdKillerNavigation)
                     .ThenInclude(killerInfo => killerInfo.IdAssociationNavigation)
                     .Where(gs => gs.IdKillerNavigation.IdAssociation == 1)
@@ -145,9 +170,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
                 foreach (var killer in KillerList)
                 {
-                    //Количество игр за конкретного киллера, по порядку
-                    List<GameStatistic> GameStat = 
-                        context.GameStatistics
+                    List<GameStatistic> GameStat = context.GameStatistics
                         .Include(gs => gs.IdKillerNavigation)
                         .ThenInclude(killerInfo => killerInfo.IdKillerNavigation)
 
@@ -178,8 +201,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     double KillingThree = Math.Round((double)GameStat.Where(gs => gs.CountKills == 3).Count() / GameStat.Count * 100, 2);
                     double KillingFour = Math.Round((double)GameStat.Where(gs => gs.CountKills == 4).Count() / GameStat.Count * 100, 2);
 
-                    //Добавление данных по киллерам
-                    var game = new KillerStat()
+                    var killerStat = new KillerStat()
                     {
                         KillerID = killer.IdKiller,
                         KillerName = killer.KillerName,
@@ -196,23 +218,32 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                         KillingThreeSurvivors = KillingThree,
                         KillingFourSurvivors = KillingFour
                     };
-                    KillerStatList.Add(game);
+                    KillerStatList.Add(killerStat);
                 }
+            }
+        }
+
+        #endregion
+
+        #region Методы
+
+        private void ShowDetailsKiller(object parameter)
+        {
+            if (parameter is KillerStat CurrentKiller)
+            {
+                KillerListVisibility = Visibility.Collapsed;
+                SortMenuVisibility = Visibility.Collapsed;
+                DetailedInformationVisibility = Visibility.Visible;
+
+                SelectedKiller = CurrentKiller;
+                GetDateChart();
             }
         }
 
         private void SetDefaultVisibility()
         { 
             SortMenuVisibility = Visibility.Visible;
-            BackMenuVisibility = Visibility.Collapsed;
-        }
-
-        private void ShowNameKiller(object parameter)
-        {
-            if (parameter is KillerStat selectedKiller)
-            {
-                MessageBox.Show(selectedKiller.KillerName);
-            }
+            DetailedInformationVisibility = Visibility.Collapsed;
         }
 
         #endregion
@@ -407,6 +438,152 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 KillerStatSortedList.Add(item);
             }
         }
+        #endregion
+
+        #region Граффик
+
+        private SeriesCollection _seriesCollection;
+        public SeriesCollection SeriesCollection
+        {
+            get => _seriesCollection;
+            set
+            {
+                _seriesCollection = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string[] _labels;
+        public string[] Labels
+        {
+            get => _labels;
+            set
+            {
+                _labels = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Func<double, string> _yFormatter;
+        public Func<double, string> YFormatter
+        {
+            get => _yFormatter;
+            set
+            {
+                _yFormatter = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void GetDateChart()
+        {
+
+            SeriesCollection = new SeriesCollection
+            {
+                new ColumnSeries
+                {
+                    Title = "Матчей",
+                    Values = new ChartValues<double>(KillerStatList.Select(x => x.KillerCountGame)),
+                    LabelsPosition = 0,
+
+                },
+                new ColumnSeries
+                {
+                    Title = "Килрейт",
+                    Values = new ChartValues<double>(KillerStatList.Select(x => x.KillerKillRate)),
+                    LabelsPosition = 0,
+
+                }
+            };
+
+            Labels = KillerStatList.Select(x => x.KillerName).ToArray();
+            YFormatter = value => value.ToString();
+        }
+
+        #endregion
+
+        #region Статистика в виде списка
+
+        #endregion
+
+        #region Средний счет очков (День, Неделя, Месяц, Год, за патч)
+
+        #endregion
+
+        #region Количество сыгранных матчей (День, Неделя, Месяц, Год, за патч)
+
+        #endregion
+
+        #region KillRate (День, Неделя, Месяц, Год, за патч)
+
+        #endregion
+
+        #region WinRate (День, Неделя, Месяц, Год, за патч)
+
+        #endregion
+
+        #region Частота использования перков (Выжившие против выбранного киллера, Киллер)
+
+        #endregion
+
+        #region Частота использования билдов (Выжившие против выбранного киллера, Киллер)
+
+        #endregion
+
+        #region Частота использования билдов (Выжившие против выбранного киллера, Киллер)
+
+        #endregion
+
+        #region Популярные предметы выживших
+
+        #endregion
+
+        #region Частота использования Улучшений (Выжившие(Предметы) против выбранного киллера, Киллер)
+
+        #endregion
+
+        #region Частота использования подношений (Выжившие(Предметы) против выбранного киллера, Киллер)
+
+        #endregion
+
+        #region Количество престижей выживших
+
+        #endregion
+
+        #region Количество игроков по платформам
+
+        #endregion
+
+        #region % ливающих игроков
+
+        #endregion
+
+        #region % Анонимных игроков
+
+        #endregion
+
+        #region Количество персонажей (Выжившие), встречаемые в игре на выбранном киллере
+
+        #endregion
+
+        #region % Повесов (0-12)
+
+        #endregion
+
+        #region % Оставшихся генераторов (0-5)
+
+        #endregion
+
+        #region Типы смертей выживший
+
+        #endregion
+
+        #region Количество сыгранных матчей на картах ( W\R, K\R, без подношений, с подношениями)
+
+        #endregion
+
+        #region % киллов (0-4)
+
         #endregion
     }
 }

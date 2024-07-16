@@ -125,6 +125,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         }
 
 
+        public ObservableCollection<Measurement> MeasurementList { get; set; }
+
+        private Measurement _selectedMeasurementItem;
+        public Measurement SelectedMeasurementItem
+        {
+            get => _selectedMeasurementItem;
+            set
+            {
+                _selectedMeasurementItem = value;
+                if (value == null) { return; }
+                TextBoxMeasurement = value.MeasurementName;
+                OnPropertyChanged();
+
+            }
+        }
+
         private string _titel;
         public string Titel
         {
@@ -229,7 +245,17 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 OnPropertyChanged();
             }
         }
-
+        
+        private string _textBoxMeasurement;
+        public string TextBoxMeasurement
+        {
+            get => _textBoxMeasurement;
+            set
+            {
+                _textBoxMeasurement = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
@@ -263,6 +289,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _saveRoleCommand;
         public RelayCommand SaveRoleCommand { get => _saveRoleCommand ??= new(obj => AddRole()); }
 
+        private RelayCommand _saveMeasurementCommand;
+        public RelayCommand SaveMeasurementCommand { get => _saveMeasurementCommand ??= new(obj => AddMeasurement()); }
+
 
         private RelayCommand _deleteGameModeItemCommand;
         public RelayCommand DeleteGameModeItemCommand { get => _deleteGameModeItemCommand ??= new(obj => DeleteGameModeItem()); }
@@ -284,6 +313,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private RelayCommand _deleteRoleItemCommand;
         public RelayCommand DeleteRoleItemCommand { get => _deleteRoleItemCommand ??= new(obj => DeleteRoleItem()); }
+        
+        private RelayCommand _deleteMeasurementItemCommand;
+        public RelayCommand DeleteMeasurementItemCommand { get => _deleteMeasurementItemCommand ??= new(obj => DeleteMeasurementItem()); }
 
 
         private RelayCommand _updateGameModeItemCommand;
@@ -305,7 +337,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public RelayCommand UpdateTypeDeathItemCommand { get => _updateTypeDeathItemCommand ??= new(obj => UpdateTypeDeathItem()); }
 
         private RelayCommand _updateRoleItemCommand;
-        public RelayCommand UpdateRoleItemCommand { get => _updateRoleItemCommand ??= new(obj => UpdateRoleItem()); }
+        public RelayCommand UpdateRoleItemCommand { get => _updateRoleItemCommand ??= new(obj => UpdateRoleItem()); } 
+        
+        private RelayCommand _updateMeasurementItemCommand;
+        public RelayCommand UpdateMeasurementItemCommand { get => _updateMeasurementItemCommand ??= new(obj => UpdateMeasurementItem()); }
 
         #endregion
 
@@ -321,6 +356,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             GetPatchData();
             GetTypeDeathData();
             GetRoleData();
+            GetMeasurementData();
         }
 
         private void RefList()
@@ -332,6 +368,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             PatchList = new ObservableCollection<Patch>();
             DeathList = new ObservableCollection<TypeDeath>();
             GameRoleList = new ObservableCollection<Role>();
+            MeasurementList = new ObservableCollection<Measurement>();
         }
 
         private async void GetGameModeData()
@@ -414,6 +451,18 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 foreach (var item in roles)
                 {
                     GameRoleList.Add(item);
+                }
+            }
+        }
+        
+        private async void GetMeasurementData()
+        {
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                var measurements = await context.Measurements.ToListAsync();
+                foreach (var item in measurements)
+                {
+                    MeasurementList.Add(item);
                 }
             }
         }
@@ -579,6 +628,29 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     GameRoleList.Clear();
                     GetRoleData();
                     TextBoxRole = string.Empty;
+                }
+            }
+        }
+        
+        private void AddMeasurement()
+        {
+            var newMeasurement = new Measurement { MeasurementName = TextBoxMeasurement };
+
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                bool exists = context.Measurements.Any(R => R.MeasurementName == newMeasurement.MeasurementName);
+
+                if (exists || string.IsNullOrEmpty(TextBoxMeasurement))
+                {
+                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                }
+                else
+                {
+                    context.Measurements.Add(newMeasurement);
+                    context.SaveChanges();
+                    MeasurementList.Clear();
+                    GetMeasurementData();
+                    TextBoxMeasurement = string.Empty;
                 }
             }
         }
@@ -831,6 +903,41 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 else { MessageBox.Show("Нечего обновлять"); }
             }
         }
+
+        private void UpdateMeasurementItem()
+        {
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                if (SelectedMeasurementItem == null)
+                {
+                    return;
+                }
+
+                var entityToUpdate = context.Measurements.Find(SelectedMeasurementItem.IdMeasurement);
+
+                if (entityToUpdate != null)
+                {
+                    if (entityToUpdate.MeasurementName == TextBoxMeasurement)
+                    {
+                        MessageBox.Show("Нельзя менять текст на такой же");
+                        return;
+                    }
+
+                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedMeasurementItem.MeasurementName} на {TextBoxMeasurement} ?",
+                        "Предупреждение",
+                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        entityToUpdate.MeasurementName = TextBoxMeasurement;
+                        context.SaveChanges();
+                        MeasurementList.Clear();
+                        GetMeasurementData();
+                        SelectedMeasurementItem = null;
+                        TextBoxMeasurement = string.Empty;
+                    }
+                }
+                else { MessageBox.Show("Нечего обновлять"); }
+            }
+        }
         #endregion
 
         #region Методы удаления данных из БД
@@ -936,6 +1043,21 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     GameRoleList.Clear();
                     GetRoleData();
+                }
+            }
+        }
+        
+        private void DeleteMeasurementItem()
+        {
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                var entityToDelete = context.Measurements.Find(SelectedMeasurementItem.IdMeasurement);
+                if (entityToDelete != null)
+                {
+                    context.Measurements.Remove(entityToDelete);
+                    context.SaveChanges();
+                    MeasurementList.Clear();
+                    GetMeasurementData();
                 }
             }
         }

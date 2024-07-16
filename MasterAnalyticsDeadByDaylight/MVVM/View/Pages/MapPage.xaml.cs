@@ -1,5 +1,6 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels;
 using System.Windows.Controls;
+using System.Drawing;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Pages
 {
@@ -8,10 +9,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Pages
     /// </summary>
     public partial class MapPage : Page
     {
+        MapPageViewModel ViewModel { get; set; }
+
         public MapPage()
         {
             InitializeComponent();
-            DataContext = new MapPageViewModel();
+            ViewModel = new MapPageViewModel();
+            DataContext = ViewModel;
         }
     }
 }

@@ -9,8 +9,6 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigatio
 
         private static readonly Page Match = new MatchPage();
         private static readonly Page KillerStat = new KillerPage();
-        private static readonly Page MyKillerStat = new KillerPageMyDetailedStatisticsPage();
-        private static readonly Page OpponentKillerStat = new KillerPageOpponentDetailedStatisticsPage();
         private static readonly Page Survivor = new SurvivorPage();
         private static readonly Page Map = new MapPage();
 
@@ -29,14 +27,6 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigatio
 
                 case "KillerPage":
                     _frame.Navigate(KillerStat);
-                    break;
-
-                case "MyKiller":
-                    _frame.Navigate(MyKillerStat);
-                    break;
-
-                case "OpponentKiller":
-                    _frame.Navigate(OpponentKillerStat);
                     break;
 
                 case "SurvivorPage":

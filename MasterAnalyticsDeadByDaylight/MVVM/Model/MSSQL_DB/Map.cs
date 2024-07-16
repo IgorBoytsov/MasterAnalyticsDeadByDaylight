@@ -13,5 +13,9 @@ public partial class Map
 
     public string MapDescription { get; set; }
 
+    public int? IdMeasurement { get; set; }
+
     public virtual ICollection<GameStatistic> GameStatistics { get; set; } = new List<GameStatistic>();
+
+    public virtual Measurement IdMeasurementNavigation { get; set; }
 }

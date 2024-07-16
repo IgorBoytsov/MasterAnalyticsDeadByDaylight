@@ -15,6 +15,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         public ObservableCollection<Map> MapList { get; set; }
 
+        public ObservableCollection<Measurement> MeasurementList { get; set; }
+
         private Map _selectedMapItem;
         public Map SelectedMapItem
         {
@@ -26,6 +28,18 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 TextBoxMapName = value.MapName;
                 TextBoxMapDescription = value.MapDescription;
                 ImageMap = value.MapImage;
+                SelectedMeasurementItem = MeasurementList.FirstOrDefault(m => m.IdMeasurement == value.IdMeasurement);
+                OnPropertyChanged();
+            }
+        }
+
+        private Measurement _selectedMeasurementItem;
+        public Measurement SelectedMeasurementItem
+        {
+            get => _selectedMeasurementItem;
+            set
+            {
+                _selectedMeasurementItem = value;
                 OnPropertyChanged();
             }
         }
@@ -80,6 +94,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public AddMapWindowViewModel()
         {
             GetMapData();
+            GetMeasurementData();
             RefList();
         }
 
@@ -104,6 +119,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private void RefList()
         {
             MapList = new ObservableCollection<Map>();
+            MeasurementList = new ObservableCollection<Measurement>();
         }
 
         private async void GetMapData()
@@ -118,9 +134,21 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
+        private async void GetMeasurementData()
+        {
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                var measurements = await context.Measurements.ToListAsync();
+                foreach (var item in measurements)
+                {
+                    MeasurementList.Add(item);
+                }
+            }
+        }
+
         private void AddMap()
         {
-            var newMap = new Map { MapName = TextBoxMapName, MapImage = ImageMap, MapDescription = TextBoxMapDescription };
+            var newMap = new Map { MapName = TextBoxMapName, MapImage = ImageMap, MapDescription = TextBoxMapDescription, IdMeasurement = SelectedMeasurementItem.IdMeasurement };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -163,6 +191,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                         entityToUpdate.MapName = TextBoxMapName;
                         entityToUpdate.MapDescription = TextBoxMapDescription;
                         entityToUpdate.MapImage = ImageMap;
+                        entityToUpdate.IdMeasurement = SelectedMeasurementItem.IdMeasurement;
                         context.SaveChanges();
                         MapList.Clear();
                         GetMapData();

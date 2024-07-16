@@ -83,8 +83,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             SetContentButtonForVisibilityListView();
             SetVisibilityListView();
 
-            SetNullKillerInfoData();
-            SetNullSurvivorInfoData();
+            //SetNullKillerInfoData();
+            //SetNullSurvivorInfoData();
 
             SelectedDateTimeGameMatch = DateTime.Now;
 
@@ -651,6 +651,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFirstSurvivor = value;
+                OnPropertyChanged();
             }
         }
 
@@ -694,6 +695,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedListViewItemAddon = value;
+                OnPropertyChanged();
             }
         }
 
@@ -775,6 +777,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFirstSurvivorPlatform = value;
+                OnPropertyChanged();
             }
         }
 
@@ -810,6 +813,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFirstSurvivorTypeDeath = value;
+                OnPropertyChanged();
             }
         }
 
@@ -823,6 +827,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _firstSurvivorAccount = value;
+                OnPropertyChanged();
             }
         }
 
@@ -836,6 +841,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _firstSurvivorAnonymousMode = value;
+                OnPropertyChanged();
             }
         }
 
@@ -849,6 +855,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _firstSurvivorBot = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1207,6 +1214,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFirstSurvivorPlayerAssociation = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1225,6 +1233,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedSecondSurvivor = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1238,6 +1247,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedSecondSurvivorPlatform = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1273,6 +1283,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedSecondSurvivorTypeDeath = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1286,6 +1297,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _secondSurvivorAccount = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1299,6 +1311,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _secondSurvivorAnonymousMode = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1312,6 +1325,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _secondSurvivorBot = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1668,6 +1682,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedSecondSurvivorPlayerAssociation = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1686,6 +1701,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedThirdSurvivor = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1699,6 +1715,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedThirdSurvivorPlatform = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1734,6 +1751,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedThirdSurvivorTypeDeath = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1747,6 +1765,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _thirdSurvivorAccount = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1760,6 +1779,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _thirdSurvivorAnonymousMode = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1773,6 +1793,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _thirdSurvivorBot = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2130,6 +2151,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 if (value == null) { return; }
                 _selectedThirdSurvivorPlayerAssociation = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2148,6 +2170,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFourthSurvivor = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2161,6 +2184,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFourthSurvivorPlatform = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2196,6 +2220,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFourthSurvivorTypeDeath = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2209,6 +2234,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _fourthSurvivorAccount = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2222,6 +2248,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _fourthSurvivorAnonymousMode = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2235,6 +2262,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _fourthSurvivorBot = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2592,6 +2620,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFourthSurvivorPlayerAssociation = value;
+                OnPropertyChanged();
             }
         }
 
@@ -2933,6 +2962,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 SetNullKillerInfoData();
                 SetNullSurvivorInfoData();
+                SetNullGameInfoData();
 
                 ResultMatchImage = null;
                 StartMatchImage = null;
@@ -3669,6 +3699,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 KillerInfoAnonymousMode = false;
                 KillerInfoBot = false;
+                KillerInfoAccount = 0;
 
                 //var defaultPerk = context.KillerPerks.Where(perk => perk.PerkName == "Отсутствует").FirstOrDefault();
                 //SelectedKillerFirstPerk = null;
@@ -3690,12 +3721,29 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                var platform = context.Platforms.Where(platform => platform.PlatformName == "Steam").FirstOrDefault();
+                var platform = context.Platforms.FirstOrDefault(platform => platform.PlatformName == "Steam");
 
-                SelectedFirstSurvivorPlatform = platform;
-                SelectedSecondSurvivorPlatform = platform;
-                SelectedThirdSurvivorPlatform = platform;
-                SelectedFourthSurvivorPlatform = platform;
+                SelectedFirstSurvivorPlatform = PlatformList.First();
+                SelectedSecondSurvivorPlatform = PlatformList.First();
+                SelectedThirdSurvivorPlatform = PlatformList.First();
+                SelectedFourthSurvivorPlatform = PlatformList.First();
+
+                FirstSurvivorPrestige = 0;
+                SecondSurvivorPrestige = 0;
+                ThirdSurvivorPrestige = 0;
+                FourthSurvivorPrestige = 0;
+
+                var typeDeath = context.TypeDeaths.FirstOrDefault(type => type.TypeDeathName == "От крюка");
+
+                SelectedFirstSurvivorTypeDeath = TypeDeathList.First();
+                SelectedSecondSurvivorTypeDeath = TypeDeathList.First();
+                SelectedThirdSurvivorTypeDeath = TypeDeathList.First();
+                SelectedFourthSurvivorTypeDeath = TypeDeathList.First();
+
+                FirstSurvivorAccount = 0;
+                SecondSurvivorAccount = 0;
+                ThirdSurvivorAccount = 0;
+                FourthSurvivorAccount = 0;
 
                 FirstSurvivorAnonymousMode = false;
                 SecondSurvivorAnonymousMode = false;
@@ -3752,6 +3800,17 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
+        private void SetNullGameInfoData()
+        {
+            CountKills = 0;
+            CountHooks = 0;
+            SelectedMap = null;
+            CountNumberRecentGenerators = 0;
+            SelectedWhoPlacedMap = WhoPlacedMapList.First();
+            SelectedWhoPlacedMapWin = WhoPlacedMapList.First();
+            DescriptionGame = string.Empty;
+        }
+
         private void GetGameModeListData()
         {
             new Thread(() =>
@@ -3796,7 +3855,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    var entities = context.Maps.ToList();
+                    var entities = context.Maps.OrderBy(m => m.IdMeasurement).ToList();
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
