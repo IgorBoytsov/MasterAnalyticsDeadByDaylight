@@ -43,7 +43,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             set
             {
                 _selectedKillerStatSortItem = value;
-                SortKillerStatList();
+                GetKillerStatisticData();
                 OnPropertyChanged();
             }
         }
@@ -55,6 +55,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             set
             {
                 _selectedPlayerAssociationStatItem = value;
+                GetKillerStatisticData();
                 OnPropertyChanged();
             }
         }
@@ -69,7 +70,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 OnPropertyChanged();
             }
         }
-
 
         #endregion
 
@@ -128,10 +128,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         public KillerPageViewModel()
         {
-            KillerStatList = [];
-            KillerStatSortedList = [];
+            DeclareCollections();
+            GetPlayerAssociationData();
+            SelectedPlayerAssociationStatItem = PlayerAssociationList.First();
             SetDefaultVisibility();
-            GetKillerStatisticData();
             SelectedKillerStatSortItem = SortingList.First();
         }
 
@@ -152,8 +152,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { GetKillerStatisticData(); SortKillerStatsByDescendingOrder(); SearchTextBox = string.Empty; }); }
 
         #endregion
-       
-        #region Получение данных по киллерам
+
+        #region Объявление списков
+
+        private void DeclareCollections()
+        {
+            KillerStatList = [];
+            KillerStatSortedList = [];
+            PlayerAssociationList = [];
+        }
+
+        #endregion
+
+        #region Методы получение данных
 
         private void GetKillerStatisticData()
         {
@@ -165,7 +176,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 int CountMatch = context.GameStatistics
                     .Include(gs => gs.IdKillerNavigation)
                     .ThenInclude(killerInfo => killerInfo.IdAssociationNavigation)
-                    .Where(gs => gs.IdKillerNavigation.IdAssociation == 1)
+                    .Where(gs => gs.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
                     .Count();
 
                 foreach (var killer in KillerList)
@@ -177,7 +188,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                         .Include(gs => gs.IdKillerNavigation)
                         .ThenInclude(killerInfo => killerInfo.IdAssociationNavigation)
 
-                        .Where(gs => gs.IdKillerNavigation.IdAssociation == 1)
+                        .Where(gs => gs.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
                         .Where(gs => gs.IdKillerNavigation.IdKillerNavigation.IdKiller == killer.IdKiller)
                         .ToList();
 
@@ -220,12 +231,26 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     };
                     KillerStatList.Add(killerStat);
                 }
+                SortKillerStatList();
+            }
+        }
+
+        private void GetPlayerAssociationData()
+        {
+            PlayerAssociationList.Clear();
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                var association = context.PlayerAssociations.Where(pa => pa.IdPlayerAssociation == 1 || pa.IdPlayerAssociation == 3).ToList();
+                foreach (var item in association)
+                {
+                    PlayerAssociationList.Add(item);
+                }
             }
         }
 
         #endregion
 
-        #region Методы
+        #region Методы видимости элементов
 
         private void ShowDetailsKiller(object parameter)
         {
@@ -246,7 +271,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             DetailedInformationVisibility = Visibility.Collapsed;
         }
 
-        #endregion
+        #endregion  
 
         #region Методы сортировки
 
@@ -307,10 +332,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 KillerStatSortedList.Add(item);
             }
 
-            if (SearchTextBox == string.Empty)
-            {
-                SortKillerStatList();
-            } 
+            //if (SearchTextBox == string.Empty)
+            //{
+            //    SortKillerStatList();
+            //} 
         }
 
         private void SortKillerStatsByDescendingOrder()

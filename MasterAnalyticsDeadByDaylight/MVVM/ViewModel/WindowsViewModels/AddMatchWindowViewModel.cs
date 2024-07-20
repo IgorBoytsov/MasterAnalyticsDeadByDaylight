@@ -204,8 +204,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedListViewKillerPerk;
             set
             {
-                _selectedListViewKillerPerk = value;
-                OnPropertyChanged();
+                if (value != null)
+                {
+                    _selectedListViewKillerPerk = value;
+                    OnPropertyChanged();
+                }
+                else { return; }
             }
         }
 
@@ -664,8 +668,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedListViewSurvivorPerk;
             set
             {
-                _selectedListViewSurvivorPerk = value;
-                OnPropertyChanged();
+                if (value != null)
+                {
+                    _selectedListViewSurvivorPerk = value;
+                    OnPropertyChanged();
+                }
+                else { return; }
+                
             }
         }
 
@@ -3913,6 +3922,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                     var entities = context.Offerings
                     .Where(off => off.IdRole == SelectedComboBoxRoleFirstSurvivor.IdRole)
+                    .OrderBy(off => off.IdRarity)
                     .ToList();
 
                     Application.Current.Dispatcher.Invoke(() =>

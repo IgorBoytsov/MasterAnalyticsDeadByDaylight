@@ -900,11 +900,11 @@
                                                     </DockPanel>
 
                                                     <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
-                                                        <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="15"/>
-                                                    </DockPanel>
-
-                                                    <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
                                                         <TextBlock Text="Как умер?" Height="25" Foreground="White" FontSize="15"/>
+                                                    </DockPanel>
+                                                    
+                                                    <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                        <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="15"/>
                                                     </DockPanel>
 
                                                     <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
@@ -950,15 +950,6 @@
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25"
-                                                             Text="{Binding FirstSurvivorPrestige}"
-                                                             Style="{StaticResource SettingTextBoxStyle}" 
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
-                                                             TextAlignment="Center" 
-                                                             FontSize="16"/>
-                                                </DockPanel>
-
-                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                                     <ComboBox Width="150" Height="25"  
                                                               ItemsSource="{Binding TypeDeathList}"
                                                               SelectedItem="{Binding SelectedFirstSurvivorTypeDeath}"
@@ -967,6 +958,15 @@
                                                               Style="{StaticResource ComboBoxStyleApp}" 
                                                               Template="{StaticResource ComboBoxTemplate}"
                                                               FontSize="17" Foreground="White"/>
+                                                </DockPanel>
+                                                
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding FirstSurvivorPrestige}"
+                                                             Style="{StaticResource SettingTextBoxStyle}" 
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             TextAlignment="Center" 
+                                                             FontSize="16"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -1518,11 +1518,11 @@
                                                         </DockPanel>
 
                                                         <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
-                                                            <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="15"/>
+                                                            <TextBlock Text="Как умер?" Height="25" Foreground="White" FontSize="15"/>
                                                         </DockPanel>
 
                                                         <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
-                                                            <TextBlock Text="Как умер?" Height="25" Foreground="White" FontSize="15"/>
+                                                            <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="15"/>
                                                         </DockPanel>
 
                                                         <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
@@ -1568,15 +1568,6 @@
                                                     </DockPanel>
 
                                                     <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                        <TextBox Width="150" Height="25"
-                                                                 Text="{Binding SecondSurvivorPrestige}"
-                                                                 Style="{StaticResource SettingTextBoxStyle}"                                                                
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"
-                                                                 TextAlignment="Center" 
-                                                                 FontSize="16"/>
-                                                    </DockPanel>
-
-                                                    <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                                         <ComboBox Width="150" Height="25"  
                                                                   ItemsSource="{Binding TypeDeathList}"
                                                                   SelectedItem="{Binding SelectedSecondSurvivorTypeDeath}"
@@ -1585,6 +1576,15 @@
                                                                   Style="{StaticResource ComboBoxStyleApp}" 
                                                                   Template="{StaticResource ComboBoxTemplate}"
                                                                   FontSize="17" Foreground="White"/>
+                                                    </DockPanel>
+
+                                                    <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                        <TextBox Width="150" Height="25"
+                                                                 Text="{Binding SecondSurvivorPrestige}"
+                                                                 Style="{StaticResource SettingTextBoxStyle}"                                                                
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                                 TextAlignment="Center" 
+                                                                 FontSize="16"/>
                                                     </DockPanel>
 
                                                     <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -2137,11 +2137,11 @@
                                                         </DockPanel>
 
                                                         <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
-                                                            <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="15"/>
-                                                        </DockPanel>
-
-                                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
                                                             <TextBlock Text="Как умер?" Height="25" Foreground="White" FontSize="15"/>
+                                                        </DockPanel>
+                                                        
+                                                        <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                            <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="15"/>
                                                         </DockPanel>
 
                                                         <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
@@ -2187,15 +2187,6 @@
                                                     </DockPanel>
 
                                                     <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                        <TextBox Width="150" Height="25"
-                                                                 Text="{Binding ThirdSurvivorPrestige}"
-                                                                 Style="{StaticResource SettingTextBoxStyle}"                                                                
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"
-                                                                 TextAlignment="Center" 
-                                                                 FontSize="16"/>
-                                                    </DockPanel>
-
-                                                    <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                                         <ComboBox Width="150" Height="25"  
                                                                   ItemsSource="{Binding TypeDeathList}"
                                                                   SelectedItem="{Binding SelectedThirdSurvivorTypeDeath}"
@@ -2204,6 +2195,15 @@
                                                                   Style="{StaticResource ComboBoxStyleApp}" 
                                                                   Template="{StaticResource ComboBoxTemplate}"
                                                                   FontSize="17" Foreground="White"/>
+                                                    </DockPanel>
+
+                                                    <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                        <TextBox Width="150" Height="25"
+                                                                 Text="{Binding ThirdSurvivorPrestige}"
+                                                                 Style="{StaticResource SettingTextBoxStyle}"                                                                
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                                 TextAlignment="Center" 
+                                                                 FontSize="16"/>
                                                     </DockPanel>
 
                                                     <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
@@ -2757,11 +2757,11 @@
                                                     </DockPanel>
 
                                                     <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
-                                                        <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="15"/>
-                                                    </DockPanel>
-
-                                                    <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
                                                         <TextBlock Text="Как умер?" Height="25" Foreground="White" FontSize="15"/>
+                                                    </DockPanel>
+                                                    
+                                                    <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
+                                                        <TextBlock Text="Престиж:" Height="25" Foreground="White" FontSize="15"/>
                                                     </DockPanel>
 
                                                     <DockPanel Margin="50,15,0,0" HorizontalAlignment="Left">
@@ -2807,15 +2807,6 @@
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
-                                                    <TextBox Width="150" Height="25"
-                                                                 Text="{Binding FourthSurvivorPrestige}"
-                                                                 Style="{StaticResource SettingTextBoxStyle}"                                                                
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"
-                                                                 TextAlignment="Center" 
-                                                                 FontSize="16"/>
-                                                </DockPanel>
-
-                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
                                                     <ComboBox Width="150" Height="25"  
                                                                   ItemsSource="{Binding TypeDeathList}"
                                                                   SelectedItem="{Binding SelectedFourthSurvivorTypeDeath}"
@@ -2824,6 +2815,15 @@
                                                                   Style="{StaticResource ComboBoxStyleApp}" 
                                                                   Template="{StaticResource ComboBoxTemplate}"
                                                                   FontSize="17" Foreground="White"/>
+                                                </DockPanel>
+                                                
+                                                <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">
+                                                    <TextBox Width="150" Height="25"
+                                                                 Text="{Binding FourthSurvivorPrestige}"
+                                                                 Style="{StaticResource SettingTextBoxStyle}"                                                                
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                                 TextAlignment="Center" 
+                                                                 FontSize="16"/>
                                                 </DockPanel>
 
                                                 <DockPanel Margin="0,15,0,0" HorizontalAlignment="Center">

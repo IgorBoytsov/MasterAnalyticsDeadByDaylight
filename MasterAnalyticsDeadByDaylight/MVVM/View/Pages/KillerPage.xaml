@@ -65,8 +65,8 @@
                     <TextBlock Text="Сортировка" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
                     <ComboBox ItemsSource="{Binding SortingList}" SelectedItem="{Binding SelectedKillerStatSortItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
 
-                    <TextBlock Text="Статистика" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
-                    <ComboBox ItemsSource="{Binding PlayerAssociationList}" DisplayMemberPath="PlayerAssociationName" SelectedItem="{Binding SelectedPlayerAssociationStatItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
+                    <TextBlock Text="Ассациация" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
+                    <ComboBox ItemsSource="{Binding PlayerAssociationList}" SelectedItem="{Binding SelectedPlayerAssociationStatItem}" DisplayMemberPath="PlayerAssociationName" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
 
                 </StackPanel>
 
@@ -79,7 +79,7 @@
         <ScrollViewer Grid.Row="1" VirtualizingPanel.ScrollUnit="Pixel" CanContentScroll="False">
             <StackPanel>
                 <StackPanel>
-                    <ItemsControl Visibility="{Binding KillerListVisibility}" 
+                    <ItemsControl Visibility="{Binding KillerListVisibility}"
                                   ItemsSource="{Binding KillerStatSortedList}" d:ItemsSource="{d:SampleData ItemCount=3}"
                                   Background="#121212" BorderThickness="0"
                                   ScrollViewer.CanContentScroll="False"
@@ -87,7 +87,7 @@
                                   ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,20">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border  Width="1400" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Margin="10,10,10,0">
+                                <Border Width="1400" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Margin="10,10,10,0">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150"/>
@@ -229,12 +229,12 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    
+
                 </StackPanel>
-                
+
                 <!--#region Расширеная информация -->
-               
-                <StackPanel Visibility="{Binding DetailedInformationVisibility}" Width="1400" Margin="15,0,15,0">
+
+                <StackPanel Visibility="{Binding DetailedInformationVisibility}" Width="Auto" MaxWidth="1400" Margin="15,0,15,0">
 
                     <!--#region Статистика в виде списка -->
 
@@ -242,7 +242,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Статистика" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Статистика" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -265,7 +265,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Средний счет очков на киллере за День\Неделю\Месяц\Год\Патч" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Средний счет очков на киллере за День\Неделю\Месяц\Год\Патч" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -279,15 +279,15 @@
                     <!--#endregion-->
 
                     <!--#region Количество сыгранных матчей за День\Неделю\Месяц\Год\Патч -->
-                    
+
                     <StackPanel  Margin="0,20,0,0">
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Матчи по датам: " FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="От" FontSize="30" Foreground="White" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                                    <TextBlock Text="Матчи по датам: " Style="{StaticResource HeaderAdditionalStatistics}"/>
+                                    <TextBlock Text="От" FontSize="30" Style="{StaticResource HeaderAdditionalStatistics}" Margin="10,0,0,0"/>
                                     <DatePicker SelectedDate="{Binding a}" FontSize="25" Margin="10,0,0,0"/>
-                                    <TextBlock Text="До" FontSize="30" Foreground="White" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                                    <TextBlock Text="До" Style="{StaticResource HeaderAdditionalStatistics}" Margin="10,0,0,0"/>
                                     <DatePicker SelectedDate="{Binding a}" FontSize="25" Margin="10,0,0,0"/>
                                 </StackPanel>
                             </Border>
@@ -305,16 +305,16 @@
                             </Border>
                         </StackPanel>
                     </StackPanel>
-                     
+
                     <!--#endregion-->
 
                     <!--#region Киллрейт за День\Неделю\Месяц\Год\Патч -->
-                  
+
                     <StackPanel Margin="0,20,0,0">
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Киллрейт по патчам" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Киллрейт по патчам" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -324,16 +324,16 @@
                             </Border>
                         </StackPanel>
                     </StackPanel>
-                    
+
                     <!--#endregion-->
-                    
+
                     <!--#region Винрейт за День\Неделю\Месяц\Год\Патч -->
 
                     <StackPanel Margin="0,20,0,0">
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Винрейт за День\Неделю\Месяц\Год\Патч" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Винрейт за День\Неделю\Месяц\Год\Патч" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -352,7 +352,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Популярные перки выживших \ киллера" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Популярные перки выживших \ киллера" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -378,7 +378,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Популярные билды выживших \ киллера" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Популярные билды выживших \ киллера" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -404,7 +404,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Киллрейт по патчам" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Киллрейт по патчам" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -423,7 +423,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Популярные улучшение выживших \ киллера" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Популярные улучшение выживших \ киллера" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -449,7 +449,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Популярные подношение выживших \ киллера" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Популярные подношение выживших \ киллера" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -475,7 +475,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Престиже" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Престиже" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -494,7 +494,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Количество игроков по платформам \ % ливающих игроков \ % Анонимных игроков" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Количество игроков по платформам \ % ливающих игроков \ % Анонимных игроков" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -525,7 +525,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Частота встречамости персонажей ( Выжившие )" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Частота встречамости персонажей ( Выжившие )" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -544,7 +544,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="% Повесов (0-12) \ % Оставшихся генераторов (0-5) \ Как умер выживший (Круговые диограмы)" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="% Повесов (0-12) \ % Оставшихся генераторов (0-5) \ Как умер выживший (Круговые диограмы)" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -575,7 +575,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="% выпадение карт на киллере" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="% выпадение карт на киллере" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -594,7 +594,7 @@
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="% выпадение карт на киллере" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="% выпадение карт на киллере" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -606,13 +606,12 @@
                     </StackPanel>
 
                     <!--#endregion-->
-                    
+
                 </StackPanel>
-                
+
                 <!--#endregion-->
-                
+
             </StackPanel>
         </ScrollViewer>
-    
     </Grid>
 </Page>

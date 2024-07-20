@@ -128,7 +128,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         {
             if (parameter is GameStatistic selectedGameMatch)
             {
-                MessageBox.Show(selectedGameMatch.IdKillerNavigation.IdKillerNavigation.KillerName);
+                MessageBox.Show(selectedGameMatch.IdGameStatistic.ToString());
             }
         }
 

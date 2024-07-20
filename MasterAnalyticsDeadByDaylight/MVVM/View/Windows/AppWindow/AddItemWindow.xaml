@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow" 
-        xmlns:viewmodel="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel" 
-        d:DataContext="{d:DesignInstance Type=viewmodel:AddItemWindowViewModel}"
+        xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" 
+        d:DataContext="{d:DesignInstance Type=windowsviewmodels:AddItemWindowViewModel}"
         mc:Ignorable="d"
         Style="{StaticResource WindowStyle}"
         ResizeMode="NoResize"
@@ -87,7 +87,10 @@
 
             <ListView  Background="#FF282C34" BorderThickness="0"
                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                       ItemsSource="{Binding ItemList}" SelectedItem="{Binding SelectedItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                       ItemsSource="{Binding ItemList}" SelectedItem="{Binding SelectedItem}" d:ItemsSource="{d:SampleData ItemCount=5}"
+                       ScrollViewer.CanContentScroll="False"
+                       VirtualizingPanel.ScrollUnit="Pixel"
+                       ScrollViewer.VerticalScrollBarVisibility="Visible">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -229,18 +232,18 @@
 
             <ListView  Background="#FF282C34" BorderThickness="0"
                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                       ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                       ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=5}"
+                       ScrollViewer.CanContentScroll="False"
+                       VirtualizingPanel.ScrollUnit="Pixel"
+                       ScrollViewer.VerticalScrollBarVisibility="Visible">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="White" Height="60" BorderThickness="1">
+                        <Border BorderBrush="White" Height="40" BorderThickness="1">
                             <StackPanel Orientation="Horizontal" Margin="10">
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding ItemAddonName}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding IdRarityNavigation.RarityName}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>

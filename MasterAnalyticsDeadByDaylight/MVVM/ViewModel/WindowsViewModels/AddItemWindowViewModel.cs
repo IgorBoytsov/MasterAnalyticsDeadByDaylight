@@ -84,6 +84,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 TextBoxItemAddonName = value.ItemAddonName;
                 TextBoxItemAddonDescription = value.ItemAddonDescription;
                 ImageItemAddon = value.ItemAddonImage;
+                ComboBoxSelectedRarity = RarityList.FirstOrDefault(r => r.IdRarity == value.IdRarity);
                 OnPropertyChanged();
             }
         }
@@ -204,7 +205,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     ItemList.Add(item);
                 }
             }
-        }
+        }    
 
         private async void GetRarityData()
         {
@@ -263,10 +264,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                         MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
                         entityToUpdate.ItemName = TextBoxItemName;
-                        entityToUpdate.ItemName = TextBoxItemDescription;
+                        entityToUpdate.ItemDescription = TextBoxItemDescription;
                         entityToUpdate.ItemImage = ImageItem;
                         context.SaveChanges();
 
+                        ItemList.Clear();
                         GetItemData();
 
                         TextBoxItemName = string.Empty;

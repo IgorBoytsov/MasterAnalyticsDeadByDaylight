@@ -18,29 +18,22 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Background="#2A2A2A">
-            <StackPanel HorizontalAlignment="Center">
-                <StackPanel Visibility="{Binding SortMenuVisibility}" Orientation="Horizontal" >
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
-                    <Button Command="{Binding ReloadDataCommand}" Height="40" Width="40" Template="{StaticResource ControlButton}" Margin="5,0,15,0">
-                        <Button.Content>
-                            <fa:ImageAwesome Icon="Solid_Retweet"/>
-                        </Button.Content>
-                    </Button>
+                <Button Command="{Binding ReloadDataCommand}" Height="40" Width="40" Template="{StaticResource ControlButton}" Margin="5,0,15,0">
+                    <Button.Content>
+                        <fa:ImageAwesome Icon="Solid_Retweet"/>
+                    </Button.Content>
+                </Button>
 
-                    <TextBlock Text="Поиск: " Height="25" FontSize="17" Foreground="White"/>
-                    <TextBox Text="{Binding SearchTextBox, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="170" FontSize="17" Margin="15,0,0,0" Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"/>
+                <TextBlock Text="Поиск: " Height="25" FontSize="17" Foreground="White"/>
+                <TextBox Text="{Binding SearchTextBox, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="170" FontSize="17" Margin="15,0,0,0" Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"/>
 
-                    <TextBlock Text="Сортировка" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
-                    <ComboBox ItemsSource="{Binding SortingList}" SelectedItem="{Binding SelectedMapStatSortItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
+                <TextBlock Text="Сортировка" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
+                <ComboBox ItemsSource="{Binding SortingList}" SelectedItem="{Binding SelectedMapStatSortItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
 
-                    <TextBlock Text="Статистика" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
-                    <ComboBox ItemsSource="{Binding PlayerAssociationList}" DisplayMemberPath="PlayerAssociationName" SelectedItem="{Binding SelectedTypePlayerItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
-
-                </StackPanel>
-
-                <StackPanel Visibility="{Binding BackMenuVisibility}">
-                    <Button Content="Назад" Command="{Binding BackToListViewCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" HorizontalAlignment="Left"/>
-                </StackPanel>
+                <TextBlock Text="Статистика" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
+                <ComboBox ItemsSource="{Binding PlayerAssociationList}" DisplayMemberPath="PlayerAssociationName" SelectedItem="{Binding SelectedTypePlayerItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
             </StackPanel>
         </Border>
 
@@ -64,11 +57,8 @@
 
                                         <StackPanel Margin="10,10,10,10">
                                             <Image Source="{Binding MapImage}" Width="300"/>
-                                            <TextBlock Text="{Binding MapName}" HorizontalAlignment="Center" Foreground="White" FontSize="17" TextDecorations="Underline" TextWrapping="WrapWithOverflow" Cursor="Hand" Margin="0,5,0,0" >
-                                                <TextBlock.InputBindings>
-                                                    <MouseBinding Command="{Binding DataContext.ShowNameCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" MouseAction="LeftClick"/>
-                                                </TextBlock.InputBindings>
-                                            </TextBlock>
+                                            <TextBlock Text="{Binding MapName}" HorizontalAlignment="Center" Foreground="White" FontSize="17" TextDecorations="Underline" TextWrapping="WrapWithOverflow" Margin="0,5,0,0"/>
+                                            <TextBlock Text="{Binding MapMeasurement}" HorizontalAlignment="Center" Foreground="White" FontSize="17" TextDecorations="Underline" TextWrapping="WrapWithOverflow" Margin="0,5,0,0" />
                                         </StackPanel>
 
                                         <Grid Grid.Column="1">
@@ -82,7 +72,7 @@
                                             </Grid.RowDefinitions>
 
                                             <!--#region PickRateMap -->
-                                            
+
                                             <StackPanel Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
                                                 <TextBlock Text="0%" FontSize="15" Foreground="White"/>
                                             </StackPanel>
@@ -98,11 +88,11 @@
                                             <ProgressBar Grid.Row="1" Height="20" Background="#2B2B2B" Foreground="#00748E" BorderThickness="0" Value="{Binding PickRateMap}" VerticalAlignment="Top" Margin="5,0,5,0"/>
 
                                             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Общее кол-во матчей:" FontSize="15" Foreground="White" Margin="5,0,0,0"/>
+                                                <TextBlock Text="{Binding CountGame}" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
+                                                <TextBlock Text="-" FontSize="15" Foreground="White" Margin="10,0,10,0"/>
                                                 <TextBlock Text="{Binding PickRateMap}" FontSize="15" Foreground="White"/>
                                                 <TextBlock Text="%" FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="-" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
-                                                <TextBlock Text="{Binding CountGame}" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
-                                                <TextBlock Text="Матчей" FontSize="15" Foreground="White" Margin="5,0,0,0"/>
                                             </StackPanel>
 
                                             <!--#endregion-->
@@ -124,11 +114,12 @@
                                             <ProgressBar Grid.Row="3" Height="20" Background="#2B2B2B" Foreground="#00748E" BorderThickness="0" Value="{Binding FalloutMapRandomPercent}" VerticalAlignment="Top" Margin="5,0,5,0"/>
 
                                             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Матчей:" FontSize="15" Foreground="White" Margin="5,0,0,0"/>
+                                                <TextBlock Text="{Binding FalloutMapRandom}" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
+                                                <TextBlock Text="-" FontSize="15" Foreground="White" Margin="10,0,10,0"/>
                                                 <TextBlock Text="{Binding FalloutMapRandomPercent}" FontSize="15" Foreground="White"/>
                                                 <TextBlock Text="%" FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="-" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
-                                                <TextBlock Text="{Binding FalloutMapRandom}" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
-                                                <TextBlock Text="Матчей" FontSize="15" Foreground="White" Margin="5,0,0,0"/>
+                                                
                                             </StackPanel>
 
                                             <!--#endregion-->
@@ -150,11 +141,11 @@
                                             <ProgressBar Grid.Row="5" Height="20" Background="#2B2B2B" Foreground="#00748E" BorderThickness="0" Value="{Binding FalloutMapOfferingPercent}" VerticalAlignment="Top" Margin="5,0,5,0"/>
 
                                             <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Матчей:" FontSize="15" Foreground="White" Margin="5,0,0,0"/>
+                                                <TextBlock Text="{Binding FalloutMapOffering}" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
+                                                <TextBlock Text="-" FontSize="15" Foreground="White" Margin="10,0,10,0"/>
                                                 <TextBlock Text="{Binding FalloutMapOfferingPercent}" FontSize="15" Foreground="White"/>
                                                 <TextBlock Text="%" FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="-" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
-                                                <TextBlock Text="{Binding FalloutMapOffering}" FontSize="15" Foreground="White" Margin="10,0,0,0"/>
-                                                <TextBlock Text="Матчей" FontSize="15" Foreground="White" Margin="5,0,0,0"/>
                                             </StackPanel>
 
                                             <!--#endregion-->
@@ -167,38 +158,7 @@
                     </ItemsControl>
 
                 </StackPanel>
-
-                <!--#region Расширеная информация -->
-
-                <StackPanel Visibility="{Binding BackMenuVisibility}" Margin="15,0,15,0">
-
-                    <!--#region Колличество сыгранных матчей за День\Неделю\Месяц\Год\Патч -->
-                    
-                    <StackPanel  Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Background="#2A2A2A">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Матчи по датам: " FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="От" FontSize="30" Foreground="White" HorizontalAlignment="Center" Margin="10,0,0,0"/>
-                                    <DatePicker SelectedDate="{Binding a}" FontSize="25" Margin="10,0,0,0"/>
-                                    <TextBlock Text="До" FontSize="30" Foreground="White" HorizontalAlignment="Center" Margin="10,0,0,0"/>
-                                    <DatePicker SelectedDate="{Binding a}" FontSize="25" Margin="10,0,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel>
-                            <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных-->
-                            </Border>
-                        </StackPanel>
-                    </StackPanel>
-                    
-                    <!--#endregion-->
-
-                </StackPanel>
-
-                <!--#endregion-->
-
+                
             </StackPanel>
         </ScrollViewer>
 

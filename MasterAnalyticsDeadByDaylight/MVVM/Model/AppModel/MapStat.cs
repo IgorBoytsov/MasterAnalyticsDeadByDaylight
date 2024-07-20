@@ -19,6 +19,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         public string MapName { get; set; }
 
         /// <summary>
+        /// Игровое измерение, где находится карта
+        /// </summary>
+        public string MapMeasurement { get; set; }
+
+        /// <summary>
         /// Изображение карты
         /// </summary>
         public byte[] MapImage { get; set; }
@@ -67,7 +72,5 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         /// % побед на карте
         /// </summary>
         public double WinRateMap { get; set; }
-
-       
     }
 }
