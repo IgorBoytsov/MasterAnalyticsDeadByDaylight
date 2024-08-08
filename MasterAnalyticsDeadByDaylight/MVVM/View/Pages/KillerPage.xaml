@@ -15,7 +15,7 @@
     <!---->
     <Page.Resources>
         <!--#region ListViewStyle -->
-        <Style TargetType="ListViewItem">
+        <!--<Style TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
@@ -39,7 +39,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
         <!--#endregion-->
     </Page.Resources>
 
@@ -70,27 +70,29 @@
 
                 </StackPanel>
 
-                <StackPanel Visibility="{Binding DetailedInformationVisibility}">
+                <StackPanel Visibility="{Binding DetailedInformationVisibility}" Orientation="Horizontal">
                     <Button Content="Назад" Command="{Binding BackToListViewCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{Binding SelectedKiller.KillerName}" FontSize="20" VerticalAlignment="Center" Foreground="White"/>
+                    <TextBlock Text="{Binding SelectedKiller.KillerCountGame}" FontSize="20" VerticalAlignment="Center" Foreground="White" Margin="10,0,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Border>
 
-        <ScrollViewer Grid.Row="1" VirtualizingPanel.ScrollUnit="Pixel" CanContentScroll="False">
+        <ScrollViewer Grid.Row="1" VirtualizingPanel.ScrollUnit="Pixel" CanContentScroll="False" Margin="0,0,0,20" >
             <StackPanel>
                 <StackPanel>
-                    <ItemsControl Visibility="{Binding KillerListVisibility}"
-                                  ItemsSource="{Binding KillerStatSortedList}" d:ItemsSource="{d:SampleData ItemCount=3}"
+                    <ItemsControl Visibility="{Binding KillerListVisibility}" ItemsSource="{Binding KillerStatSortedList}" d:ItemsSource="{d:SampleData ItemCount=3}" 
                                   Background="#121212" BorderThickness="0"
+                                  Margin="0,5,0,20"
                                   ScrollViewer.CanContentScroll="False"
                                   VirtualizingPanel.ScrollUnit="Pixel"
-                                  ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,20">
+                                  ScrollViewer.VerticalScrollBarVisibility="Visible">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Width="1400" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Margin="10,10,10,0">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="200"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
@@ -103,7 +105,7 @@
                                             </TextBlock>
                                         </StackPanel>
 
-                                        <Grid Grid.Column="1">
+                                        <Grid Grid.Column="1" Margin="0,0,10.5,0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="27"/>
                                                 <RowDefinition Height="27"/>
@@ -229,7 +231,6 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
                 </StackPanel>
 
                 <!--#region Расширеная информация -->
@@ -248,10 +249,18 @@
                         </StackPanel>
                         <StackPanel>
                             <Border Background="#2A2A2A" Height="600">
-                                <StackPanel>
-                                    <TextBlock Text="Самая быстрая игра: " FontSize="25" Foreground="White"/>
-                                    <TextBlock Text="Самая долгая игра: " FontSize="25" Foreground="White"/>
-                                    <TextBlock Text="Среднее время игры: " FontSize="25" Foreground="White"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel>
+                                        <TextBlock Text="Самый длинный матч: " FontSize="25" Foreground="White"/>
+                                        <TextBlock Text="{Binding ShortestMatch}" FontSize="25" Foreground="White"/>
+                                        <TextBlock Text="Самай короткий матч: " FontSize="25" Foreground="White"/>
+                                        <TextBlock Text="{Binding FastestMatch}" FontSize="25" Foreground="White"/>
+                                        <TextBlock Text="Среднее время игры: " FontSize="25" Foreground="White"/>
+                                        <TextBlock Text="{Binding AVGMatchMatch}" FontSize="25" Foreground="White"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <Image Source="{Binding SelectedKiller.KillerImage}" Width="400"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -259,32 +268,40 @@
 
                     <!--#endregion-->
 
-                    <!--#region Средний счет очков на киллере за День\Неделю\Месяц\Год\Патч -->
+                    <!--#region Средний счет очков на киллере-->
 
                     <StackPanel Margin="0,20,0,0">
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Средний счет очков на киллере за День\Неделю\Месяц\Год\Патч" Style="{StaticResource HeaderAdditionalStatistics}"/>
+                                    <TextBlock Text="Средний счет" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
                         <StackPanel>
                             <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных (Гистограмма)-->
+                                <ListView ItemsSource="{Binding KillerAVGScore}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                                          FontSize="25">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Дата" Width="220" DisplayMemberBinding="{Binding DateTime}"/>
+                                            <GridViewColumn Header="Счет(AVG)" Width="220" DisplayMemberBinding="{Binding AvgScore}"/>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
                             </Border>
                         </StackPanel>
                     </StackPanel>
 
                     <!--#endregion-->
 
-                    <!--#region Количество сыгранных матчей за День\Неделю\Месяц\Год\Патч -->
+                    <!--#region Количество сыгранных матчей-->
 
                     <StackPanel  Margin="0,20,0,0">
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Матчи по датам: " Style="{StaticResource HeaderAdditionalStatistics}"/>
+                                    <TextBlock Text="Количество матчей " Style="{StaticResource HeaderAdditionalStatistics}"/>
                                     <TextBlock Text="От" FontSize="30" Style="{StaticResource HeaderAdditionalStatistics}" Margin="10,0,0,0"/>
                                     <DatePicker SelectedDate="{Binding a}" FontSize="25" Margin="10,0,0,0"/>
                                     <TextBlock Text="До" Style="{StaticResource HeaderAdditionalStatistics}" Margin="10,0,0,0"/>
@@ -294,194 +311,77 @@
                         </StackPanel>
                         <StackPanel>
                             <Border Background="#2A2A2A" Height="600">
-                                <liveChart:CartesianChart Series="{Binding SeriesCollection}" Zoom="X" ZoomingSpeed="1" AnimationsSpeed="00:00:00.001">
+                                <ListView ItemsSource="{Binding KillerCountMatch}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                                          FontSize="25">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Дата" Width="220" DisplayMemberBinding="{Binding DateTime}" />
+                                            <GridViewColumn Header="Кол-Во матчей" Width="220" DisplayMemberBinding="{Binding CountMatch}"/>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                                <!--<liveChart:CartesianChart Series="{Binding SeriesCollection}" Zoom="X" ZoomingSpeed="1" AnimationsSpeed="00:00:00.001">
                                     <liveChart:CartesianChart.AxisX>
                                         <liveChart:Axis Title="Категории" FontSize="20" Labels="{Binding Labels}" LabelsRotation="0" ShowLabels="True"/>
                                     </liveChart:CartesianChart.AxisX>
                                     <liveChart:CartesianChart.AxisY>
                                         <liveChart:Axis Title="Значение" FontSize="20" LabelFormatter="{Binding YFormatter}"/>
                                     </liveChart:CartesianChart.AxisY>
-                                </liveChart:CartesianChart>
+                                </liveChart:CartesianChart>-->
                             </Border>
                         </StackPanel>
                     </StackPanel>
 
                     <!--#endregion-->
 
-                    <!--#region Киллрейт за День\Неделю\Месяц\Год\Патч -->
+                    <!--#region Киллрейт-->
 
                     <StackPanel Margin="0,20,0,0">
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Киллрейт по патчам" Style="{StaticResource HeaderAdditionalStatistics}"/>
+                                    <TextBlock Text="Киллрейт" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
                         <StackPanel>
                             <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных (Гистограмма)-->
+                                <ListView ItemsSource="{Binding KillerKillRate}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                                          FontSize="25">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Дата" Width="220" DisplayMemberBinding="{Binding DateTime}" />
+                                            <GridViewColumn Header="K\R" Width="220" DisplayMemberBinding="{Binding KillRate}"/>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
                             </Border>
                         </StackPanel>
                     </StackPanel>
 
                     <!--#endregion-->
 
-                    <!--#region Винрейт за День\Неделю\Месяц\Год\Патч -->
+                    <!--#region Винрейт-->
 
                     <StackPanel Margin="0,20,0,0">
                         <StackPanel Margin="0,0,0,10">
                             <Border Background="#2A2A2A">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Винрейт за День\Неделю\Месяц\Год\Патч" Style="{StaticResource HeaderAdditionalStatistics}"/>
+                                    <TextBlock Text="Винрейт (3 и 4 кила)" Style="{StaticResource HeaderAdditionalStatistics}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
                         <StackPanel>
                             <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных (Гистограмма)-->
-                            </Border>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!--#endregion-->
-
-                    <!--#region Популярные перки выживших \ киллера -->
-
-                    <StackPanel Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Background="#2A2A2A">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Популярные перки выживших \ киллера" Style="{StaticResource HeaderAdditionalStatistics}"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel Margin="0,0,20,0">
-                                <Border Background="#2A2A2A" Height="600" Width="690">
-                                    <!--Вывод данных (Список)-->
-                                </Border>
-                            </StackPanel>
-                            <StackPanel>
-                                <Border Background="#2A2A2A" Height="600" Width="690">
-                                    <!--Вывод данных (Список)-->
-                                </Border>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!--#endregion-->
-
-                    <!--#region Популярные билды выживших \ киллера -->
-
-                    <StackPanel Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Background="#2A2A2A">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Популярные билды выживших \ киллера" Style="{StaticResource HeaderAdditionalStatistics}"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel Margin="0,0,20,0">
-                                <Border Background="#2A2A2A" Height="600" Width="690">
-                                    <!--Вывод данных (Список)-->
-                                </Border>
-                            </StackPanel>
-                            <StackPanel>
-                                <Border Background="#2A2A2A" Height="600" Width="690">
-                                    <!--Вывод данных (Список)-->
-                                </Border>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!--#endregion-->
-
-                    <!--#region Популярные предметы выживших -->
-
-                    <StackPanel Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Background="#2A2A2A">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Киллрейт по патчам" Style="{StaticResource HeaderAdditionalStatistics}"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel>
-                            <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных (Список)-->
-                            </Border>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!--#endregion-->
-
-                    <!--#region Популярные улучшение выживших \ киллера -->
-
-                    <StackPanel Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Background="#2A2A2A">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Популярные улучшение выживших \ киллера" Style="{StaticResource HeaderAdditionalStatistics}"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel Margin="0,0,20,0">
-                                <Border Background="#2A2A2A" Height="600" Width="690">
-                                    <!--Вывод данных (Список)-->
-                                </Border>
-                            </StackPanel>
-                            <StackPanel>
-                                <Border Background="#2A2A2A" Height="600" Width="690">
-                                    <!--Вывод данных (Список)-->
-                                </Border>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!--#endregion-->
-
-                    <!--#region Популярные подношение выживших \ киллера -->
-
-                    <StackPanel Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Background="#2A2A2A">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Популярные подношение выживших \ киллера" Style="{StaticResource HeaderAdditionalStatistics}"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel Margin="0,0,20,0">
-                                <Border Background="#2A2A2A" Height="600" Width="690">
-                                    <!--Вывод данных (Список)-->
-                                </Border>
-                            </StackPanel>
-                            <StackPanel>
-                                <Border Background="#2A2A2A" Height="600" Width="690">
-                                    <!--Вывод данных (Список)-->
-                                </Border>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!--#endregion-->
-
-                    <!--#region Престиже игроков, игравших против киллера -->
-
-                    <StackPanel Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Background="#2A2A2A">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Престиже" Style="{StaticResource HeaderAdditionalStatistics}"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel>
-                            <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных (Гистограмма)-->
+                                <ListView ItemsSource="{Binding KillerWinRate}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                                          FontSize="25">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Дата" Width="220" DisplayMemberBinding="{Binding DateTime}" />
+                                            <GridViewColumn Header="W\R %" Width="220" DisplayMemberBinding="{Binding WinRate}"/>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
                             </Border>
                         </StackPanel>
                     </StackPanel>
@@ -501,17 +401,44 @@
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Margin="0,0,5,0">
                                 <Border Background="#2A2A2A" Height="400" Width="463">
-                                    <!--Вывод данных (Круговая диограмма)-->
+                                    <ListView ItemsSource="{Binding PlayerPlatformTrackers}" d:ItemsSource="{d:SampleData ItemCount=2}"
+                                              FontSize="17">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Платформа" DisplayMemberBinding="{Binding PlatformName}" Width="200"/>
+                                                <GridViewColumn Header="Кол-во игроков" DisplayMemberBinding="{Binding PlayerCount}"/>
+                                                <GridViewColumn Header="%" DisplayMemberBinding="{Binding PlatformPercentages}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,5,0">
                                 <Border Background="#2A2A2A" Height="400" Width="463">
-                                    <!--Вывод данных (Круговая диограмма)-->
+                                    <ListView ItemsSource="{Binding SurvivorBotTracker}" d:ItemsSource="{d:SampleData ItemCount=2}"
+                                              FontSize="17">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="% Ливеров" DisplayMemberBinding="{Binding PlayerBot}" />
+                                                <GridViewColumn Header="Кол-во ливеров" DisplayMemberBinding="{Binding CountPlayerBot}"/>
+                                                <GridViewColumn Header="Кол-во игроков" DisplayMemberBinding="{Binding CountPlayer}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
                                 </Border>
                             </StackPanel>
                             <StackPanel>
                                 <Border Background="#2A2A2A" Height="400" Width="463">
-                                    <!--Вывод данных (Круговая диограмма)-->
+                                    <ListView ItemsSource="{Binding SurvivorAnonymousTracker}" d:ItemsSource="{d:SampleData ItemCount=2}"
+                                              FontSize="17">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="% Анонимных" DisplayMemberBinding="{Binding PlayerAnonymous}" />
+                                                <GridViewColumn Header="Кол-во Анонимных" DisplayMemberBinding="{Binding CountPlayerAnonymous}"/>
+                                                <GridViewColumn Header="Кол-во игроков" DisplayMemberBinding="{Binding CountPlayer}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -519,7 +446,7 @@
 
                     <!--#endregion-->
 
-                    <!--#region Частота встречамости персонажей ( Выжившие ) -->
+                    <!--#region Частота встречамости Выживших (Возможно перенести в профиль и сделать сортировку по киллерам) -->
 
                     <StackPanel Margin="0,20,0,0">
                         <StackPanel Margin="0,0,0,10">
@@ -531,11 +458,65 @@
                         </StackPanel>
                         <StackPanel>
                             <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных (Список)-->
+                                <ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding SurvivorDeaths}" d:ItemsSource="{d:SampleData ItemCount=3}"
+                                                  Background="#121212" BorderThickness="0"
+                                                  ScrollViewer.CanContentScroll="False"
+                                                  VirtualizingPanel.ScrollUnit="Pixel"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,20">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="1400" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Margin="10,10,10,0">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="200"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel>
+                                                            <Image Source="{Binding SurvivorImage}" Width="100" Height="90"/>
+                                                            <TextBlock Text="{Binding SurvivorName}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                        </StackPanel>
+
+                                                        <StackPanel Grid.Column="1">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Общее: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding TotalDead}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Крюк: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding CountDeathHook}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Земля: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding CountDeathGround}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Мементо: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding CountDeathMemento}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Абилки: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding CountDeathKillersAbility}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Сбежал: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding CountEscaped}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                             </Border>
                         </StackPanel>
                     </StackPanel>
-
                     <!--#endregion-->
 
                     <!--#region % Повесов (0-12) \ % Оставшихся генераторов (0-5) \ Как умер выживший (Круговые диограмы) -->
@@ -551,17 +532,44 @@
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Margin="0,0,5,0">
                                 <Border Background="#2A2A2A" Height="400" Width="463">
-                                    <!--Вывод данных (Круговая диограмма)-->
+                                    <ListView ItemsSource="{Binding KillerHooks}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                                              FontSize="17">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Кол-Во крюков" DisplayMemberBinding="{Binding CountHookName}"/>
+                                                <GridViewColumn Header="% повесов" DisplayMemberBinding="{Binding CountHookPercentages}"/>
+                                                <GridViewColumn Header="Кол-во матчей" DisplayMemberBinding="{Binding CountGame}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,5,0">
                                 <Border Background="#2A2A2A" Height="400" Width="463">
-                                    <!--Вывод данных (Круговая диограмма)-->
+                                    <ListView ItemsSource="{Binding RecentGenerators}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                                              FontSize="17">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Кол-Во генераторов" DisplayMemberBinding="{Binding CountRecentGeneratorsName}"/>
+                                                <GridViewColumn Header="% от матчей" DisplayMemberBinding="{Binding CountRecentGeneratorsPercentages}"/>
+                                                <GridViewColumn Header="Кол-во матчей" DisplayMemberBinding="{Binding CountGame}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
                                 </Border>
                             </StackPanel>
                             <StackPanel>
                                 <Border Background="#2A2A2A" Height="400" Width="463">
-                                    <!--Вывод данных (Круговая диограмма)-->
+                                    <ListView ItemsSource="{Binding SurvivorTypeDeathTrackerList}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                                              FontSize="17">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Тип смерти" DisplayMemberBinding="{Binding TypeDeathName}" Width="200"/>
+                                                <!--<GridViewColumn Header="% от матчей" DisplayMemberBinding="{Binding TypeDeathPercentages}" Width="Auto"/>-->
+                                                <GridViewColumn Header="Кол-во убитых" DisplayMemberBinding="{Binding CountGame}" Width="Auto"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -580,33 +588,58 @@
                             </Border>
                         </StackPanel>
                         <StackPanel>
-                            <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных (Список)-->
+                            <Border Background="#2A2A2A" Height="800">
+                                <ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding MapStatList}" d:ItemsSource="{d:SampleData ItemCount=3}"
+                                                  Background="#121212" BorderThickness="0"
+                                                  ScrollViewer.CanContentScroll="False"
+                                                  VirtualizingPanel.ScrollUnit="Pixel"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,20">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="1350" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Margin="10,10,10,0">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="300"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel>
+                                                            <Image Source="{Binding MapImage}" Width="290"/>
+                                                            <TextBlock Text="{Binding MapName}" Width="200" TextWrapping="WrapWithOverflow" TextAlignment="Center" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding MapMeasurement}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                        </StackPanel>
+
+                                                        <StackPanel Grid.Column="1">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Матчей: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding CountGame}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Побед: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding WinRateMap}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                                <TextBlock Text="%" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Выпадене карты: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                                <TextBlock Text="{Binding PickRateMap}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                                <TextBlock Text="%" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+                                                            
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                             </Border>
                         </StackPanel>
                     </StackPanel>
 
                     <!--#endregion-->
-
-                    <!--#region % киллов -->
-
-                    <StackPanel Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Background="#2A2A2A">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="% выпадение карт на киллере" Style="{StaticResource HeaderAdditionalStatistics}"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel>
-                            <Border Background="#2A2A2A" Height="600">
-                                <!--Вывод данных (Круговая диограмма)-->
-                            </Border>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!--#endregion-->
-
+                    
                 </StackPanel>
 
                 <!--#endregion-->
