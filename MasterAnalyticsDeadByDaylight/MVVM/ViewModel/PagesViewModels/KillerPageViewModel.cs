@@ -11,6 +11,7 @@ using System.Numerics;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
@@ -660,6 +661,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 {
                     var matches = context.GameStatistics.Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
 
+                    if (matches.Count == 0)
+                        return;
+
                     TimeSpan[] timeSpans = context.GameStatistics
                     .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
                     .Select(s => TimeSpan.Parse(s.GameTimeMatch)).ToArray();
@@ -697,23 +701,21 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     var matches = context.GameStatistics.Include(x => x.IdKillerNavigation).Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
                     .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
 
-                    //GameStatistic FirstMatch;
-                    //GameStatistic LastMatch;
+                    if (matches.Count == 0)
+                    {
+                        var KillerScore = new KillerAverageScoreTracker
+                        {
+                            AvgScore = 0,
+                            DateTime = "Отсутствует",
+                        };
 
-                    //DateTime FirstMathDate;
-                    //DateTime LastMathDate;
-                    //if (matches.Count == 0)
-                    //{
-                    //    return;
-                    //}
-                    //else
-                    //{
-                    //    FirstMatch = matches.First();
-                    //    LastMatch = matches.Last();
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            KillerAVGScore.Add(KillerScore);
+                        });
 
-                    //    FirstMathDate = FirstMatch.DateTimeMatch.Value;
-                    //    LastMathDate = LastMatch.DateTimeMatch.Value;
-                    //}
+                        return;
+                    }               
 
                     var FirstMatch = matches.FirstOrDefault();
                     DateTime FirstMathDate = FirstMatch.DateTimeMatch.Value;
@@ -829,6 +831,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     var matches = context.GameStatistics.Include(x => x.IdKillerNavigation).Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
                     .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
 
+                    if (matches.Count == 0)
+                    {
+                        var CountMatch = new KillerCountMatchTracker
+                        {
+                            CountMatch = 0,
+                            DateTime = "Отсутствует",
+                        };
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            KillerCountMatch.Add(CountMatch);
+                        });
+
+                        return;
+                    }
+
                     var FirstMatch = matches.First();
                     DateTime FirstMathDate = FirstMatch.DateTimeMatch.Value;
 
@@ -844,6 +862,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                             .Where(x => x.DateTimeMatch.Value.Year == date.Year)
                             .Where(x => x.DateTimeMatch.Value.Month == date.Month)
                             .Where(x => x.DateTimeMatch.Value.Day == date.Day).ToList();
+
                             var CountMatch = new KillerCountMatchTracker
                             {
                                 CountMatch = matchByDate.Count,
@@ -914,6 +933,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 {
                     var matches = context.GameStatistics.Include(x => x.IdKillerNavigation).Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
                     .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
+
+                    if (matches.Count == 0)
+                    {
+                        var CountMatch = new KillerKillRateTracker
+                        {
+                            KillRate = 0,
+                            DateTime = "Отсутствует",
+                        };
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            KillerKillRate.Add(CountMatch);
+                        });
+
+                        return;
+                    }
 
                     var FirstMatch = matches.First();
                     DateTime FirstMathDate = FirstMatch.DateTimeMatch.Value;
@@ -1053,6 +1088,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     var matches = context.GameStatistics.Include(x => x.IdKillerNavigation).Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
                     .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
 
+                    if (matches.Count == 0)
+                    {
+                        var WinRateStat = new KillerWinRateTracker
+                        {
+                            WinRate = 0,
+                            DateTime = "Отсутствует",
+                        };
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            KillerWinRate.Add(WinRateStat);
+                        });
+                        
+                        return;
+                    }
+
                     var FirstMatch = matches.First();
                     DateTime FirstMathDate = FirstMatch.DateTimeMatch.Value;
 
@@ -1165,6 +1216,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                         int platformCount = first + second + third + fourth;
 
                         double platformPercentages = Math.Round((double)platformCount / (matches.Count * 4) * 100, 2);
+                        platformPercentages = double.IsNaN(platformPercentages) ? 0 : platformPercentages;
 
                         var playerPlatform = new PlayerPlatformTracker
                         {
@@ -1206,6 +1258,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     int playerBot = firstBot + secondBot + thirdBot + fourthBot;
 
                     double playerBotPercentages = Math.Round((double)playerBot / (matches.Count * 4) * 100, 2);
+                    playerBotPercentages = double.IsNaN(playerBotPercentages) ? 0 : playerBotPercentages;
 
                     var botTracker = new SurvivorBotTracker
                     {
@@ -1246,6 +1299,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     int playerAnonymous = firstAnonymous + secondAnonymous + thirdAnonymous + fourthAnonymous;
 
                     double playerAnonymousPercentages = Math.Round((double)playerAnonymous / (matches.Count * 4) * 100, 2);
+                    playerAnonymousPercentages = double.IsNaN(playerAnonymousPercentages) ? 0 : playerAnonymousPercentages;
 
                     var anonymousTracker = new SurvivorAnonymousTracker
                     {
@@ -1444,10 +1498,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
                     for (int i = 0; i <= 12; i++)
                     {
+                        double HookPercentages = Math.Round((double)matches.Where(x => x.CountHooks == i).Count() / matches.Count * 100, 2);
+                        HookPercentages = double.IsNaN(HookPercentages) ? 0 : HookPercentages;
+
                         var killerHook = new KillerHooksTracker
                         {
                             CountHookName = Names[i],
-                            CountHookPercentages = Math.Round((double)matches.Where(x => x.CountHooks == i).Count() / matches.Count * 100, 2),
+                            CountHookPercentages = HookPercentages,
                             CountGame = matches.Where(x => x.CountHooks == i).Count(),
                         };
 
@@ -1477,10 +1534,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
                     for (int i = 0; i <= 5; i++)
                     {
+                        double RecentGeneratorsPercentages = Math.Round((double)matches.Where(x => x.NumberRecentGenerators == i).Count() / matches.Count * 100, 2);
+                        RecentGeneratorsPercentages = double.IsNaN(RecentGeneratorsPercentages) ? 0 : RecentGeneratorsPercentages;
+
                         var recentGenerators = new RecentGeneratorsTracker
                         {
                             CountRecentGeneratorsName = Names[i],
-                            CountRecentGeneratorsPercentages = Math.Round((double)matches.Where(x => x.NumberRecentGenerators == i).Count() / matches.Count * 100, 2),
+                            CountRecentGeneratorsPercentages = RecentGeneratorsPercentages,
                             CountGame = matches.Where(x => x.NumberRecentGenerators == i).Count(),
                         };
 
@@ -1538,12 +1598,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #endregion
 
-        #region Количество сыгранных матчей на картах ( W\R, K\R, без подношений, с подношениями) (ДОДЕЛАТЬ)
+        #region Количество сыгранных матчей на картах ( W\R, K\R, без подношений, с подношениями)
 
         public ObservableCollection<MapStat> MapStatList { get; set; } = [];
 
         private async Task CountMatchPlayedOnMapAsync()
         {
+            MapStatList.Clear();
             await Task.Run(() => 
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -1555,14 +1616,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     {
                         double countGameMap = matches.Where(x => x.IdMap == item.IdMap).Count();
                         double winRateMap = Math.Round((double)matches.Where(x => x.IdMap == item.IdMap).Where(x => x.CountKills == 3 | x.CountKills == 4).Count() / matches.Where(x => x.IdMap == item.IdMap).Count() * 100, 2);
-
-                        if (double.IsNaN(winRateMap))
-                        {
-                            winRateMap = 0;
-                        }
+                        winRateMap = double.IsNaN(winRateMap) ? 0 : winRateMap;
 
                         double pickRateMap = Math.Round((double)matches.Where(x => x.IdMap == item.IdMap).Count() / matches.Count * 100, 2);
-                        
+                        pickRateMap = double.IsNaN(pickRateMap) ? 0 : pickRateMap;
+
                         var mapstat = new MapStat
                         {
                             MapName = item.MapName,
