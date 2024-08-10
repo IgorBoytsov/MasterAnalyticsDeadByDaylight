@@ -24,6 +24,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         public string MapMeasurement { get; set; }
 
         /// <summary>
+        /// id измерение, где находится карта
+        /// </summary>
+        public int idMapMeasurement { get; set; }
+
+        /// <summary>
         /// Изображение карты
         /// </summary>
         public byte[] MapImage { get; set; }

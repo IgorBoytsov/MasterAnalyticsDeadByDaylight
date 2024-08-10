@@ -30,10 +30,10 @@
                 <TextBox Text="{Binding SearchTextBox, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="170" FontSize="17" Margin="15,0,0,0" Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"/>
 
                 <TextBlock Text="Сортировка" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
-                <ComboBox ItemsSource="{Binding SortingList}" SelectedItem="{Binding SelectedMapStatSortItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
+                <ComboBox ItemsSource="{Binding SortingList}" SelectedItem="{Binding SelectedMapStatSortItem}" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
 
                 <TextBlock Text="Статистика" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
-                <ComboBox ItemsSource="{Binding PlayerAssociationList}" DisplayMemberPath="PlayerAssociationName" SelectedItem="{Binding SelectedTypePlayerItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
+                <ComboBox ItemsSource="{Binding Association}" SelectedItem="{Binding SelectedAssociation}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
             </StackPanel>
         </Border>
 
@@ -41,7 +41,7 @@
             <StackPanel>
                 <StackPanel>
                     <ItemsControl Visibility="Visible" 
-                                  ItemsSource="{Binding MapStatSortedList}" d:ItemsSource="{d:SampleData ItemCount=3}"
+                                  ItemsSource="{Binding MapStatSortedList}" d:ItemsSource="{d:SampleData ItemCount=10}"
                                   Background="#121212" BorderThickness="0"
                                   ScrollViewer.CanContentScroll="False"
                                   VirtualizingPanel.ScrollUnit="Pixel"
@@ -51,18 +51,25 @@
                                 <Border BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Width="1400" Margin="10,10,10,0">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="300"/>
+                                            <ColumnDefinition Width="330"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <StackPanel Margin="10,10,10,10">
-                                            <Image Source="{Binding MapImage}" Width="300"/>
+                                        <StackPanel Margin="10,10,10,10" VerticalAlignment="Center">
+                                            <Image Source="{Binding MapImage}" Width="320"/>
                                             <TextBlock Text="{Binding MapName}" HorizontalAlignment="Center" Foreground="White" FontSize="17" TextDecorations="Underline" TextWrapping="WrapWithOverflow" Margin="0,5,0,0"/>
                                             <TextBlock Text="{Binding MapMeasurement}" HorizontalAlignment="Center" Foreground="White" FontSize="17" TextDecorations="Underline" TextWrapping="WrapWithOverflow" Margin="0,5,0,0" />
                                         </StackPanel>
 
-                                        <Grid Grid.Column="1">
+                                        <Grid Grid.Column="1" Margin="0,0,10.5,0">
                                             <Grid.RowDefinitions>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
                                                 <RowDefinition Height="27"/>
                                                 <RowDefinition Height="27"/>
                                                 <RowDefinition Height="27"/>
@@ -111,7 +118,7 @@
                                                 <TextBlock Text="100%" FontSize="15" Foreground="White"/>
                                             </StackPanel>
 
-                                            <ProgressBar Grid.Row="3" Height="20" Background="#2B2B2B" Foreground="#00748E" BorderThickness="0" Value="{Binding FalloutMapRandomPercent}" VerticalAlignment="Top" Margin="5,0,5,0"/>
+                                            <ProgressBar Grid.Row="3" Height="20" Background="#2B2B2B" Foreground="#206020" BorderThickness="0" Value="{Binding FalloutMapRandomPercent}" VerticalAlignment="Top" Margin="5,0,5,0"/>
 
                                             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                                                 <TextBlock Text="Матчей:" FontSize="15" Foreground="White" Margin="5,0,0,0"/>
@@ -138,7 +145,7 @@
                                                 <TextBlock Text="100%" FontSize="15" Foreground="White"/>
                                             </StackPanel>
 
-                                            <ProgressBar Grid.Row="5" Height="20" Background="#2B2B2B" Foreground="#00748E" BorderThickness="0" Value="{Binding FalloutMapOfferingPercent}" VerticalAlignment="Top" Margin="5,0,5,0"/>
+                                            <ProgressBar Grid.Row="5" Height="20" Background="#2B2B2B" Foreground="#208723" BorderThickness="0" Value="{Binding FalloutMapOfferingPercent}" VerticalAlignment="Top" Margin="5,0,5,0"/>
 
                                             <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
                                                 <TextBlock Text="Матчей:" FontSize="15" Foreground="White" Margin="5,0,0,0"/>
@@ -149,6 +156,76 @@
                                             </StackPanel>
 
                                             <!--#endregion-->
+
+                                            <!--#region WinRateMap -->
+
+                                            <StackPanel Grid.Row="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
+                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                                                <TextBlock Text="WinRateMap (3-4 Килла)" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
+                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <ProgressBar Grid.Row="11" Height="20" Background="#2B2B2B" Foreground="#A87709" BorderThickness="0" Value="{Binding WinRateMap}" VerticalAlignment="Top" Margin="5,0,5,0"/>
+
+                                            <StackPanel Grid.Row="11" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding WinRateMap}" FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <!--#endregion-->
+                                            
+                                            <!--#region KillRate -->
+
+                                            <StackPanel Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
+                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                                                <TextBlock Text="KillRate на карте" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
+                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <ProgressBar Grid.Row="7" Height="20" Background="#2B2B2B" Foreground="#AB0D0D" BorderThickness="0" Value="{Binding KillRateMap}" VerticalAlignment="Top" Margin="5,0,5,0"/>
+
+                                            <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding KillRateMap}" FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <!--#endregion-->
+
+                                            <!--#region EscapeRateMap -->
+
+                                            <StackPanel Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
+                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                                                <TextBlock Text="EscapeRateMap выживших" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
+                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <ProgressBar Grid.Row="9" Height="20" Background="#2B2B2B" Foreground="#096E00" BorderThickness="0" Value="{Binding EscapeRateMap}" VerticalAlignment="Top" Margin="5,0,5,0"/>
+
+                                            <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding EscapeRateMap}" FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <!--#endregion-->
+
 
                                         </Grid>
                                     </Grid>
