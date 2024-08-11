@@ -3,12 +3,201 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Pages"
+      xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Pages" xmlns:fa="http://schemas.fontawesome.com/icons/" 
+      xmlns:pagesviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels" 
+      d:DataContext="{d:DesignInstance Type=pagesviewmodels:SurvivorPageViewModel}"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:Height="auto" d:Width="auto"
       Title="SurvivorPage">
 
-    <Grid Background="DarkGreen">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#2A2A2A">
+            <StackPanel HorizontalAlignment="Center">
+                <StackPanel Visibility="{Binding SortMenuVisibility}" Orientation="Horizontal" >
+
+                    <Button Command="{Binding ReloadDataCommand}" Height="40" Width="40" Template="{StaticResource ControlButton}" Margin="5,0,15,0">
+                        <Button.Content>
+                            <fa:ImageAwesome Icon="Solid_Retweet"/>
+                        </Button.Content>
+                    </Button>
+
+                    <TextBlock Text="Поиск: " Height="25" FontSize="17" Foreground="White"/>
+                    <TextBox Text="{Binding SearchTextBox, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="170" FontSize="17" Margin="15,0,0,0" Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                    <TextBlock Text="Сортировка" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
+                    <ComboBox ItemsSource="{Binding SortingList}" SelectedItem="{Binding SelectedSurvivorStatSortItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
+
+                    <TextBlock Text="Ассациация" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
+                    <ComboBox ItemsSource="{Binding Association}" SelectedItem="{Binding SelectedAssociation}" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
+
+                </StackPanel>
+
+                <StackPanel Visibility="{Binding DetailedInformationVisibility}" Orientation="Horizontal">
+                    <Button Content="Назад" Command="{Binding BackToListViewCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VirtualizingPanel.ScrollUnit="Pixel" CanContentScroll="False" Margin="0,0,0,20" >
+            <StackPanel>
+                <StackPanel>
+                    <ItemsControl Visibility="{Binding SurvivorListVisibility}" ItemsSource="{Binding SurvivorSortedStatList}" d:ItemsSource="{d:SampleData ItemCount=3}" 
+                                  Background="#121212" BorderThickness="0"
+                                  Margin="0,5,0,20"
+                                  ScrollViewer.CanContentScroll="False"
+                                  VirtualizingPanel.ScrollUnit="Pixel"
+                                  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="1400" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Margin="10,10,10,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="200"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Margin="10,10,10,10">
+                                            <Image Source="{Binding SurvivorImage}" Width="150"/>
+                                            <TextBlock Text="{Binding SurvivorName}" HorizontalAlignment="Center" Foreground="White" FontSize="17" TextDecorations="Underline" Cursor="Hand" Margin="0,5,0,0"/>
+                                        </StackPanel>
+
+                                        <Grid Grid.Column="1" Margin="0,0,10.5,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="27"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!--#region Pick Rate -->
+
+                                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
+                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
+                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                                                <TextBlock Text="Pick Rate" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <ProgressBar Grid.Row="1" Value="{Binding SurvivorPickRate}" Height="20" Background="#2B2B2B" Foreground="#00748E" BorderThickness="0" VerticalAlignment="Top" Margin="5,0,5,0"/>
+
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding SurvivorPickRate}" FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <!--#endregion-->
+
+                                            <!--#region Escape Rate -->
+
+                                            <StackPanel Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
+                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
+                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                                                <TextBlock Text="Сбежало: " FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="{Binding SurvivorEscapeCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
+                                                <TextBlock Text="Из" FontSize="15" Foreground="White" Margin="5,0,5,0"/>
+                                                <TextBlock Text="{Binding SurvivorCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
+                                            </StackPanel>
+
+                                            <ProgressBar Grid.Row="3" Value="{Binding SurvivorEscapePercentage}" Height="20" Background="#2B2B2B" Foreground="#096E00" BorderThickness="0" VerticalAlignment="Top" Margin="5,0,5,0"/>
+
+                                            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding SurvivorEscapePercentage}" FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <!--#endregion-->
+
+                                            <!--#region Anonymous Rate -->
+
+                                            <StackPanel Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
+                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
+                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                                                <TextBlock Text="Анонимных: " FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="{Binding SurvivorAnonymousModeCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
+                                                <TextBlock Text="Из" FontSize="15" Foreground="White" Margin="5,0,5,0"/>
+                                                <TextBlock Text="{Binding SurvivorCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
+                                            </StackPanel>
+
+                                            <ProgressBar Grid.Row="5" Value="{Binding SurvivorAnonymousModePercentage}" Height="20" Background="#2B2B2B" Foreground="#A87709" BorderThickness="0" VerticalAlignment="Top" Margin="5,0,5,0"/>
+
+                                            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding SurvivorAnonymousModePercentage}" FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <!--#endregion-->
+
+                                            <!--#region Bot Rate -->
+
+                                            <StackPanel Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
+                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
+                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                                                <TextBlock Text="Ливнуло: " FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="{Binding SurvivorBotCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
+                                                <TextBlock Text="Из" FontSize="15" Foreground="White" Margin="5,0,5,0"/>
+                                                <TextBlock Text="{Binding SurvivorCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
+                                            </StackPanel>
+
+                                            <ProgressBar Grid.Row="7" Value="{Binding SurvivorBotPercentage}" Height="20" Background="#2B2B2B" Foreground="#AB0D0D" BorderThickness="0" VerticalAlignment="Top" Margin="5,0,5,0"/>
+
+                                            <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding SurvivorBotPercentage}" FontSize="15" Foreground="White"/>
+                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            </StackPanel>
+
+                                            <!--#endregion-->
+
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!--#region Расширеная информация -->
+
+                <StackPanel Visibility="{Binding DetailedInformationVisibility}" Width="Auto" MaxWidth="1400" Margin="15,0,15,0">
+
         
+                </StackPanel>
+
+                <!--#endregion-->
+
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>
