@@ -90,7 +90,8 @@
                                VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- Кнопки для управления окном -->
+                <!--#region Кнопки для управления окном  -->
+                
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
 
                     <Button Width="40" Height="40" Margin="0,0,20,0">
@@ -121,7 +122,9 @@
                             WindowChrome.IsHitTestVisibleInChrome="True" 
                             ToolTip="Close"/>
                 </StackPanel>
-
+                
+                <!--#endregion-->
+                
             </Grid>
 
             <!--#endregion-->
@@ -137,17 +140,17 @@
                     <Separator/>
 
                     <MenuItem Header="Добавить убийцу"  Command="{Binding OpenAddKillerWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
-
+                    
                     <MenuItem Header="Добавить выжившиго"  Command="{Binding OpenAddSurvivorWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
 
                     <Separator/>
 
                     <MenuItem Header="Добавить перк"  Command="{Binding OpenAddPerkWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
-
+                    
                     <MenuItem Header="Добавить карту"  Command="{Binding OpenAddMapWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
-
+                    
                     <MenuItem Header="Добавить подношение" Command="{Binding OpenAddOfferingWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
-
+                    
                     <MenuItem Header="Добавить предмет"  Command="{Binding OpenAddItemWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
 
                     <Separator/>
@@ -157,8 +160,9 @@
                     <Separator/>
 
                     <MenuItem Header="Выход из приложение" Command="{Binding CloseAppCommand}" Style="{DynamicResource MenuItemStyle}"/>
-
+                    
                     <MenuItem Header="Свернуть в трей"  Command="{Binding}" Style="{DynamicResource MenuItemStyle}"/>
+                    
                 </MenuItem>
 
                 <MenuItem Header="Создать">
@@ -166,13 +170,23 @@
                     <MenuItem Header="Отчет" Command="{Binding OpenReportCreationWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
 
                     <MenuItem Header="Отправить на почту" Command="{Binding}" Style="{DynamicResource MenuItemStyle}"/>
+                    
                 </MenuItem>
 
+                <MenuItem Header="Сервис">
+
+                    <MenuItem Header="Настройки" Command="{Binding }" Style="{DynamicResource MenuItemStyle}"/>
+                    
+                    <MenuItem Header="Бекап данных" Command="{Binding OpenDataBackupWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+
+                </MenuItem>
+                
                 <MenuItem Header="Справка">
 
                     <MenuItem Header="Как пользоватся?"  Command="{Binding OpenHowToUseWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
 
                     <MenuItem Header="О программе"  Command="{Binding OpenAboutTheProgramWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                    
                 </MenuItem>
 
             </Menu>

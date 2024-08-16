@@ -154,6 +154,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private RelayCommand _openAdditionalDataWindowCommand;
         public RelayCommand OpenAdditionalDataWindowCommand { get => _openAdditionalDataWindowCommand ??= new(obj => OpenAddAdditionalDataWindow()); }
+        
+        private RelayCommand _openDataBackupWindowCommand;
+        public RelayCommand OpenDataBackupWindowCommand { get => _openDataBackupWindowCommand ??= new(obj => OpenDataBackupWindow()); }
 
         #endregion
 
@@ -235,6 +238,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             AddAdditionalDataWindow addAdditionalDataWindow = new AddAdditionalDataWindow();
             addAdditionalDataWindow.ShowDialog();
+        }
+
+        private static void OpenDataBackupWindow()
+        {
+            DataBackupWindow dataBackupWindow = new DataBackupWindow();
+            dataBackupWindow.ShowDialog();
         }
 
         private void SetTitle()
