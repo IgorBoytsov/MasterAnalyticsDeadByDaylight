@@ -11,4 +11,39 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
+
+    <!-- Стили для окна << AddAdditionalDataWindow >> -->
+
+    <!--#region TextBlock TabItem.Header -->
+
+    <Style x:Key="TextBlockTabItemHeader" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region TextBlock заголовка -->
+
+    <Style x:Key="TextBlockCardHeader" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region TextBlock(Название и описание) -->
+
+    <Style x:Key="TextBlockNameAndDescription" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,10,0,0"/>
+    </Style>
+
+    <!--#endregion-->
+
+
 </ResourceDictionary>
