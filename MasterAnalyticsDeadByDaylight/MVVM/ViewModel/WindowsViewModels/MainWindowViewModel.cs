@@ -116,12 +116,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Команды для открытие Window
 
-        private RelayCommand _openErrorWindowCommand;
-        public RelayCommand OpenErrorWindowCommand { get => _openErrorWindowCommand ??= new(obj => OpenErrorWindow(null)); }
-
-        private RelayCommand _openNotificationWindowCommand;
-        public RelayCommand OpenNotificationWindowCommand { get => _openNotificationWindowCommand ??= new(obj => OpenNotificationWindow(null)); }
-
         private RelayCommand _openAddMatchWindowCommand;
         public RelayCommand OpenAddMatchWindowCommand { get => _openAddMatchWindowCommand ??= new(obj => OpenAddMatchWindow()); }
 
@@ -161,18 +155,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         #endregion
 
         #region Методы для открытие Window
-
-        private static void OpenErrorWindow(string error)
-        {
-            ErrorWindow errorWindow = new();
-            errorWindow.ShowDialog();
-        }
-
-        private static void OpenNotificationWindow(string message)
-        {
-            NotificationWindow notification = new();
-            notification.ShowDialog();
-        }
 
         private void OpenAddMatchWindow()
         {
