@@ -124,7 +124,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 _selectedRole = value;
                 if (value == null) { return; }
                 Role = value.RoleName;
-                TypeDeathDescription = value.RoleDescription;
+                RoleDescription = value.RoleDescription;
                 OnPropertyChanged();
 
             }
