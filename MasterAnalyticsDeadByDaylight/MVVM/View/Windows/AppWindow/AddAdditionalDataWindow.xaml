@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Foreground="White"
-        Title="Добавить игровой режим" Height="400" Width="750">
+        Title="Добавить игровой режим" Height="500" Width="800">
     
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30" />
@@ -21,6 +21,7 @@
     <Window.Resources>
 
         <!--#region Стили для кнопок в строке заголовка -->
+        
         <Style x:Key="CaptionButtonStyle" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -44,35 +45,91 @@
         <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
             <Setter Property="Content" Value="&#xE106;"/>
         </Style>
+        
         <!--#endregion-->
 
-        <!--#region ListViewStyle -->
-        <Style TargetType="ListViewItem">
+        <!--#region Цвета для ListView -->
+        
+        <LinearGradientBrush x:Key="ListViewItemSelectedAndMousOver" EndPoint="1,0" StartPoint="1,0">
+            <GradientStop Color="#2A2A2A" Offset="1.0"/>
+            <GradientStop Color="#2A2A2A" Offset="0.0"/>
+        </LinearGradientBrush>
+        
+        <!--#endregion-->
+        
+        <!--#region Шаблон для заголовка GridViewColumnHeader-->
+
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ListViewItem">
-                        <Border Name="border" Background="#FF282C34" Padding="2" SnapsToDevicePixels="true">
-                            <ContentPresenter/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                                <Setter Property="Foreground" Value="Black"/>
-                            </Trigger>
-
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                                <Setter Property="Foreground" Value="Black"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
+                    <ControlTemplate TargetType="GridViewColumnHeader">
+                        <!--<Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="5"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="0,0,1,0" 
+                                    Padding="5" 
+                                    CornerRadius="5"
+                                    Grid.Column="0">
+                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                            </Border>
+                            <Thumb Grid.Column="1" 
+                                   Width="5" 
+                                   Background="Transparent"/>
+                        </Grid>-->
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
+
         <!--#endregion-->
+
+        <!--#region ListViewStyle -->
+
+        <Style TargetType="ListView">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#2A2A2A" />
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        
+        <!--#endregion-->
+
+        <!--#region ListViewItemStyle -->
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="BorderBrush" Value="#2A2A2A"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedAndMousOver}"/>
+                    <Setter Property="BorderBrush" Value="#FF595958"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedAndMousOver}"/>
+                    <Setter Property="BorderBrush" Value="#FF595958"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!--#endregion--> 
 
     </Window.Resources>
 
@@ -87,33 +144,36 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Height="30" Background="#F999">
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-
-                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
-               Width="35" Margin="2" 
-               HorizontalAlignment="Left" VerticalAlignment="Center"/>
-
-                <TextBlock Text="{Binding Titel}" 
-                   FontSize="20" 
-                   VerticalAlignment="Center"/>
                 
+                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
+                       Width="35" Margin="2" 
+                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                <TextBlock Text="{Binding Title}" 
+                           FontSize="20" 
+                           VerticalAlignment="Center"/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
-
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                
                 <Button Command="{x:Static SystemCommands.CloseWindowCommand}"
                         Style="{StaticResource CloseButtonStyle}"
                         WindowChrome.IsHitTestVisibleInChrome="True" 
                         ToolTip="Close"/>
+                
             </StackPanel>
 
         </Grid>
 
-        <TabControl Grid.Row="1" SelectedIndex="0" HorizontalAlignment="Center" Background="#FF282C34" BorderThickness="0" Margin="0,4,0,0">
+        <TabControl Grid.Row="1" Background="#121212" BorderThickness="0" Margin="0,0,0,0">
 
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
+            <!--#region Режим игры -->
+
+            <TabItem Style="{StaticResource TabItemStyleAdditional}" Height="30">
                 <TabItem.Header>
-                    <TextBlock Text="Режим игры" FontSize="14" Foreground="White"/>
+                    <TextBlock Text="Режим игры" Style="{StaticResource TextBlockTabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -122,148 +182,271 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+                    <Border Style="{StaticResource BorderAroundListView}">
+                        <StackPanel>
 
-                        <ListView Grid.Row="0" Grid.Column="0" 
-                          Background="#FF282C34" BorderThickness="0"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          ItemsSource="{Binding GameModeList}" SelectedItem="{Binding SelectedGameModeItem}">
+                            <Border Style="{StaticResource BorderHeading}">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="White" Height="40" BorderThickness="1">
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding GameModeName}"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                <TextBlock Text="Список режимов" Style="{StaticResource TextBlockCardHeader}"/>
 
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Удалить" Command="{Binding DeleteGameModeItemCommand}"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
+                            </Border>
+
+                            <Border Style="{StaticResource BorderListView}">
+
+                                <ListView ItemsSource="{Binding GameModeList}" SelectedItem="{Binding SelectedGameModeItem}" d:ItemsSource="{d:SampleData ItemCount=30}" 
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                          VirtualizingPanel.CacheLength="15,15"
+                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                          VirtualizingPanel.ScrollUnit="Pixel">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Режим" DisplayMemberBinding="{Binding GameModeName}" Width="360"/>
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить" Command="{Binding DeleteGameModeItemCommand}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+
+                            </Border>
+
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                            <Border Style="{StaticResource BorderHeading}">
+
+                                <TextBlock Text="Режим" Style="{StaticResource TextBlockCardHeader}"/>
+                                
+                            </Border>
+
+                            <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxName}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding GameMode}"/>
+
+                            <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxDescription}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding GameModeDescription}" />
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding SaveGameModeCommand}"
+                                        Style="{StaticResource SaveAdditionalDataWindowButton}"
+                                        Content="Сохранить"/>
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding UpdateGameModeItemCommand}"
+                                        Style="{StaticResource UpdateAdditionalDataWindowButton}"
+                                        Content="Обновить"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!--#endregion-->
+
+            <!--#region Игровые события -->
+                   
+            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                <TabItem.Header>
+                    <TextBlock Text="Игровое событие" Style="{StaticResource TextBlockTabItemHeader}"/>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Style="{StaticResource BorderAroundListView}">
+                        <StackPanel>
+
+                            <Border Style="{StaticResource BorderHeading}">
+
+                                <TextBlock Text="Список игровых событий" Style="{StaticResource TextBlockCardHeader}"/>
+                                
+                            </Border>
                             
-                        </ListView>
-                    </Border>
-
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Режим" Foreground="White" FontSize="20"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
-
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 Text="{Binding TextBoxGameModeName}"
-                                 FontSize="18"
-                                 Width="200" Height="32" Margin="0,10,0,0"/>
-
-                        <TextBlock Text="Описание режима" Foreground="White" FontSize="20" 
-                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
-
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 Text="{Binding TextBoxGameDescription}" FontSize="18"
-                                 Width="200" Height="130" Margin="0,10,0,0"/>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding SaveGameModeCommand}"
-                                    Content="Сохранить" 
-                                    Width="130" Height="30" Margin="0,10,0,0"/>
-
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding UpdateGameModeItemCommand}"
-                                    Content="Обновить" 
-                                    Width="130" Height="30" Margin="10,10,0,0"/>
-                        </StackPanel>
-                        
-                    </StackPanel>
-                </Grid>
-
-            </TabItem>
-
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
-                <TabItem.Header>
-                    <TextBlock Text="Игровое событие" FontSize="14" Foreground="White"/>
-                </TabItem.Header>
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
-
-                        <ListView Grid.Row="0" Grid.Column="0" 
-                                  Background="#FF282C34" BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding GameEventList}" SelectedItem="{Binding SelectedGameEventItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
-
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding GameEventName}"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Удалить" Command="{Binding DeleteGameEventItemCommand}"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
+                            <Border Style="{StaticResource BorderListView}">
+                                
+                                <ListView ItemsSource="{Binding GameEventList}" SelectedItem="{Binding SelectedGameEventItem}" d:ItemsSource="{d:SampleData ItemCount=30}" 
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                          VirtualizingPanel.CacheLength="15,15"
+                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                          VirtualizingPanel.ScrollUnit="Pixel">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="События" DisplayMemberBinding="{Binding GameEventName}" Width="360"/>
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить" Command="{Binding DeleteGameEventItemCommand}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                                
+                            </Border>
                             
-                        </ListView>
+                        </StackPanel>
                     </Border>
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Событие" Foreground="White" FontSize="20"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
 
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 Text="{Binding TextBoxGameEventName}"
-                                 FontSize="18"
-                                 Width="200" Height="32" Margin="0,10,0,0"/>
+                            <Border Style="{StaticResource BorderHeading}">
 
-                        <TextBlock Text="Описание события" Foreground="White" FontSize="20" 
-                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+                                <TextBlock Text="Событие" Style="{StaticResource TextBlockCardHeader}"/>
 
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 FontSize="18"
-                                 Width="200" Height="150" Margin="0,10,0,0"/>
-                        
-                        <StackPanel Orientation="Horizontal">
+                            </Border>
+
+                            <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxName}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding GameEvent}"/>
+
+                            <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxDescription}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding GameEventDescription}"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding SaveGameEventCommand}"
+                                        Style="{StaticResource SaveAdditionalDataWindowButton}"
+                                        Content="Сохранить"/>
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding UpdateGameEventItemCommand}"
+                                        Style="{StaticResource UpdateAdditionalDataWindowButton}"
+                                        Content="Обновить"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+            
+            <!--#endregion-->
+
+            <!--#region Платформа -->
+                   
+            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
+                <TabItem.Header>
+                    <TextBlock Text="Платформа" Style="{StaticResource TextBlockTabItemHeader}"/>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Style="{StaticResource BorderAroundListView}">
+                        <StackPanel>
                             
-                        <Button Template="{StaticResource ControlButton}"
-                                Command="{Binding SaveGameEventCommand}"
-                                Content="Сохранить" 
-                                Width="130" Height="30" Margin="0,10,0,0"/>
+                            <Border Style="{StaticResource BorderHeading}">
 
-                            <Button Template="{StaticResource ControlButton}"
-                                Command="{Binding UpdateGameEventItemCommand}"
-                                Content="Обновить" 
-                                Width="130" Height="30" Margin="10,10,0,0"/>
+                                <TextBlock Text="Список игровых платформ" Style="{StaticResource TextBlockCardHeader}"/>
+                                
+                            </Border>
+                            
+                            <Border Style="{StaticResource BorderListView}">
+                                
+                                <ListView ItemsSource="{Binding PlatformList}" SelectedItem="{Binding SelectedPlatformItem}" d:ItemsSource="{d:SampleData ItemCount=30}" 
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                          VirtualizingPanel.CacheLength="15,15"
+                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                          VirtualizingPanel.ScrollUnit="Pixel">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Платформа" DisplayMemberBinding="{Binding PlatformName}" Width="360"/>
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить" Command="{Binding DeletePlatformItemCommand}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                                
+                            </Border>
+                            
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                            <Border Style="{StaticResource BorderHeading}">
+
+                                <TextBlock Text="Платформа" Style="{StaticResource TextBlockCardHeader}"/>
+
+                            </Border>
+
+                            <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxName}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                                     Text="{Binding Platform}"/>
+
+                            <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxDescription}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding PlatformDescription}"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding SavePlatformCommand}"
+                                        Style="{StaticResource SaveAdditionalDataWindowButton}"
+                                        Content="Сохранить"/>
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding UpdatePlatformItemCommand}"
+                                        Style="{StaticResource UpdateAdditionalDataWindowButton}"
+                                        Content="Обновить"/>
+
+                            </StackPanel>
 
                         </StackPanel>
-                        
-                    </StackPanel>
-
+                    </Border>
                 </Grid>
-
             </TabItem>
+            
+            <!--#endregion-->
 
+            <!--#region Асоциация -->
+            
             <TabItem Style="{DynamicResource TabItemStyleAdditional}">
                 <TabItem.Header>
-                    <TextBlock Text="Платформа" FontSize="14" Foreground="White"/>
+                    <TextBlock Text="Асоциация" Style="{StaticResource TextBlockTabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -272,150 +455,90 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+                    <Border Style="{StaticResource BorderAroundListView}">
+                        <StackPanel>
 
-                        <ListView Grid.Row="0" Grid.Column="0" 
-                                  Background="#FF282C34" BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding PlatformList}" SelectedItem="{Binding SelectedPlatformItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                            <Border Style="{StaticResource BorderHeading}">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PlatformName}"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                <TextBlock Text="Список игровых ассоциаций" Style="{StaticResource TextBlockCardHeader}"/>
+                                
+                            </Border>
 
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Удалить" Command="{Binding DeletePlatformItemCommand}"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                        </ListView>
+                            <Border Style="{StaticResource BorderListView}">
+                                
+                                <ListView ItemsSource="{Binding AssociationList}" SelectedItem="{Binding SelectedAssociationItem}" d:ItemsSource="{d:SampleData ItemCount=30}"
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                          VirtualizingPanel.CacheLength="15,15"
+                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                          VirtualizingPanel.ScrollUnit="Pixel">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Ассоциация" DisplayMemberBinding="{Binding PlayerAssociationName}" Width="360"/>
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить" Command="{Binding DeletePlayerAssociationItemCommand}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                                
+                            </Border>
+                            
+                        </StackPanel>
                     </Border>
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Платформа" Foreground="White" FontSize="20"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
 
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
-                                 Text="{Binding TextBoxPlatformName}"
-                                 FontSize="18"
-                                 Width="200" Height="32" Margin="0,10,0,0"/>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
 
-                        <TextBlock Text="Описание платформы" Foreground="White" FontSize="20" 
-                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+                            <Border Style="{StaticResource BorderHeading}">
 
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 FontSize="18"
-                                 Width="200" Height="150" Margin="0,10,0,0"/>
+                                <TextBlock Text="Ассоциация" Style="{StaticResource TextBlockCardHeader}"/>
 
-                        <StackPanel Orientation="Horizontal">
+                            </Border>
 
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding SavePlatformCommand}"
-                                    Content="Сохранить" 
-                                    Width="130" Height="30" Margin="0,10,0,0"/>
+                            <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding UpdatePlatformItemCommand}"
-                                    Content="Обновить" 
-                                    Width="130" Height="30" Margin="10,10,0,0"/>
+                            <TextBox Style="{StaticResource TextBoxName}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding PlayerAssociation}"/>
+
+                            <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxDescription}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding PlayerAssociationDescription}"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding SavePlayerAssociationCommand}"
+                                        Style="{StaticResource SaveAdditionalDataWindowButton}"
+                                        Content="Сохранить"/>
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding UpdatePlayerAssociationItemCommand}"
+                                        Style="{StaticResource UpdateAdditionalDataWindowButton}"
+                                        Content="Обновить"/>
+
+                            </StackPanel>
 
                         </StackPanel>
-
-                    </StackPanel>
-
-                </Grid>
-
-            </TabItem>
-
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
-                <TabItem.Header>
-                    <TextBlock Text="Асоциация" FontSize="14" Foreground="White"/>
-                </TabItem.Header>
-                
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
-
-                        <ListView Grid.Row="0" Grid.Column="0" 
-                                  Background="#FF282C34" BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding AssociationList}" SelectedItem="{Binding SelectedAssociationItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
-
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PlayerAssociationName}"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Удалить" Command="{Binding DeletePlayerAssociationItemCommand}"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                        </ListView>
                     </Border>
-
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Асоциация" Foreground="White" FontSize="20"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
-
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 Text="{Binding TextBoxPlayerAssociationName}"
-                                 FontSize="18"
-                                 Width="200" Height="32" Margin="0,10,0,0"/>
-
-                        <TextBlock Text="Описание асоциация" Foreground="White" FontSize="20" 
-                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
-
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 FontSize="18"
-                                 Width="200" Height="150" Margin="0,10,0,0"/>
-
-                        <StackPanel Orientation="Horizontal">
-
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding SavePlayerAssociationCommand}"
-                                    Content="Сохранить" 
-                                    Width="130" Height="30" Margin="0,10,0,0"/>
-
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding UpdatePlayerAssociationItemCommand}"
-                                    Content="Обновить" 
-                                    Width="130" Height="30" Margin="10,10,0,0"/>
-
-                        </StackPanel>
-                        
-                    </StackPanel>
-
                 </Grid>
-
             </TabItem>
 
+            <!--#endregion-->
+
+            <!--#region Патч -->
+            
             <TabItem Style="{DynamicResource TabItemStyleAdditional}">
                 <TabItem.Header>
-                    <TextBlock Text="Патч" FontSize="14" Foreground="White"/>
+                    <TextBlock Text="Патч" Style="{StaticResource TextBlockTabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -424,76 +547,91 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+                    <Border Style="{StaticResource BorderAroundListView}">
+                        <StackPanel>
 
-                        <ListView Grid.Row="0" Grid.Column="0" 
-                                  Background="#FF282C34" BorderThickness="0"
-                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                  ItemsSource="{Binding PatchList}" SelectedItem="{Binding SelectedPatchItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                            <Border Style="{StaticResource BorderHeading}">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="White" Height="auto" BorderThickness="2">
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Vertical">
-                                                    <TextBlock Text="Номер патча:" Foreground="White" FontSize="17"/>
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PatchNumber}"/>
-                                                    <TextBlock Text="Дата выхода патча:" Foreground="White" FontSize="17"/>
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PatchDateRelease, StringFormat='{}{0:MM.dd.yyyy}'}" Margin="5,0,0,0"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                <TextBlock Text="Список патчей" Style="{StaticResource TextBlockCardHeader}"/>
+                                
+                            </Border>
 
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Удалить" Command="{Binding DeletePatchItemCommand}"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                        </ListView>
+                            <Border Style="{StaticResource BorderListView}">
+                                
+                                <ListView ItemsSource="{Binding PatchList}" SelectedItem="{Binding SelectedPatchItem}" d:ItemsSource="{d:SampleData ItemCount=30}"
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                          VirtualizingPanel.CacheLength="15,15"
+                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                          VirtualizingPanel.ScrollUnit="Pixel">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Патч" DisplayMemberBinding="{Binding PatchNumber}" Width="360"/>
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить" Command="{Binding DeletePatchItemCommand}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                                
+                            </Border>
+                            
+                        </StackPanel>
                     </Border>
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Патч" Foreground="White" FontSize="20"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
 
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
-                                 Text="{Binding TextBoxPatchNumber}"
-                                 FontSize="18"
-                                 Width="200" Height="32" Margin="0,10,0,0"/>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
 
-                        <TextBlock Text="Дата выхода патча" Foreground="White" FontSize="20" 
-                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
+                            <Border Style="{StaticResource BorderHeading}">
 
-                        <DatePicker FontSize="18"
-                                    SelectedDate="{Binding DatePickerPatchDateRelease}"
-                                    Width="200" Height="32" Margin="0,10,0,0"/>
+                                <TextBlock Text="Патч" Style="{StaticResource TextBlockCardHeader}"/>
 
-                        <StackPanel Orientation="Horizontal">
+                            </Border>
 
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding SavePatchCommand}"
-                                    Content="Сохранить" 
-                                    Width="130" Height="30" Margin="0,10,0,0"/>
+                            <TextBlock Text="Номер" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding UpdatePatchItemCommand}"
-                                    Content="Обновить" 
-                                    Width="130" Height="30" Margin="10,10,0,0"/>
+                            <TextBox Style="{StaticResource TextBoxName}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                                     Text="{Binding PatchNumber}"/>
+
+                            <TextBlock Text="Дата выхода патча" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <DatePicker Style="{DynamicResource BaseDatePicker}" FontSize="18"
+                                        SelectedDate="{Binding PatchDateRelease}"
+                                        Width="300" Height="32" Margin="0,10,0,0"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding SavePatchCommand}"
+                                        Style="{StaticResource SaveAdditionalDataWindowButton}"
+                                        Content="Сохранить"/>
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding UpdatePatchItemCommand}"
+                                        Style="{StaticResource UpdateAdditionalDataWindowButton}"
+                                        Content="Обновить"/>
+
+                            </StackPanel>
 
                         </StackPanel>
-                        
-                    </StackPanel>
+                    </Border>
                 </Grid>
 
             </TabItem>
+            
+            <!--#endregion-->
+
+            <!--#region Тип смерти -->
 
             <TabItem Style="{DynamicResource TabItemStyleAdditional}">
                 <TabItem.Header>
-                    <TextBlock Text="Тип смерти" FontSize="14" Foreground="White"/>
+                    <TextBlock Text="Тип смерти" Style="{StaticResource TextBlockTabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -502,74 +640,89 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+                    <Border Style="{StaticResource BorderAroundListView}">
+                        <StackPanel>
 
-                        <ListView Grid.Row="0" Grid.Column="0" 
-                                  Background="#FF282C34" BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding DeathList}" SelectedItem="{Binding SelectedTypeDeathItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                            <Border Style="{StaticResource BorderHeading}">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding TypeDeathName}"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                <TextBlock Text="Список типов смертей" Style="{StaticResource TextBlockCardHeader}"/>
 
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Удалить" Command="{Binding DeleteTypeDeathItemCommand}"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                        </ListView>
-                    </Border>
+                            </Border>
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Тип смерти" Foreground="White" FontSize="20"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                            <Border Style="{StaticResource BorderListView}">
 
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
-                                 Text="{Binding TextBoxTypeDeath}"
-                                 FontSize="18"
-                                 Width="200" Height="32" Margin="0,10,0,0"/>
+                                <ListView ItemsSource="{Binding DeathList}" SelectedItem="{Binding SelectedTypeDeathItem}" d:ItemsSource="{d:SampleData ItemCount=30}" 
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                          VirtualizingPanel.CacheLength="15,15"
+                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                          VirtualizingPanel.ScrollUnit="Pixel">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Смерти" DisplayMemberBinding="{Binding TypeDeathName}" Width="360"/>
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить" Command="{Binding DeleteTypeDeathItemCommand}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
 
-                        <TextBlock Text="Описание типа смерти" Foreground="White" FontSize="20" 
-                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
-
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 FontSize="18"
-                                 Width="200" Height="150" Margin="0,10,0,0"/>
-                        
-                        <StackPanel Orientation="Horizontal">
-
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding SaveTypeDeathCommand}"
-                                    Content="Сохранить" 
-                                    Width="130" Height="30" Margin="0,10,0,0"/>
-
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding UpdateTypeDeathItemCommand}"
-                                    Content="Обновить" 
-                                    Width="130" Height="30" Margin="10,10,0,0"/>
+                            </Border>
 
                         </StackPanel>
+                    </Border>
 
-                    </StackPanel>
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
 
+                            <Border Style="{StaticResource BorderHeading}">
+
+                                <TextBlock Text="Тип смерти" Style="{StaticResource TextBlockCardHeader}"/>
+
+                            </Border>
+
+                            <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxName}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                                     Text="{Binding TypeDeath}"/>
+
+                            <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxDescription}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding TypeDeathDescription}"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding SaveTypeDeathCommand}"
+                                        Style="{StaticResource SaveAdditionalDataWindowButton}"
+                                        Content="Сохранить"/>
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding UpdateTypeDeathItemCommand}"
+                                        Style="{StaticResource UpdateAdditionalDataWindowButton}"
+                                        Content="Обновить"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+                    </Border>
                 </Grid>
-
             </TabItem>
+
+            <!--#endregion-->
+
+            <!--#region Игровая роль -->
 
             <TabItem Style="{DynamicResource TabItemStyleAdditional}">
                 <TabItem.Header>
-                    <TextBlock Text="Игровая роль" FontSize="14" Foreground="White"/>
+                    <TextBlock Text="Игровая роль" Style="{StaticResource TextBlockTabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -578,72 +731,89 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+                    <Border Style="{StaticResource BorderAroundListView}">
+                        <StackPanel>
 
-                        <ListView Grid.Row="0" Grid.Column="0" 
-                                  Background="#FF282C34" BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding GameRoleList}" SelectedItem="{Binding SelectedRoleItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                            <Border Style="{StaticResource BorderHeading}">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding RoleName}"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                <TextBlock Text="Список игровых ролей" Style="{StaticResource TextBlockCardHeader}"/>
+                                
+                            </Border>
 
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Удалить" Command="{Binding DeleteRoleItemCommand}"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                        </ListView>
-                    </Border>
-
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Роль" Foreground="White" FontSize="20"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
-
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
-                                 Text="{Binding TextBoxRole}"
-                                 FontSize="18"
-                                 Width="200" Height="32" Margin="0,10,0,0"/>
-
-                        <TextBlock Text="Описание роли" Foreground="White" FontSize="20" 
-                                   HorizontalAlignment="Center"  Margin="0,10,0,0"/>
-
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 FontSize="18"
-                                 Width="200" Height="150" Margin="0,10,0,0"/>
-
-                        <StackPanel Orientation="Horizontal">
-
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding SaveRoleCommand}"
-                                    Content="Сохранить" 
-                                    Width="130" Height="30" Margin="0,10,0,0"/>
-
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding UpdateRoleItemCommand}"
-                                    Content="Обновить" 
-                                    Width="130" Height="30" Margin="10,10,0,0"/>
+                            <Border Style="{StaticResource BorderListView}">
+                                
+                                <ListView ItemsSource="{Binding GameRoleList}" SelectedItem="{Binding SelectedRoleItem}" d:ItemsSource="{d:SampleData ItemCount=30}" 
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                          VirtualizingPanel.CacheLength="15,15"
+                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                          VirtualizingPanel.ScrollUnit="Pixel">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Роль" DisplayMemberBinding="{Binding RoleName}" Width="360"/>
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить" Command="{Binding DeleteRoleItemCommand}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                                
+                            </Border>
 
                         </StackPanel>
+                    </Border>
 
-                    </StackPanel>
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                            <Border Style="{StaticResource BorderHeading}">
+
+                                <TextBlock Text="Игровая роль" Style="{StaticResource TextBlockCardHeader}"/>
+
+                            </Border>
+
+                            <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxName}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                                     Text="{Binding Role}"/>
+
+                            <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxDescription}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding RoleDescription}"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding SaveRoleCommand}"
+                                        Style="{StaticResource SaveAdditionalDataWindowButton}"
+                                        Content="Сохранить"/>
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding UpdateRoleItemCommand}"
+                                        Style="{StaticResource UpdateAdditionalDataWindowButton}"
+                                        Content="Обновить"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </TabItem>
 
+            <!--#endregion-->
+
+            <!--#region Измерение -->
+
             <TabItem Style="{DynamicResource TabItemStyleAdditional}">
                 <TabItem.Header>
-                    <TextBlock Text="Измерение" FontSize="14" Foreground="White"/>
+                    <TextBlock Text="Измерение" Style="{StaticResource TextBlockTabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -652,62 +822,86 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+                    <Border Style="{StaticResource BorderAroundListView}">
+                        <StackPanel>
 
-                        <ListView Grid.Row="0" Grid.Column="0" 
-                                  Background="#FF282C34" BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                  ItemsSource="{Binding MeasurementList}" SelectedItem="{Binding SelectedMeasurementItem}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                            <Border Style="{StaticResource BorderHeading}">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="White" Height="40" BorderThickness="2">
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding MeasurementName}"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                <TextBlock Text="Список измерений" Style="{StaticResource TextBlockCardHeader}"/>
+                                
+                            </Border>
 
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Удалить" Command="{Binding }"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                        </ListView>
+                            <Border Style="{StaticResource BorderListView}">
+                                
+                                <ListView ItemsSource="{Binding MeasurementList}" SelectedItem="{Binding SelectedMeasurementItem}" d:ItemsSource="{d:SampleData ItemCount=40}"
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                          VirtualizingPanel.CacheLength="15,15"
+                                          VirtualizingPanel.CacheLengthUnit="Item"
+                                          VirtualizingPanel.ScrollUnit="Pixel"
+                                          >
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Измерение" DisplayMemberBinding="{Binding MeasurementName}" Width="360"/>
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить" Command="{Binding DeleteMeasurementItemCommand}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                                
+                            </Border>
+                            
+                        </StackPanel>
                     </Border>
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Измерение" Foreground="White" FontSize="20"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
 
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
-                                 Text="{Binding TextBoxMeasurement}"
-                                 FontSize="18"
-                                 Width="200" Height="32" Margin="0,10,0,0"/>
+                            <Border Style="{StaticResource BorderHeading}">
 
-                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Измерение" Style="{StaticResource TextBlockCardHeader}"/>
 
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding SaveMeasurementCommand}"
-                                    Content="Сохранить" 
-                                    Width="130" Height="30" Margin="0,10,0,0"/>
+                            </Border>
 
-                            <Button Template="{StaticResource ControlButton}"
-                                    Command="{Binding UpdateMeasurementItemCommand}"
-                                    Content="Обновить" 
-                                    Width="130" Height="30" Margin="10,10,0,0"/>
+                            <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxName}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                                     Text="{Binding Measurement}"/>
+
+                            <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                            <TextBox Style="{StaticResource TextBoxDescription}" 
+                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Text="{Binding MeasurementDescription}"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding SaveMeasurementCommand}"
+                                        Style="{StaticResource SaveAdditionalDataWindowButton}"
+                                        Content="Сохранить"/>
+
+                                <Button Template="{StaticResource ControlButton}"
+                                        Command="{Binding UpdateMeasurementItemCommand}"
+                                        Style="{StaticResource UpdateAdditionalDataWindowButton}"
+                                        Content="Обновить"/>
+
+                            </StackPanel>
 
                         </StackPanel>
-
-                    </StackPanel>
+                    </Border>
                 </Grid>
             </TabItem>
+
+            <!--#endregion-->
 
         </TabControl>
+        
     </Grid>
 </Window>

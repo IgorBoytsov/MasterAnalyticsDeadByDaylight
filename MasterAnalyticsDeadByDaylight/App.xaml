@@ -6,8 +6,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="MVVM\View\Styles\BorderStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\ButtonStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="MVVM\View\Styles\DatePickerStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\MenuStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\ScrollViewerStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\TabControlItemAdditionalDataWindow.xaml"/>

@@ -1,4 +1,5 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using System.Windows;
 using System.Windows.Input;
 
@@ -12,7 +13,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
         public AddAdditionalDataWindow()
         {
             InitializeComponent();
-            DataContext = new AddAdditionalDataWindowViewModel();
+            IDialogService service = new DialogService();
+            DataContext = new AddAdditionalDataWindowViewModel(service);
         }
 
         private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)

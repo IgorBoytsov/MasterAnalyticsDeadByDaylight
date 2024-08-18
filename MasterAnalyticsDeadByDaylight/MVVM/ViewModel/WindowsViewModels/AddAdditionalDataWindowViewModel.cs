@@ -1,5 +1,8 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Utils.Enum;
+using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
@@ -10,7 +13,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
     {
         #region Свойства 
 
-        public ObservableCollection<GameMode> GameModeList { get; set; }
+        public ObservableCollection<GameMode> GameModeList { get; set; } = [];
 
         private GameMode _selectedGameModeItem;
         public GameMode SelectedGameModeItem
@@ -20,13 +23,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedGameModeItem = value;
                 if (value == null) { return; }
-                TextBoxGameModeName = value.GameModeName;
+                GameMode = value.GameModeName;
+                GameModeDescription = value.GameModeDescription;
                 OnPropertyChanged();
             }
         }
 
-
-        public ObservableCollection<GameEvent> GameEventList { get; set; }
+        public ObservableCollection<GameEvent> GameEventList { get; set; } = [];
 
         private GameEvent _selectedGameEventItem;
         public GameEvent SelectedGameEventItem
@@ -36,13 +39,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedGameEventItem = value;
                 if (value == null) { return; }
-                TextBoxGameEventName = value.GameEventName;
+                GameEvent = value.GameEventName;
+                GameEventDescription = value.GameEventDescription;
                 OnPropertyChanged();
             }
         }
 
-
-        public ObservableCollection<Platform> PlatformList { get; set; }
+        public ObservableCollection<Platform> PlatformList { get; set; } = [];
 
         private Platform _selectedPlatformItem;
         public Platform SelectedPlatformItem
@@ -52,14 +55,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedPlatformItem = value;
                 if (value == null) { return; }
-                TextBoxPlatformName = value.PlatformName;
+                Platform = value.PlatformName;
+                PlatformDescription = value.PlatformDescription;
                 OnPropertyChanged();
 
             }
         }
 
-
-        public ObservableCollection<PlayerAssociation> AssociationList { get; set; }
+        public ObservableCollection<PlayerAssociation> AssociationList { get; set; } = [];
 
         private PlayerAssociation _selectedPlayerAssociationItem;
         public PlayerAssociation SelectedAssociationItem
@@ -69,13 +72,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedPlayerAssociationItem = value;
                 if (value == null) { return; }
-                TextBoxPlayerAssociationName = value.PlayerAssociationName;
+                PlayerAssociation = value.PlayerAssociationName;
+                PlayerAssociationDescription = value.PlayerAssociationDescription;
                 OnPropertyChanged();
             }
         }
 
 
-        public ObservableCollection<Patch> PatchList { get; set; }
+        public ObservableCollection<Patch> PatchList { get; set; } = [];
 
         private Patch _selectedPatchItem;
         public Patch SelectedPatchItem
@@ -85,14 +89,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedPatchItem = value;
                 if (value == null) { return; }
-                TextBoxPatchNumber = value.PatchNumber;
-                DatePickerPatchDateRelease = value.PatchDateRelease.ToDateTime(TimeOnly.MinValue);
+                PatchNumber = value.PatchNumber;
+                PatchDateRelease = value.PatchDateRelease.ToDateTime(TimeOnly.MinValue);
                 OnPropertyChanged();
             }
         }
 
 
-        public ObservableCollection<TypeDeath> DeathList { get; set; }
+        public ObservableCollection<TypeDeath> DeathList { get; set; } = [];
 
         private TypeDeath _selectedTypeDeath;
         public TypeDeath SelectedTypeDeathItem
@@ -102,13 +106,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedTypeDeath = value;
                 if (value == null) { return; }
-                TextBoxTypeDeath = value.TypeDeathName;
+                TypeDeath = value.TypeDeathName;
+                TypeDeathDescription = value.TypeDeathDescription;
                 OnPropertyChanged();
             }
         }
 
 
-        public ObservableCollection<Role> GameRoleList { get; set; }
+        public ObservableCollection<Role> GameRoleList { get; set; } = [];
 
         private Role _selectedRole;
         public Role SelectedRoleItem
@@ -118,14 +123,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedRole = value;
                 if (value == null) { return; }
-                TextBoxRole = value.RoleName;
+                Role = value.RoleName;
+                TypeDeathDescription = value.RoleDescription;
                 OnPropertyChanged();
 
             }
         }
 
 
-        public ObservableCollection<Measurement> MeasurementList { get; set; }
+        public ObservableCollection<Measurement> MeasurementList { get; set; } = [];
 
         private Measurement _selectedMeasurementItem;
         public Measurement SelectedMeasurementItem
@@ -135,135 +141,216 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedMeasurementItem = value;
                 if (value == null) { return; }
-                TextBoxMeasurement = value.MeasurementName;
+                Measurement = value.MeasurementName;
+                MeasurementDescription = value.MeasurementDescription;
                 OnPropertyChanged();
 
             }
         }
 
-        private string _titel;
-        public string Titel
+        private string _title;
+        public string Title
         {
-            get => _titel;
+            get => _title;
             set
             {
-                if (_titel != value)
+                if (_title != value)
                 {
-                    _titel = value;
+                    _title = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        private string _textBoxGameModeName;
-        public string TextBoxGameModeName
+        private string _gameMode;
+        public string GameMode
         {
-            get => _textBoxGameModeName;
+            get => _gameMode;
             set
             {
-                _textBoxGameModeName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _textBoxGameEventName;
-        public string TextBoxGameEventName
-        {
-            get => _textBoxGameEventName;
-            set
-            {
-                if (_textBoxGameEventName != value)
-                {
-                    _textBoxGameEventName = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private string _textBoxPlatformName;
-        public string TextBoxPlatformName
-        {
-            get => _textBoxPlatformName;
-            set
-            {
-                _textBoxPlatformName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _textBoxPlayerAssociationName;
-        public string TextBoxPlayerAssociationName
-        {
-            get => _textBoxPlayerAssociationName;
-            set
-            {
-                _textBoxPlayerAssociationName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _textBoxPatchNumber;
-        public string TextBoxPatchNumber
-        {
-            get => _textBoxPatchNumber;
-            set
-            {
-                _textBoxPatchNumber = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private DateTime _datePickerPatchDateRelease;
-        public DateTime DatePickerPatchDateRelease
-        {
-            get => _datePickerPatchDateRelease;
-            set
-            {
-                _datePickerPatchDateRelease = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _textBoxTypeDeath;
-        public string TextBoxTypeDeath
-        {
-            get => _textBoxTypeDeath;
-            set
-            {
-                _textBoxTypeDeath = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _textBoxTextBoxRole;
-        public string TextBoxRole
-        {
-            get => _textBoxTextBoxRole;
-            set
-            {
-                _textBoxTextBoxRole = value;
+                _gameMode = value;
                 OnPropertyChanged();
             }
         }
         
-        private string _textBoxMeasurement;
-        public string TextBoxMeasurement
+        private string _gameModeDescription;
+        public string GameModeDescription
         {
-            get => _textBoxMeasurement;
+            get => _gameModeDescription;
             set
             {
-                _textBoxMeasurement = value;
+                _gameModeDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _gameEvent;
+        public string GameEvent
+        {
+            get => _gameEvent;
+            set
+            {
+                if (_gameEvent != value)
+                {
+                    _gameEvent = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _gameEventDescription;
+        public string GameEventDescription
+        {
+            get => _gameEventDescription;
+            set
+            {
+                _gameEventDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _platform;
+        public string Platform
+        {
+            get => _platform;
+            set
+            {
+                _platform = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _platformDescription;
+        public string PlatformDescription
+        {
+            get => _platformDescription;
+            set
+            {
+                _platformDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _playerAssociation;
+        public string PlayerAssociation
+        {
+            get => _playerAssociation;
+            set
+            {
+                _playerAssociation = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _playerAssociationDescription;
+        public string PlayerAssociationDescription
+        {
+            get => _playerAssociationDescription;
+            set
+            {
+                _playerAssociationDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _patchNumber;
+        public string PatchNumber
+        {
+            get => _patchNumber;
+            set
+            {
+                _patchNumber = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DateTime _patchDateRelease;
+        public DateTime PatchDateRelease
+        {
+            get => _patchDateRelease;
+            set
+            {
+                _patchDateRelease = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _typeDeath;
+        public string TypeDeath
+        {
+            get => _typeDeath;
+            set
+            {
+                _typeDeath = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _typeDeathDescription;
+        public string TypeDeathDescription
+        {
+            get => _typeDeathDescription;
+            set
+            {
+                _typeDeathDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _role;
+        public string Role
+        {
+            get => _role;
+            set
+            {
+                _role = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string roleDescription;
+        public string RoleDescription
+        {
+            get => roleDescription;
+            set
+            {
+                roleDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _measurement;
+        public string Measurement
+        {
+            get => _measurement;
+            set
+            {
+                _measurement = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _measurementDescription;
+        public string MeasurementDescription
+        {
+            get => _measurementDescription;
+            set
+            {
+                _measurementDescription = value;
                 OnPropertyChanged();
             }
         }
 
         #endregion
 
-        public AddAdditionalDataWindowViewModel()
+        private readonly IDialogService _dialogService;
+
+        public AddAdditionalDataWindowViewModel(IDialogService dialogService)
         {
+            _dialogService = dialogService;
             GetAndUpdateData();
-            Titel = "Добавление базовых данных";
-            DatePickerPatchDateRelease = DateTime.Now;
+            Title = "Добавление базовых данных";
+            PatchDateRelease = DateTime.Now;
         }
 
         #region Команды
@@ -294,28 +381,132 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
 
         private RelayCommand _deleteGameModeItemCommand;
-        public RelayCommand DeleteGameModeItemCommand { get => _deleteGameModeItemCommand ??= new(obj => DeleteGameModeItem()); }
+        public RelayCommand DeleteGameModeItemCommand { get => _deleteGameModeItemCommand ??= new(async obj =>
+        {
+            if (SelectedGameModeItem == null) return;
+
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedGameModeItem.GameModeName}»?", 
+                "Предупреждение об удаление.", 
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedGameModeItem);
+                GetGameModeData();
+            } 
+            else return;
+        }); }
 
         private RelayCommand _deleteGameEvenItemCommand;
-        public RelayCommand DeleteGameEventItemCommand { get => _deleteGameEvenItemCommand ??= new(obj => DeleteGameEventItem()); }
+        public RelayCommand DeleteGameEventItemCommand { get => _deleteGameEvenItemCommand ??= new(async obj => 
+        {
+            if (SelectedGameEventItem == null) return;
+
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedGameEventItem.GameEventName}»? Это может привести к удалению связанных записей!",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedGameEventItem);
+                GetGameEventData();
+            } 
+            else return;
+        }); }
 
         private RelayCommand _deletePlatformItemCommand;
-        public RelayCommand DeletePlatformItemCommand { get => _deletePlatformItemCommand ??= new(obj => DeletePlatformItem()); }
+        public RelayCommand DeletePlatformItemCommand { get => _deletePlatformItemCommand ??= new(async obj =>
+        {
+            if (SelectedPlatformItem == null) return;
+
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedPlatformItem.PlatformName}»? Это может привести к удалению связанных записей!",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedPlatformItem);
+                GetPlatformData();
+            }
+            else return;
+        }); }
 
         private RelayCommand _deletePlayerAssociationItemCommand;
-        public RelayCommand DeletePlayerAssociationItemCommand { get => _deletePlayerAssociationItemCommand ??= new(obj => DeleteAssociationItem()); }
+        public RelayCommand DeletePlayerAssociationItemCommand { get => _deletePlayerAssociationItemCommand ??= new(async obj =>
+        {
+            if (SelectedAssociationItem == null) return;
+
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedAssociationItem.PlayerAssociationName}»? Это может привести к удалению связанных записей!",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedAssociationItem);
+                GetPlayerAssociationData();
+            }
+            else return;
+        }); }
 
         private RelayCommand _deletePatchItemCommand;
-        public RelayCommand DeletePatchItemCommand { get => _deletePatchItemCommand ??= new(obj => DeletePatchItem()); }
+        public RelayCommand DeletePatchItemCommand { get => _deletePatchItemCommand ??= new(async obj =>
+        {
+            if (SelectedPatchItem == null) return;
+
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedPatchItem.PatchNumber}»? Это может привести к удалению связанных записей!",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedPatchItem);
+                GetPatchData();
+            }
+            else return;
+        }); }
 
         private RelayCommand _deleteTypeDeathItemCommand;
-        public RelayCommand DeleteTypeDeathItemCommand { get => _deleteTypeDeathItemCommand ??= new(obj => DeleteTypeDeathItem()); }
+        public RelayCommand DeleteTypeDeathItemCommand { get => _deleteTypeDeathItemCommand ??= new(async obj =>
+        {
+            if (SelectedTypeDeathItem == null) return;
+
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedTypeDeathItem.TypeDeathName}»? Это может привести к удалению связанных записей!",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedTypeDeathItem);
+                GetTypeDeathData();
+            }
+            else return;
+        }); }
 
         private RelayCommand _deleteRoleItemCommand;
-        public RelayCommand DeleteRoleItemCommand { get => _deleteRoleItemCommand ??= new(obj => DeleteRoleItem()); }
+        public RelayCommand DeleteRoleItemCommand { get => _deleteRoleItemCommand ??= new(async obj =>
+        {
+            if (SelectedRoleItem == null) return;
+
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedRoleItem.RoleName}»? Это может привести к удалению связанных записей!",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedRoleItem);
+                GetRoleData();
+            }
+            else return;
+        }); }
         
         private RelayCommand _deleteMeasurementItemCommand;
-        public RelayCommand DeleteMeasurementItemCommand { get => _deleteMeasurementItemCommand ??= new(obj => DeleteMeasurementItem()); }
+        public RelayCommand DeleteMeasurementItemCommand { get => _deleteMeasurementItemCommand ??= new(async obj =>
+        {
+            if (SelectedMeasurementItem == null) return;
+
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedMeasurementItem.MeasurementName}»? Это может привести к удалению связанных записей!",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedMeasurementItem);
+                GetMeasurementData();
+            }
+            else return;
+        }); }
 
 
         private RelayCommand _updateGameModeItemCommand;
@@ -348,7 +539,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void GetAndUpdateData()
         {
-            RefList();
             GetGameModeData();
             GetGameEventData();
             GetPlatformData();
@@ -359,20 +549,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             GetMeasurementData();
         }
 
-        private void RefList()
-        {
-            GameModeList = new ObservableCollection<GameMode>();
-            GameEventList = new ObservableCollection<GameEvent>();
-            PlatformList = new ObservableCollection<Platform>();
-            AssociationList = new ObservableCollection<PlayerAssociation>();
-            PatchList = new ObservableCollection<Patch>();
-            DeathList = new ObservableCollection<TypeDeath>();
-            GameRoleList = new ObservableCollection<Role>();
-            MeasurementList = new ObservableCollection<Measurement>();
-        }
-
         private async void GetGameModeData()
         {
+            GameModeList.Clear();
+            GameMode = string.Empty;
+            GameModeDescription = string.Empty;
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var gameevents = await context.GameModes.ToListAsync();
@@ -385,6 +566,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetGameEventData()
         {
+            GameEventList.Clear();
+            GameEvent = string.Empty;
+            GameEventDescription = string.Empty;
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var gameevents = await context.GameEvents.ToListAsync();
@@ -397,6 +581,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetPlatformData()
         {
+            PlatformList.Clear();
+            Platform = string.Empty;
+            PlatformDescription = string.Empty;
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var platforms = await context.Platforms.ToListAsync();
@@ -409,6 +596,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetPlayerAssociationData()
         {
+            AssociationList.Clear();
+            PlayerAssociation = string.Empty;
+            PlayerAssociationDescription = string.Empty;
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var associations = await context.PlayerAssociations.ToListAsync();
@@ -421,6 +611,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetPatchData()
         {
+            PatchList.Clear();
+            PatchNumber = string.Empty;
+            PatchDateRelease = DateTime.MinValue;
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var patches = await context.Patches.ToListAsync();
@@ -433,6 +626,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetTypeDeathData()
         {
+            DeathList.Clear();
+            TypeDeath = string.Empty;
+            TypeDeathDescription = string.Empty;
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var typedeaths = await context.TypeDeaths.ToListAsync();
@@ -445,6 +641,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetRoleData()
         {
+            GameRoleList.Clear();
+            Role = string.Empty;
+            RoleDescription = string.Empty;
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var roles = await context.Roles.ToListAsync();
@@ -457,6 +656,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         
         private async void GetMeasurementData()
         {
+            MeasurementList.Clear();
+            Measurement = string.Empty;
+            MeasurementDescription = string.Empty;
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var measurements = await context.Measurements.ToListAsync();
@@ -473,15 +675,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void AddGameMode()
         {
-            var newGameMode = new GameMode { GameModeName = TextBoxGameModeName };
+            var newGameMode = new GameMode { GameModeName = GameMode, GameModeDescription = GameModeDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.GameModes.Any(GM => GM.GameModeName.ToLower() == newGameMode.GameModeName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(TextBoxGameModeName))
+                if (exists || string.IsNullOrEmpty(GameMode))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали","Ошибка добавления",TypeMessage.Warning);
                 }
                 else
                 {
@@ -489,22 +691,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     GameModeList.Clear();
                     GetGameModeData();
-                    TextBoxGameModeName = string.Empty;
+                    GameMode = string.Empty;
                 }
             }
         }
 
         private void AddGameEvent()
         {
-            var newGameEvent = new GameEvent { GameEventName = TextBoxGameEventName };
+            var newGameEvent = new GameEvent { GameEventName = GameEvent, GameEventDescription = GameEventDescription};
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.GameEvents.Any(GE => GE.GameEventName.ToLower() == newGameEvent.GameEventName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(TextBoxGameEventName))
+                if (exists || string.IsNullOrEmpty(GameEvent))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
                 }
                 else
                 {
@@ -512,22 +714,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     GameEventList.Clear();
                     GetGameEventData();
-                    TextBoxGameEventName = string.Empty;
+                    GameEvent = string.Empty;
                 }
             }
         }
 
         private void AddPlatform()
         {
-            var newPlatform = new Platform { PlatformName = TextBoxPlatformName };
+            var newPlatform = new Platform { PlatformName = Platform, PlatformDescription = PlatformDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.Platforms.Any(P => P.PlatformName.ToLower() == newPlatform.PlatformName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(TextBoxPlatformName))
+                if (exists || string.IsNullOrEmpty(Platform))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
                 }
                 else
                 {
@@ -535,22 +737,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     PlatformList.Clear();
                     GetPlatformData();
-                    TextBoxPlatformName = string.Empty;
+                    Platform = string.Empty;
                 }
             }
         }
 
         private void AddPlayerAssociation()
         {
-            var newPlayerAssociation = new PlayerAssociation { PlayerAssociationName = TextBoxPlayerAssociationName };
+            var newPlayerAssociation = new PlayerAssociation { PlayerAssociationName = PlayerAssociation, PlayerAssociationDescription = PlayerAssociationDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.PlayerAssociations.Any(P => P.PlayerAssociationName.ToLower() == newPlayerAssociation.PlayerAssociationName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(TextBoxPlayerAssociationName))
+                if (exists || string.IsNullOrEmpty(PlayerAssociation))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
                 }
                 else
                 {
@@ -558,22 +760,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     AssociationList.Clear();
                     GetPlayerAssociationData();
-                    TextBoxPlayerAssociationName = string.Empty;
+                    PlayerAssociation = string.Empty;
                 }
             }
         }
 
         private void AddPatch()
         {
-            var newPatch = new Patch { PatchNumber = TextBoxPatchNumber, PatchDateRelease = DateOnly.FromDateTime(DatePickerPatchDateRelease) };
+            var newPatch = new Patch { PatchNumber = PatchNumber, PatchDateRelease = DateOnly.FromDateTime(PatchDateRelease) };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.Patches.Any(P => P.PatchNumber == newPatch.PatchNumber);
 
-                if (exists || string.IsNullOrEmpty(TextBoxPatchNumber))
+                if (exists || string.IsNullOrEmpty(PatchNumber))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
                 }
                 else
                 {
@@ -581,22 +783,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     PatchList.Clear();
                     GetPatchData();
-                    TextBoxPatchNumber = string.Empty;
+                    PatchNumber = string.Empty;
                 }
             }
         }
 
         private void AddTypeDeath()
         {
-            var newTypeDeath = new TypeDeath { TypeDeathName = TextBoxTypeDeath };
+            var newTypeDeath = new TypeDeath { TypeDeathName = TypeDeath, TypeDeathDescription = TypeDeathDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.TypeDeaths.Any(TP => TP.TypeDeathName == newTypeDeath.TypeDeathName);
 
-                if (exists || string.IsNullOrEmpty(TextBoxTypeDeath))
+                if (exists || string.IsNullOrEmpty(TypeDeath))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
                 }
                 else
                 {
@@ -604,22 +806,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     DeathList.Clear();
                     GetTypeDeathData();
-                    TextBoxTypeDeath = string.Empty;
+                    TypeDeath = string.Empty;
                 }
             }
         }
 
         private void AddRole()
         {
-            var newRole = new Role { RoleName = TextBoxRole };
+            var newRole = new Role { RoleName = Role, RoleDescription = RoleDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.Roles.Any(R => R.RoleName == newRole.RoleName);
 
-                if (exists || string.IsNullOrEmpty(TextBoxRole))
+                if (exists || string.IsNullOrEmpty(Role))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
                 }
                 else
                 {
@@ -627,22 +829,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     GameRoleList.Clear();
                     GetRoleData();
-                    TextBoxRole = string.Empty;
+                    Role = string.Empty;
                 }
             }
         }
         
         private void AddMeasurement()
         {
-            var newMeasurement = new Measurement { MeasurementName = TextBoxMeasurement };
+            var newMeasurement = new Measurement { MeasurementName = Measurement, MeasurementDescription = MeasurementDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.Measurements.Any(R => R.MeasurementName == newMeasurement.MeasurementName);
 
-                if (exists || string.IsNullOrEmpty(TextBoxMeasurement))
+                if (exists || string.IsNullOrEmpty(Measurement))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
                 }
                 else
                 {
@@ -650,7 +852,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     MeasurementList.Clear();
                     GetMeasurementData();
-                    TextBoxMeasurement = string.Empty;
+                    Measurement = string.Empty;
                 }
             }
         }
@@ -671,25 +873,37 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (entityToUpdate.GameModeName == TextBoxGameModeName)
-                    {
-                        MessageBox.Show("Нельзя менять текст на такой же");
-                        return;
-                    }
+                    bool exists = exists = context.GameModes.Any(x => x.GameModeName.ToLower() == GameMode.ToLower());
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedGameModeItem.GameModeName} на {TextBoxGameModeName} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (exists)
                     {
-                        entityToUpdate.GameModeName = TextBoxGameModeName;
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedGameModeItem.GameModeName}» на «{GameMode}» и «{SelectedGameModeItem.GameModeDescription}» на «{GameModeDescription}»",
+                            $"Надпись с именем «{SelectedGameModeItem.GameModeName}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.GameModeName = GameMode;
+                            entityToUpdate.GameModeDescription = GameModeDescription;
+                            context.SaveChanges();
+                            GameModeList.Clear();
+                            GetGameModeData();
+                            SelectedGameModeItem = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.GameModeName = GameMode;
+                        entityToUpdate.GameModeDescription = GameModeDescription;
                         context.SaveChanges();
                         GameModeList.Clear();
                         GetGameModeData();
                         SelectedGameModeItem = null;
-                        TextBoxGameModeName = string.Empty;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -706,25 +920,35 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (entityToUpdate.GameEventName == TextBoxGameEventName)
-                    {
-                        MessageBox.Show("Нельзя менять текст на такой же");
-                        return;
-                    }
+                    bool exists = context.GameEvents.Any(x => x.GameEventName.ToLower() == GameEvent.ToLower());
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedGameEventItem.GameEventName} на {TextBoxGameEventName} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (exists)
                     {
-                        entityToUpdate.GameEventName = TextBoxGameEventName;
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedGameEventItem.GameEventName}» на «{GameEvent}» и «{SelectedGameEventItem.GameEventDescription}» на «{GameEventDescription}»",
+                            $"Надпись с именем «{SelectedGameEventItem.GameEventName}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.GameEventName = GameEvent;
+                            entityToUpdate.GameEventDescription = GameEventDescription;
+                            context.SaveChanges();
+                            GetGameEventData();
+                            SelectedGameEventItem = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.GameEventName = GameEvent;
+                        entityToUpdate.GameEventDescription = GameEventDescription;
                         context.SaveChanges();
-                        GameEventList.Clear();
                         GetGameEventData();
                         SelectedGameEventItem = null;
-                        TextBoxGameEventName = string.Empty;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -741,25 +965,35 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (entityToUpdate.PlatformName == TextBoxPlatformName)
-                    {
-                        MessageBox.Show("Нельзя менять текст на такой же");
-                        return;
-                    }
+                    bool exists = context.Platforms.Any(x => x.PlatformName.ToLower() == Platform.ToLower());              
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedPlatformItem.PlatformName} на {TextBoxPlatformName} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (exists)
                     {
-                        entityToUpdate.PlatformName = TextBoxPlatformName;
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedPlatformItem.PlatformName}» на «{Platform}» и «{SelectedPlatformItem.PlatformDescription}» на «{PlatformDescription}»",
+                            $"Надпись с именем «{SelectedPlatformItem.PlatformName}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.PlatformName = Platform;
+                            entityToUpdate.PlatformDescription = PlatformDescription;
+                            context.SaveChanges();
+                            GetPlatformData();
+                            SelectedPlatformItem = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.PlatformName = Platform;
+                        entityToUpdate.PlatformDescription = PlatformDescription;
                         context.SaveChanges();
-                        PlatformList.Clear();
                         GetPlatformData();
                         SelectedPlatformItem = null;
-                        TextBoxPlatformName = string.Empty;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -776,25 +1010,35 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (entityToUpdate.PlayerAssociationName == TextBoxPlayerAssociationName)
-                    {
-                        MessageBox.Show("Нельзя менять текст на такой же");
-                        return;
-                    }
+                    bool exists = context.PlayerAssociations.Any(x => x.PlayerAssociationName.ToLower() == PlayerAssociation.ToLower());
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedAssociationItem.PlayerAssociationName} на {TextBoxPlayerAssociationName} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (exists)
                     {
-                        entityToUpdate.PlayerAssociationName = TextBoxPlayerAssociationName;
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedAssociationItem.PlayerAssociationName}» на «{PlayerAssociation}» и «{SelectedAssociationItem.PlayerAssociationDescription}» на «{PlayerAssociationDescription}»",
+                            $"Надпись с именем «{SelectedAssociationItem.PlayerAssociationName}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.PlayerAssociationName = PlayerAssociation;
+                            entityToUpdate.PlayerAssociationDescription = PlayerAssociationDescription;
+                            context.SaveChanges();
+                            GetPlayerAssociationData();
+                            SelectedAssociationItem = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.PlayerAssociationName = PlayerAssociation;
+                        entityToUpdate.PlayerAssociationDescription = PlayerAssociationDescription;
                         context.SaveChanges();
-                        AssociationList.Clear();
                         GetPlayerAssociationData();
                         SelectedAssociationItem = null;
-                        TextBoxPlayerAssociationName = string.Empty;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -811,26 +1055,35 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (entityToUpdate.PatchNumber == TextBoxPatchNumber)
-                    {
-                        MessageBox.Show("Нельзя менять текст на такой же");
-                        return;
-                    }
+                    bool exists = context.Patches.Any(x => x.PatchNumber.ToLower() == PatchNumber.ToLower());
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedPatchItem.PatchNumber} на {TextBoxPatchNumber} и {SelectedPatchItem.PatchDateRelease} на {DatePickerPatchDateRelease} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (exists)
                     {
-                        entityToUpdate.PatchNumber = TextBoxPatchNumber;
-                        entityToUpdate.PatchDateRelease = DateOnly.FromDateTime(DatePickerPatchDateRelease);
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedPatchItem.PatchNumber}» на «{PatchNumber}» и «{SelectedPatchItem.PatchDateRelease}» на «{PatchDateRelease}»",
+                            $"Надпись с именем «{SelectedPatchItem.PatchNumber}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.PatchNumber = PatchNumber;
+                            entityToUpdate.PatchDateRelease = DateOnly.FromDateTime(PatchDateRelease);
+                            context.SaveChanges();
+                            GetPatchData();
+                            SelectedPatchItem = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.PatchNumber = PatchNumber;
+                        entityToUpdate.PatchDateRelease = DateOnly.FromDateTime(PatchDateRelease);
                         context.SaveChanges();
-                        PatchList.Clear();
                         GetPatchData();
                         SelectedPatchItem = null;
-                        DatePickerPatchDateRelease = DateTime.MinValue;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -847,25 +1100,35 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (entityToUpdate.TypeDeathName == TextBoxTypeDeath)
-                    {
-                        MessageBox.Show("Нельзя менять текст на такой же");
-                        return;
-                    }
+                    bool exists = context.TypeDeaths.Any(x => x.TypeDeathName.ToLower() == TypeDeath.ToLower());
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedTypeDeathItem.TypeDeathName} на {TextBoxTypeDeath} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (exists)
                     {
-                        entityToUpdate.TypeDeathName = TextBoxTypeDeath;
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedTypeDeathItem.TypeDeathName}» на «{TypeDeath}» и «{SelectedTypeDeathItem.TypeDeathDescription}» на «{TypeDeathDescription}»",
+                            $"Надпись с именем «{SelectedTypeDeathItem.TypeDeathName}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.TypeDeathName = TypeDeath;
+                            entityToUpdate.TypeDeathDescription = TypeDeathDescription;
+                            context.SaveChanges();
+                            GetTypeDeathData();
+                            SelectedTypeDeathItem = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.TypeDeathName = TypeDeath;
+                        entityToUpdate.TypeDeathDescription = TypeDeathDescription;
                         context.SaveChanges();
-                        DeathList.Clear();
                         GetTypeDeathData();
                         SelectedTypeDeathItem = null;
-                        TextBoxTypeDeath = string.Empty;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -882,25 +1145,35 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (entityToUpdate.RoleName == TextBoxRole)
-                    {
-                        MessageBox.Show("Нельзя менять текст на такой же");
-                        return;
-                    }
+                    bool exists = context.Roles.Any(x => x.RoleName.ToLower() == Role.ToLower());
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedRoleItem.RoleName} на {TextBoxRole} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (exists)
                     {
-                        entityToUpdate.RoleName = TextBoxRole;
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedRoleItem.RoleName}» на «{Role}» и «{SelectedRoleItem.RoleDescription}» на «{RoleDescription}»",
+                            $"Надпись с именем «{SelectedRoleItem.RoleName}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.RoleName = Role;
+                            entityToUpdate.RoleDescription = RoleDescription;
+                            context.SaveChanges();
+                            GetRoleData();
+                            SelectedRoleItem = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.RoleName = Role;
+                        entityToUpdate.RoleDescription = RoleDescription;
                         context.SaveChanges();
-                        GameRoleList.Clear();
                         GetRoleData();
                         SelectedRoleItem = null;
-                        TextBoxRole = string.Empty;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -917,150 +1190,39 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (entityToUpdate.MeasurementName == TextBoxMeasurement)
-                    {
-                        MessageBox.Show("Нельзя менять текст на такой же");
-                        return;
-                    }
+                    bool exists = context.Measurements.Any(x => x.MeasurementName.ToLower() == Measurement.ToLower());
 
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedMeasurementItem.MeasurementName} на {TextBoxMeasurement} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (exists)
                     {
-                        entityToUpdate.MeasurementName = TextBoxMeasurement;
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedMeasurementItem.MeasurementName}» на «{Measurement}» и «{SelectedMeasurementItem.MeasurementDescription}» на «{MeasurementDescription}»",
+                            $"Надпись с именем «{SelectedMeasurementItem.MeasurementName}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.MeasurementName = Measurement;
+                            entityToUpdate.MeasurementDescription = MeasurementDescription;
+                            context.SaveChanges();
+                            GetMeasurementData();
+                            SelectedMeasurementItem = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.MeasurementName = Measurement;
+                        entityToUpdate.MeasurementDescription = MeasurementDescription;
                         context.SaveChanges();
-                        MeasurementList.Clear();
                         GetMeasurementData();
                         SelectedMeasurementItem = null;
-                        TextBoxMeasurement = string.Empty;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
+
         #endregion
 
-        #region Методы удаления данных из БД
-
-        private void DeleteGameModeItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.GameModes.Find(SelectedGameModeItem.IdGameMode);
-                if (entityToDelete != null)
-                {
-                    context.GameModes.Remove(entityToDelete);
-                    context.SaveChanges();
-                    GameModeList.Clear();
-                    GetGameModeData();
-                }
-            }
-        }
-
-        private void DeleteGameEventItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.GameEvents.Find(SelectedGameEventItem.IdGameEvent);
-                if (entityToDelete != null)
-                {
-                    context.GameEvents.Remove(entityToDelete);
-                    context.SaveChanges();
-                    GameEventList.Clear();
-                    GetGameEventData();
-                }
-            }
-        }
-
-        private void DeletePlatformItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.Platforms.Find(SelectedPlatformItem.IdPlatform);
-                if (entityToDelete != null)
-                {
-                    context.Remove(entityToDelete);
-                    context.SaveChanges();
-                    PlatformList.Clear();
-                    GetPlatformData();
-                }
-            }
-        }
-
-        private void DeleteAssociationItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.PlayerAssociations.Find(SelectedAssociationItem.IdPlayerAssociation);
-                if (entityToDelete != null)
-                {
-                    context.PlayerAssociations.Remove(entityToDelete);
-                    context.SaveChanges();
-                    AssociationList.Clear();
-                    GetPlayerAssociationData();
-                }
-            }
-        }
-
-        private void DeletePatchItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.Patches.Find(SelectedPatchItem.IdPatch);
-                if (entityToDelete != null)
-                {
-                    context.Patches.Remove(entityToDelete);
-                    context.SaveChanges();
-                    PatchList.Clear();
-                    GetPatchData();
-                }
-            }
-        }
-
-        private void DeleteTypeDeathItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.TypeDeaths.Find(SelectedTypeDeathItem.IdTypeDeath);
-                if (entityToDelete != null)
-                {
-                    context.TypeDeaths.Find(entityToDelete);
-                    context.SaveChanges();
-                    DeathList.Clear();
-                    GetTypeDeathData();
-                }
-            }
-        }
-
-        private void DeleteRoleItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.Roles.Find(SelectedRoleItem.IdRole);
-                if (entityToDelete != null)
-                {
-                    context.Roles.Remove(entityToDelete);
-                    context.SaveChanges();
-                    GameRoleList.Clear();
-                    GetRoleData();
-                }
-            }
-        }
-        
-        private void DeleteMeasurementItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.Measurements.Find(SelectedMeasurementItem.IdMeasurement);
-                if (entityToDelete != null)
-                {
-                    context.Measurements.Remove(entityToDelete);
-                    context.SaveChanges();
-                    MeasurementList.Clear();
-                    GetMeasurementData();
-                }
-            }
-        }
-        #endregion
     }
 }
