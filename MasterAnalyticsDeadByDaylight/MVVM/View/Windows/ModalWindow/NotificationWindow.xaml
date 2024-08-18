@@ -5,8 +5,164 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.ModalWindow"
         mc:Ignorable="d"
-        Title="NotificationWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Style="{StaticResource WindowStyle}"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Title="NotificationWindow" 
+        Height="400" MinHeight="400" MaxHeight="500"
+        Width="500" MinWidth="500" MaxWidth="1000">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="34" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="CaptionButtonStyle" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="30">
+                                <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
+                                           Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  TextOptions.TextFormattingMode="Display"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
+                                    <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE949;"/>
+            </Style>
+
+            <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE739;"/>
+            </Style>
+
+            <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE923;"/>
+            </Style>
+
+            <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE106;"/>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
+    </Window.CommandBindings>
+
+    <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
+        <Grid x:Name="parentContainer" Background="Transparent">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height ="Auto"/>
+                <RowDefinition Height ="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Name="Header" Grid.Row="0" Height="30" Background="Gray">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <Image Source="/Resources/icons8-dead-by-daylight-256.png" Width="18" Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <TextBlock Name="TitleText" Text="Пример заголовка" VerticalAlignment="Center" FontSize="15" FontFamily="Arial" Margin="4 3 0 0" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                    <Button Style="{StaticResource CloseButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
+                            Command="{x:Static SystemCommands.CloseWindowCommand}"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70*"/>
+                    <RowDefinition Height="160*"/>
+                    <RowDefinition Height="50*"/>
+                </Grid.RowDefinitions>
+
+                <!--#region Название ошибки -->
+
+                <Border Grid.Column="1" Grid.Row="0" Style="{StaticResource BaseBorder}" Margin="0,10,0,0">
+                    <TextBox Name="MessageDescriptionTextBlock" Text="Тут будет название ошибки" Margin="10"
+                             Style="{StaticResource ComboBoxEditableTextBox}"
+                             IsReadOnly="True"
+                             FontSize="17"
+                             VerticalAlignment="Center" HorizontalAlignment="Center"
+                             TextWrapping="WrapWithOverflow"/>
+                </Border>
+                
+                <!--#endregion-->
+
+
+                <!--#region Описание ошибки -->
+
+                <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource BaseBorder}" Margin="0,10,0,0">
+                    <TextBox Name="MessageTextBlock" Text="Тут будет описание ошибки" Margin="10,5,0,5"
+                             VerticalScrollBarVisibility="Visible"
+                             Style="{StaticResource ComboBoxEditableTextBox}"
+                             IsReadOnly="True"
+                             FontSize="17"
+                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                             TextWrapping="WrapWithOverflow"/>
+                </Border>
+
+                <!--#region Кнопки -->
+
+                <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,5">
+                    <Button Name="OkButton" Click="OkButton_Click" Template="{StaticResource ControlButton}"
+                            Content="Ок" 
+                            Width="75"
+                            Height="37"
+                            Margin="5"/>
+                    <Button Name="YesButton" Click="YesButton_Click" Template="{StaticResource ControlButton}"
+                            Content="Да" 
+                            Width="75" 
+                            Height="37"
+                            Margin="5"/>
+                    <Button Name="NoButton" Click="NoButton_Click" Template="{StaticResource ControlButton}"
+                            Content="Нет" 
+                            Width="75" 
+                            Height="37"
+                            Margin="5"/>
+                    <Button Name="CancelButton" Click="CancelButton_Click" Template="{StaticResource ControlButton}" 
+                            Content="Закрыть" 
+                            Width="75" 
+                            Height="37"
+                            Margin="5"/>
+                </StackPanel>
+
+                <!--#endregion-->
+
+                <!--#endregion-->
+
+                <!--<StackPanel>
+                    <StackPanel VerticalAlignment="Top">
+                        
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Bottom">
+                        
+
+                    </StackPanel>
+
+                   -->
+
+
+            </Grid>
+        </Grid>
+    </Border>
 </Window>
