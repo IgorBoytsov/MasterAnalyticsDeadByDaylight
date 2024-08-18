@@ -9,6 +9,8 @@ public partial class Platform
 
     public string PlatformName { get; set; }
 
+    public string PlatformDescription { get; set; }
+
     public virtual ICollection<KillerInfo> KillerInfos { get; set; } = new List<KillerInfo>();
 
     public virtual ICollection<SurvivorInfo> SurvivorInfos { get; set; } = new List<SurvivorInfo>();

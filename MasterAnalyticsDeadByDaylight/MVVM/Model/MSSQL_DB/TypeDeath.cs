@@ -9,5 +9,7 @@ public partial class TypeDeath
 
     public string TypeDeathName { get; set; }
 
+    public string TypeDeathDescription { get; set; }
+
     public virtual ICollection<SurvivorInfo> SurvivorInfos { get; set; } = new List<SurvivorInfo>();
 }

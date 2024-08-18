@@ -9,5 +9,7 @@ public partial class Measurement
 
     public string MeasurementName { get; set; }
 
+    public string MeasurementDescription { get; set; }
+
     public virtual ICollection<Map> Maps { get; set; } = new List<Map>();
 }

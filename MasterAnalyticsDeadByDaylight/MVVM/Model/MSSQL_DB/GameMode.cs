@@ -9,5 +9,7 @@ public partial class GameMode
 
     public string GameModeName { get; set; }
 
+    public string GameModeDescription { get; set; }
+
     public virtual ICollection<GameStatistic> GameStatistics { get; set; } = new List<GameStatistic>();
 }
