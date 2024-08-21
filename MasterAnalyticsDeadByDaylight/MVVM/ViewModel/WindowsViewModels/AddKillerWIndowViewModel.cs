@@ -1,6 +1,11 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Utils.Enum;
+using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -14,7 +19,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Свойства для Киллера
 
-        public ObservableCollection<Killer> KillerList { get; set; }
+        public ObservableCollection<Killer> KillerList { get; set; } = [];
 
         private Killer _selectedKillerItem;
         public Killer SelectedKillerItem
@@ -22,27 +27,32 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedKillerItem;
             set
             {
-                _selectedKillerItem = value;
-                if (value == null) { return; }
-                TextBoxKillerName = value.KillerName;
-                ComboBoxSelectedKillerName = value;
-                ImageKiller = value.KillerImage;
-                ImageKillerAbility = value.KillerAbilityImage;
-                //KillerAddonList.Clear();
+                if (value != null)
+                {
+                    _selectedKillerItem = value;
+                    KillerName = value.KillerName;
+                    ImageKiller = value.KillerImage;
+                    ImageKillerAbility = value.KillerAbilityImage;
 
-                TextBoxKillerAddonName = string.Empty;
-                ImageKillerAddon = null;
-                GetKillerAddonData();
+                    KillerAddonName = string.Empty;
+                    ImageKillerAddon = null;
+                    GetKillerAddonData();
+                }
+                else
+                {
+                    return;
+                }
+                
             }
         }
 
-        private string _textBoxKillerName;
-        public string TextBoxKillerName
+        private string _killerName;
+        public string KillerName
         {
-            get => _textBoxKillerName;
+            get => _killerName;
             set
             {
-                _textBoxKillerName = value;
+                _killerName = value;
                 OnPropertyChanged();
             }
         }
@@ -85,7 +95,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Свойства для Аддонов
 
-        public ObservableCollection<KillerAddon> KillerAddonList { get; set; }
+        public ObservableCollection<KillerAddon> KillerAddonList { get; set; } = [];
 
         private KillerAddon _selectedKillerAddonItem;
         public KillerAddon SelectedKillerAddonItem
@@ -93,56 +103,76 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedKillerAddonItem;
             set
             {
-                _selectedKillerAddonItem = value;
-                if (value == null) { return; }
-                TextBoxKillerAddonName = value.AddonName;
-                ImageKillerAddon = value.AddonImage;
+                if (value != null)
+                {
+                    _selectedKillerAddonItem = value;
+                    KillerAddonName = value.AddonName;
+                    ImageKillerAddon = value.AddonImage;
+                    SelectedRarity = RarityList.FirstOrDefault(x => x.IdRarity == value.IdRarity);
+                }
+                else
+                {
+                    return;
+                }
+               
             }
         }
 
-        private Killer _comboBoxSelectedKillerName;
-        public Killer ComboBoxSelectedKillerName
+        private string _killerAddonName;
+        public string KillerAddonName
         {
-            get => _comboBoxSelectedKillerName;
+            get => _killerAddonName;
             set
             {
-                _comboBoxSelectedKillerName = value;
-                if (value == null) { return; }
-                //KillerAddonList.Clear();
-                GetKillerAddonData();
+                _killerAddonName = value;
                 OnPropertyChanged();
             }
         }
 
-        private string _textBoxKillerAddonName;
-        public string TextBoxKillerAddonName
+        private string _killerAddonDescription;
+        public string KillerAddonDescription
         {
-            get => _textBoxKillerAddonName;
+            get => _killerAddonDescription;
             set
             {
-                _textBoxKillerAddonName = value;
+                _killerAddonDescription = value;
                 OnPropertyChanged();
             }
         }
 
-        private string _textboxKillerAddonDescription;
-        public string TextboxKillerAddonDescription
+        public ObservableCollection<Rarity> RarityList { get; set; } = [];
+
+        private Rarity _selectedRarity;
+        public Rarity SelectedRarity
         {
-            get => _textboxKillerAddonDescription;
+            get => _selectedRarity;
             set
             {
-                _textboxKillerAddonDescription = value;
+                _selectedRarity = value;
                 OnPropertyChanged();
             }
         }
 
         #endregion
 
-        public AddKillerWindowViewModel()
+        private string _title;
+        public string Title
         {
-            KillerList = new ObservableCollection<Killer>();
-            KillerAddonList = new ObservableCollection<KillerAddon>();
+            get => _title;
+            set
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
 
+        private readonly IDialogService _dialogService;
+
+        public AddKillerWindowViewModel(IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+
+            GetRarityData();
             GetKillerData();
             GetKillerAddonData();
         }
@@ -151,12 +181,21 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private RelayCommand _selectImageKillerCommand;
         public RelayCommand SelectImageKillerCommand { get => _selectImageKillerCommand ??= new(obj => { SelectImageKiller(); }); }
+        
+        private RelayCommand _clearKillerImageCommand;
+        public RelayCommand ClearKillerImageCommand { get => _clearKillerImageCommand ??= new(obj => { ImageKiller = null; }); }
 
         private RelayCommand _selectImageKillerAbilityCommand;
         public RelayCommand SelectImageKillerAbilityCommand { get => _selectImageKillerAbilityCommand ??= new(obj => { SelectImageKillerAbility(); }); }
 
+        private RelayCommand _clearKillerAbilityImageCommand;
+        public RelayCommand ClearKillerAbilityImageCommand { get => _clearKillerAbilityImageCommand ??= new(obj => { ImageKillerAbility = null; }); }
+
         private RelayCommand _selectImageKillerAddonCommand;
-        public RelayCommand SelectImageKillerAddonCommand { get => _selectImageKillerAddonCommand ??= new(obj => { SelectImageKillerAddon(); }); }
+        public RelayCommand SelectImageKillerAddonCommand { get => _selectImageKillerAddonCommand ??= new(obj => { SelectImageKillerAddon(); }); }    
+        
+        private RelayCommand _clearAddonImageCommand;
+        public RelayCommand ClearAddonImageCommand { get => _clearAddonImageCommand ??= new(obj => { ImageKillerAddon = null; }); }
 
         private RelayCommand _saveKillerCommand;
         public RelayCommand SaveKillerCommand { get => _saveKillerCommand ??= new(obj => { AddKiller(); }); }
@@ -172,20 +211,46 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
 
         private RelayCommand _deleteKillerCommand;
-        public RelayCommand DeleteKillerCommand { get => _deleteKillerCommand ??= new(obj => { DeleteKiller(); }); }
+        public RelayCommand DeleteKillerCommand { get => _deleteKillerCommand ??= new(async obj => 
+        {
+            if (SelectedKillerItem == null)
+            {
+                return;
+            }
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedKillerItem.KillerName}»? При удаление данном записи, могут быть связанные записи в других таблицах, что может привести к проблемам.",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedKillerItem);
+                GetKillerData();
+            }
+            else
+            {
+                return;
+            }
+        }); }
 
         private RelayCommand _deleteKillerAddonCommand;
-        public RelayCommand DeleteKillerAddonCommand { get => _deleteKillerAddonCommand ??= new(obj => { DeleteKillerAddon(); }); }
-
-
-        private RelayCommand _nullImageKillerCommand;
-        public RelayCommand NullImageKillerCommand { get => _nullImageKillerCommand ??= new(obj => { ImageKiller = null; }); }
-
-        private RelayCommand _nullImageKillerAbilityCommand;
-        public RelayCommand NullImageKillerAbilityCommand { get => _nullImageKillerAbilityCommand ??= new(obj => { ImageKillerAbility = null; }); }
-
-        private RelayCommand _nullImageKillerAddonCommand;
-        public RelayCommand NullImageKillerAddonCommand { get => _nullImageKillerAddonCommand ??= new(obj => { ImageKillerAddon = null; }); }
+        public RelayCommand DeleteKillerAddonCommand { get => _deleteKillerAddonCommand ??= new(async obj => 
+        {
+            if (SelectedKillerAddonItem == null)
+            {
+                return;
+            }
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedKillerAddonItem.AddonName}»?",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedKillerAddonItem);
+                GetKillerAddonData();
+            }
+            else
+            {
+                return;
+            }
+        }); }
 
         #endregion
 
@@ -193,20 +258,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetKillerData()
         {
+            KillerList.Clear();
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                var killers = await context.Killers.ToListAsync();
-                //var killers = await context.Killers.Skip(1).ToListAsync();
+                var killers = await context.Killers.Skip(1).ToListAsync();
 
                 foreach (var item in killers)
                 {
                     KillerList.Add(item);
                 }
+                KillerList.Add(context.Killers.FirstOrDefault(x => x.KillerName == "Общий"));
             }
         }
 
         private async void GetKillerAddonData()
         {
+            KillerAddonList.Clear();
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 List<KillerAddon> Addons = new();
@@ -217,33 +284,44 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 }
                 else
                 {
-                    Addons = await context.KillerAddons.Where(ka => ka.IdKiller == SelectedKillerItem.IdKiller).ToListAsync();
+                    Addons = await context.KillerAddons.Where(ka => ka.IdKiller == SelectedKillerItem.IdKiller).OrderBy(x => x.IdRarity).ToListAsync();
                 }
-
-                KillerAddonList.Clear();
 
                 foreach (var item in Addons)
                 {
                     KillerAddonList.Add(item);
                 }
+                SelectedKillerAddonItem = KillerAddonList.FirstOrDefault(x => x.IdKiller == SelectedKillerItem.IdKiller);
             }
         }
 
+        private async void GetRarityData()
+        {
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            {
+                var rarities = await context.Rarities.ToListAsync();
+
+                foreach (var item in rarities)
+                {
+                    RarityList.Add(item);
+                }
+            }
+        }
         #endregion
 
         #region Методы добавление данных
 
         private void AddKiller()
         {
-            var newKiller = new Killer { KillerName = TextBoxKillerName, KillerImage = ImageKiller, KillerAbilityImage = ImageKillerAbility };
+            var newKiller = new Killer { KillerName = KillerName, KillerImage = ImageKiller, KillerAbilityImage = ImageKillerAbility };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.Killers.Any(killer => killer.KillerName.ToLower() == newKiller.KillerName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(TextBoxKillerName))
+                if (exists || string.IsNullOrEmpty(KillerName))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
                 }
                 else
                 {
@@ -251,24 +329,28 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     KillerList.Clear();
                     GetKillerData();
-                    TextBoxKillerName = string.Empty;
+                    KillerName = string.Empty;
                     ImageKiller = null;
-                    ImageKillerAbility = null;
                 }
             }
         }
 
         private void AddKillerAddon()
         {
-            var newKillerAddon = new KillerAddon { IdKiller = ComboBoxSelectedKillerName.IdKiller, AddonName = TextBoxKillerAddonName, AddonImage = ImageKillerAddon, AddonDescription = TextboxKillerAddonDescription };
+            if (SelectedKillerItem == null)
+            {
+                _dialogService.ShowMessage("Вы не выбрали персонажа, которому будете добавлять аддоны");
+                return;
+            }
+            var newKillerAddon = new KillerAddon { IdKiller = SelectedKillerItem.IdKiller, IdRarity = SelectedRarity.IdRarity ,AddonName = KillerAddonName, AddonImage = ImageKillerAddon, AddonDescription = KillerAddonDescription };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.KillerAddons.Any(KA => KA.AddonName.ToLower() == newKillerAddon.AddonName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(TextBoxKillerAddonName))
+                if (exists || string.IsNullOrEmpty(KillerAddonName))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
                 }
                 else
                 {
@@ -278,9 +360,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     KillerAddonList.Clear();
                     GetKillerAddonData();
 
-                    TextBoxKillerAddonName = string.Empty;
-                    TextboxKillerAddonDescription = string.Empty;
+                    KillerAddonName = string.Empty;
+                    KillerAddonDescription = string.Empty;
                     ImageKillerAddon = null;
+                    SelectedRarity = null;
                 }
             }
         }
@@ -289,40 +372,40 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Методы удаление данных
 
-        private void DeleteKiller()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.Killers.Find(SelectedKillerItem.IdKiller);
-                if (entityToDelete != null)
-                {
-                    context.RemoveRange(entityToDelete.KillerAddons);
-                    context.RemoveRange(entityToDelete.KillerInfos);
-                    context.RemoveRange(entityToDelete.KillerPerks);
-                    //context.RemoveRange(context.KillerAddons.Where(ka => ka.IdKiller == SelectedKillerItem.IdKiller));
+        //private void DeleteKiller()
+        //{
+        //    using (MasterAnalyticsDeadByDaylightDbContext context = new())
+        //    {
+        //        var entityToDelete = context.Killers.Find(SelectedKillerItem.IdKiller);
+        //        if (entityToDelete != null)
+        //        {
+        //            context.RemoveRange(entityToDelete.KillerAddons);
+        //            context.RemoveRange(entityToDelete.KillerInfos);
+        //            context.RemoveRange(entityToDelete.KillerPerks);
+        //            //context.RemoveRange(context.KillerAddons.Where(ka => ka.IdKiller == SelectedKillerItem.IdKiller));
 
-                    context.Remove(entityToDelete);
-                    context.SaveChanges();
-                    KillerList.Clear();
-                    GetKillerData();
-                }
-            }
-        }
+        //            context.Remove(entityToDelete);
+        //            context.SaveChanges();
+        //            KillerList.Clear();
+        //            GetKillerData();
+        //        }
+        //    }
+        //}
 
-        private void DeleteKillerAddon()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.KillerAddons.Find(SelectedKillerAddonItem.IdKillerAddon);
-                if (entityToDelete != null)
-                {
-                    context.Remove(entityToDelete);
-                    context.SaveChanges();
-                    KillerAddonList.Clear();
-                    GetKillerAddonData();
-                }
-            }
-        }
+        //private void DeleteKillerAddon()
+        //{
+        //    using (MasterAnalyticsDeadByDaylightDbContext context = new())
+        //    {
+        //        var entityToDelete = context.KillerAddons.Find(SelectedKillerAddonItem.IdKillerAddon);
+        //        if (entityToDelete != null)
+        //        {
+        //            context.Remove(entityToDelete);
+        //            context.SaveChanges();
+        //            KillerAddonList.Clear();
+        //            GetKillerAddonData();
+        //        }
+        //    }
+        //}
 
         #endregion
 
@@ -341,11 +424,36 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedKillerItem.KillerName} на {TextBoxKillerName} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    bool exists = context.Killers.Any(x => x.KillerName.ToLower() == KillerName.ToLower());
+
+                    if (exists)
                     {
-                        entityToUpdate.KillerName = TextBoxKillerName;
+                        if (_dialogService.ShowMessageButtons(
+                           $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedKillerItem.KillerName}» на «{KillerName}» ?",
+                           $"Надпись с именем «{SelectedKillerItem.KillerName}» уже существует.",
+                           TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.KillerName = KillerName;
+                            entityToUpdate.KillerImage = ImageKiller;
+                            entityToUpdate.KillerAbilityImage = ImageKillerAbility;
+                            context.SaveChanges();
+
+                            KillerList.Clear();
+                            GetKillerData();
+
+                            SelectedKillerItem = null;
+                            KillerName = string.Empty;
+                            ImageKiller = null;
+                            ImageKillerAbility = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.KillerName = KillerName;
                         entityToUpdate.KillerImage = ImageKiller;
                         entityToUpdate.KillerAbilityImage = ImageKillerAbility;
                         context.SaveChanges();
@@ -354,12 +462,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                         GetKillerData();
 
                         SelectedKillerItem = null;
-                        TextBoxKillerName = string.Empty;
+                        KillerName = string.Empty;
                         ImageKiller = null;
-                        ImageKillerAbility = null;
+                        ImageKillerAbility = null; 
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -376,25 +483,46 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedKillerAddonItem.AddonName} на {TextBoxKillerAddonName} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    bool exists = context.KillerAddons.Any(x => x.AddonName.ToLower() == KillerAddonName.ToLower());
+
+                    if (exists)
                     {
-                        entityToUpdate.IdKiller = ComboBoxSelectedKillerName.IdKiller;
-                        entityToUpdate.AddonName = TextBoxKillerAddonName;
+                        if (_dialogService.ShowMessageButtons(
+                           $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedKillerAddonItem.AddonName}» на «{KillerName}» ?",
+                           $"Надпись с именем «{SelectedKillerAddonItem.AddonName}» уже существует.",
+                           TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.IdKiller = SelectedKillerItem.IdKiller;
+                            entityToUpdate.IdRarity = SelectedRarity.IdRarity;
+                            entityToUpdate.AddonName = KillerAddonName;
+                            entityToUpdate.AddonImage = ImageKillerAddon;
+                            entityToUpdate.AddonDescription = KillerAddonDescription;
+                            context.SaveChanges();
+                            GetKillerAddonData();
+
+                            KillerAddonName = string.Empty;
+                            ImageKillerAddon = null;
+                            SelectedRarity = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.IdKiller = SelectedKillerItem.IdKiller;
+                        entityToUpdate.AddonName = KillerAddonName;
                         entityToUpdate.AddonImage = ImageKillerAddon;
-                        entityToUpdate.AddonDescription = TextboxKillerAddonDescription;
-
+                        entityToUpdate.AddonDescription = KillerAddonDescription;
                         context.SaveChanges();
-
-                        //KillerAddonList.Clear();
                         GetKillerAddonData();
 
-                        TextBoxKillerAddonName = string.Empty;
+                        KillerAddonName = string.Empty;
                         ImageKillerAddon = null;
-                    }
+                        SelectedRarity = null;
+                    } 
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 

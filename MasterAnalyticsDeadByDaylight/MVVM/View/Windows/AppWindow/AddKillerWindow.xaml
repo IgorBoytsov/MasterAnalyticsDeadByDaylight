@@ -4,17 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow" 
-        xmlns:viewmodel="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel" 
-        d:DataContext="{d:DesignInstance Type=viewmodel:AddKillerWindowViewModel}"
+        xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" xmlns:fa="http://schemas.fontawesome.com/icons/"
+        d:DataContext="{d:DesignInstance Type=windowsviewmodels:AddKillerWindowViewModel}"
         mc:Ignorable="d"
         Style="{StaticResource WindowStyle}"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Title="Добавить убийцу" Height="630" Width="950">
+        Title="Добавить убийцу" Height="900" Width="1240">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
 
         <!--#region Стили для кнопок в строке заголовка -->
+
         <Style x:Key="CaptionButtonStyle" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -38,226 +43,461 @@
         <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
             <Setter Property="Content" Value="&#xE106;"/>
         </Style>
+
         <!--#endregion-->
 
         <!--#region ListViewStyle -->
+
         <Style TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
-                        <Border Name="border" Background="#FF282C34" Padding="2" SnapsToDevicePixels="true">
+                        <Border Name="border" Background="Transparent" CornerRadius="10" Margin="6" SnapsToDevicePixels="true">
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
 
                             <Trigger Property="IsSelected" Value="true">
                                 <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="Green"/>
                                 <Setter Property="Foreground" Value="Black"/>
                             </Trigger>
 
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#7EB4EA"/>
                                 <Setter Property="Foreground" Value="Black"/>
                             </Trigger>
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
         <!--#endregion-->
 
     </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
+    </Window.CommandBindings>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="285"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Column="0" Grid.Row="0" Text="Убийцы" FontSize="20" HorizontalAlignment="Center"/>
+        <Grid Grid.Row="0" Height="30" Background="#F999">
 
-        <Border Grid.Column="0" Grid.Row="1" BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-            <ListView Grid.Row="0" Grid.Column="0" 
-                      Background="#FF282C34" BorderThickness="0"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ItemsSource="{Binding KillerList}" SelectedItem="{Binding SelectedKillerItem}">
+                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
+                   Width="35" Margin="2" 
+                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="White" Height="40" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding KillerName}"/>
-                                    </StackPanel>
+                <TextBlock Text="{Binding Title}" 
+                       FontSize="20" 
+                       VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                <Button Command="{x:Static SystemCommands.CloseWindowCommand}"
+                        Style="{StaticResource CloseButtonStyle}"
+                        WindowChrome.IsHitTestVisibleInChrome="True" 
+                        ToolTip="Close"/>
+
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="470"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="495"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--#region Заголовки для списка убийц и их аддонов -->
+
+            <Border Grid.Column="0" Grid.Row="0" Width="700" VerticalAlignment="Center" HorizontalAlignment="Stretch" Style="{StaticResource BorderHeading}">
+                <TextBlock Text="Киллеры" Style="{StaticResource HeaderStyle}"/>
+            </Border>
+
+            <Border Width="400" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Style="{StaticResource BorderHeading}">
+                <TextBlock Text="Аддоны" Style="{StaticResource HeaderStyle}" />
+            </Border>
+
+            <!--#endregion-->
+
+            <!--#region Списки убийц и их аддонов -->
+
+            <Border Grid.Row="1" Margin="15,0,7.5,10" BorderThickness="0,2,0,2"
+                    Style="{StaticResource BorderAroundListView}">
+
+                <ListView  ItemsSource="{Binding KillerList}" SelectedItem="{Binding SelectedKillerItem}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                           SelectedIndex="0"
+                           Background="Transparent" BorderThickness="0" Margin="10"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           ScrollViewer.CanContentScroll="True"
+                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                           VirtualizingPanel.IsVirtualizing="True"
+                           VirtualizingStackPanel.VirtualizationMode="Recycling"
+                           VirtualizingPanel.CacheLength="15,15"
+                           VirtualizingPanel.CacheLengthUnit="Item"
+                           VirtualizingPanel.ScrollUnit="Pixel">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="White" Width="163" Height="163" BorderThickness="1" CornerRadius="10">
+                                <Border.ToolTip>
+                                    <ToolTip Content="{Binding KillerName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                </Border.ToolTip>
+                                <StackPanel Orientation="Horizontal" Margin="10">
+                                    <Grid>
+                                        <Image Source="{Binding KillerImage}"/>
+                                    </Grid>
                                 </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Удалить" Command="{Binding DeleteKillerCommand}"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+
+                </ListView>
+            </Border>
+
+            <Border Grid.Row="1" Grid.Column="1" Margin="7.5,0,15,10" BorderThickness="0,2,0,2"
+                    Style="{StaticResource BorderAroundListView}">
+
+                <ListView  ItemsSource="{Binding KillerAddonList}" SelectedItem="{Binding SelectedKillerAddonItem}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                           SelectedIndex="0"
+                           Background="Transparent" BorderThickness="0" Margin="10"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           ScrollViewer.CanContentScroll="True"
+                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                           VirtualizingPanel.IsVirtualizing="True"
+                           VirtualizingStackPanel.VirtualizationMode="Recycling"
+                           VirtualizingPanel.CacheLength="15,15"
+                           VirtualizingPanel.CacheLengthUnit="Item"
+                           VirtualizingPanel.ScrollUnit="Pixel">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="White" Width="120" Height="120" BorderThickness="1" CornerRadius="10">
+                                <Border.ToolTip>
+                                    <ToolTip Content="{Binding AddonName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                </Border.ToolTip>
+                                <StackPanel Orientation="Horizontal" Margin="10">
+                                    <Grid>
+                                        <Image Source="{Binding AddonImage}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Удалить" Command="{Binding DeleteKillerAddonCommand}"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+
+                </ListView>
+            </Border>
+
+            <!--#endregion-->
+
+            <!--#region Добавление данных для убийц -->
+
+            <Border Grid.Row="2" Grid.Column="0" Margin="15,10,7.5,15" Style="{StaticResource BorderAroundListView}">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Заголовки-->
+
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
+
+                        <Border Width="230" Style="{StaticResource BorderHeading}">
+                            <TextBlock Text="Имя" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" >
+
+                        <Border Width="230" Style="{StaticResource BorderHeading}">
+                            <TextBlock Text="Портрет" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" >
+
+                        <Border Width="230" Style="{StaticResource BorderHeading}">
+                            <TextBlock Text="Сила" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
+
+                        <TextBox Text="{Binding KillerName}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}" Width="220" Height="30"/>
+
+                    </StackPanel>
+
+                    <!--Изображение-->
+
+                    <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
+
+                        <Border Width="185" Height="200" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,5,5,0">
+                            <StackPanel>
+
+                                <Image Source="{Binding ImageKiller}" Width="140" Height="140" Margin="0,10,0,0">
+                                    <Image.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                        </ContextMenu>
+                                    </Image.ContextMenu>
+                                </Image>
+                                <Separator Background="Gray"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,0">
+                                    <Button HorizontalAlignment="Center"
+                                            Command="{Binding ClearKillerImageCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Убрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button HorizontalAlignment="Center"
+                                            Margin="15,0,0,0"
+                                            Command="{Binding SelectImageKillerCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Regular_Images" Foreground="White"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Выбрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                </StackPanel>
+
                             </StackPanel>
                         </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
 
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Удалить" Command="{Binding DeleteKillerCommand}"/>
-                    </ContextMenu>
-                </ListView.ContextMenu>
+                    </StackPanel>
 
-            </ListView>
-        </Border>
+                    <StackPanel Grid.Column="2" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
 
-        <StackPanel Visibility="Visible" Grid.Column="0" Grid.Row="2" Orientation="Horizontal">
-            <StackPanel HorizontalAlignment="Center" Margin="20,0,0,0" >
+                        <Border Width="185" Height="200" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,5,5,0">
+                            <StackPanel>
 
-                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,15">
-                    <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                        <TextBlock Text="Имя убийцы" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBox Text="{Binding TextBoxKillerName}" Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" Width="150" Height="24" FontSize="16"/>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
-                    <Button Content="Сохранить" Command="{Binding SaveKillerCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30"/>
-                    <Button Content="Обновить" Command="{Binding UpdateKillerCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30" Margin="0,10,0,0"/>
-                </StackPanel>
-            </StackPanel>
-
-            <StackPanel HorizontalAlignment="Right" Margin="20,0,20,0">
-                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-                    <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                        <TextBlock Text="Портрет" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center">
-                    <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
-                        <Image Source="{Binding ImageKiller}" Width="130" Height="130"/>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Button Content="Выбрать" Command="{Binding SelectImageKillerCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30" />
-                    <Button Content="Сбросить" Command="{Binding NullImageKillerCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30" Margin="0,6,0,0"/>
-                </StackPanel>
-            </StackPanel>
-
-            <StackPanel HorizontalAlignment="Right" Margin="20,0,20,0">
-                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-                    <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                        <TextBlock Text="Сила" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center">
-                    <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
-                        <Image Source="{Binding ImageKillerAbility}" Width="130" Height="130"/>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center"  Margin="0,20,0,0">
-                    <Button Content="Выбрать" Command="{Binding SelectImageKillerAbilityCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30"/>
-                    <Button Content="Сбросить" Command="{Binding NullImageKillerAbilityCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30" Margin="0,6,0,0" />
-                </StackPanel>
-            </StackPanel>
-        </StackPanel>
-
-        <TextBlock Grid.Column="1" Grid.Row="0" Text="Аддоны" FontSize="20" HorizontalAlignment="Center"/>
-
-        <Border Grid.Column="1" Grid.Row="1" BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
-
-            <ListView Grid.Row="0" Grid.Column="0" 
-              Background="#FF282C34" BorderThickness="0"
-              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-              ItemsSource="{Binding KillerAddonList}" SelectedItem="{Binding SelectedKillerAddonItem}">
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="White" Height="40" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding AddonName}"/>
-                                    </StackPanel>
+                                <Image Source="{Binding ImageKillerAbility}" Width="140" Height="140" Margin="0,10,0,0">
+                                    <Image.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                        </ContextMenu>
+                                    </Image.ContextMenu>
+                                </Image>
+                                <Separator Background="Gray"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,0">
+                                    <Button HorizontalAlignment="Center"
+                                            Command="{Binding ClearKillerAbilityImageCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Убрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button HorizontalAlignment="Center"
+                                            Margin="15,0,0,0"
+                                            Command="{Binding SelectImageKillerAbilityCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Regular_Images" Foreground="White"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Выбрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
                                 </StackPanel>
+
                             </StackPanel>
                         </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
 
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Удалить" Command="{Binding DeleteKillerAddonCommand}"/>
-                    </ContextMenu>
-                </ListView.ContextMenu>
+                    </StackPanel>
 
-            </ListView>
-        </Border>
+                    <!--Кнопки сохранение данных-->
 
-        <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="20,0,0,0">
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,10">
-                <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                    <TextBlock Text="Добавить аддон" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,5">
-                <TextBlock Text="Выбрать киллера"/>
-            </StackPanel>
+                    <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
 
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-                <ComboBox ItemsSource="{Binding KillerList}" DisplayMemberPath="KillerName" 
-                          SelectedItem="{Binding ComboBoxSelectedKillerName}"
-                          Style="{DynamicResource ComboBoxStyleApp}"  
-                          Foreground="White"
-                          Width="150" Height="25" FontSize="16" />
-            </StackPanel>
+                        <Button Content="Сохранить" 
+                                Command="{Binding SaveKillerCommand}" 
+                                Template="{StaticResource ControlButton}" 
+                                Width="90" Height="30" Margin="0,0,5,0"/>
 
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,5">
-                <TextBlock Text="Название аддона"/>
-            </StackPanel>
+                        <Button Content="Обновить" 
+                                Command="{Binding UpdateKillerCommand}" 
+                                Template="{StaticResource ControlButton}" 
+                                Width="90" Height="30"/>
 
-            <StackPanel HorizontalAlignment="Center">
-                <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" 
-                         Text="{Binding TextBoxKillerAddonName}"
-                         Width="150" Height="24" FontSize="16"/>
-            </StackPanel>
-            
-            <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
-                <Button Content="Сохранить"
-                        Command="{Binding SaveKillerAddonCommand}"
-                        Template="{StaticResource ControlButton}" Width="90" Height="30"/>
-                <Button Content="Обновить"
-                        Command="{Binding UpdateKillerAddonCommand}"
-                        Template="{StaticResource ControlButton}" Width="90" Height="30" Margin="0,6,0,0"/>
-            </StackPanel>
-        </StackPanel>
+                    </StackPanel>
 
-        <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,20,0">
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-                <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                    <TextBlock Text="Изображение" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
-            </StackPanel>
+                </Grid>
 
-            <StackPanel HorizontalAlignment="Center">
-                <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
-                    <Image Source="{Binding ImageKillerAddon}" Width="130" Height="130"/>
-                </Border>
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
-                <Button Content="Выбрать" Command="{Binding SelectImageKillerAddonCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30"/>
-                <Button Content="Сбросить" Command="{Binding NullImageKillerAddonCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30" Margin="0,6,0,0"/>
-            </StackPanel>
-        </StackPanel>
+            </Border>
+
+            <!--#endregion-->
+
+            <!--#region Добавление данных для аддонов -->
+
+            <Border Grid.Column="1" Grid.Row="2" Margin="7.5,10,15,15" Style="{StaticResource BorderAroundListView}">
+
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Заголовки-->
+
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
+
+                        <Border Width="200" Style="{StaticResource BorderHeading}">
+                            <TextBlock Text="Имя" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" >
+
+                        <Border Width="200" Style="{StaticResource BorderHeading}">
+                            <TextBlock Text="Изображение" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+
+                    </StackPanel>
+
+
+
+                    <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
+
+                        <TextBox Text="{Binding KillerAddonName}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}" Width="190" Height="30"/>
+
+                        <TextBlock Text="Редкость" FontSize="20" Width="190" Height="30" Margin="0,10,0,10"/>
+
+                        <ComboBox ItemsSource="{Binding RarityList}" DisplayMemberPath="RarityName"
+                                  SelectedItem="{Binding SelectedRarity}"
+                                  Style="{DynamicResource ComboBoxStyleApp}" 
+                                  Foreground="White"
+                                  Width="200" Height="25" FontSize="16"/>
+
+                    </StackPanel>
+
+                    <!--Изображение-->
+
+                    <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
+
+                        <Border Width="185" Height="200" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,5,5,0">
+                            <StackPanel>
+
+                                <Image Source="{Binding ImageKillerAddon}" Width="140" Height="140" Margin="0,10,0,0">
+                                    <Image.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                        </ContextMenu>
+                                    </Image.ContextMenu>
+                                </Image>
+                                <Separator Background="Gray"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,0">
+                                    <Button HorizontalAlignment="Center"
+                                            Command="{Binding ClearAddonImageCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Убрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button HorizontalAlignment="Center"
+                                            Margin="15,0,0,0"
+                                            Command="{Binding SelectImageKillerAddonCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Regular_Images" Foreground="White"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Выбрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                    <!--Кнопки сохранение данных-->
+
+                    <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+
+                        <Button Content="Сохранить" 
+                                Command="{Binding SaveKillerAddonCommand}" 
+                                Template="{StaticResource ControlButton}" 
+                                Width="90" Height="30" Margin="0,0,5,0"/>
+
+                        <Button Content="Обновить" 
+                                Command="{Binding UpdateKillerAddonCommand}" 
+                                Template="{StaticResource ControlButton}" 
+                                Width="90" Height="30"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </Border>
+
+
+
+
+            <!--#endregion-->
+
+        </Grid>
 
     </Grid>
+
 </Window>
