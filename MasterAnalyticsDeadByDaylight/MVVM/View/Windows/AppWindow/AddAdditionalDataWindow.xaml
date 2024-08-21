@@ -187,7 +187,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Список режимов" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Список режимов" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
@@ -223,7 +223,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Режим" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Режим" Style="{StaticResource HeaderStyle}"/>
                                 
                             </Border>
 
@@ -278,7 +278,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Список игровых событий" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Список игровых событий" Style="{StaticResource HeaderStyle}"/>
                                 
                             </Border>
                             
@@ -314,7 +314,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Событие" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Событие" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
@@ -369,7 +369,7 @@
                             
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Список игровых платформ" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Список игровых платформ" Style="{StaticResource HeaderStyle}"/>
                                 
                             </Border>
                             
@@ -405,7 +405,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Платформа" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Платформа" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
@@ -460,7 +460,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Список игровых ассоциаций" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Список игровых ассоциаций" Style="{StaticResource HeaderStyle}"/>
                                 
                             </Border>
 
@@ -497,7 +497,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Ассоциация" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Ассоциация" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
@@ -552,7 +552,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Список патчей" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Список патчей" Style="{StaticResource HeaderStyle}"/>
                                 
                             </Border>
 
@@ -589,7 +589,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Патч" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Патч" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
@@ -645,7 +645,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Список типов смертей" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Список типов смертей" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
@@ -681,7 +681,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Тип смерти" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Тип смерти" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
@@ -736,7 +736,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Список игровых ролей" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Список игровых ролей" Style="{StaticResource HeaderStyle}"/>
                                 
                             </Border>
 
@@ -827,7 +827,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Список измерений" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Список измерений" Style="{StaticResource HeaderStyle}"/>
                                 
                             </Border>
 
@@ -864,7 +864,7 @@
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Измерение" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Измерение" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
