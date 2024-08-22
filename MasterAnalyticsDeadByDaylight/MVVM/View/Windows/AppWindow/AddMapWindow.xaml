@@ -4,26 +4,31 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow" 
-        xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" 
+        xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" xmlns:fa="http://schemas.fontawesome.com/icons/"
         d:DataContext="{d:DesignInstance Type=windowsviewmodels:AddMapWindowViewModel}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
         Style="{StaticResource WindowStyle}"
         WindowStartupLocation="CenterScreen"
         Title="Добавить карту"
-        Height="800" Width="1200">
+        Height="920" Width="1300">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
 
         <!--#region Стили для кнопок в строке заголовка -->
+        
         <Style x:Key="CaptionButtonStyle" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
                             <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                               Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                               RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
+                        Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -39,27 +44,29 @@
         <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
             <Setter Property="Content" Value="&#xE106;"/>
         </Style>
+        
         <!--#endregion-->
 
         <!--#region ListViewStyle -->
+        
         <Style TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
-                        <Border Name="border" Background="#FF282C34" Padding="2" >
+                        <Border Name="border" Background="Transparent" CornerRadius="10" Margin="6" SnapsToDevicePixels="true">
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
 
                             <Trigger Property="IsSelected" Value="true">
                                 <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="Green"/>
                                 <Setter Property="Foreground" Value="Black"/>
                             </Trigger>
 
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#7EB4EA"/>
                                 <Setter Property="Foreground" Value="Black"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -67,84 +74,190 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <!--#endregion-->
 
     </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
+    </Window.CommandBindings>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="320"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Orientation="Horizontal">
-            <TextBlock Text="Поиск" FontSize="25" Margin="0,0,15,0"/>
-            <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" Text="{Binding TextBoxSearch, UpdateSourceTrigger=PropertyChanged}" Width="400" Height="30" FontSize="18" Foreground="White"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Height="30" Background="#F999">
 
-        <Border Grid.Row="1" Grid.RowSpan="2" BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-            <ListView Background="#FF282C34" BorderThickness="0"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ScrollViewer.CanContentScroll="False"
-                      HorizontalContentAlignment="Center"
-                      ItemsSource="{Binding MapList}" SelectedItem="{Binding SelectedMapItem}" d:ItemsSource="{d:SampleData ItemCount=10}">
+                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
+                    Width="35" Margin="2" 
+                    HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <StackPanel HorizontalAlignment="Center">
-                                <TextBlock Text="{Binding MapName}" Foreground="White" FontSize="20"/>
-                            </StackPanel>
-
-                            <StackPanel Margin="10,0,10,10">
-                                <Image Source="{Binding MapImage}" Width="auto" Height="auto"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Удалить" Command="{Binding DeleteMapItemCommand}"/>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-
-            </ListView>
-        </Border>
-
-        <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderBrush="White" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7">
-            <StackPanel HorizontalAlignment="Center" Grid.ColumnSpan="2" Orientation="Horizontal">
-                <StackPanel>
-                    <TextBlock Text="Название" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-                    <TextBox Text="{Binding TextBoxMapName}" FontSize="20" Height="30" Width="440"
-                             Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"/>
-                    <TextBlock Text="Измерение" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-                    <ComboBox ItemsSource="{Binding MeasurementList}" SelectedItem="{Binding SelectedMeasurementItem}" DisplayMemberPath="MeasurementName" Width="300" FontSize="20"/>
-                    <TextBlock Text="Изображение" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-                    <Border Width="450" Height="250" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="0,0,0,5">
-                        <Image Source="{Binding ImageMap}" Width="435" Height="245"/>
-                    </Border>
-
-                    <TextBlock Text="Описание" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-                    <StackPanel>
-                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
-                                 Text="{Binding TextBoxMapDescription}"
-                                 FontSize="18" TextWrapping="WrapWithOverflow"
-                                 Width="440" Height="120" Margin="0,10,0,0"/>
-                    </StackPanel>
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,10,0,0">
-                        <Button Content="Выбрать" Command="{Binding SelectImageCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" />
-                        <Button Content="Сохранить" Command="{Binding SaveMapItemCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" Margin="10,0,0,0"/>
-                        <Button Content="Обновить" Command="{Binding UpdateMapItemCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" Margin="10,0,0,0"/>
-                    </StackPanel>
-                </StackPanel>
+                <TextBlock Text="{Binding Title}" 
+                        FontSize="20" 
+                        VerticalAlignment="Center"/>
             </StackPanel>
-        </Border>
-        
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                <Button Command="{x:Static SystemCommands.CloseWindowCommand}"
+                     Style="{StaticResource CloseButtonStyle}"
+                     WindowChrome.IsHitTestVisibleInChrome="True" 
+                     ToolTip="Close"/>
+
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="80"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="750"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource BaseBorder}" Margin="15,10,15,10">
+                <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock Text="Поиск" VerticalAlignment="Center" FontSize="22" Margin="0,0,15,0"/>
+                    <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" Text="{Binding MapSearch, UpdateSourceTrigger=PropertyChanged}" Width="400" Height="30" FontSize="18" Foreground="White"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1" Margin="15,10,15,10" BorderThickness="0,2,0,2"
+                    Style="{StaticResource BorderAroundListView}">
+
+                <ListView  ItemsSource="{Binding MapList}" SelectedItem="{Binding SelectedMapItem}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                           SelectedIndex="0"
+                           Background="Transparent" BorderThickness="0" Margin="10"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           ScrollViewer.CanContentScroll="True"
+                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                           VirtualizingPanel.IsVirtualizing="True"
+                           VirtualizingStackPanel.VirtualizationMode="Recycling"
+                           VirtualizingPanel.CacheLength="15,15"
+                           VirtualizingPanel.CacheLengthUnit="Item"
+                           VirtualizingPanel.ScrollUnit="Pixel">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="White" BorderThickness="1" CornerRadius="10">
+                                <Border.ToolTip>
+                                    <ToolTip Content="{Binding MapName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                </Border.ToolTip>
+                                <Image Width="320" Height="165" Source="{Binding MapImage}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Удалить" Command="{Binding DeleteOfferingCommand}"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+
+                </ListView>
+            </Border>
+
+            <Border Grid.Column="1" Grid.Row="1" Margin="15,10,15,10" Style="{StaticResource BaseBorder}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="180"/>
+                        <RowDefinition Height="190"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="5,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+
+                        <Border Height="310" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,0,5,0">
+                            <StackPanel>
+
+                                <Image Source="{Binding ImageMap}" Height="250" Margin="5">
+                                    <Image.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                        </ContextMenu>
+                                    </Image.ContextMenu>
+                                </Image>
+                                <Separator Background="Gray"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,0">
+                                    <Button HorizontalAlignment="Center"
+                                            Command="{Binding ClearImageCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Убрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button HorizontalAlignment="Center"
+                                            Margin="15,0,0,0"
+                                            Command="{Binding SelectImageCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Regular_Images" Foreground="White"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Выбрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1">
+
+                        <TextBlock Text="Название" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+                        <TextBox Text="{Binding MapName}" 
+                                 HorizontalAlignment="Stretch" Margin="10"
+                                 FontSize="20" Height="30"
+                                 Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                        <TextBlock Text="Измерение" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+                        <ComboBox ItemsSource="{Binding MeasurementList}" SelectedItem="{Binding SelectedMeasurementItem}" DisplayMemberPath="MeasurementName" 
+                                  Style="{StaticResource ComboBoxStyleApp}"
+                                  Width="300" FontSize="20"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2">
+
+                        <TextBlock Text="Описание" FontSize="25" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+                        <TextBox Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 Text="{Binding MapDescription}"
+                                 HorizontalAlignment="Stretch" 
+                                 VerticalScrollBarVisibility="Visible"
+                                 FontSize="18" TextWrapping="WrapWithOverflow"
+                                 Height="120"  Margin="10"/>
+
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="2" Grid.ColumnSpan="2" Height="60" Style="{StaticResource BaseBorder}" Margin="15,10,15,10">
+
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,10,0">
+                    <Button Content="Сохранить" Command="{Binding SaveMapItemCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" Margin="10,0,0,0"/>
+                    <Button Content="Обновить" Command="{Binding UpdateMapItemCommand}" Template="{StaticResource ControlButton}" Width="100" Height="35" Margin="10,0,0,0"/>
+                </StackPanel>
+                
+            </Border>
+
+        </Grid>
     </Grid>
 </Window>

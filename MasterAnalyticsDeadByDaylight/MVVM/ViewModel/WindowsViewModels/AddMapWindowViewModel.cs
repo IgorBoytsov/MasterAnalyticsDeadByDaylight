@@ -1,5 +1,9 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Utils.Enum;
+using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -13,9 +17,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
     {
         #region Свойства
 
-        public ObservableCollection<Map> MapList { get; set; }
+        public ObservableCollection<Map> MapList { get; set; } = [];
 
-        public ObservableCollection<Measurement> MeasurementList { get; set; }
+        public ObservableCollection<Measurement> MeasurementList { get; set; } = [];
 
         private Map _selectedMapItem;
         public Map SelectedMapItem
@@ -25,8 +29,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedMapItem = value;
                 if (value == null) { return; }
-                TextBoxMapName = value.MapName;
-                TextBoxMapDescription = value.MapDescription;
+                MapName = value.MapName;
+                MapDescription = value.MapDescription;
                 ImageMap = value.MapImage;
                 SelectedMeasurementItem = MeasurementList.FirstOrDefault(m => m.IdMeasurement == value.IdMeasurement);
                 OnPropertyChanged();
@@ -44,24 +48,24 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private string _textBoxMapName;
-        public string TextBoxMapName
+        private string _mapName;
+        public string MapName
         {
-            get => _textBoxMapName;
+            get => _mapName;
             set
             {
-                _textBoxMapName = value;
+                _mapName = value;
                 OnPropertyChanged();
             }
         }
 
-        private string _textBoxMapDescription;
-        public string TextBoxMapDescription
+        private string _mapDescription;
+        public string MapDescription
         {
-            get => _textBoxMapDescription;
+            get => _mapDescription;
             set
             {
-                _textBoxMapDescription = value;
+                _mapDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -77,25 +81,39 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private string _textBoxSearch;
-        public string TextBoxSearch
+        private string _mapSearch;
+        public string MapSearch
         {
-            get => _textBoxSearch;
+            get => _mapSearch;
             set
             {
-                _textBoxSearch = value;
-                SearchMap();
+                _mapSearch = value;
+                Task.Run(SearchMap);
+                OnPropertyChanged();
+            }
+        }  
+        
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
                 OnPropertyChanged();
             }
         }
 
         #endregion
 
-        public AddMapWindowViewModel()
+        private readonly IDialogService _dialogService;
+
+        public AddMapWindowViewModel(IDialogService service)
         {
+            _dialogService = service;
+            Title = "Добавление карт";
             GetMapData();
             GetMeasurementData();
-            RefList();
         }
 
         #region Команды
@@ -107,20 +125,38 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public RelayCommand SaveMapItemCommand { get => _saveMapItemCommand ??= new(obj => AddMap()); }
 
         private RelayCommand _deleteMapItemCommand;
-        public RelayCommand DeleteMapItemCommand { get => _deleteMapItemCommand ??= new(obj => DeleteMap()); }
+        public RelayCommand DeleteMapItemCommand
+        {
+            get => _deleteMapItemCommand ??= new(async obj =>
+            {
+                if (SelectedMapItem == null)
+                {
+                    return;
+                }
+                if (_dialogService.ShowMessageButtons(
+                    $"Вы точно хотите удалить «{SelectedMapItem.MapName}»? При удаление данном записи, могут быть связанные записи в других таблицах, что может привести к проблемам.",
+                    "Предупреждение об удаление.",
+                    TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+                {
+                    await DataBaseHelper.DeleteEntityAsync(SelectedMapItem);
+                    GetMapData();
+                }
+                else
+                {
+                    return;
+                }
+            });
+        }
 
         private RelayCommand _updateMapItemCommand;
         public RelayCommand UpdateMapItemCommand { get => _updateMapItemCommand ??= new(obj => UpdateMap()); }
 
+        private RelayCommand _clearImageCommand;
+        public RelayCommand ClearImageCommand { get => _clearImageCommand ??= new(obj => { ImageMap = null; }); }
+
         #endregion
 
         #region Методы 
-
-        private void RefList()
-        {
-            MapList = new ObservableCollection<Map>();
-            MeasurementList = new ObservableCollection<Measurement>();
-        }
 
         private async void GetMapData()
         {
@@ -148,15 +184,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void AddMap()
         {
-            var newMap = new Map { MapName = TextBoxMapName, MapImage = ImageMap, MapDescription = TextBoxMapDescription, IdMeasurement = SelectedMeasurementItem.IdMeasurement };
+            var newMap = new Map { MapName = MapName, MapImage = ImageMap, MapDescription = MapDescription, IdMeasurement = SelectedMeasurementItem.IdMeasurement };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 bool exists = context.Maps.Any(map => map.MapName.ToLower() == newMap.MapName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(TextBoxMapName))
+                if (exists || string.IsNullOrEmpty(MapName))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
                 }
                 else
                 {
@@ -164,13 +200,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.SaveChanges();
                     MapList.Clear();
                     GetMapData();
-                    TextBoxMapName = string.Empty;
-                    TextBoxMapDescription = string.Empty;
+                    MapName = string.Empty;
+                    MapDescription = string.Empty;
                     ImageMap = null;
                 }
             }
         }
-
+ 
         private void UpdateMap()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -184,54 +220,69 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 if (entityToUpdate != null)
                 {
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedMapItem.MapName} на {TextBoxMapName} ? \n и {SelectedMapItem.MapDescription} на {TextBoxMapDescription} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    bool exists = context.Maps.Any(x => x.MapName.ToLower() == MapName.ToLower());
+
+                    if (exists)
                     {
-                        entityToUpdate.MapName = TextBoxMapName;
-                        entityToUpdate.MapDescription = TextBoxMapDescription;
+                        if (_dialogService.ShowMessageButtons(
+                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedMapItem.MapName}» на «{MapName}» ?",
+                            $"Надпись с именем «{SelectedMapItem.MapName}» уже существует.",
+                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.MapName = MapName;
+                            entityToUpdate.MapDescription = MapDescription;
+                            entityToUpdate.MapImage = ImageMap;
+                            entityToUpdate.IdMeasurement = SelectedMeasurementItem.IdMeasurement;
+                            context.SaveChanges();
+                            MapList.Clear();
+                            GetMapData();
+                            SelectedMapItem = null;
+                            MapName = string.Empty;
+                            MapDescription = string.Empty;
+                            ImageMap = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.MapName = MapName;
+                        entityToUpdate.MapDescription = MapDescription;
                         entityToUpdate.MapImage = ImageMap;
                         entityToUpdate.IdMeasurement = SelectedMeasurementItem.IdMeasurement;
                         context.SaveChanges();
                         MapList.Clear();
                         GetMapData();
                         SelectedMapItem = null;
-                        TextBoxMapName = string.Empty;
-                        TextBoxMapDescription = string.Empty;
+                        MapName = string.Empty;
+                        MapDescription = string.Empty;
                         ImageMap = null;
-                    }
-                }
-                else { MessageBox.Show("Нечего обновлять"); }
-            }
-        }
-
-        private void DeleteMap()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var entityToDelete = context.Maps.Find(SelectedMapItem.IdMap);
-                if (entityToDelete != null)
-                {
-                    context.Maps.Remove(entityToDelete);
-                    context.SaveChanges();
-                    MapList.Clear();
-                    GetMapData();
+                    }    
                 }
             }
         }
 
-        private void SearchMap()
+        private async Task SearchMap()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            await Task.Run(() =>
             {
-                var search = context.Maps.Where(map => map.MapName.Contains(TextBoxSearch));
-                MapList.Clear();
-
-                foreach (var item in search)
+                using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    MapList.Add(item);
+                    var search = context.Maps.Include(x => x.IdMeasurementNavigation).Where(map => map.MapName.Contains(MapSearch))
+                        .Union(context.Maps.Include(x => x.IdMeasurementNavigation).Where(x => x.IdMeasurementNavigation.MeasurementName.Contains(MapSearch)));
+
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MapList.Clear();
+                        foreach (var item in search)
+                        {
+                            MapList.Add(item);
+                        }
+                    });
                 }
-            }
+            });
         }
 
         private void SelectImage()
