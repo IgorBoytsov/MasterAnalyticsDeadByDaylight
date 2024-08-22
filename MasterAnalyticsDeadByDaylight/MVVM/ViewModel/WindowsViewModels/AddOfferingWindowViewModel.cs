@@ -1,5 +1,8 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -12,9 +15,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
     {
         #region Свойства
 
-        public ObservableCollection<Role> RoleList { get; set; }
+        public ObservableCollection<Role> RoleList { get; set; } = [];
 
-        public ObservableCollection<Offering> OfferingList { get; set; }
+        public ObservableCollection<Offering> OfferingList { get; set; } = [];
 
         private Role _selectedRole;
         public Role SelectedRole
@@ -22,14 +25,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedRole;
             set
             {
-                _selectedRole = value;
                 if (value == null) { return; }
+                _selectedRole = value;
                 OfferingList.Clear();
                 GetOfferingData();
 
                 SearchTextBox = string.Empty;
-                OfferingNameTextBox = string.Empty;
-                OfferingDescriptionTextBox = string.Empty;
+                OfferingName = string.Empty;
+                OfferingDescription = string.Empty;
                 SelectedOffering = null;
                 OnPropertyChanged();
             }
@@ -41,11 +44,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedOffering;
             set
             {
-                _selectedOffering = value;
                 if (value == null) { return; }
-                OfferingNameTextBox = value.OfferingName;
-                OfferingDescriptionTextBox = value.OfferingDescription;
-                ImageOffering = value.OfferingImage;
+                _selectedOffering = value;
+                OfferingName = value.OfferingName;
+                OfferingDescription = value.OfferingDescription;
+                OfferingImage = value.OfferingImage;
+                SelectedRarity = RarityList.FirstOrDefault(x => x.IdRarity == value.IdRarity);
                 OnPropertyChanged();
             }
         }
@@ -63,7 +67,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         }
 
         private byte[] _imageOffering;
-        public byte[] ImageOffering
+        public byte[] OfferingImage
         {
             get => _imageOffering;
             set
@@ -73,54 +77,63 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private string _offeringNameTextBox;
-        public string OfferingNameTextBox
+        private string _offeringName;
+        public string OfferingName
         {
-            get => _offeringNameTextBox;
+            get => _offeringName;
             set
             {
-                _offeringNameTextBox = value;
+                _offeringName = value;
                 OnPropertyChanged();
             }
         }
 
-        private string _offeringDescriptionTextBox;
-        public string OfferingDescriptionTextBox
+        private string _offeringDescription;
+        public string OfferingDescription
         {
-            get => _offeringDescriptionTextBox;
+            get => _offeringDescription;
             set
             {
-                _offeringDescriptionTextBox = value;
+                _offeringDescription = value;
                 OnPropertyChanged();
             }
         }
 
-        public ObservableCollection<Rarity> RarityList { get; set; }
+        public ObservableCollection<Rarity> RarityList { get; set; } = [];
 
-        private Rarity _comboBoxSelectedRarity;
-        public Rarity ComboBoxSelectedRarity
+        private Rarity _selectedRarity;
+        public Rarity SelectedRarity
         {
-            get => _comboBoxSelectedRarity;
+            get => _selectedRarity;
             set
             {
-                _comboBoxSelectedRarity = value;
+                _selectedRarity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
                 OnPropertyChanged();
             }
         }
 
         #endregion
 
-        public AddOfferingWindowViewModel()
-        {
-            RoleList = new ObservableCollection<Role>();
-            OfferingList = new ObservableCollection<Offering>();
-            RarityList = new ObservableCollection<Rarity>();
+        IDialogService _dialogService;
 
+        public AddOfferingWindowViewModel(IDialogService service)
+        {
+            _dialogService = service;
+            Title = "Добавление подношение";
             GetOfferingData();
             GetRoleData();
-            GetRaritiData();
-
-            SelectedRole = RoleList.FirstOrDefault();
+            GetRarityData();
         }
 
         #region Команды
@@ -129,13 +142,34 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public RelayCommand AddOfferingCommand { get => _addOfferingCommand ??= new(obj => { AddOffering(); }); }
 
         private RelayCommand _deleteOfferingCommand;
-        public RelayCommand DeleteOfferingCommand { get => _deleteOfferingCommand ??= new(obj => { DeleteOffering(); }); }
+        public RelayCommand DeleteOfferingCommand { get => _deleteOfferingCommand ??= new(async obj => 
+        {
+            if (SelectedOffering == null)
+            {
+                return;
+            }
+            if (_dialogService.ShowMessageButtons(
+                $"Вы точно хотите удалить «{SelectedOffering.OfferingName}»? При удаление данном записи, могут быть связанные записи в других таблицах, что может привести к проблемам.",
+                "Предупреждение об удаление.",
+                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            {
+                await DataBaseHelper.DeleteEntityAsync(SelectedOffering);
+                GetOfferingData();
+            }
+            else
+            {
+                return;
+            }
+        }); }
 
         private RelayCommand _updateOfferingCommand;
         public RelayCommand UpdateOfferingCommand { get => _updateOfferingCommand ??= new(obj => { UpdateOffering(); }); }
 
-        private RelayCommand _selectImageOfferingCommand;
-        public RelayCommand SelectImageOfferingCommand { get => _selectImageOfferingCommand ??= new(obj => { SelectImageOffering(); }); }
+        private RelayCommand _selectImageCommand;
+        public RelayCommand SelectImageCommand { get => _selectImageCommand ??= new(obj => { SelectImageOffering(); }); }
+
+        private RelayCommand _clearImageCommand;
+        public RelayCommand ClearImageCommand { get => _clearImageCommand ??= new(obj => { OfferingImage = null; }); }
 
         #endregion
 
@@ -143,6 +177,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetOfferingData()
         {
+            OfferingList.Clear();
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
 
@@ -154,7 +189,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 }
                 else
                 {
-                    offering = await context.Offerings.Include(rarity => rarity.IdRarityNavigation).Where(ia => ia.IdRole == SelectedRole.IdRole).ToListAsync();
+                    offering = await context.Offerings.Include(rarity => rarity.IdRarityNavigation).Where(ia => ia.IdRole == SelectedRole.IdRole).OrderBy(x => x.IdRarity).ToListAsync();
                 }
 
                 OfferingList.Clear();
@@ -187,10 +222,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 {
                     RoleList.Add(item);
                 }
+                SelectedRole = RoleList.FirstOrDefault();
             }
         }
 
-        private async void GetRaritiData()
+        private async void GetRarityData()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -205,41 +241,25 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void AddOffering()
         {
-            var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingNameTextBox, OfferingDescription = OfferingDescriptionTextBox, IdRarity = ComboBoxSelectedRarity.IdRarity };
+
+            var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingName, OfferingImage = OfferingImage, OfferingDescription = OfferingDescription, IdRarity = SelectedRarity.IdRarity };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (string.IsNullOrWhiteSpace(OfferingNameTextBox)) { return; }
                 bool exists = context.Offerings.Where(off => off.IdRole == SelectedRole.IdRole).Any(off => off.OfferingName.ToLower() == newOffering.OfferingName.ToLower());
 
-                if (exists || string.IsNullOrWhiteSpace(OfferingNameTextBox))
+                if (exists || string.IsNullOrEmpty(OfferingName))
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
+                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
                 }
                 else
                 {
                     context.Offerings.Add(newOffering);
                     context.SaveChanges();
-                    OfferingList.Clear();
                     GetOfferingData();
-                    OfferingNameTextBox = string.Empty;
-                    OfferingDescriptionTextBox = string.Empty;
+                    OfferingName = string.Empty;
+                    OfferingDescription = string.Empty;
                     SelectedOffering = null;
-                }
-            }
-        }
-
-        private void DeleteOffering()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var itemToDelete = context.Offerings.Find(SelectedOffering.IdOffering);
-                if (itemToDelete != null)
-                {
-                    context.Offerings.Remove(itemToDelete);
-                    context.SaveChanges();
-                    OfferingList.Clear();
-                    GetOfferingData();
                 }
             }
         }
@@ -248,32 +268,58 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (SelectedOffering == null) { return; }
+                if (SelectedOffering == null)
+                {
+                    return;
+                }
 
                 var entityToUpdate = context.Offerings.Find(SelectedOffering.IdOffering);
 
                 if (entityToUpdate != null)
                 {
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedOffering.OfferingName} на {OfferingNameTextBox} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    bool exists = context.Offerings.Where(off => off.IdRole == SelectedRole.IdRole).Any(x => x.OfferingName.ToLower() == OfferingName.ToLower());
+
+                    if (exists)
                     {
-                        entityToUpdate.OfferingName = OfferingNameTextBox;
-                        entityToUpdate.OfferingDescription = OfferingDescriptionTextBox;
-                        entityToUpdate.OfferingImage = ImageOffering;
+                        if (_dialogService.ShowMessageButtons(
+                           $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedOffering.OfferingName}» на «{OfferingName}» ?",
+                           $"Надпись с именем «{SelectedOffering.OfferingName}» уже существует.",
+                           TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
+                        {
+                            entityToUpdate.OfferingName = OfferingName;
+                            entityToUpdate.OfferingDescription = OfferingDescription;
+                            entityToUpdate.OfferingImage = OfferingImage;
+                            entityToUpdate.IdRole = SelectedRole.IdRole;
+                            entityToUpdate.IdRarity = SelectedRarity.IdRarity;
+                            context.SaveChanges();
+                            GetOfferingData();
+
+                            OfferingName = string.Empty;
+                            OfferingDescription = string.Empty;
+                            OfferingImage = null;
+                            SelectedOffering = null;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        entityToUpdate.OfferingName = OfferingName;
+                        entityToUpdate.OfferingDescription = OfferingDescription;
+                        entityToUpdate.OfferingImage = OfferingImage;
                         entityToUpdate.IdRole = SelectedRole.IdRole;
-                        entityToUpdate.IdRarity = ComboBoxSelectedRarity.IdRarity;
+                        entityToUpdate.IdRarity = SelectedRarity.IdRarity;
                         context.SaveChanges();
-                        OfferingList.Clear();
                         GetOfferingData();
 
-                        OfferingNameTextBox = string.Empty;
-                        OfferingDescriptionTextBox = string.Empty;
-                        ImageOffering = null;
+                        OfferingName = string.Empty;
+                        OfferingDescription = string.Empty;
+                        OfferingImage = null;
                         SelectedOffering = null;
                     }
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
@@ -298,7 +344,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (Image image = Image.FromFile(openFileDialog.FileName))
                 {
-                    ImageOffering = ImageHelper.ImageToByteArray(image);
+                    OfferingImage = ImageHelper.ImageToByteArray(image);
                 }
             }
         }
