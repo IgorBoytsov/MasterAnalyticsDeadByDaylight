@@ -1,5 +1,6 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using System.Windows;
+using System.Windows.Input;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
 {
@@ -12,6 +13,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
         {
             InitializeComponent();
             DataContext = new AddPerkWindowViewModel();
+        }
+
+        private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CommandBinding_Executed_Close(object sender, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
         }
     }
 }

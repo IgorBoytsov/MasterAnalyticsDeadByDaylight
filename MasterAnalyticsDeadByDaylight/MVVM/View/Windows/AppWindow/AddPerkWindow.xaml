@@ -3,12 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow" xmlns:viewmodel="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:AddPerkWindowViewModel}"
+        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow" 
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" 
+        d:DataContext="{d:DesignInstance Type=windowsviewmodels:AddPerkWindowViewModel}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
         Style="{StaticResource WindowStyle}"
         WindowStartupLocation="CenterScreen"
-        Title="Добавить перк" Height="800" Width="650">
+        Title="Добавить перк"  Height="960" Width="760">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
 
@@ -19,8 +26,8 @@
                     <ControlTemplate TargetType="Button">
                         <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
                             <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                   Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
+                           Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                           RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -43,20 +50,20 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
-                        <Border Name="border" Background="#FF282C34" Padding="2" SnapsToDevicePixels="true">
+                        <Border Name="border" Background="Transparent" CornerRadius="10" Margin="6" SnapsToDevicePixels="true">
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
 
                             <Trigger Property="IsSelected" Value="true">
                                 <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="Green"/>
                                 <Setter Property="Foreground" Value="Black"/>
                             </Trigger>
 
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#7EB4EA"/>
                                 <Setter Property="Foreground" Value="Black"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -67,6 +74,231 @@
         <!--#endregion-->
 
     </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
+    </Window.CommandBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Height="30" Background="#F999">
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
+                       Width="35" Margin="2" 
+                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                <TextBlock Text="{Binding Title}" 
+                           FontSize="20" 
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                <Button Command="{x:Static SystemCommands.CloseWindowCommand}"
+                        Style="{StaticResource CloseButtonStyle}"
+                        WindowChrome.IsHitTestVisibleInChrome="True" 
+                        ToolTip="Close"/>
+
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="450"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Margin="15,10,15,10" Style="{StaticResource BaseBorder}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"> 
+                    <TextBlock Text="Роль" FontSize="25" Margin="10,0,15,0"/>
+
+                    <ComboBox ItemsSource="{Binding RoleList}" DisplayMemberPath="RoleName"
+                              SelectedItem="{Binding SelectedRole}"
+                              Style="{StaticResource ComboBoxStyleApp}" 
+                              Foreground="White" Width="150" Height="25" FontSize="16"/>
+
+                    <TextBlock Text="Персонаж" FontSize="25" Margin="10,0,15,0"/>
+
+                    <ComboBox ItemsSource="{Binding CharacterList}" DisplayMemberPath="NameCharacter"
+                              SelectedItem="{Binding SelectedCharacter}"
+                              Style="{StaticResource ComboBoxStyleApp}" 
+                              IsEnabled="{Binding ComboBoxCharacterIsActive}"
+                              Foreground="White" Width="150" Height="25" FontSize="16"/>
+                </StackPanel>
+            </Border>
+            
+            <Border Grid.Row="1" Margin="15,10,15,10" BorderThickness="0,2,0,2"
+                    Style="{StaticResource BorderAroundListView}">
+
+                <ListView  ItemsSource="{Binding PerkList}" SelectedItem="{Binding SelectedPerk}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                           SelectedIndex="0"
+                           Background="Transparent" BorderThickness="0" Margin="10"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           ScrollViewer.CanContentScroll="True"
+                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                           VirtualizingPanel.IsVirtualizing="True"
+                           VirtualizingStackPanel.VirtualizationMode="Recycling"
+                           VirtualizingPanel.CacheLength="15,15"
+                           VirtualizingPanel.CacheLengthUnit="Item"
+                           VirtualizingPanel.ScrollUnit="Pixel">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="White" Width="160" Height="160" BorderThickness="1" CornerRadius="10">
+                                <Border.ToolTip>
+                                    <ToolTip Content="{Binding PerkName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                </Border.ToolTip>
+                                <StackPanel Orientation="Horizontal" Margin="10">
+                                    <Grid>
+                                        <Image Source="{Binding PerkImage}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Удалить" Command="{Binding DeleteSurvivorCommand}"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+
+                </ListView>
+            </Border>
+
+            <Border Grid.Row="2" Margin="15,10,15,10"
+                    Style="{StaticResource BorderAroundListView}">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                        <Border Width="230" Style="{StaticResource BorderHeading}">
+                            <TextBlock Text="Название" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                        <TextBox Text="{Binding PerkNameTextBox}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 Width="230" Height="230" Margin="5,0,5,0"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                        <Border Width="230" Style="{StaticResource BorderHeading}">
+                            <TextBlock Text="Описание" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                        <TextBox Text="{Binding PerkDescriptionTextBox}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}"
+                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                 Width="230" Height="230" Margin="5,0,5,0"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                        <Border Width="230" Style="{StaticResource BorderHeading}">
+                            <TextBlock Text="Изображение" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Grid.Row="1" Margin="5,0,5,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+
+                        <Border Height="255" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,0,5,0">
+                            <StackPanel>
+
+                                <Image Source="{Binding ImagePerk}" Width="190" Height="190" Margin="0,10,0,0">
+                                    <Image.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                        </ContextMenu>
+                                    </Image.ContextMenu>
+                                </Image>
+                                <Separator Background="Gray"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,0">
+                                    <Button HorizontalAlignment="Center"
+                                            Command="{Binding ClearImageCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Убрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button HorizontalAlignment="Center"
+                                            Margin="15,0,0,0"
+                                            Command="{Binding SelectImagePerkCommand}" 
+                                            Template="{StaticResource ManagementButton}"
+                                            Width="35" Height="35">
+                                        <fa:ImageAwesome Icon="Regular_Images" Foreground="White"/>
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Выбрать изображение"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="3" Height="40" Margin="15,10,15,10"
+                Style="{StaticResource BorderAroundListView}">
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+                <Button Content="Сохранить" 
+                        Command="{Binding AddPerkCommand}" 
+                        Template="{StaticResource ControlButton}" 
+                        Width="90" Height="30" Margin="0,0,5,0"/>
+
+                <Button Content="Обновить" 
+                        Command="{Binding UpdatePerkCommand}" 
+                        Template="{StaticResource ControlButton}" 
+                        Width="90" Height="30"/>
+            </StackPanel>
+
+        </Border>
+
+    </Grid>
+</Window>
+
+
+<!--
 
     <Grid>
         <Grid.RowDefinitions>
@@ -80,20 +312,7 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-            <TextBlock Text="Роль" FontSize="25" Margin="10,0,15,0"/>
             
-            <ComboBox ItemsSource="{Binding RoleList}" DisplayMemberPath="RoleName"
-                      SelectedItem="{Binding SelectedRole}"
-                      Style="{StaticResource ComboBoxStyleApp}" 
-                      Foreground="White" Width="150" Height="25" FontSize="16"/>
-            
-            <TextBlock Text="Персонаж" FontSize="25" Margin="10,0,15,0"/>
-            
-            <ComboBox ItemsSource="{Binding CharacterList}" DisplayMemberPath="NameCharacter"
-                      SelectedItem="{Binding SelectedCharacter}"
-                      Style="{StaticResource ComboBoxStyleApp}" 
-                      IsEnabled="{Binding ComboBoxCharacterIsActive}"
-                      Foreground="White" Width="150" Height="25" FontSize="16"/>
             <StackPanel/>
         </DockPanel>
 
@@ -180,4 +399,4 @@
         
 
     </Grid>
-</Window>
+</Window>-->
