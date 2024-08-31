@@ -10,10 +10,9 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource WindowStyle}"
-        Background="#FF282C34"
         Foreground="White"
         MinHeight="450" MinWidth="800"
-        Height="850" Width="1500" 
+        Height="850" Width="1600" 
         d:Height="Auto"
         Title="Добавить матч">
 
@@ -24,62 +23,24 @@
     <Window.Resources>
         <ResourceDictionary>
 
-            <!--Базовый стиль для кнопок заголовка окна-->
-
-            <Style x:Key="CaptionButtonStyle" TargetType="Button">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="40">
-                                <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                            Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                            RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  TextOptions.TextFormattingMode="Display"/>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                    <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-                <Setter Property="Content" Value="&#xE949;"/>
-            </Style>
-
-            <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-                <Setter Property="Content" Value="&#xE739;"/>
-            </Style>
-
-            <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-                <Setter Property="Content" Value="&#xE923;"/>
-            </Style>
-
-            <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-                <Setter Property="Content" Value="&#xE106;"/>
-            </Style>
-
             <Style TargetType="ListViewItem">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListViewItem">
-                            <Border Name="border" Background="#FF282C34" Padding="2" SnapsToDevicePixels="true">
+                            <Border Name="border" Background="Transparent" CornerRadius="10" Margin="6" SnapsToDevicePixels="true">
                                 <ContentPresenter/>
                             </Border>
                             <ControlTemplate.Triggers>
 
                                 <Trigger Property="IsSelected" Value="true">
                                     <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                    <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                    <Setter TargetName="border" Property="BorderBrush" Value="Green"/>
                                     <Setter Property="Foreground" Value="Black"/>
                                 </Trigger>
 
                                 <Trigger Property="IsMouseOver" Value="true">
                                     <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                    <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                    <Setter TargetName="border" Property="BorderBrush" Value="#7EB4EA"/>
                                     <Setter Property="Foreground" Value="Black"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
@@ -97,9 +58,9 @@
         <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Minimize" />
         <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Restore" />
     </Window.CommandBindings>
-   
+
     <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
-        <Grid x:Name="parentContainer" Background="#FF282C34">
+        <Grid x:Name="parentContainer" Background="#121212">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height ="Auto"/>
@@ -123,22 +84,22 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
 
                     <Button Style="{StaticResource MinimizeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Minimize"
-                     Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
+                            Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
 
                     <Button x:Name="RestoreButton" Visibility="Collapsed" Style="{StaticResource RestoreButtonStyle}" 
-                     Command="{x:Static SystemCommands.RestoreWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Restore"/>
+                            Command="{x:Static SystemCommands.RestoreWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Restore"/>
 
                     <Button x:Name="MaximizeButton" Visibility="Visible" Style="{StaticResource MaximizeButtonStyle}" 
-                     Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
+                            Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
 
                     <Button Style="{StaticResource CloseButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
-                     Command="{x:Static SystemCommands.CloseWindowCommand}"/>
+                            Command="{x:Static SystemCommands.CloseWindowCommand}"/>
 
                 </StackPanel>
             </Grid>
 
             <!--#endregion-->
-      
+
             <!--#region Контент окна -->
 
             <Grid Grid.Row="1">
@@ -179,74 +140,2278 @@
                 <!--#endregion-->
 
                 <!--#region Отображение списока изображение -->
+                
+                <Border Grid.Row="1" Margin="0" Style="{StaticResource BorderCardAddMatch}">
+                    <ListView ItemsSource="{Binding ImagesList}" d:ItemsSource="{d:SampleData ItemCount=5}"
+                              SelectedItem="{Binding SelectedImage}"
+                              Grid.Row="1"
+                              Background="Transparent"
+                              BorderBrush="White"
+                              BorderThickness="0"
+                              Foreground="White" 
+                              FontSize="15" 
+                              HorizontalContentAlignment="Center" 
+                              Margin="5,5,5,5"
+                              ScrollViewer.CanContentScroll="True"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="15,15"
+                              VirtualizingPanel.CacheLengthUnit="Item"
+                              VirtualizingPanel.ScrollUnit="Pixel">
 
-                <ListView ItemsSource="{Binding ImagesList}" d:ItemsSource="{d:SampleData ItemCount=5}"
-                          SelectedItem="{Binding SelectedImage}"
-                          Grid.Row="1"
-                          Background="#282C34"
-                          BorderBrush="White"
-                          BorderThickness="1"
-                          Foreground="White" 
-                          FontSize="15" 
-                          HorizontalContentAlignment="Center" 
-                          Margin="5,5,0,5"
-                          ScrollViewer.CanContentScroll="True"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          VirtualizingPanel.IsVirtualizing="True"
-                          VirtualizingStackPanel.VirtualizationMode="Recycling"
-                          VirtualizingPanel.CacheLength="15,15"
-                          VirtualizingPanel.CacheLengthUnit="Item"
-                          VirtualizingPanel.ScrollUnit="Pixel">
+                        <ListView.Resources>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border Name="Border" Padding="2" BorderThickness="3" SnapsToDevicePixels="true">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
 
-                    <ListView.Resources>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListViewItem">
-                                        <Border Name="Border" Padding="2" BorderThickness="3" SnapsToDevicePixels="true">
-                                            <ContentPresenter/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="true">
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="Yellow"/>
+                                                    <Setter Property="Foreground" Value="Black"/>
+                                                </Trigger>
 
-                                            <Trigger Property="IsSelected" Value="true">
-                                                <Setter TargetName="Border" Property="BorderBrush" Value="Yellow"/>
-                                                <Setter Property="Foreground" Value="Black"/>
-                                            </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter TargetName="Border" Property="Background" Value="Gray"/>
+                                                    <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.Resources>
 
-                                            <Trigger Property="IsMouseOver" Value="true">
-                                                <Setter TargetName="Border" Property="Background" Value="Gray"/>
-                                                <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListView.Resources>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding ResizeImage}" Width="auto" Height="auto"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
 
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding ResizeImage}" Width="auto" Height="auto"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-
-                    <ListView.ContextMenu>
-                        <ContextMenu BorderBrush="Black">
-                            <MenuItem Header="Итоговая таблицу" FontSize="15" Command="{Binding LoadResultMatchImageCommand}"/>
-                            <MenuItem Header="Начало игры" FontSize="15" Command="{Binding LoadStartMatchImageCommand}"/>
-                            <MenuItem Header="Конец игры" FontSize="15" Command="{Binding LoadEndMatchImageCommand}"/>
-                            <Separator/>
-                            <MenuItem Header="Удалить" FontSize="15" Command="{Binding DeleteSelectedImageCommand}"/>
-                        </ContextMenu>
-                    </ListView.ContextMenu>
-                </ListView>
+                        <ListView.ContextMenu>
+                            <ContextMenu BorderBrush="Black">
+                                <MenuItem Header="Итоговая таблицу" FontSize="15" Command="{Binding LoadResultMatchImageCommand}"/>
+                                <MenuItem Header="Начало игры" FontSize="15" Command="{Binding LoadStartMatchImageCommand}"/>
+                                <MenuItem Header="Конец игры" FontSize="15" Command="{Binding LoadEndMatchImageCommand}"/>
+                                <Separator/>
+                                <MenuItem Header="Удалить" FontSize="15" Command="{Binding DeleteSelectedImageCommand}"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+                </Border>
 
                 <!--#endregion-->
 
+                <!--#region Добавление данных -->
+
+                <ScrollViewer Grid.Row="1" Grid.Column="1">
+                    <StackPanel>
+                        <TabControl Grid.Row="1" Grid.Column="1" MaxWidth="1200"
+                                    Background="Transparent" 
+                                    BorderBrush="Transparent" BorderThickness="0"
+                                    Margin="5,5,0,5">
+
+                            <TabControl.Resources>
+
+                                <Style TargetType="TabPanel">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+
+                                <!--#region Height 1 строки, в которой находится вырезаное изображение из итоговой таблицы матча -->
+
+                                <Style x:Key="RowDefinitionKiller№1" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="240"/>
+                                </Style>
+
+                                <Style x:Key="RowDefinitionSurvivor№1" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="240"/>
+                                </Style>
+
+                                <Style x:Key="RowDefinitionResultMatch№1" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="240"/>
+                                </Style>
+
+                                <!--#endregion-->
+
+                                <!--#region Height 2 строки, в которой находятся поля для отображение вносимых данных -->
+
+                                <Style x:Key="RowDefinitionKiller№2" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="312"/>
+                                </Style>
+
+                                <Style x:Key="RowDefinitionSurvivor№2" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="355"/>
+                                </Style>
+
+                                <Style x:Key="RowDefinitionResultMatch№2" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="355"/>
+                                </Style>
+
+                                <!--#endregion-->
+
+                                <!--#region Height 3 строки, в которой находятся для выбора данных -->
+
+                                <Style x:Key="RowDefinitionKiller№3" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="600"/>
+                                </Style>
+
+                                <Style x:Key="RowDefinitionSurvivor№3" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="600"/>
+                                </Style>
+
+                                <Style x:Key="RowDefinitionResultMatch№3" TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="600"/>
+                                </Style>
+
+                                <!--#endregion-->
+
+                            </TabControl.Resources>
+
+                            <!--#region Киллер -->
+
+                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                                <TabItem.Header>
+                                    <TextBlock Text="Киллер" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                </TabItem.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Style="{StaticResource RowDefinitionKiller№1}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionKiller№2}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionKiller№3}"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.ColumnSpan="3" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                                                <TextBlock Text="Итог киллер" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource BorderAroundImage}">
+                                                <Image Source="{Binding ResultMatchKillerImage}" Margin="10"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#region Основная информация -->
+
+                                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Основная информация" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Киллер:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Платформа:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Престиж:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Счет:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Режим:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Бот:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Ассоциация:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                              ItemsSource="{Binding KillerList}"
+                                                              SelectedItem="{Binding SelectedKiller}"                         
+                                                              DisplayMemberPath="KillerName" />
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding PlatformList}" 
+                                                              SelectedItem="{Binding SelectedKillerPlatform}"                                                                
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="PlatformName"/>
+
+                                                    <TextBox Width="150" Height="25"
+                                                             Text="{Binding KillerPrestige}"
+                                                             Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Width="150" Height="25" 
+                                                             Text="{Binding KillerAccount}"
+                                                             Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <CheckBox Content="Анонимный?"
+                                                              Width="150" FontSize="20"
+                                                              Margin="0,5,0,5"
+                                                              IsChecked="{Binding KillerAnonymousMode}"
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <CheckBox Content="Игрок вышел?" 
+                                                              Width="150" FontSize="20" 
+                                                              Margin="0,5,0,5"
+                                                              IsChecked="{Binding KillerBot}"
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding KillerAssociationList}"
+                                                              SelectedItem="{Binding SelectedKillerPlayerAssociation}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="PlayerAssociationName"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд (Перки + аддоны) -->
+
+                                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Билд" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Перк I:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Перк II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк III:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк IV:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Улучшение I" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Улучшение II" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
+                                                             Text="{Binding SelectedKillerFirstPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             IsReadOnly="True"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
+                                                             Text="{Binding SelectedKillerSecondPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             IsReadOnly="True"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedKillerThirdPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             IsReadOnly="True"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
+                                                             Text="{Binding SelectedKillerFourthPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             IsReadOnly="True"/>
+
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
+                                                             Text="{Binding SelectedKillerFirstAddonName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             IsReadOnly="True"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
+                                                             Text="{Binding SelectedKillerSecondAddonName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             IsReadOnly="True"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Подношение -->
+
+                                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Подношение" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Подношение:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Роль:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
+                                                             Text="{Binding SelectedKillerOfferingName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             IsReadOnly="True"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"
+                                                              ItemsSource="{Binding KillerRoleList}"
+                                                              SelectedItem="{Binding SelectedRoleKiller}"
+                                                              SelectedIndex="1"
+                                                              DisplayMemberPath="RoleName"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список перков -->
+
+                                    <!--<Border Grid.Row="2" Grid.Column="0" VerticalAlignment="Top" Margin="0,10,0,10" Style="{StaticResource BorderHeading}">
+                                        <TextBlock Text="Список перков" Style="{StaticResource HeaderStyle}"/>
+                                    </Border>-->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchKillerPerk, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding KillerPerkList}" SelectedItem="{Binding SelectedKillerPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding PerkName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding PerkImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedKillerFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedKillerSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedKillerThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedKillerFourthPerkCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список улучшений -->
+
+                                    <!--<Border Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Margin="0,10,0,10" Style="{StaticResource BorderHeading}">
+                                        <TextBlock Text="Список аддонов" Style="{StaticResource HeaderStyle}"/>
+                                    </Border>-->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Аддона" Width="Auto" Style="{StaticResource TextBlockAddMatchInputData}">
+                                        </TextBlock>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchKillerAddon, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+
+                                    <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding KillerAddonList}" SelectedItem="{Binding SelectedKillerAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding AddonName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding AddonImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I аддон" Command="{Binding SelectedKillerFirstAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II аддон" Command="{Binding SelectedKillerSecondAddonCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список подношений -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchKillerOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding KillerOfferingList}" SelectedItem="{Binding SelectedKillerOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding OfferingName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding OfferingImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                </Grid>
+                            </TabItem>
+
+                            <!--#endregion-->
+
+                            <!--#region Первый выживший -->
+
+                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                                <TabItem.Header>
+                                    <TextBlock Text="Выживший №1" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                </TabItem.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№1}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№2}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№3}"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.ColumnSpan="3" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                                                <TextBlock Text="Итог выжившего" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource BorderAroundImage}">
+                                                <Image Source="{Binding ResultMatchFirstSurvivorImage}" Margin="10"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#region Основная информация -->
+
+                                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Основная информация" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Выживший:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Платформа:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Как умер?" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Престиж:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Счет:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Режим:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Бот:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Ассоциация:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                                  ItemsSource="{Binding SurvivorList}"
+                                                                  SelectedItem="{Binding SelectedFirstSurvivor}"
+                                                                  SelectedIndex="0"
+                                                                  DisplayMemberPath="SurvivorName"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                                  ItemsSource="{Binding PlatformList}"                                                            
+                                                                  SelectedItem="{Binding SelectedFirstSurvivorPlatform}"
+                                                                  SelectedIndex="0"
+                                                                  DisplayMemberPath="PlatformName"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                                  ItemsSource="{Binding TypeDeathList}"
+                                                                  SelectedItem="{Binding SelectedFirstSurvivorTypeDeath}"
+                                                                  SelectedIndex="0"
+                                                                  DisplayMemberPath="TypeDeathName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding FirstSurvivorPrestige}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding FirstSurvivorAccount}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <CheckBox Content="Анонимный?"
+                                                                  Width="150" FontSize="20" 
+                                                                  Margin="0,5,0,5" 
+                                                                  IsChecked="{Binding FirstSurvivorAnonymousMode}"                                                            
+                                                                  Foreground="White" 
+                                                                  VerticalContentAlignment="Center"/>
+
+                                                    <CheckBox Content="Игрок вышел?" 
+                                                                  Width="150" FontSize="20" 
+                                                                  Margin="0,5,0,5" 
+                                                                  IsChecked="{Binding FirstSurvivorBot}"
+                                                                  Foreground="White" 
+                                                                  VerticalContentAlignment="Center"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                                  ItemsSource="{Binding SurvivorAssociationList}"
+                                                                  SelectedItem="{Binding SelectedFirstSurvivorPlayerAssociation}"
+                                                                  SelectedIndex="2"
+                                                                  DisplayMemberPath="PlayerAssociationName"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд перки -->
+
+                                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Перки" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Перк I:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Перк II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк III:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк IV:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedFirstSurvivorFirstPerkName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedFirstSurvivorSecondPerkName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedFirstSurvivorThirdPerkName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedFirstSurvivorFourthPerkName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд Предмет \ подношение -->
+
+                                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Предмет \ подношение" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Предмет:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Улучшение I:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Улучшение II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Подношение" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Роль" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                                  ItemsSource="{Binding ItemList}"                                                            
+                                                                  SelectedItem="{Binding SelectedFirstSurvivorItem}"
+                                                                  DisplayMemberPath="ItemName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedFirstSurvivorFirstItemAddonName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedFirstSurvivorSecondItemAddonName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedFirstSurvivorOfferingName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                                  ItemsSource="{Binding SurvivorRoleList}"
+                                                                  SelectedItem="{Binding SelectedRoleFirstSurvivor}"
+                                                                  SelectedIndex="0"
+                                                                  DisplayMemberPath="RoleName"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список перков -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Text="{Binding SearchSurvivorPerk, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                       SelectedIndex="0"
+                                                       Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       ScrollViewer.CanContentScroll="True"
+                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                       VirtualizingPanel.IsVirtualizing="True"
+                                                       VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                       VirtualizingPanel.CacheLength="15,15"
+                                                       VirtualizingPanel.CacheLengthUnit="Item"
+                                                       VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding PerkName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding PerkImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedFirstSurvivorFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedFirstSurvivorSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedFirstSurvivorThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedFirstSurvivorFourthPerkCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список улучшений к предметам -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Text="{Binding SearchFirstSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding FirstSurvivorItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                       SelectedIndex="0"
+                                                       Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       ScrollViewer.CanContentScroll="True"
+                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                       VirtualizingPanel.IsVirtualizing="True"
+                                                       VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                       VirtualizingPanel.CacheLength="15,15"
+                                                       VirtualizingPanel.CacheLengthUnit="Item"
+                                                       VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding ItemAddonName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding ItemAddonImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I улучшени" Command="{Binding SelectedListViewSurvivorFirstItemAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II улучшени" Command="{Binding SelectedListViewSurvivorSecondItemAddonCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список подношений -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Text="{Binding SearchFirstSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding FirstSurvivorOfferingList}" SelectedItem="{Binding SelectedFirstSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                       SelectedIndex="0"
+                                                       Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       ScrollViewer.CanContentScroll="True"
+                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                       VirtualizingPanel.IsVirtualizing="True"
+                                                       VirtualizingPanel.CacheLength="15,15"
+                                                       VirtualizingPanel.CacheLengthUnit="Item"
+                                                       VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding OfferingName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding OfferingImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+
+                                    </Border>
+
+
+                                    <!--#endregion-->
+
+                                </Grid>
+                            </TabItem>
+
+                            <!--#endregion-->
+
+                            <!--#region Второй выживший -->
+
+                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                                <TabItem.Header>
+                                    <TextBlock Text="Выживший №2" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                </TabItem.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№1}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№2}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№3}"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.ColumnSpan="3" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                                                <TextBlock Text="Итог выжившего" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource BorderAroundImage}">
+                                                <Image Source="{Binding ResultMatchSecondSurvivorImage}" Margin="10"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#region Основная информация -->
+
+                                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Основная информация" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Выживший:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Платформа:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Как умер?" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Престиж:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Счет:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Режим:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Бот:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Ассоциация:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                                  ItemsSource="{Binding SurvivorList}"
+                                                                  SelectedItem="{Binding SelectedSecondSurvivor}"
+                                                                  SelectedIndex="0"
+                                                                  DisplayMemberPath="SurvivorName"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                                  ItemsSource="{Binding PlatformList}"                                                            
+                                                                  SelectedItem="{Binding SelectedSecondSurvivorPlatform}"
+                                                                  SelectedIndex="0"
+                                                                  DisplayMemberPath="PlatformName"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                                  ItemsSource="{Binding TypeDeathList}"
+                                                                  SelectedItem="{Binding SelectedSecondSurvivorTypeDeath}"
+                                                                  SelectedIndex="0"
+                                                                  DisplayMemberPath="TypeDeathName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SecondSurvivorPrestige}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SecondSurvivorAccount}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <CheckBox Content="Анонимный?"
+                                                                  Width="150" FontSize="20" 
+                                                                  Margin="0,5,0,5" 
+                                                                  IsChecked="{Binding SecondSurvivorAnonymousMode}"                                                            
+                                                                  Foreground="White" 
+                                                                  VerticalContentAlignment="Center"/>
+
+                                                    <CheckBox Content="Игрок вышел?" 
+                                                                  Width="150" FontSize="20" 
+                                                                  Margin="0,5,0,5" 
+                                                                  IsChecked="{Binding SecondSurvivorBot}"
+                                                                  Foreground="White" 
+                                                                  VerticalContentAlignment="Center"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                                  ItemsSource="{Binding SurvivorAssociationList}"
+                                                                  SelectedItem="{Binding SelectedSecondSurvivorPlayerAssociation}"
+                                                                  SelectedIndex="2"
+                                                                  DisplayMemberPath="PlayerAssociationName"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд перки -->
+
+                                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Перки" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Перк I:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Перк II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк III:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк IV:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedSecondSurvivorFirstPerkName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedSecondSurvivorSecondPerkName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedSecondSurvivorThirdPerkName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedSecondSurvivorFourthPerkName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд Предмет \ подношение -->
+
+                                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Предмет \ подношение" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Предмет:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Улучшение I:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Улучшение II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Подношение" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Роль" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                                  ItemsSource="{Binding ItemList}"                                                            
+                                                                  SelectedItem="{Binding SelectedSecondSurvivorItem}"
+                                                                  DisplayMemberPath="ItemName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedSecondSurvivorFirstItemAddonName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedSecondSurvivorSecondItemAddonName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                                 Text="{Binding SelectedSecondSurvivorOfferingName}"
+                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                                  ItemsSource="{Binding SurvivorRoleList}"
+                                                                  SelectedItem="{Binding SelectedRoleSecondSurvivor}"
+                                                                  SelectedIndex="0"
+                                                                  DisplayMemberPath="RoleName"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список перков -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Text="{Binding SearchSurvivorPerk, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                       SelectedIndex="0"
+                                                       Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       ScrollViewer.CanContentScroll="True"
+                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                       VirtualizingPanel.IsVirtualizing="True"
+                                                       VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                       VirtualizingPanel.CacheLength="15,15"
+                                                       VirtualizingPanel.CacheLengthUnit="Item"
+                                                       VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding PerkName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding PerkImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedSecondSurvivorFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedSecondSurvivorSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedSecondSurvivorThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedSecondSurvivorFourthPerkCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список улучшений к предметам -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Text="{Binding SearchSecondSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding SecondSurvivorItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                       SelectedIndex="0"
+                                                       Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       ScrollViewer.CanContentScroll="True"
+                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                       VirtualizingPanel.IsVirtualizing="True"
+                                                       VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                       VirtualizingPanel.CacheLength="15,15"
+                                                       VirtualizingPanel.CacheLengthUnit="Item"
+                                                       VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding ItemAddonName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding ItemAddonImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I улучшени" Command="{Binding SelectedSecondSurvivorFirstItemAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II улучшени" Command="{Binding SelectedSecondSurvivorSecondItemAddonCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список подношений -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Text="{Binding TextBoxSearchSecondSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding SecondSurvivorOfferingList}" SelectedItem="{Binding SelectedSecondSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                       SelectedIndex="0"
+                                                       Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       ScrollViewer.CanContentScroll="True"
+                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                       VirtualizingPanel.IsVirtualizing="True"
+                                                       VirtualizingPanel.CacheLength="15,15"
+                                                       VirtualizingPanel.CacheLengthUnit="Item"
+                                                       VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding OfferingName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding OfferingImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+
+                                    </Border>
+
+
+                                    <!--#endregion-->
+
+                                </Grid>
+                            </TabItem>
+
+                            <!--#endregion-->
+
+                            <!--#region Третий выживший -->
+
+                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                                <TabItem.Header>
+                                    <TextBlock Text="Выживший №3" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                </TabItem.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№1}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№2}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№3}"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.ColumnSpan="3" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                                                <TextBlock Text="Итог выжившего" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource BorderAroundImage}">
+                                                <Image Source="{Binding ResultMatchThirdSurvivorImage}" Margin="10"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#region Основная информация -->
+
+                                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Основная информация" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Выживший:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Платформа:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Как умер?" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Престиж:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Счет:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Режим:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Бот:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Ассоциация:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding SurvivorList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivor}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="SurvivorName"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding PlatformList}"                                                            
+                                                              SelectedItem="{Binding SelectedThirdSurvivorPlatform}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="PlatformName"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                              ItemsSource="{Binding TypeDeathList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorTypeDeath}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="TypeDeathName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding ThirdSurvivorPrestige}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding ThirdSurvivorAccount}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <CheckBox Content="Анонимный?"
+                                                              Width="150" FontSize="20" 
+                                                              Margin="0,5,0,5" 
+                                                              IsChecked="{Binding ThirdSurvivorAnonymousMode}"                                                            
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <CheckBox Content="Игрок вышел?" 
+                                                              Width="150" FontSize="20" 
+                                                              Margin="0,5,0,5" 
+                                                              IsChecked="{Binding ThirdSurvivorBot}"
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding SurvivorAssociationList}"
+                                                              SelectedItem="{Binding SelectedThirdSurvivorPlayerAssociation}"
+                                                              SelectedIndex="2"
+                                                              DisplayMemberPath="PlayerAssociationName"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд перки -->
+
+                                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Перки" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Перк I:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Перк II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк III:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк IV:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedThirdSurvivorFirstPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedThirdSurvivorSecondPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedThirdSurvivorThirdPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedThirdSurvivorFourthPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд Предмет \ подношение -->
+
+                                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Предмет \ подношение" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Предмет:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Улучшение I:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Улучшение II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Подношение" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Роль" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding ItemList}"                                                            
+                                                              SelectedItem="{Binding SelectedThirdSurvivorItem}"
+                                                              DisplayMemberPath="ItemName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedThirdSurvivorFirstItemAddonName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedThirdSurvivorSecondItemAddonName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedThirdSurvivorOfferingName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                              ItemsSource="{Binding SurvivorRoleList}"
+                                                              SelectedItem="{Binding SelectedRoleThirdSurvivor}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="RoleName"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список перков -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchSurvivorPerk, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding PerkName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding PerkImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedThirdSurvivorFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedThirdSurvivorSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedThirdSurvivorThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedThirdSurvivorFourthPerkCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список улучшений к предметам -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}"   
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchThirdSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding ThirdSurvivorItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding ItemAddonName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding ItemAddonImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I улучшени" Command="{Binding SelectedThirdSurvivorFirstItemAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II улучшени" Command="{Binding SelectedThirdSurvivorSecondItemAddonCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список подношений -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchThirdSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding ThirdSurvivorOfferingList}" SelectedItem="{Binding SelectedThirdSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding OfferingName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding OfferingImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+
+                                    </Border>
+
+
+                                    <!--#endregion-->
+
+                                </Grid>
+                            </TabItem>
+
+                            <!--#endregion-->
+
+                            <!--#region Четвертый выживший -->
+
+                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                                <TabItem.Header>
+                                    <TextBlock Text="Выживший №4" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                </TabItem.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№1}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№2}"/>
+                                        <RowDefinition Style="{StaticResource RowDefinitionSurvivor№3}"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.ColumnSpan="3" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                                                <TextBlock Text="Итог выжившего" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource BorderAroundImage}">
+                                                <Image Source="{Binding ResultMatchFourthSurvivorImage}" Margin="10"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#region Основная информация -->
+
+                                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Основная информация" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Выживший:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Платформа:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Как умер?" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Престиж:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Счет:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Режим:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Бот:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Ассоциация:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding SurvivorList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivor}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="SurvivorName"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding PlatformList}"                                                            
+                                                              SelectedItem="{Binding SelectedFourthSurvivorPlatform}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="PlatformName"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                              ItemsSource="{Binding TypeDeathList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorTypeDeath}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="TypeDeathName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding FourthSurvivorPrestige}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding FourthSurvivorAccount}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <CheckBox Content="Анонимный?"
+                                                              Width="150" FontSize="20" 
+                                                              Margin="0,5,0,5" 
+                                                              IsChecked="{Binding FourthSurvivorAnonymousMode}"                                                            
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <CheckBox Content="Игрок вышел?" 
+                                                              Width="150" FontSize="20" 
+                                                              Margin="0,5,0,5" 
+                                                              IsChecked="{Binding FourthSurvivorBot}"
+                                                              Foreground="White" 
+                                                              VerticalContentAlignment="Center"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding SurvivorAssociationList}"
+                                                              SelectedItem="{Binding SelectedFourthSurvivorPlayerAssociation}"
+                                                              SelectedIndex="2"
+                                                              DisplayMemberPath="PlayerAssociationName"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд перки -->
+
+                                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Перки" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Перк I:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Перк II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк III:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Перк IV:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedFourthSurvivorFirstPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedFourthSurvivorSecondPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedFourthSurvivorThirdPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedFourthSurvivorFourthPerkName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                </StackPanel>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+
+
+                                    <!--#endregion-->
+
+                                    <!--#region Билд Предмет \ подношение -->
+
+                                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Предмет \ подношение" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Предмет:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Улучшение I:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Улучшение II:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Подношение" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Роль" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding ItemList}"                                                            
+                                                              SelectedItem="{Binding SelectedFourthSurvivorItem}"
+                                                              DisplayMemberPath="ItemName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedFourthSurvivorFirstItemAddonName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedFourthSurvivorSecondItemAddonName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Text="{Binding SelectedFourthSurvivorOfferingName}"
+                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
+                                                              ItemsSource="{Binding SurvivorRoleList}"
+                                                              SelectedItem="{Binding SelectedRoleFourthSurvivor}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="RoleName"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список перков -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchSurvivorPerk, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding PerkName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding PerkImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedFourthSurvivorFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedFourthSurvivorSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedFourthSurvivorThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedFourthSurvivorFourthPerkCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список улучшений к предметам -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}"   
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchFourthSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding FourthSurvivorItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding ItemAddonName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding ItemAddonImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                            <ListView.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Выбрать как I улучшени" Command="{Binding SelectedFourthSurvivorFirstItemAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II улучшени" Command="{Binding SelectedFourthSurvivorSecondItemAddonCommand}"/>
+                                                </ContextMenu>
+                                            </ListView.ContextMenu>
+
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                    <!--#region Список подношений -->
+
+                                    <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,10">
+                                        <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
+                                        <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                        <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Text="{Binding SearchFourthSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
+
+                                        <ListView  ItemsSource="{Binding FourthSurvivorOfferingList}" SelectedItem="{Binding SelectedFourthSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
+                                                        <Border.ToolTip>
+                                                            <ToolTip Content="{Binding OfferingName}" FontSize="20" Placement="Right" ToolTipService.InitialShowDelay="1" ToolTipService.ShowDuration="10"/>
+                                                        </Border.ToolTip>
+                                                        <StackPanel Orientation="Horizontal" Margin="10">
+                                                            <Grid>
+                                                                <Image Source="{Binding OfferingImage}"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                </Grid>
+                            </TabItem>
+
+                            <!--#endregion-->
+
+                            <!--#region Итоги матча -->
+
+                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                                <TabItem.Header>
+                                    <TextBlock Text="Конец игры" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                </TabItem.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="220"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="400"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--#region Изображение -->
+
+                                    <Border Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,10,10,10">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                                                <TextBlock Text="Начало игры (Карта)" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+                                            <Border Height="250" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="10,5,10,10">
+                                                <Image Source="{Binding StartMatchImage}" Margin="10"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,10,10,10">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                                                <TextBlock Text="Конец игры (Повесы)" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+                                            <Border Height="550" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="10,5,10,10">
+                                                <Image Source="{Binding EndMatchImage}" Margin="10"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,10,10,10">
+                                        <StackPanel>
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                                                <TextBlock Text="Таблица результатов" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+                                            <Border Height="500" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="10,5,10,10">
+                                                <Image Source="{Binding ResultMatchImage}" Margin="10"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+                                    
+                                    <!--#region Основная \ Доп информация -->
+
+                                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Stretch" Style="{StaticResource BorderCardAddMatch}" Margin="10,10,10,10">
+                                        <StackPanel>
+
+                                            <Border Style="{StaticResource BorderHeading}">
+                                                <TextBlock Text="Основная информация" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Дата игры:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Длительность:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Кол-во килов:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Кол-во повесов:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Карта:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Генераторов:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+
+                                                    <DatePicker Width="150" Height="25" 
+                                                                SelectedDate="{Binding SelectedDateTimeGameMatch}"
+                                                                Margin="0,5,0,5"
+                                                                HorizontalAlignment="Left"/>
+
+                                                    <TextBlock Width="150" Height="25" 
+                                                               Margin="0,5,0,5"
+                                                               Foreground="White"
+                                                               Text="{Binding DurationMatch}"
+                                                               HorizontalAlignment="Left"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Text="{Binding CountKills}"
+                                                             FontSize="17" 
+                                                             HorizontalAlignment="Left" 
+                                                             TextAlignment="Center"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Text="{Binding CountHooks}"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"
+                                                              ItemsSource="{Binding MapList}"
+                                                              SelectedItem="{Binding SelectedMap}"
+                                                              DisplayMemberPath="MapName"/>
+
+                                                    <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Text="{Binding CountNumberRecentGenerators}"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,10" >
+                                                <TextBlock Text="Дполнительная информация" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="Патч:" Style="{StaticResource TextBlockAddMatchInputData}" />
+                                                    <TextBlock Text="Режим игры:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Игровой ивент:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Кто поставил карту?:" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                    <TextBlock Text="Чья карта выпала?" Style="{StaticResource TextBlockAddMatchInputData}"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"
+                                                              ItemsSource="{Binding PatchList}"
+                                                              SelectedItem="{Binding SelectedPatch}"
+                                                              DisplayMemberPath="PatchNumber"
+                                                              SelectedIndex="0"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding GameModeList}"
+                                                              SelectedItem="{Binding SelectedGameMode}"
+                                                              DisplayMemberPath="GameModeName"
+                                                              SelectedIndex="0"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding GameEventList}"
+                                                              SelectedItem="{Binding SelectedGameEvent}"
+                                                              DisplayMemberPath="GameEventName"
+                                                              SelectedIndex="0"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding WhoPlacedMapList}"
+                                                              SelectedItem="{Binding SelectedWhoPlacedMap}" 
+                                                              DisplayMemberPath="WhoPlacedMapName"
+                                                              SelectedIndex="0"/>
+
+                                                    <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
+                                                              ItemsSource="{Binding WhoPlacedMapList}"
+                                                              SelectedItem="{Binding SelectedWhoPlacedMapWin}"
+                                                              DisplayMemberPath="WhoPlacedMapName"
+                                                              SelectedIndex="0"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <Border Style="{StaticResource BorderHeading}" Margin="5,10,5,10" >
+                                                <TextBlock Text="Описание" Style="{StaticResource HeaderStyle}"/>
+                                            </Border>
+
+                                            <TextBox  Style="{StaticResource TextBoxAddmatchInputData}" 
+                                                      Template="{StaticResource SettingTextBoxTemplate}"
+                                                      Text="{Binding DescriptionGame}"
+                                                      TextAlignment="Left"
+                                                      Width="500" Height="200"/>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!--#endregion-->
+
+                                </Grid>
+                            </TabItem>
+
+                            <!--#endregion-->
+
+                        </TabControl>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!--#endregion-->
+
+                <!--#region Footer -->
+                
+                <Border Grid.Column="1" Grid.Row="2" Background="Gray" CornerRadius="10" Margin="3">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button Content="Сохранить" 
+                                Width="150" Height="30" FontSize="20"
+                                Template="{StaticResource ControlButton}"
+                                Command="{Binding AddMatchCommand}"/>
+                    </StackPanel>
+                </Border>
+                
+                <!--#endregion-->
+                
             </Grid>
 
             <!--#endregion-->
 
         </Grid>
     </Border>
+
 </Window>

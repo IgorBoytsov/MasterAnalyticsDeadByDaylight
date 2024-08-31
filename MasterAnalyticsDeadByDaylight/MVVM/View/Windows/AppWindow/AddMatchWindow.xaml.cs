@@ -1,6 +1,6 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
@@ -14,7 +14,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
         {
             InitializeComponent();
             StateChanged += MainWindowStateChangeRaised;
-            DataContext = new AddMatchWindowViewModel();
+            IDialogService dialogService = new DialogService();
+            DataContext = new AddMatchWindowViewModel(dialogService);
         }
 
         // Can execute
