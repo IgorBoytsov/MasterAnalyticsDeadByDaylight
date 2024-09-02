@@ -185,11 +185,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _clearKillerImageCommand;
         public RelayCommand ClearKillerImageCommand { get => _clearKillerImageCommand ??= new(obj => { ImageKiller = null; }); }
 
-        private RelayCommand _selectImageKillerAbilityCommand;
-        public RelayCommand SelectImageKillerAbilityCommand { get => _selectImageKillerAbilityCommand ??= new(obj => { SelectImageKillerAbility(); }); }
-
         private RelayCommand _clearKillerAbilityImageCommand;
         public RelayCommand ClearKillerAbilityImageCommand { get => _clearKillerAbilityImageCommand ??= new(obj => { ImageKillerAbility = null; }); }
+
+        private RelayCommand _selectImageKillerAbilityCommand;
+        public RelayCommand SelectImageKillerAbilityCommand { get => _selectImageKillerAbilityCommand ??= new(obj => { SelectImageKillerAbility(); }); }
 
         private RelayCommand _selectImageKillerAddonCommand;
         public RelayCommand SelectImageKillerAddonCommand { get => _selectImageKillerAddonCommand ??= new(obj => { SelectImageKillerAddon(); }); }    

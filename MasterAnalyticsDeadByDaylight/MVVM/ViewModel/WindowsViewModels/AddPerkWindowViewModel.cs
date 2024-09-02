@@ -36,7 +36,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 _selectedRole = value;
                 if (value == null) { return; }
                 GetCharacterList();
-                SelectedCharacter = CharacterList.First();
+                if (CharacterList.Count != 0)
+                {
+                    SelectedCharacter = CharacterList.First();
+                }
                 OnPropertyChanged();
             }
         }
@@ -114,12 +117,24 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 _perkDescriptionTextBox = value;
                 OnPropertyChanged();
             }
+        }   
+        
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
         }
 
         #endregion
 
         public AddPerkWindowViewModel()
         {
+            Title = "Добавить перк";
             KillerList = new ObservableCollection<Killer>();
             KillerPerkList = new ObservableCollection<KillerPerk>();
             SurvivorList = new ObservableCollection<Survivor>();
@@ -146,7 +161,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public RelayCommand UpdatePerkCommand { get => _updatePerkCommand ??= new(obj => { UpdatePerk(); }); }
 
         private RelayCommand _selectImagePerkCommand;
-        public RelayCommand SelectImagePerkCommand { get => _selectImagePerkCommand ??= new(obj => { SelectImagePerk(); }); }
+        public RelayCommand SelectImagePerkCommand { get => _selectImagePerkCommand ??= new(obj => { SelectImagePerk(); }); } 
+        
+        private RelayCommand _clearImageCommand;
+        public RelayCommand ClearImageCommand { get => _clearImageCommand ??= new(obj => { ImagePerk = null; }); }
 
         #endregion
 

@@ -1,7 +1,10 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,7 +15,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
     {
         #region Свойства
 
-        public ObservableCollection<Item> ItemList { get; set; }
+        public ObservableCollection<Item> ItemList { get; set; } = [];
 
         private Item _selectedItem;
         public Item SelectedItem
@@ -25,13 +28,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
                 TextBoxItemName = value.ItemName;
                 ImageItem = value.ItemImage;
-                ComboBoxSelectedItem = value;
-
+                ImageItemAddon = null;
                 GetItemAddonData();
 
                 TextBoxItemAddonName = string.Empty;
                 TextBoxItemAddonDescription = string.Empty;
-                ImageItemAddon = null;
 
                 OnPropertyChanged();
             }
@@ -70,7 +71,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        public ObservableCollection<ItemAddon> ItemAddonList { get; set; }
+        public ObservableCollection<ItemAddon> ItemAddonList { get; set; } = [];
 
         private ItemAddon _selectedItemAddon;
         public ItemAddon SelectedItemAddon
@@ -85,6 +86,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 TextBoxItemAddonDescription = value.ItemAddonDescription;
                 ImageItemAddon = value.ItemAddonImage;
                 ComboBoxSelectedRarity = RarityList.FirstOrDefault(r => r.IdRarity == value.IdRarity);
+                ComboBoxSelectedItem = ItemList.FirstOrDefault(r => r.IdItem == value.IdItem);
                 OnPropertyChanged();
             }
         }
@@ -97,7 +99,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _comboBoxSelectedItem = value;
                 if (value == null) { return; }
-                GetItemAddonData();
                 OnPropertyChanged();
             }
         }
@@ -135,7 +136,18 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        public ObservableCollection<Rarity> RarityList { get; set; }
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Rarity> RarityList { get; set; } = [];
 
         private Rarity _comboBoxSelectedRarity;
         public Rarity ComboBoxSelectedRarity
@@ -150,11 +162,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        public AddItemWindowViewModel()
+        IDialogService _dialogService;
+
+        public AddItemWindowViewModel(IDialogService service)
         {
-            ItemList = new ObservableCollection<Item>();
-            ItemAddonList = new ObservableCollection<ItemAddon>();
-            RarityList = new ObservableCollection<Rarity>();
+            _dialogService = service;
+            Title = "Добавление предмета";
 
             GetItemData();
             GetItemAddonData();
@@ -164,10 +177,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         #region Команды
 
         private RelayCommand _selectImageItemCommand;
-        public RelayCommand SelectImageItemCommand { get => _selectImageItemCommand ??= new(obj => { SelectImageItem(); }); }
+        public RelayCommand SelectImageItemCommand { get => _selectImageItemCommand ??= new(obj => { SelectImageItem(); }); } 
+        
+        private RelayCommand _clearItemImageCommand;
+        public RelayCommand ClearItemImageCommand { get => _clearItemImageCommand ??= new(obj => { ImageItem = null; }); }
 
         private RelayCommand _selectImageItemAddonCommand;
         public RelayCommand SelectImageItemAddonCommand { get => _selectImageItemAddonCommand ??= new(obj => { SelectImageItemAddon(); }); }
+
+        private RelayCommand _clearAddonImageCommand;
+        public RelayCommand ClearAddonImageCommand { get => _clearAddonImageCommand ??= new(obj => { ImageItemAddon = null; }); }
 
 
         private RelayCommand _saveItemCommand;
@@ -187,7 +206,28 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public RelayCommand UpdateItemAddonCommand { get => _updateItemAddonCommand ??= new(obj => { UpdateItemAddon(); }); }
 
         private RelayCommand _deleteItemAddonCommand;
-        public RelayCommand DeleteItemAddonCommand { get => _deleteItemAddonCommand ??= new(obj => { DeleteItemAddon(); }); }
+        public RelayCommand DeleteKillerAddonCommand
+        {
+            get => _deleteItemAddonCommand ??= new(async obj =>
+            {
+                if (SelectedItemAddon == null)
+                {
+                    return;
+                }
+                if (_dialogService.ShowMessageButtons(
+                    $"Вы точно хотите удалить «{SelectedItemAddon.ItemAddonName}»? При удаление данном записи, могут быть связанные записи в других таблицах, что может привести к проблемам.",
+                    "Предупреждение об удаление.",
+                    TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+                {
+                    await DataBaseHelper.DeleteEntityAsync(SelectedItemAddon);
+                    GetItemAddonData();
+                }
+                else
+                {
+                    return;
+                }
+            });
+        }
 
         #endregion
 
@@ -204,6 +244,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 {
                     ItemList.Add(item);
                 }
+                SelectedItem = ItemList.FirstOrDefault();
             }
         }    
 
@@ -324,12 +365,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 {
                     ItemAddonList.Add(item);
                 }
+                SelectedItemAddon = ItemAddonList.FirstOrDefault(x => x.IdItem == SelectedItem.IdItem);
             }
         }
 
         private void AddItemAddon()
         {
-            var newItemAddon = new ItemAddon() { IdItem = ComboBoxSelectedItem.IdItem, ItemAddonName = TextBoxItemAddonName, ItemAddonDescription = TextBoxItemAddonDescription, ItemAddonImage = ImageItemAddon, IdRarity = ComboBoxSelectedRarity.IdRarity };
+            var newItemAddon = new ItemAddon() { IdItem = SelectedItem.IdItem, ItemAddonName = TextBoxItemAddonName, ItemAddonDescription = TextBoxItemAddonDescription, ItemAddonImage = ImageItemAddon, IdRarity = ComboBoxSelectedRarity.IdRarity };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -388,18 +430,18 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private void DeleteItemAddon()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var itemToDelete = context.ItemAddons.Find(SelectedItemAddon.IdItemAddon);
-                if (itemToDelete != null)
-                {
-                    context.ItemAddons.Remove(itemToDelete);
-                    GetItemAddonData();
-                }
-            }
-        }
+        //private void DeleteItemAddon()
+        //{
+        //    using (MasterAnalyticsDeadByDaylightDbContext context = new())
+        //    {
+        //        var itemToDelete = context.ItemAddons.Find(SelectedItemAddon.IdItemAddon);
+        //        if (itemToDelete != null)
+        //        {
+        //            context.ItemAddons.Remove(itemToDelete);
+        //            GetItemAddonData();
+        //        }
+        //    }
+        //}
 
         private void SelectImageItem()
         {

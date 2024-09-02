@@ -1,6 +1,8 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -16,80 +18,100 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Коллекции для Убийц   
 
-        public ObservableCollection<Killer> KillerList { get; set; }
+        public ObservableCollection<Killer> KillerList { get; set; } = [];
 
-        public ObservableCollection<Role> KillerRoleList { get; set; }
+        public ObservableCollection<Role> KillerRoleList { get; set; } = [];
 
-        public ObservableCollection<Role> SurvivorRoleList { get; set; }
+        public ObservableCollection<Role> SurvivorRoleList { get; set; } = [];
 
-        public ObservableCollection<KillerAddon> KillerAddonList { get; set; }
+        public ObservableCollection<KillerAddon> KillerAddonList { get; set; } = [];
 
-        public ObservableCollection<KillerPerk> KillerPerkList { get; set; }
+        public ObservableCollection<KillerPerk> KillerPerkList { get; set; } = [];
 
-        public ObservableCollection<KillerInfo> KillerInfoList { get; set; }
+        public ObservableCollection<KillerInfo> KillerInfoList { get; set; } = [];
+
+        public ObservableCollection<PlayerAssociation> KillerAssociationList { get; set; } = [];
 
         #endregion
 
         #region Коллекции для выживших      
 
-        public ObservableCollection<Survivor> SurvivorList { get; set; }
+        public ObservableCollection<Survivor> SurvivorList { get; set; } = [];
 
-        public ObservableCollection<SurvivorPerk> SurvivorPerkList { get; set; }
+        public ObservableCollection<SurvivorPerk> SurvivorPerkList { get; set; } = [];
 
-        public ObservableCollection<TypeDeath> TypeDeathList { get; set; }
+        public ObservableCollection<TypeDeath> TypeDeathList { get; set; } = [];
 
-        public ObservableCollection<Item> ItemList { get; set; }
+        public ObservableCollection<Item> ItemList { get; set; } = [];
 
-        public ObservableCollection<ItemAddon> ItemAddonList { get; set; }
+        public ObservableCollection<ItemAddon> FirstSurvivorItemAddonList { get; set; } = [];
 
-        public ObservableCollection<Offering> FirstSurvivorOfferingList { get; set; }
+        public ObservableCollection<ItemAddon> SecondSurvivorItemAddonList { get; set; } = [];
 
-        public ObservableCollection<Offering> SecondSurvivorOfferingList { get; set; }
+        public ObservableCollection<ItemAddon> ThirdSurvivorItemAddonList { get; set; } = [];
 
-        public ObservableCollection<Offering> ThirdSurvivorOfferingList { get; set; }
+        public ObservableCollection<ItemAddon> FourthSurvivorItemAddonList { get; set; } = [];
 
-        public ObservableCollection<Offering> FourthSurvivorOfferingList { get; set; }
+        public ObservableCollection<Offering> FirstSurvivorOfferingList { get; set; } = [];
 
-        public ObservableCollection<SurvivorInfo> SurvivorInfoList { get; set; }
+        public ObservableCollection<Offering> SecondSurvivorOfferingList { get; set; } = [];
+
+        public ObservableCollection<Offering> ThirdSurvivorOfferingList { get; set; } = [];
+
+        public ObservableCollection<Offering> FourthSurvivorOfferingList { get; set; } = [];
+
+        public ObservableCollection<SurvivorInfo> SurvivorInfoList { get; set; } = [];
+
+        public ObservableCollection<PlayerAssociation> SurvivorAssociationList { get; set; } = [];
 
         #endregion
 
         #region Общие коллекции 
 
-        public ObservableCollection<GameMode> GameModeList { get; set; }
+        public ObservableCollection<GameMode> GameModeList { get; set; } = [];
 
-        public ObservableCollection<GameEvent> GameEventList { get; set; }
+        public ObservableCollection<GameEvent> GameEventList { get; set; } = [];
 
-        public ObservableCollection<Map> MapList { get; set; }
+        public ObservableCollection<Map> MapList { get; set; } = [];
 
-        public ObservableCollection<Offering> KillerOfferingList { get; set; }
+        public ObservableCollection<Offering> KillerOfferingList { get; set; } = [];
 
-        public ObservableCollection<Patch> PatchList { get; set; }
+        public ObservableCollection<Patch> PatchList { get; set; } = [];
 
-        public ObservableCollection<Platform> PlatformList { get; set; }
+        public ObservableCollection<Platform> PlatformList { get; set; } = [];
 
-        public ObservableCollection<PlayerAssociation> PlayerAssociationList { get; set; }
+        //public ObservableCollection<PlayerAssociation> PlayerAssociationList { get; set; } = [];
 
-        public ObservableCollection<Role> RoleList { get; set; }
+        public ObservableCollection<Role> RoleList { get; set; } = [];
 
-        public ObservableCollection<WhoPlacedMap> WhoPlacedMapList { get; set; }
-
-        #endregion
+        public ObservableCollection<WhoPlacedMap> WhoPlacedMapList { get; set; } = [];
 
         #endregion
 
-        public AddMatchWindowViewModel()
+        #endregion
+
+        #region Сообщения
+
+        private const string PrestigeMessage = "Престиже меньше 0 и выше 100 не бывает!";
+
+        private const string InvalidNumberMessageDescription = "Не корректное значение";
+
+        #endregion
+
+        public string Title { get; set; } = "Добавить запись";
+
+        private readonly IDialogService _dialogService;
+
+        public AddMatchWindowViewModel(IDialogService dialogService)
         {
-            SetContentButtonForVisibilityListView();
-            SetVisibilityListView();
+            _dialogService = dialogService;
 
             //SetNullKillerInfoData();
             //SetNullSurvivorInfoData();
 
             SelectedDateTimeGameMatch = DateTime.Now;
 
-            DeclareCollections();
-            GetAllData();
+            GetData();
         }
 
         #region Блок "Убийца"
@@ -130,19 +152,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Престиж "Убийцы"
         /// </summary> 
-        private int _killerInfoPrestige;
-        public int KillerInfoPrestige
+        private int _killerPrestige;
+        public int KillerPrestige
         {
-            get => _killerInfoPrestige;
+            get => _killerPrestige;
             set
             {
-                if (value > 100 | value < 0)
+                if (!CheckPrestige(value))
                 {
-                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                    _dialogService.ShowMessage(PrestigeMessage, InvalidNumberMessageDescription, TypeMessage.Warning);
                 }
                 else
                 {
-                    _killerInfoPrestige = value;
+                    _killerPrestige = value;
                     OnPropertyChanged();
                 }
             }
@@ -151,14 +173,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Счет очков "Убийцы" по окончанию игры
         /// </summary>
-        private int _killerInfoAccount;
-        public int KillerInfoAccount
+        private int _killerAccount;
+        public int KillerAccount
         {
-            get => _killerInfoAccount;
+            get => _killerAccount;
             set
             {
                 if (value < 0) { return; }
-                _killerInfoAccount = value;
+                _killerAccount = value;
                 OnPropertyChanged();
             }
         }
@@ -166,13 +188,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Какой режим приватности был у "Убийцы"? Анонимный или нет
         /// </summary>
-        private bool _killerInfoAnonymousMode;
-        public bool KillerInfoAnonymousMode
+        private bool _killerAnonymousMode;
+        public bool KillerAnonymousMode
         {
-            get => _killerInfoAnonymousMode;
+            get => _killerAnonymousMode;
             set
             {
-                _killerInfoAnonymousMode = value;
+                _killerAnonymousMode = value;
                 OnPropertyChanged();
             }
         }
@@ -180,13 +202,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Вышел ли убийца до окончания игры или нет
         /// </summary>
-        private bool _killerInfoBot;
-        public bool KillerInfoBot
+        private bool _killerBot;
+        public bool KillerBot
         {
-            get => _killerInfoBot;
+            get => _killerBot;
             set
             {
-                _killerInfoBot = value;
+                _killerBot = value;
                 OnPropertyChanged();
             }
         }
@@ -198,15 +220,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для отслеживание выбранного перка "Убийцы" из списка (ListView)
         /// </summary>
-        private KillerPerk _selectedListViewKillerPerk;
-        public KillerPerk SelectedListViewKillerPerk
+        private KillerPerk _selectedKillerPerk;
+        public KillerPerk SelectedKillerPerk
         {
-            get => _selectedListViewKillerPerk;
+            get => _selectedKillerPerk;
             set
             {
                 if (value != null)
                 {
-                    _selectedListViewKillerPerk = value;
+                    _selectedKillerPerk = value;
                     OnPropertyChanged();
                 }
                 else { return; }
@@ -348,14 +370,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для поиска по списку перков "Убийцы"
         /// </summary
-        private string _textBoxSearchKillerPerk;
-        public string TextBoxSearchKillerPerk
+        private string _searchKillerPerk;
+        public string SearchKillerPerk
         {
-            get => _textBoxSearchKillerPerk;
+            get => _searchKillerPerk;
             set
             {
-                _textBoxSearchKillerPerk = value;
-                SearchKillerPerk();
+                _searchKillerPerk = value;
+                SearchKillerPerkAsync();
                 OnPropertyChanged();
             }
         }
@@ -373,8 +395,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             get => _selectedKillerFirstPerkCommand ??= new(obj =>
             {
-                SelectedKillerFirstPerk = SelectedListViewKillerPerk;
-                SelectedKillerFirstPerkName = SelectedListViewKillerPerk.PerkName;
+                SelectedKillerFirstPerk = SelectedKillerPerk;
+                SelectedKillerFirstPerkName = SelectedKillerPerk.PerkName;
             });
         }
 
@@ -387,8 +409,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             get => _selectedKillerSecondPerkCommand ??= new(obj =>
             {
-                SelectedKillerSecondPerk = SelectedListViewKillerPerk;
-                SelectedKillerSecondPerkName = SelectedListViewKillerPerk.PerkName;
+                SelectedKillerSecondPerk = SelectedKillerPerk;
+                SelectedKillerSecondPerkName = SelectedKillerPerk.PerkName;
             });
         }
 
@@ -401,8 +423,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             get => _selectedKillerThirdPerkCommand ??= new(obj =>
             {
-                SelectedKillerThirdPerk = SelectedListViewKillerPerk;
-                SelectedKillerThirdPerkName = SelectedListViewKillerPerk.PerkName;
+                SelectedKillerThirdPerk = SelectedKillerPerk;
+                SelectedKillerThirdPerkName = SelectedKillerPerk.PerkName;
             });
         }
 
@@ -415,8 +437,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             get => _selectedKillerFourthPerkCommand ??= new(obj =>
             {
-                SelectedKillerFourthPerk = SelectedListViewKillerPerk;
-                SelectedKillerFourthPerkName = SelectedListViewKillerPerk.PerkName;
+                SelectedKillerFourthPerk = SelectedKillerPerk;
+                SelectedKillerFourthPerkName = SelectedKillerPerk.PerkName;
             });
         }
 
@@ -425,15 +447,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         #region Билд - Аддоны - Свойства
 
         /// <summary>
-        /// Свойство для отслеживание выбранного улучшения "Убийцы" из списка (ListView)
+        /// Свойство для отслеживание выбранного улучшения "Убийцы" из списка
         /// </summary>
-        private KillerAddon _selectedListViewKillerAddon;
-        public KillerAddon SelectedListViewKillerAddon
+        private KillerAddon _selectedKillerAddon;
+        public KillerAddon SelectedKillerAddon
         {
-            get => _selectedListViewKillerAddon;
+            get => _selectedKillerAddon;
             set
             {
-                _selectedListViewKillerAddon = value;
+                _selectedKillerAddon = value;
                 OnPropertyChanged();
             }
         }
@@ -507,14 +529,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для поиска по списку улучшений
         /// </summary
-        private string _textBoxSearchKillerAddon;
-        public string TextBoxSearchKillerAddon
+        private string _searchKillerAddon;
+        public string SearchKillerAddon
         {
-            get => _textBoxSearchKillerAddon;
+            get => _searchKillerAddon;
             set
             {
-                _textBoxSearchKillerAddon = value;
-                SearchKillerAddon();
+                _searchKillerAddon = value;
+                SearchKillerAddonAsync();
                 OnPropertyChanged();
             }
         }
@@ -528,31 +550,31 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedKillerFirstAddonCommand;
-        public RelayCommand SelectedKillerFirstAddonCommand { get => _selectedKillerFirstAddonCommand ??= new(obj => { SelectedKillerFirstAddon = SelectedListViewKillerAddon; }); }
+        public RelayCommand SelectedKillerFirstAddonCommand { get => _selectedKillerFirstAddonCommand ??= new(obj => { SelectedKillerFirstAddon = SelectedKillerAddon; }); }
 
         /// <summary>
         /// Команда выбора аддона в 2 позицию для ContextMenu у элемента ListView KillerPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedKillerSecondAddonCommand;
-        public RelayCommand SelectedKillerSecondAddonCommand { get => _selectedKillerSecondAddonCommand ??= new(obj => { SelectedKillerSecondAddon = SelectedListViewKillerAddon; }); }
+        public RelayCommand SelectedKillerSecondAddonCommand { get => _selectedKillerSecondAddonCommand ??= new(obj => { SelectedKillerSecondAddon = SelectedKillerAddon; }); }
 
         #endregion
 
-        #region Билд - Подношения Свойства
+        #region Билд - Подношения Свойства 
 
         /// <summary>
         /// Свойство для отслеживание выбранного подношение "Убийцы" из списка (ListView)
         /// </summary>
-        private Offering _selectedListViewKillerOffering;
-        public Offering SelectedListViewKillerOffering
+        private Offering _selectedKillerOffering;
+        public Offering SelectedKillerOffering
         {
-            get => _selectedListViewKillerOffering;
+            get => _selectedKillerOffering;
             set
             {
                 if (value != null)
                 {
-                    _selectedListViewKillerOffering = value;
+                    _selectedKillerOffering = value;
                     SelectedKillerOfferingName = value.OfferingName;
                 }
                 else { SelectedKillerOfferingName = string.Empty; }
@@ -563,14 +585,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойства для поиска по списку подношений (ListView)
         /// </summary>
-        private string _textBoxSearchKillerOffering;
-        public string TextBoxSearchKillerOffering
+        private string _searchKillerOffering;
+        public string SearchKillerOffering
         {
-            get => _textBoxSearchKillerOffering;
+            get => _searchKillerOffering;
             set
             {
-                _textBoxSearchKillerOffering = value;
-                SearchKillerOffering();
+                _searchKillerOffering = value;
+                SearchKillerOfferingAsync();
                 OnPropertyChanged();
             }
         }
@@ -589,8 +611,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        // <summary>
-        /// Выбор роли, по которой в ListView будут загружены соответствующие подношение
+        /// <summary>
+        /// Свойство для хранение информации о выбранной роли. Нужно для того, что б загрузить нужные список подношений
         /// </summary>
         private Role _selectedRoleKiller;
         public Role SelectedRoleKiller
@@ -599,20 +621,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedRoleKiller = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Свойство для хранение информации о выбранной роли. Нужно для того, что б загрузить нужные список подношений
-        /// </summary>
-        private Role _selectedComboBoxRoleKiller;
-        public Role SelectedComboBoxRoleKiller
-        {
-            get => _selectedComboBoxRoleKiller;
-            set
-            {
-                _selectedComboBoxRoleKiller = value;
                 GetKillerOfferingListData();
                 OnPropertyChanged();
 
@@ -643,7 +651,59 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Блок "Выжившие"
 
-        #region Общие свойства для отслеживание выбранных элементов в ListView
+        #region Общие свойства для отслеживание выбранных Перков \ Улучшений к предметам у всех четверых выживших
+
+        /// <summary>
+        /// Свойство для отслеживание выбранного перка выжившего из списка (ListView)
+        /// </summary>
+        private SurvivorPerk _selectedSurvivorPerk;
+        public SurvivorPerk SelectedSurvivorPerk
+        {
+            get => _selectedSurvivorPerk;
+            set
+            {
+                if (value != null)
+                {
+                    _selectedSurvivorPerk = value;
+                    OnPropertyChanged();
+                }
+                else { return; }
+                
+            }
+        }
+
+        /// <summary>
+        /// Свойство для поиска по списку перков выжившего
+        /// </summary
+        private string _searchSurvivorPerk;
+        public string SearchSurvivorPerk
+        {
+            get => _searchSurvivorPerk;
+            set
+            {
+                _searchSurvivorPerk = value;
+                SearchSurvivorPerkAsync();
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Свойство для хранение информации о выбранном улучшение предмета для ListView ItemAddon
+        /// </summary>
+        private ItemAddon _selectedItemAddon;
+        public ItemAddon SelectedItemAddon
+        {
+            get => _selectedItemAddon;
+            set
+            {
+                _selectedItemAddon = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region Основная информация Выжившего №1
 
         /// <summary>
         /// Свойство для отслеживание первого выбранного выжившего
@@ -658,123 +718,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 OnPropertyChanged();
             }
         }
-
-        /// <summary>
-        /// Свойство для отслеживание выбранного перка выжившего из списка (ListView)
-        /// </summary>
-        private SurvivorPerk _selectedListViewSurvivorPerk;
-        public SurvivorPerk SelectedListViewSurvivorPerk
-        {
-            get => _selectedListViewSurvivorPerk;
-            set
-            {
-                if (value != null)
-                {
-                    _selectedListViewSurvivorPerk = value;
-                    OnPropertyChanged();
-                }
-                else { return; }
-                
-            }
-        }
-
-        /// <summary>
-        /// Свойство для поиска по списку перков выжившего
-        /// </summary
-        private string _textBoxSearchSurvivorPerk;
-        public string TextBoxSearchSurvivorPerk
-        {
-            get => _textBoxSearchSurvivorPerk;
-            set
-            {
-                _textBoxSearchSurvivorPerk = value;
-                SearchSurvivorPerk();
-                OnPropertyChanged();
-            }
-        }
-
-
-        /// <summary>
-        /// Свойство для хранение информации о выбранном улучшение предмета для ListView ItemAddon
-        /// </summary>
-        private ItemAddon _selectedListViewItemAddon;
-        public ItemAddon SelectedListViewItemAddon
-        {
-            get => _selectedListViewItemAddon;
-            set
-            {
-                _selectedListViewItemAddon = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Свойство для поиска по списку улучшений для предмета у первого выжившего
-        /// </summary
-        private string _textBoxSearchFirstSurvivorItemAddon;
-        public string TextBoxSearchFirstSurvivorItemAddon
-        {
-            get => _textBoxSearchFirstSurvivorItemAddon;
-            set
-            {
-                _textBoxSearchFirstSurvivorItemAddon = value;
-                ItemAddonList.Clear();
-                SearchFirstSurvivorItemAddon();
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Свойство для поиска по списку улучшений для предмета у второго выжившего
-        /// </summary
-        private string _textBoxSearchSecondSurvivorItemAddon;
-        public string TextBoxSearchSecondSurvivorItemAddon
-        {
-            get => _textBoxSearchSecondSurvivorItemAddon;
-            set
-            {
-                _textBoxSearchSecondSurvivorItemAddon = value;
-                ItemAddonList.Clear();
-                SearchSecondSurvivorItemAddon();
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Свойство для поиска по списку улучшений для предмета у третьего выжившего
-        /// </summary
-        private string _textBoxSearchThirdSurvivorItemAddon;
-        public string TextBoxSearchThirdSurvivorItemAddon
-        {
-            get => _textBoxSearchThirdSurvivorItemAddon;
-            set
-            {
-                _textBoxSearchThirdSurvivorItemAddon = value;
-                ItemAddonList.Clear();
-                SearchThirdSurvivorItemAddon();
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Свойство для поиска по списку улучшений для предмета у четвертого выжившего
-        /// </summary
-        private string _textBoxSearchFourthSurvivorItemAddon;
-        public string TextBoxSearchFourthSurvivorItemAddon
-        {
-            get => _textBoxSearchFourthSurvivorItemAddon;
-            set
-            {
-                _textBoxSearchFourthSurvivorItemAddon = value;
-                ItemAddonList.Clear();
-                SearchFourthSurvivorItemAddon();
-                OnPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        #region Основная информация Выжившего №1
 
         /// <summary>
         /// Отслеживание платформы на которой играет первый выживший 
@@ -799,9 +742,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _firstSurvivorPrestige;
             set
             {
-                if (value > 100 | value < 0)
+                if (!CheckPrestige(value))
                 {
-                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                    _dialogService.ShowMessage(PrestigeMessage, InvalidNumberMessageDescription, TypeMessage.Warning);
                 }
                 else
                 {
@@ -822,6 +765,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFirstSurvivorTypeDeath = value;
+                CheckKills();
                 OnPropertyChanged();
             }
         }
@@ -1014,28 +958,28 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// </summary>
         private RelayCommand _selectedFirstSurvivorFirstPerkCommand;
         public RelayCommand SelectedFirstSurvivorFirstPerkCommand
-        { get => _selectedFirstSurvivorFirstPerkCommand ??= new(obj => { SelectedFirstSurvivorFirstPerk = SelectedListViewSurvivorPerk; }); }
+        { get => _selectedFirstSurvivorFirstPerkCommand ??= new(obj => { SelectedFirstSurvivorFirstPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 2 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFirstSurvivorSecondPerkCommand;
-        public RelayCommand SelectedFirstSurvivorSecondPerkCommand { get => _selectedFirstSurvivorSecondPerkCommand ??= new(obj => { SelectedFirstSurvivorSecondPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedFirstSurvivorSecondPerkCommand { get => _selectedFirstSurvivorSecondPerkCommand ??= new(obj => { SelectedFirstSurvivorSecondPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 3 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFirstSurvivorThirdPerkCommand;
-        public RelayCommand SelectedFirstSurvivorThirdPerkCommand { get => _selectedFirstSurvivorThirdPerkCommand ??= new(obj => { SelectedFirstSurvivorThirdPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedFirstSurvivorThirdPerkCommand { get => _selectedFirstSurvivorThirdPerkCommand ??= new(obj => { SelectedFirstSurvivorThirdPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 4 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFirstSurvivorFourthPerkCommand;
-        public RelayCommand SelectedFirstSurvivorFourthPerkCommand { get => _selectedFirstSurvivorFourthPerkCommand ??= new(obj => { SelectedFirstSurvivorFourthPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedFirstSurvivorFourthPerkCommand { get => _selectedFirstSurvivorFourthPerkCommand ??= new(obj => { SelectedFirstSurvivorFourthPerk = SelectedSurvivorPerk; }); }
 
 
         #endregion
@@ -1045,13 +989,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для выбора предмета у первого выжившего
         /// </summary>
-        private Item _selectedComboBoxFirstSurvivorItem;
-        public Item SelectedComboBoxFirstSurvivorItem
+        private Item _selectedFirstSurvivorItem;
+        public Item SelectedFirstSurvivorItem
         {
-            get => _selectedComboBoxFirstSurvivorItem;
+            get => _selectedFirstSurvivorItem;
             set
             {
-                _selectedComboBoxFirstSurvivorItem = value;
+                _selectedFirstSurvivorItem = value;
+                SearchFirstSurvivorItemAddon = string.Empty;
                 GetFirstSurvivorItemAddonListData();
                 OnPropertyChanged();
             }
@@ -1123,6 +1068,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
+        /// <summary>
+        /// Свойство для поиска по списку улучшений для предмета у первого выжившего
+        /// </summary
+        private string _searchFirstSurvivorItemAddon;
+        public string SearchFirstSurvivorItemAddon
+        {
+            get => _searchFirstSurvivorItemAddon;
+            set
+            {
+                _searchFirstSurvivorItemAddon = value;
+                FirstSurvivorItemAddonList.Clear();
+                SearchFirstSurvivorItemAddonAsync();
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Билд - Предметы Выжившего №1 - Команды
@@ -1132,14 +1093,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFirstSurvivorFirstItemAddonCommand;
-        public RelayCommand SelectedListViewSurvivorFirstItemAddonCommand { get => _selectedFirstSurvivorFirstItemAddonCommand ??= new(obj => { SelectedFirstSurvivorFirstItemAddon = SelectedListViewItemAddon; }); }
+        public RelayCommand SelectedListViewSurvivorFirstItemAddonCommand { get => _selectedFirstSurvivorFirstItemAddonCommand ??= new(obj => { SelectedFirstSurvivorFirstItemAddon = SelectedItemAddon; }); }
 
         /// <summary>
         /// Команда выбора улучшение предмета в 2 позицию для ContextMenu у элемента ListView ItemAddon.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFirstSurvivorSecondItemAddonCommand;
-        public RelayCommand SelectedListViewSurvivorSecondItemAddonCommand { get => _selectedFirstSurvivorSecondItemAddonCommand ??= new(obj => { SelectedFirstSurvivorSecondItemAddon = SelectedListViewItemAddon; }); }
+        public RelayCommand SelectedListViewSurvivorSecondItemAddonCommand { get => _selectedFirstSurvivorSecondItemAddonCommand ??= new(obj => { SelectedFirstSurvivorSecondItemAddon = SelectedItemAddon; }); }
 
         #endregion
 
@@ -1148,15 +1109,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для хранение информации о выбранном подношение у первого выжившего
         /// </summary>
-        private Offering _selectedListViewFirstSurvivorOffering;
-        public Offering SelectedListViewFirstSurvivorOffering
+        private Offering _selectedFirstSurvivorOffering;
+        public Offering SelectedFirstSurvivorOffering
         {
-            get => _selectedListViewFirstSurvivorOffering;
+            get => _selectedFirstSurvivorOffering;
             set
             {
                 if (value != null)
                 {
-                    _selectedListViewFirstSurvivorOffering = value;
+                    _selectedFirstSurvivorOffering = value;
                     SelectedFirstSurvivorOfferingName = value.OfferingName;
                 }
                 else { SelectedFirstSurvivorOfferingName = string.Empty; }
@@ -1181,13 +1142,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для хранение информации о выбранной роли. Нужно для того, что б загрузить нужные список подношений
         /// </summary>
-        private Role _selectedComboBoxRoleFirstSurvivor;
-        public Role SelectedComboBoxRoleFirstSurvivor
+        private Role _selectedRoleFirstSurvivor;
+        public Role SelectedRoleFirstSurvivor
         {
-            get => _selectedComboBoxRoleFirstSurvivor;
+            get => _selectedRoleFirstSurvivor;
             set
             {
-                _selectedComboBoxRoleFirstSurvivor = value;
+                _selectedRoleFirstSurvivor = value;
                 GetFirstSurvivorOfferingListData();
                 OnPropertyChanged();
 
@@ -1197,14 +1158,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойства для поиска по списку подношений (ListView)
         /// </summary>
-        private string _textBoxSearchFirstSSurvivorOffering;
-        public string TextBoxSearchFirstSurvivorOffering
+        private string _searchFirstSurvivorOffering;
+        public string SearchFirstSurvivorOffering
         {
-            get => _textBoxSearchFirstSSurvivorOffering;
+            get => _searchFirstSurvivorOffering;
             set
             {
-                _textBoxSearchFirstSSurvivorOffering = value;
-                SearchFirstSurvivorOffering();
+                _searchFirstSurvivorOffering = value;
+                SearchFirstSurvivorOfferingAsync();
                 OnPropertyChanged();
             }
         }
@@ -1269,9 +1230,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _secondSurvivorPrestige;
             set
             {
-                if (value > 100 | value < 0)
+                if (!CheckPrestige(value))
                 {
-                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                    _dialogService.ShowMessage(PrestigeMessage, InvalidNumberMessageDescription, TypeMessage.Warning);
                 }
                 else
                 {
@@ -1292,6 +1253,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedSecondSurvivorTypeDeath = value;
+                CheckKills();
                 OnPropertyChanged();
             }
         }
@@ -1483,28 +1445,28 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedSecondSurvivorFirstPerkCommand;
-        public RelayCommand SelectedSecondSurvivorFirstPerkCommand { get => _selectedSecondSurvivorFirstPerkCommand ??= new(obj => { SelectedSecondSurvivorFirstPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedSecondSurvivorFirstPerkCommand { get => _selectedSecondSurvivorFirstPerkCommand ??= new(obj => { SelectedSecondSurvivorFirstPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 2 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedSecondSurvivorSecondPerkCommand;
-        public RelayCommand SelectedSecondSurvivorSecondPerkCommand { get => _selectedSecondSurvivorSecondPerkCommand ??= new(obj => { SelectedSecondSurvivorSecondPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedSecondSurvivorSecondPerkCommand { get => _selectedSecondSurvivorSecondPerkCommand ??= new(obj => { SelectedSecondSurvivorSecondPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 3 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedSecondSurvivorThirdPerkCommand;
-        public RelayCommand SelectedSecondSurvivorThirdPerkCommand { get => _selectedSecondSurvivorThirdPerkCommand ??= new(obj => { SelectedSecondSurvivorThirdPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedSecondSurvivorThirdPerkCommand { get => _selectedSecondSurvivorThirdPerkCommand ??= new(obj => { SelectedSecondSurvivorThirdPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 4 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedSecondSurvivorFourthPerkCommand;
-        public RelayCommand SelectedSecondSurvivorFourthPerkCommand { get => _selectedSecondSurvivorFourthPerkCommand ??= new(obj => { SelectedSecondSurvivorFourthPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedSecondSurvivorFourthPerkCommand { get => _selectedSecondSurvivorFourthPerkCommand ??= new(obj => { SelectedSecondSurvivorFourthPerk = SelectedSurvivorPerk; }); }
 
         #endregion
 
@@ -1513,13 +1475,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для выбора предмета у второго выжившего
         /// </summary>
-        private Item _selectedComboBoxSecondSurvivorItem;
-        public Item SelectedComboBoxSecondSurvivorItem
+        private Item _selectedSecondSurvivorItem;
+        public Item SelectedSecondSurvivorItem
         {
-            get => _selectedComboBoxSecondSurvivorItem;
+            get => _selectedSecondSurvivorItem;
             set
             {
-                _selectedComboBoxSecondSurvivorItem = value;
+                _selectedSecondSurvivorItem = value;
+                SearchSecondSurvivorItemAddon = string.Empty;
                 GetSecondSurvivorItemAddonListData();
                 OnPropertyChanged();
             }
@@ -1591,6 +1554,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
+        /// <summary>
+        /// Свойство для поиска по списку улучшений для предмета у второго выжившего
+        /// </summary
+        private string _searchSecondSurvivorItemAddon;
+        public string SearchSecondSurvivorItemAddon
+        {
+            get => _searchSecondSurvivorItemAddon;
+            set
+            {
+                _searchSecondSurvivorItemAddon = value;
+                SecondSurvivorItemAddonList.Clear();
+                SearchSecondSurvivorItemAddonAsync();
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Билд - Предметы Выжившего №2 - Команды
@@ -1600,14 +1579,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedSecondSurvivorFirstItemAddonCommand;
-        public RelayCommand SelectedSecondSurvivorFirstItemAddonCommand { get => _selectedSecondSurvivorFirstItemAddonCommand ??= new(obj => { SelectedSecondSurvivorFirstItemAddon = SelectedListViewItemAddon; }); }
+        public RelayCommand SelectedSecondSurvivorFirstItemAddonCommand { get => _selectedSecondSurvivorFirstItemAddonCommand ??= new(obj => { SelectedSecondSurvivorFirstItemAddon = SelectedItemAddon; }); }
 
         /// <summary>
         /// Команда выбора улучшение предмета в 2 позицию для ContextMenu у элемента ListView ItemAddon.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedSecondSurvivorSecondItemAddonCommand;
-        public RelayCommand SelectedSecondSurvivorSecondItemAddonCommand { get => _selectedSecondSurvivorSecondItemAddonCommand ??= new(obj => { SelectedSecondSurvivorSecondItemAddon = SelectedListViewItemAddon; }); }
+        public RelayCommand SelectedSecondSurvivorSecondItemAddonCommand { get => _selectedSecondSurvivorSecondItemAddonCommand ??= new(obj => { SelectedSecondSurvivorSecondItemAddon = SelectedItemAddon; }); }
 
         #endregion
 
@@ -1616,15 +1595,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для хранение информации о выбранном подношение у первого выжившего
         /// </summary>
-        private Offering _selectedListViewSecondSurvivorOffering;
-        public Offering SelectedListViewSecondSurvivorOffering
+        private Offering _selectedSecondSurvivorOffering;
+        public Offering SelectedSecondSurvivorOffering
         {
-            get => _selectedListViewSecondSurvivorOffering;
+            get => _selectedSecondSurvivorOffering;
             set
             {
                 if (value != null)
                 {
-                    _selectedListViewSecondSurvivorOffering = value;
+                    _selectedSecondSurvivorOffering = value;
                     SelectedSecondSurvivorOfferingName = value.OfferingName;
                 }
                 else { SelectedSecondSurvivorOfferingName = string.Empty; }
@@ -1649,13 +1628,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для хранение информации о выбранной роли. Нужно для того, что б загрузить нужные список подношений
         /// </summary>
-        private Role _selectedComboBoxRoleSecondSurvivor;
-        public Role SelectedComboBoxRoleSecondSurvivor
+        private Role _selectedRoleSecondSurvivor;
+        public Role SelectedRoleSecondSurvivor
         {
-            get => _selectedComboBoxRoleSecondSurvivor;
+            get => _selectedRoleSecondSurvivor;
             set
             {
-                _selectedComboBoxRoleSecondSurvivor = value;
+                _selectedRoleSecondSurvivor = value;
                 GetSecondSurvivorOfferingListData();
                 OnPropertyChanged();
 
@@ -1665,14 +1644,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойства для поиска по списку подношений (ListView)
         /// </summary>
-        private string _textBoxSearchSecondSSurvivorOffering;
-        public string TextBoxSearchSecondSurvivorOffering
+        private string _searchSecondSSurvivorOffering;
+        public string SearchSecondSurvivorOffering
         {
-            get => _textBoxSearchSecondSSurvivorOffering;
+            get => _searchSecondSSurvivorOffering;
             set
             {
-                _textBoxSearchSecondSSurvivorOffering = value;
-                SearchSecondSurvivorOffering();
+                _searchSecondSSurvivorOffering = value;
+                SearchSecondSurvivorOfferingAsync();
                 OnPropertyChanged();
             }
         }
@@ -1737,9 +1716,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _thirdSurvivorPrestige;
             set
             {
-                if (value > 100 | value < 0)
+                if (!CheckPrestige(value))
                 {
-                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                    _dialogService.ShowMessage(PrestigeMessage, InvalidNumberMessageDescription, TypeMessage.Warning);
                 }
                 else
                 {
@@ -1760,6 +1739,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedThirdSurvivorTypeDeath = value;
+                CheckKills();
                 OnPropertyChanged();
             }
         }
@@ -1951,28 +1931,28 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedThirdSurvivorFirstPerkCommand;
-        public RelayCommand SelectedThirdSurvivorFirstPerkCommand { get => _selectedThirdSurvivorFirstPerkCommand ??= new(obj => { SelectedThirdSurvivorFirstPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedThirdSurvivorFirstPerkCommand { get => _selectedThirdSurvivorFirstPerkCommand ??= new(obj => { SelectedThirdSurvivorFirstPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 2 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedThirdSurvivorSecondPerkCommand;
-        public RelayCommand SelectedThirdSurvivorSecondPerkCommand { get => _selectedThirdSurvivorSecondPerkCommand ??= new(obj => { SelectedThirdSurvivorSecondPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedThirdSurvivorSecondPerkCommand { get => _selectedThirdSurvivorSecondPerkCommand ??= new(obj => { SelectedThirdSurvivorSecondPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 3 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedThirdSurvivorThirdPerkCommand;
-        public RelayCommand SelectedThirdSurvivorThirdPerkCommand { get => _selectedThirdSurvivorThirdPerkCommand ??= new(obj => { SelectedThirdSurvivorThirdPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedThirdSurvivorThirdPerkCommand { get => _selectedThirdSurvivorThirdPerkCommand ??= new(obj => { SelectedThirdSurvivorThirdPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 4 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedThirdSurvivorFourthPerkCommand;
-        public RelayCommand SelectedThirdSurvivorFourthPerkCommand { get => _selectedThirdSurvivorFourthPerkCommand ??= new(obj => { SelectedThirdSurvivorFourthPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedThirdSurvivorFourthPerkCommand { get => _selectedThirdSurvivorFourthPerkCommand ??= new(obj => { SelectedThirdSurvivorFourthPerk = SelectedSurvivorPerk; }); }
 
         #endregion
 
@@ -1981,13 +1961,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для выбора предмета у третьего выжившего
         /// </summary>
-        private Item _selectedComboBoxThirdSurvivorItem;
-        public Item SelectedComboBoxThirdSurvivorItem
+        private Item _selectedThirdSurvivorItem;
+        public Item SelectedThirdSurvivorItem
         {
-            get => _selectedComboBoxThirdSurvivorItem;
+            get => _selectedThirdSurvivorItem;
             set
             {
-                _selectedComboBoxThirdSurvivorItem = value;
+                _selectedThirdSurvivorItem = value;
+                SearchThirdSurvivorItemAddon = string.Empty;
                 GetThirdSurvivorItemAddonListData();
                 OnPropertyChanged();
             }
@@ -2059,6 +2040,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
+        /// <summary>
+        /// Свойство для поиска по списку улучшений для предмета у третьего выжившего
+        /// </summary
+        private string _searchThirdSurvivorItemAddon;
+        public string SearchThirdSurvivorItemAddon
+        {
+            get => _searchThirdSurvivorItemAddon;
+            set
+            {
+                _searchThirdSurvivorItemAddon = value;
+                ThirdSurvivorItemAddonList.Clear();
+                SearchThirdSurvivorItemAddonAsync();
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Билд - Предметы Выжившего №3 - Команды
@@ -2068,14 +2065,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedThirdSurvivorFirstItemAddonCommand;
-        public RelayCommand SelectedThirdSurvivorFirstItemAddonCommand { get => _selectedThirdSurvivorFirstItemAddonCommand ??= new(obj => { SelectedThirdSurvivorFirstItemAddon = SelectedListViewItemAddon; }); }
+        public RelayCommand SelectedThirdSurvivorFirstItemAddonCommand { get => _selectedThirdSurvivorFirstItemAddonCommand ??= new(obj => { SelectedThirdSurvivorFirstItemAddon = SelectedItemAddon; }); }
 
         /// <summary>
         /// Команда выбора улучшение предмета в 2 позицию для ContextMenu у элемента ListView ItemAddon.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedThirdSurvivorSecondItemAddonCommand;
-        public RelayCommand SelectedThirdSurvivorSecondItemAddonCommand { get => _selectedThirdSurvivorSecondItemAddonCommand ??= new(obj => { SelectedThirdSurvivorSecondItemAddon = SelectedListViewItemAddon; }); }
+        public RelayCommand SelectedThirdSurvivorSecondItemAddonCommand { get => _selectedThirdSurvivorSecondItemAddonCommand ??= new(obj => { SelectedThirdSurvivorSecondItemAddon = SelectedItemAddon; }); }
 
         #endregion
 
@@ -2084,15 +2081,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для хранение информации о выбранном подношение у первого выжившего
         /// </summary>
-        private Offering _selectedListViewThirdSurvivorOffering;
-        public Offering SelectedListViewThirdSurvivorOffering
+        private Offering _selectedThirdSurvivorOffering;
+        public Offering SelectedThirdSurvivorOffering
         {
-            get => _selectedListViewThirdSurvivorOffering;
+            get => _selectedThirdSurvivorOffering;
             set
             {
                 if (value != null)
                 {
-                    _selectedListViewThirdSurvivorOffering = value;
+                    _selectedThirdSurvivorOffering = value;
                     SelectedThirdSurvivorOfferingName = value.OfferingName;
                 }
                 else { SelectedThirdSurvivorOfferingName = string.Empty; }
@@ -2117,13 +2114,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для хранение информации о выбранной роли. Нужно для того, что б загрузить нужные список подношений
         /// </summary>
-        private Role _selectedComboBoxRoleThirdSurvivor;
-        public Role SelectedComboBoxRoleThirdSurvivor
+        private Role _selectedRoleThirdSurvivor;
+        public Role SelectedRoleThirdSurvivor
         {
-            get => _selectedComboBoxRoleThirdSurvivor;
+            get => _selectedRoleThirdSurvivor;
             set
             {
-                _selectedComboBoxRoleThirdSurvivor = value;
+                _selectedRoleThirdSurvivor = value;
                 GetThirdSurvivorOfferingListData();
                 OnPropertyChanged();
 
@@ -2133,14 +2130,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойства для поиска по списку подношений (ListView)
         /// </summary>
-        private string _textBoxSearchThirdSSurvivorOffering;
-        public string TextBoxSearchThirdSurvivorOffering
+        private string _searchThirdSurvivorOffering;
+        public string SearchThirdSurvivorOffering
         {
-            get => _textBoxSearchThirdSSurvivorOffering;
+            get => _searchThirdSurvivorOffering;
             set
             {
-                _textBoxSearchThirdSSurvivorOffering = value;
-                SearchThirdSurvivorOffering();
+                _searchThirdSurvivorOffering = value;
+                SearchThirdSurvivorOfferingAsync();
                 OnPropertyChanged();
             }
         }
@@ -2158,7 +2155,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedThirdSurvivorPlayerAssociation;
             set
             {
-                if (value == null) { return; }
                 _selectedThirdSurvivorPlayerAssociation = value;
                 OnPropertyChanged();
             }
@@ -2206,9 +2202,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _fourthSurvivorPrestige;
             set
             {
-                if (value > 100 | value < 0)
+                if (!CheckPrestige(value))
                 {
-                    MessageBox.Show("Престиже меньше 0 и выше 100 не бывает!");
+                    _dialogService.ShowMessage(PrestigeMessage, InvalidNumberMessageDescription, TypeMessage.Warning);
                 }
                 else
                 {
@@ -2229,6 +2225,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedFourthSurvivorTypeDeath = value;
+                CheckKills();
                 OnPropertyChanged();
             }
         }
@@ -2420,28 +2417,28 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFourthSurvivorFirstPerkCommand;
-        public RelayCommand SelectedFourthSurvivorFirstPerkCommand { get => _selectedFourthSurvivorFirstPerkCommand ??= new(obj => { SelectedFourthSurvivorFirstPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedFourthSurvivorFirstPerkCommand { get => _selectedFourthSurvivorFirstPerkCommand ??= new(obj => { SelectedFourthSurvivorFirstPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 2 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFourthSurvivorSecondPerkCommand;
-        public RelayCommand SelectedFourthSurvivorSecondPerkCommand { get => _selectedFourthSurvivorSecondPerkCommand ??= new(obj => { SelectedFourthSurvivorSecondPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedFourthSurvivorSecondPerkCommand { get => _selectedFourthSurvivorSecondPerkCommand ??= new(obj => { SelectedFourthSurvivorSecondPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 3 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFourthSurvivorThirdPerkCommand;
-        public RelayCommand SelectedFourthSurvivorThirdPerkCommand { get => _selectedFourthSurvivorThirdPerkCommand ??= new(obj => { SelectedFourthSurvivorThirdPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedFourthSurvivorThirdPerkCommand { get => _selectedFourthSurvivorThirdPerkCommand ??= new(obj => { SelectedFourthSurvivorThirdPerk = SelectedSurvivorPerk; }); }
 
         /// <summary>
         /// Команда выбора аддона в 4 позицию для ContextMenu у элемента ListView SurvivorPerk.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFourthSurvivorFourthPerkCommand;
-        public RelayCommand SelectedFourthSurvivorFourthPerkCommand { get => _selectedFourthSurvivorFourthPerkCommand ??= new(obj => { SelectedFourthSurvivorFourthPerk = SelectedListViewSurvivorPerk; }); }
+        public RelayCommand SelectedFourthSurvivorFourthPerkCommand { get => _selectedFourthSurvivorFourthPerkCommand ??= new(obj => { SelectedFourthSurvivorFourthPerk = SelectedSurvivorPerk; }); }
 
         #endregion
 
@@ -2450,13 +2447,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для выбора предмета у третьего выжившего
         /// </summary>
-        private Item _selectedComboBoxFourthSurvivorItem;
-        public Item SelectedComboBoxFourthSurvivorItem
+        private Item _selectedFourthSurvivorItem;
+        public Item SelectedFourthSurvivorItem
         {
-            get => _selectedComboBoxFourthSurvivorItem;
+            get => _selectedFourthSurvivorItem;
             set
             {
-                _selectedComboBoxFourthSurvivorItem = value;
+                _selectedFourthSurvivorItem = value;
+                SearchFourthSurvivorItemAddon = string.Empty;
                 GetFourthSurvivorItemAddonListData();
                 OnPropertyChanged();
             }
@@ -2528,6 +2526,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
+        /// <summary>
+        /// Свойство для поиска по списку улучшений для предмета у четвертого выжившего
+        /// </summary
+        private string _searchFourthSurvivorItemAddon;
+        public string SearchFourthSurvivorItemAddon
+        {
+            get => _searchFourthSurvivorItemAddon;
+            set
+            {
+                _searchFourthSurvivorItemAddon = value;
+                FourthSurvivorItemAddonList.Clear();
+                SearchFourthSurvivorItemAddonAsync();
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Билд - Предметы Выжившего №4 - Команды
@@ -2537,14 +2551,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFourthSurvivorFirstItemAddonCommand;
-        public RelayCommand SelectedFourthSurvivorFirstItemAddonCommand { get => _selectedFourthSurvivorFirstItemAddonCommand ??= new(obj => { SelectedFourthSurvivorFirstItemAddon = SelectedListViewItemAddon; }); }
+        public RelayCommand SelectedFourthSurvivorFirstItemAddonCommand { get => _selectedFourthSurvivorFirstItemAddonCommand ??= new(obj => { SelectedFourthSurvivorFirstItemAddon = SelectedItemAddon; }); }
 
         /// <summary>
         /// Команда выбора улучшение предмета в 2 позицию для ContextMenu у элемента ListView ItemAddon.
         /// После выбора выводит название перка в соответствующий TextBox
         /// </summary>
         private RelayCommand _selectedFourthSurvivorSecondItemAddonCommand;
-        public RelayCommand SelectedFourthSurvivorSecondItemAddonCommand { get => _selectedFourthSurvivorSecondItemAddonCommand ??= new(obj => { SelectedFourthSurvivorSecondItemAddon = SelectedListViewItemAddon; }); }
+        public RelayCommand SelectedFourthSurvivorSecondItemAddonCommand { get => _selectedFourthSurvivorSecondItemAddonCommand ??= new(obj => { SelectedFourthSurvivorSecondItemAddon = SelectedItemAddon; }); }
 
         #endregion
 
@@ -2553,15 +2567,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для хранение информации о выбранном подношение у первого выжившего
         /// </summary>
-        private Offering _selectedListViewFourthSurvivorOffering;
-        public Offering SelectedListViewFourthSurvivorOffering
+        private Offering _selectedFourthSurvivorOffering;
+        public Offering SelectedFourthSurvivorOffering
         {
-            get => _selectedListViewFourthSurvivorOffering;
+            get => _selectedFourthSurvivorOffering;
             set
             {
                 if (value != null)
                 {
-                    _selectedListViewFourthSurvivorOffering = value;
+                    _selectedFourthSurvivorOffering = value;
                     SelectedFourthSurvivorOfferingName = value.OfferingName;
                 }
                 else { SelectedFourthSurvivorOfferingName = string.Empty; }
@@ -2587,13 +2601,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойство для хранение информации о выбранной роли. Нужно для того, что б загрузить нужные список подношений
         /// </summary>
-        private Role _selectedComboBoxRoleFourthSurvivor;
-        public Role SelectedComboBoxRoleFourthSurvivor
+        private Role _selectedRoleFourthSurvivor;
+        public Role SelectedRoleFourthSurvivor
         {
-            get => _selectedComboBoxRoleFourthSurvivor;
+            get => _selectedRoleFourthSurvivor;
             set
             {
-                _selectedComboBoxRoleFourthSurvivor = value;
+                _selectedRoleFourthSurvivor = value;
                 GetFourthSurvivorOfferingListData();
                 OnPropertyChanged();
 
@@ -2603,14 +2617,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         /// <summary>
         /// Свойства для поиска по списку подношений (ListView)
         /// </summary>
-        private string _textBoxSearchFourthSurvivorOffering;
-        public string TextBoxSearchFourthSurvivorOffering
+        private string _searchFourthSurvivorOffering;
+        public string SearchFourthSurvivorOffering
         {
-            get => _textBoxSearchFourthSurvivorOffering;
+            get => _searchFourthSurvivorOffering;
             set
             {
-                _textBoxSearchFourthSurvivorOffering = value;
-                SearchFourthSurvivorOffering();
+                _searchFourthSurvivorOffering = value;
+                SearchFourthSurvivorOfferingAsync();
                 OnPropertyChanged();
             }
         }
@@ -2682,7 +2696,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 if (value > 4 | value < 0)
                 {
-                    MessageBox.Show("Нельзя сделать больше 4 и меньше 0 убийств");
+                    _dialogService.ShowMessage("Нельзя сделать больше 4 и меньше 0 убийств", InvalidNumberMessageDescription, TypeMessage.Warning);
                 }
                 else
                 {
@@ -2704,7 +2718,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 if (value > 12 | value < 0)
                 {
-                    MessageBox.Show("Нельзя сдлеать больше 12 и меньше 0 повесов");
+                    _dialogService.ShowMessage("Нельзя сделать больше 12 и меньше 0 подвесов", InvalidNumberMessageDescription, TypeMessage.Warning);
                 }
                 else
                 {
@@ -2740,7 +2754,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 if (value > 5 | value < 0)
                 {
-                    MessageBox.Show("В игре не может быть больше 5 и меньше 0 генераторов");
+                    _dialogService.ShowMessage("В игре не может быть больше 5 и меньше 0 генераторов", InvalidNumberMessageDescription, TypeMessage.Warning);
                 }
                 else
                 {
@@ -2834,33 +2848,17 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _addMatchCommand;
         public RelayCommand AddMatchCommand { get => _addMatchCommand ??= new(obj => { AddGameStatistic(); }); }
 
-        //private RelayCommand _addMatchCommand;
-        //public RelayCommand AddMatchCommand { get => _addMatchCommand ??= new(obj => { SetNullAfterAddingDataKillerInfoDatabase(); });}
-
         private void AddGameStatistic()
         {
-
-            if (SelectedMap != null &&
-                SelectedPatch != null &&
-                SelectedGameMode != null &&
-                SelectedGameEvent != null &&
-                SelectedWhoPlacedMap != null &&
-                SelectedWhoPlacedMapWin != null) { }
-            else
-            {
-                MessageBox.Show("Вы заполнили не все данные в категории - Игра.");
-                return;
-            }
-
             if (SelectedKiller != null &&
                 SelectedKillerPlatform != null &&
                 SelectedKillerFirstPerk != null && SelectedKillerSecondPerk != null && SelectedKillerThirdPerk != null && SelectedKillerFourthPerk != null &&
                 SelectedKillerFirstAddon != null && SelectedKillerSecondPerk != null &&
-                SelectedListViewKillerOffering != null &&
+                SelectedKillerOffering != null &&
                 SelectedKillerPlayerAssociation != null) { }
             else
             {
-                MessageBox.Show("Вы заполнили не все данные киллера. \n Если у Киллера нету аддонов либо перков, то нужно выбрать пункт - Отсутствует ");
+                _dialogService.ShowMessage("Вы заполнили не все данные киллера. Если у Киллера нету аддонов либо перков, то нужно выбрать пункт - Отсутствует.", "Ошибка заполнения", TypeMessage.Warning);
                 return;
             }
 
@@ -2868,12 +2866,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 SelectedFirstSurvivorPlatform != null &&
                 SelectedFirstSurvivorTypeDeath != null &&
                 SelectedFirstSurvivorFirstPerk != null && SelectedFirstSurvivorSecondPerk != null && SelectedFirstSurvivorThirdPerk != null && SelectedFirstSurvivorFourthPerk != null &&
-                SelectedComboBoxFirstSurvivorItem != null && SelectedFirstSurvivorFirstItemAddon != null && SelectedFirstSurvivorSecondItemAddon != null &&
-                SelectedListViewFirstSurvivorOffering != null &&
+                SelectedFirstSurvivorItem != null && SelectedFirstSurvivorFirstItemAddon != null && SelectedFirstSurvivorSecondItemAddon != null &&
+                SelectedFirstSurvivorOffering != null &&
                 SelectedFirstSurvivorPlayerAssociation != null) { }
             else
             {
-                MessageBox.Show("Вы заполнили не все данные первого выжившего. \n Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует ");
+                _dialogService.ShowMessage("Вы заполнили не все данные первого выжившего. Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует.", "Ошибка заполнения", TypeMessage.Warning);
                 return;
             }
 
@@ -2881,12 +2879,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 SelectedSecondSurvivorPlatform != null &&
                 SelectedSecondSurvivorTypeDeath != null &&
                 SelectedSecondSurvivorFirstPerk != null && SelectedSecondSurvivorSecondPerk != null && SelectedSecondSurvivorThirdPerk != null && SelectedSecondSurvivorFourthPerk != null &&
-                SelectedComboBoxSecondSurvivorItem != null && SelectedSecondSurvivorFirstItemAddon != null && SelectedSecondSurvivorSecondItemAddon != null &&
-                SelectedListViewSecondSurvivorOffering != null &&
+                SelectedSecondSurvivorItem != null && SelectedSecondSurvivorFirstItemAddon != null && SelectedSecondSurvivorSecondItemAddon != null &&
+                SelectedSecondSurvivorOffering != null &&
                 SelectedSecondSurvivorPlayerAssociation != null) { }
             else
             {
-                MessageBox.Show("Вы заполнили не все данные второго выжившего. \n Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует ");
+                _dialogService.ShowMessage("Вы заполнили не все данные второго выжившего. Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует.", "Ошибка заполнения", TypeMessage.Warning);
                 return;
             }
 
@@ -2894,12 +2892,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 SelectedThirdSurvivorPlatform != null &&
                 SelectedThirdSurvivorTypeDeath != null &&
                 SelectedThirdSurvivorFirstPerk != null && SelectedThirdSurvivorSecondPerk != null && SelectedThirdSurvivorThirdPerk != null && SelectedThirdSurvivorFourthPerk != null &&
-                SelectedComboBoxThirdSurvivorItem != null && SelectedThirdSurvivorFirstItemAddon != null && SelectedThirdSurvivorSecondItemAddon != null &&
-                SelectedListViewThirdSurvivorOffering != null &&
+                SelectedThirdSurvivorItem != null && SelectedThirdSurvivorFirstItemAddon != null && SelectedThirdSurvivorSecondItemAddon != null &&
+                SelectedThirdSurvivorOffering != null &&
                 SelectedThirdSurvivorPlayerAssociation != null) { }
             else
             {
-                MessageBox.Show("Вы заполнили не все данные третьего выжившего. \n Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует ");
+                _dialogService.ShowMessage("Вы заполнили не все данные третьего выжившего. Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует.", "Ошибка заполнения", TypeMessage.Warning);
+                MessageBox.Show("");
                 return;
             }
 
@@ -2907,14 +2906,32 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 SelectedFourthSurvivorPlatform != null &&
                 SelectedFourthSurvivorTypeDeath != null &&
                 SelectedFourthSurvivorFirstPerk != null && SelectedFourthSurvivorSecondPerk != null && SelectedFourthSurvivorThirdPerk != null && SelectedFourthSurvivorFourthPerk != null &&
-                SelectedComboBoxFourthSurvivorItem != null && SelectedFourthSurvivorFirstItemAddon != null && SelectedFourthSurvivorSecondItemAddon != null &&
-                SelectedListViewFourthSurvivorOffering != null &&
+                SelectedFourthSurvivorItem != null && SelectedFourthSurvivorFirstItemAddon != null && SelectedFourthSurvivorSecondItemAddon != null &&
+                SelectedFourthSurvivorOffering != null &&
                 SelectedFourthSurvivorPlayerAssociation != null) { }
             else
             {
-                MessageBox.Show("Вы заполнили не все данные четвертого выжившего. \n Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует ");
+                _dialogService.ShowMessage("Вы заполнили не все данные четвертого выжившего. Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует.", "Ошибка заполнения", TypeMessage.Warning);
                 return;
             }
+
+            if (SelectedMap != null &&
+               SelectedPatch != null &&
+               SelectedGameMode != null &&
+               SelectedGameEvent != null &&
+               SelectedWhoPlacedMap != null &&
+               SelectedWhoPlacedMapWin != null) { }
+            else
+            {
+                _dialogService.ShowMessage("Вы заполнили не все данные в категории - Игра.", "Ошибка заполнения", TypeMessage.Warning);
+                return;
+            }
+
+            //if (CheckKills() == false)
+            //{
+            //    _dialogService.ShowMessage("Кол-во килов не совпадает с выбранным типами смертей у выживших.", "Ошибка заполнения", TypeMessage.Warning);
+            //    return;
+            //}
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -2978,7 +2995,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 EndMatchImage = null;
 
                 MessageBox.Show("Данные успешно добавлены");
-
             }
         }
 
@@ -2996,11 +3012,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 IdAddon2 = SelectedKillerSecondAddon.IdKillerAddon,
                 IdAssociation = SelectedKillerPlayerAssociation.IdPlayerAssociation,
                 IdPlatform = SelectedKillerPlatform.IdPlatform,
-                IdKillerOffering = SelectedListViewKillerOffering.IdOffering,
-                Prestige = KillerInfoPrestige,
-                Bot = KillerInfoBot,
-                AnonymousMode = KillerInfoAnonymousMode,
-                KillerAccount = KillerInfoAccount,
+                IdKillerOffering = SelectedKillerOffering.IdOffering,
+                Prestige = KillerPrestige,
+                Bot = KillerBot,
+                AnonymousMode = KillerAnonymousMode,
+                KillerAccount = KillerAccount,
             };
 
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
@@ -3022,13 +3038,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 IdPerk2 = SelectedFirstSurvivorSecondPerk.IdSurvivorPerk,
                 IdPerk3 = SelectedFirstSurvivorThirdPerk.IdSurvivorPerk,
                 IdPerk4 = SelectedFirstSurvivorFourthPerk.IdSurvivorPerk,
-                IdItem = SelectedComboBoxFirstSurvivorItem.IdItem,
+                IdItem = SelectedFirstSurvivorItem.IdItem,
                 IdAddon1 = SelectedFirstSurvivorFirstItemAddon.IdItemAddon,
                 IdAddon2 = SelectedFirstSurvivorSecondItemAddon.IdItemAddon,
                 IdTypeDeath = SelectedFirstSurvivorTypeDeath.IdTypeDeath,
                 IdAssociation = SelectedFirstSurvivorPlayerAssociation.IdPlayerAssociation,
                 IdPlatform = SelectedFirstSurvivorPlatform.IdPlatform,
-                IdSurvivorOffering = SelectedListViewFirstSurvivorOffering.IdOffering,
+                IdSurvivorOffering = SelectedFirstSurvivorOffering.IdOffering,
                 Prestige = FirstSurvivorPrestige,
                 Bot = FirstSurvivorBot,
                 AnonymousMode = FirstSurvivorAnonymousMode,
@@ -3052,13 +3068,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 IdPerk2 = SelectedSecondSurvivorSecondPerk.IdSurvivorPerk,
                 IdPerk3 = SelectedSecondSurvivorThirdPerk.IdSurvivorPerk,
                 IdPerk4 = SelectedSecondSurvivorFourthPerk.IdSurvivorPerk,
-                IdItem = SelectedComboBoxSecondSurvivorItem.IdItem,
+                IdItem = SelectedSecondSurvivorItem.IdItem,
                 IdAddon1 = SelectedSecondSurvivorFirstItemAddon.IdItemAddon,
                 IdAddon2 = SelectedSecondSurvivorSecondItemAddon.IdItemAddon,
                 IdTypeDeath = SelectedSecondSurvivorTypeDeath.IdTypeDeath,
                 IdAssociation = SelectedSecondSurvivorPlayerAssociation.IdPlayerAssociation,
                 IdPlatform = SelectedSecondSurvivorPlatform.IdPlatform,
-                IdSurvivorOffering = SelectedListViewSecondSurvivorOffering.IdOffering,
+                IdSurvivorOffering = SelectedSecondSurvivorOffering.IdOffering,
                 Prestige = SecondSurvivorPrestige,
                 Bot = SecondSurvivorBot,
                 AnonymousMode = SecondSurvivorAnonymousMode,
@@ -3081,13 +3097,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 IdPerk2 = SelectedThirdSurvivorSecondPerk.IdSurvivorPerk,
                 IdPerk3 = SelectedThirdSurvivorThirdPerk.IdSurvivorPerk,
                 IdPerk4 = SelectedThirdSurvivorFourthPerk.IdSurvivorPerk,
-                IdItem = SelectedComboBoxThirdSurvivorItem.IdItem,
+                IdItem = SelectedThirdSurvivorItem.IdItem,
                 IdAddon1 = SelectedThirdSurvivorFirstItemAddon.IdItemAddon,
                 IdAddon2 = SelectedThirdSurvivorSecondItemAddon.IdItemAddon,
                 IdTypeDeath = SelectedThirdSurvivorTypeDeath.IdTypeDeath,
                 IdAssociation = SelectedThirdSurvivorPlayerAssociation.IdPlayerAssociation,
                 IdPlatform = SelectedThirdSurvivorPlatform.IdPlatform,
-                IdSurvivorOffering = SelectedListViewThirdSurvivorOffering.IdOffering,
+                IdSurvivorOffering = SelectedThirdSurvivorOffering.IdOffering,
                 Prestige = ThirdSurvivorPrestige,
                 Bot = ThirdSurvivorBot,
                 AnonymousMode = ThirdSurvivorAnonymousMode,
@@ -3110,13 +3126,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 IdPerk2 = SelectedFourthSurvivorSecondPerk.IdSurvivorPerk,
                 IdPerk3 = SelectedFourthSurvivorThirdPerk.IdSurvivorPerk,
                 IdPerk4 = SelectedFourthSurvivorFourthPerk.IdSurvivorPerk,
-                IdItem = SelectedComboBoxFourthSurvivorItem.IdItem,
+                IdItem = SelectedFourthSurvivorItem.IdItem,
                 IdAddon1 = SelectedFourthSurvivorFirstItemAddon.IdItemAddon,
                 IdAddon2 = SelectedFourthSurvivorSecondItemAddon.IdItemAddon,
                 IdTypeDeath = SelectedFourthSurvivorTypeDeath.IdTypeDeath,
                 IdAssociation = SelectedFourthSurvivorPlayerAssociation.IdPlayerAssociation,
                 IdPlatform = SelectedFourthSurvivorPlatform.IdPlatform,
-                IdSurvivorOffering = SelectedListViewFourthSurvivorOffering.IdOffering,
+                IdSurvivorOffering = SelectedFourthSurvivorOffering.IdOffering,
                 Prestige = FourthSurvivorPrestige,
                 Bot = FourthSurvivorBot,
                 AnonymousMode = FourthSurvivorAnonymousMode,
@@ -3131,271 +3147,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        #region Свойства окна
+        #region Методы для поиска по спискам
 
-        public string Title { get; set; } = "Добавить запись";
-
-        #endregion
-
-        #region Свойства для скрытия \ показа ListView 
-
-        private Visibility _listViewKillerPerkVisibility;
-        public Visibility ListViewKillerPerkVisibility
-        {
-            get => _listViewKillerPerkVisibility;
-            set
-            {
-                _listViewKillerPerkVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _contentButtonListViewKillerPerkVisibility;
-        public string ContentButtonListViewKillerPerkVisibility
-        {
-            get => _contentButtonListViewKillerPerkVisibility;
-            set
-            {
-                _contentButtonListViewKillerPerkVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility _listViewKillerAddonVisibility;
-        public Visibility ListViewKillerAddonVisibility
-        {
-            get => _listViewKillerAddonVisibility;
-            set
-            {
-                _listViewKillerAddonVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _contentButtonListViewKillerAddonVisibility;
-        public string ContentButtonListViewKillerAddonVisibility
-        {
-            get => _contentButtonListViewKillerAddonVisibility;
-            set
-            {
-                _contentButtonListViewKillerAddonVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-        private Visibility _listViewKillerOfferingVisibility;
-        public Visibility ListViewKillerOfferingVisibility
-        {
-            get => _listViewKillerOfferingVisibility;
-            set
-            {
-                _listViewKillerOfferingVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _contentButtonListViewKillerOfferingVisibility;
-        public string ContentButtonListViewKillerOfferingVisibility
-        {
-            get => _contentButtonListViewKillerOfferingVisibility;
-            set
-            {
-                _contentButtonListViewKillerOfferingVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-        private Visibility _listViewSurvivorPerkVisibility;
-        public Visibility ListViewSurvivorPerkVisibility
-        {
-            get => _listViewSurvivorPerkVisibility;
-            set
-            {
-                _listViewSurvivorPerkVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _contentButtonListViewSurvivorPerkVisibility;
-        public string ContentButtonListViewSurvivorPerkVisibility
-        {
-            get => _contentButtonListViewSurvivorPerkVisibility;
-            set
-            {
-                _contentButtonListViewSurvivorPerkVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility _listViewSurvivorItemAddonVisibility;
-        public Visibility ListViewSurvivorItemAddonVisibility
-        {
-            get => _listViewSurvivorItemAddonVisibility;
-            set
-            {
-                _listViewSurvivorItemAddonVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _contentButtonListViewSurvivorItemAddonVisibility;
-        public string ContentButtonListViewSurvivorItemAddonVisibility
-        {
-            get => _contentButtonListViewSurvivorItemAddonVisibility;
-            set
-            {
-                _contentButtonListViewSurvivorItemAddonVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility _listViewSurvivorOfferingVisibility;
-        public Visibility ListViewSurvivorOfferingVisibility
-        {
-            get => _listViewSurvivorOfferingVisibility;
-            set
-            {
-                _listViewSurvivorOfferingVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _contentButtonListViewSurvivorOfferingVisibility;
-        public string ContentButtonListViewSurvivorOfferingVisibility
-        {
-            get => _contentButtonListViewSurvivorOfferingVisibility;
-            set
-            {
-                _contentButtonListViewSurvivorOfferingVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        #region Команды для скрытия \ показа ListView 
-
-        private RelayCommand _listViewKillerPerkVisibilityCommand;
-        public RelayCommand ListViewKillerPerkVisibilityCommand
-        {
-            get => _listViewKillerPerkVisibilityCommand ??= new(obj =>
-            {
-                if (ListViewKillerPerkVisibility == Visibility.Collapsed)
-                {
-                    ListViewKillerPerkVisibility = Visibility.Visible;
-                    ContentButtonListViewKillerPerkVisibility = "Скрыть";
-                }
-                else
-                {
-                    ListViewKillerPerkVisibility = Visibility.Collapsed;
-                    ContentButtonListViewKillerPerkVisibility = "Показать";
-                }
-            });
-        }
-
-        private RelayCommand _listViewKillerAddonVisibilityCommand;
-        public RelayCommand ListViewKillerAddonVisibilityCommand
-        {
-            get => _listViewKillerAddonVisibilityCommand ??= new(obj =>
-            {
-                if (ListViewKillerAddonVisibility == Visibility.Collapsed)
-                {
-                    ListViewKillerAddonVisibility = Visibility.Visible;
-                    ContentButtonListViewKillerAddonVisibility = "Скрыть";
-                }
-                else
-                {
-                    ListViewKillerAddonVisibility = Visibility.Collapsed;
-                    ContentButtonListViewKillerAddonVisibility = "Показать";
-                }
-            });
-        }
-
-        private RelayCommand _listViewKillerOfferingVisibilityCommand;
-        public RelayCommand ListViewKillerOfferingVisibilityCommand
-        {
-            get => _listViewKillerOfferingVisibilityCommand ??= new(obj =>
-            {
-                if (ListViewKillerOfferingVisibility == Visibility.Collapsed)
-                {
-                    ListViewKillerOfferingVisibility = Visibility.Visible;
-                    ContentButtonListViewKillerOfferingVisibility = "Скрыть";
-                }
-                else
-                {
-                    ListViewKillerOfferingVisibility = Visibility.Collapsed;
-                    ContentButtonListViewKillerOfferingVisibility = "Показать";
-                }
-            });
-        }
-
-
-        private RelayCommand _listViewSurvivorPerkVisibilityCommand;
-        public RelayCommand ListViewSurvivorPerkVisibilityCommand
-        {
-            get => _listViewSurvivorPerkVisibilityCommand ??= new(obj =>
-            {
-                if (ListViewSurvivorPerkVisibility == Visibility.Collapsed)
-                {
-                    ListViewSurvivorPerkVisibility = Visibility.Visible;
-                    ContentButtonListViewSurvivorPerkVisibility = "Скрыть";
-                }
-                else
-                {
-                    ListViewSurvivorPerkVisibility = Visibility.Collapsed;
-                    ContentButtonListViewSurvivorPerkVisibility = "Показать";
-                }
-            });
-        }
-
-        private RelayCommand _listViewSurvivorItemAddonVisibilityCommand;
-        public RelayCommand ListViewSurvivorItemAddonVisibilityCommand
-        {
-            get => _listViewSurvivorItemAddonVisibilityCommand ??= new(obj =>
-            {
-                if (ListViewSurvivorItemAddonVisibility == Visibility.Collapsed)
-                {
-                    ListViewSurvivorItemAddonVisibility = Visibility.Visible;
-                    ContentButtonListViewSurvivorItemAddonVisibility = "Скрыть";
-                }
-                else
-                {
-                    ListViewSurvivorItemAddonVisibility = Visibility.Collapsed;
-                    ContentButtonListViewSurvivorItemAddonVisibility = "Показать";
-                }
-            });
-        }
-
-        private RelayCommand _listViewSurvivorOfferingVisibilityCommand;
-        public RelayCommand ListViewSurvivorOfferingVisibilityCommand
-        {
-            get => _listViewSurvivorOfferingVisibilityCommand ??= new(obj =>
-            {
-                if (ListViewSurvivorOfferingVisibility == Visibility.Collapsed)
-                {
-                    ListViewSurvivorOfferingVisibility = Visibility.Visible;
-                    ContentButtonListViewSurvivorOfferingVisibility = "Скрыть";
-                }
-                else
-                {
-                    ListViewSurvivorOfferingVisibility = Visibility.Collapsed;
-                    ContentButtonListViewSurvivorOfferingVisibility = "Показать";
-                }
-            });
-        }
-
-        #endregion 
-
-        #region Методы для поиска по LisrView
-
-        private async void SearchKillerPerk()
+        private async void SearchKillerPerkAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var search = await context.KillerPerks
-                    .Where(kp => kp.PerkName.Contains(TextBoxSearchKillerPerk))
+                    .Where(kp => kp.PerkName.Contains(SearchKillerPerk))
                     .ToListAsync();
 
                 KillerPerkList.Clear();
@@ -3407,7 +3166,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private async void SearchKillerAddon()
+        private async void SearchKillerAddonAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
@@ -3418,7 +3177,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 }
                 var search = await context.KillerAddons
                     .Where(ka => ka.IdKiller == SelectedKiller.IdKiller)
-                    .Where(ka => ka.AddonName.Contains(TextBoxSearchKillerAddon))
+                    .Where(ka => ka.AddonName.Contains(SearchKillerAddon))
                     .ToListAsync();
 
                 KillerAddonList.Clear();
@@ -3430,13 +3189,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private async void SearchKillerOffering()
+        private async void SearchKillerOfferingAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var search = await context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleKiller.IdRole)
-                    .Where(off => off.OfferingName.Contains(TextBoxSearchKillerOffering))
+                    .Where(off => off.IdRole == SelectedRoleKiller.IdRole)
+                    .Where(off => off.OfferingName.Contains(SearchKillerOffering))
                     .ToListAsync();
 
                 KillerOfferingList.Clear();
@@ -3448,13 +3207,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private async void SearchFirstSurvivorOffering()
+        private async void SearchFirstSurvivorOfferingAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var search = await context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleFirstSurvivor.IdRole)
-                    .Where(off => off.OfferingName.Contains(TextBoxSearchFirstSurvivorOffering))
+                    .Where(off => off.IdRole == SelectedRoleFirstSurvivor.IdRole)
+                    .Where(off => off.OfferingName.Contains(SearchFirstSurvivorOffering))
                     .ToListAsync();
 
                 FirstSurvivorOfferingList.Clear();
@@ -3466,13 +3225,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private async void SearchSecondSurvivorOffering()
+        private async void SearchSecondSurvivorOfferingAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var search = await context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleSecondSurvivor.IdRole)
-                    .Where(off => off.OfferingName.Contains(TextBoxSearchSecondSurvivorOffering))
+                    .Where(off => off.IdRole == SelectedRoleSecondSurvivor.IdRole)
+                    .Where(off => off.OfferingName.Contains(SearchSecondSurvivorOffering))
                     .ToListAsync();
 
                 SecondSurvivorOfferingList.Clear();
@@ -3484,13 +3243,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private async void SearchThirdSurvivorOffering()
+        private async void SearchThirdSurvivorOfferingAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var search = await context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleThirdSurvivor.IdRole)
-                    .Where(off => off.OfferingName.Contains(TextBoxSearchThirdSurvivorOffering))
+                    .Where(off => off.IdRole == SelectedRoleThirdSurvivor.IdRole)
+                    .Where(off => off.OfferingName.Contains(SearchThirdSurvivorOffering))
                     .ToListAsync();
 
                 ThirdSurvivorOfferingList.Clear();
@@ -3502,13 +3261,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private async void SearchFourthSurvivorOffering()
+        private async void SearchFourthSurvivorOfferingAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var search = await context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleFourthSurvivor.IdRole)
-                    .Where(off => off.OfferingName.Contains(TextBoxSearchFourthSurvivorOffering))
+                    .Where(off => off.IdRole == SelectedRoleFourthSurvivor.IdRole)
+                    .Where(off => off.OfferingName.Contains(SearchFourthSurvivorOffering))
                     .ToListAsync();
 
                 FourthSurvivorOfferingList.Clear();
@@ -3520,12 +3279,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private async void SearchSurvivorPerk()
+        private async void SearchSurvivorPerkAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
                 var search = await context.SurvivorPerks
-                    .Where(sp => sp.PerkName.Contains(TextBoxSearchSurvivorPerk))
+                    .Where(sp => sp.PerkName.Contains(SearchSurvivorPerk))
                     .ToListAsync();
 
                 SurvivorPerkList.Clear();
@@ -3537,90 +3296,90 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private async void SearchFirstSurvivorItemAddon()
+        private async void SearchFirstSurvivorItemAddonAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (SelectedComboBoxFirstSurvivorItem == null)
+                if (SelectedFirstSurvivorItem == null)
                 {
                     return;
                 }
                 var search = await context.ItemAddons
-                    .Where(ia => ia.IdItem == SelectedComboBoxFirstSurvivorItem.IdItem)
-                    .Where(ka => ka.ItemAddonName.Contains(TextBoxSearchFirstSurvivorItemAddon))
+                    .Where(ia => ia.IdItem == SelectedFirstSurvivorItem.IdItem)
+                    .Where(ka => ka.ItemAddonName.Contains(SearchFirstSurvivorItemAddon))
                     .ToListAsync();
 
-                ItemAddonList.Clear();
+                FirstSurvivorItemAddonList.Clear();
 
                 foreach (var item in search)
                 {
-                    ItemAddonList.Add(item);
+                    FirstSurvivorItemAddonList.Add(item);
                 }
             }
         }
 
-        private async void SearchSecondSurvivorItemAddon()
+        private async void SearchSecondSurvivorItemAddonAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (SelectedComboBoxSecondSurvivorItem == null)
+                if (SelectedSecondSurvivorItem == null)
                 {
                     return;
                 }
                 var search = await context.ItemAddons
-                    .Where(ia => ia.IdItem == SelectedComboBoxSecondSurvivorItem.IdItem)
-                    .Where(ka => ka.ItemAddonName.Contains(TextBoxSearchSecondSurvivorItemAddon))
+                    .Where(ia => ia.IdItem == SelectedSecondSurvivorItem.IdItem)
+                    .Where(ka => ka.ItemAddonName.Contains(SearchSecondSurvivorItemAddon))
                     .ToListAsync();
 
-                ItemAddonList.Clear();
+                SecondSurvivorItemAddonList.Clear();
 
                 foreach (var item in search)
                 {
-                    ItemAddonList.Add(item);
+                    SecondSurvivorItemAddonList.Add(item);
                 }
             }
         }
 
-        private async void SearchThirdSurvivorItemAddon()
+        private async void SearchThirdSurvivorItemAddonAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (SelectedComboBoxThirdSurvivorItem == null)
+                if (SelectedThirdSurvivorItem == null)
                 {
                     return;
                 }
                 var search = await context.ItemAddons
-                    .Where(ia => ia.IdItem == SelectedComboBoxThirdSurvivorItem.IdItem)
-                    .Where(ka => ka.ItemAddonName.Contains(TextBoxSearchThirdSurvivorItemAddon))
+                    .Where(ia => ia.IdItem == SelectedThirdSurvivorItem.IdItem)
+                    .Where(ka => ka.ItemAddonName.Contains(SearchThirdSurvivorItemAddon))
                     .ToListAsync();
 
-                ItemAddonList.Clear();
+                ThirdSurvivorItemAddonList.Clear();
 
                 foreach (var item in search)
                 {
-                    ItemAddonList.Add(item);
+                    ThirdSurvivorItemAddonList.Add(item);
                 }
             }
         }
 
-        private async void SearchFourthSurvivorItemAddon()
+        private async void SearchFourthSurvivorItemAddonAsync()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                if (SelectedComboBoxFourthSurvivorItem == null)
+                if (SelectedFourthSurvivorItem == null)
                 {
                     return;
                 }
                 var search = await context.ItemAddons
-                    .Where(ia => ia.IdItem == SelectedComboBoxFourthSurvivorItem.IdItem)
-                    .Where(ka => ka.ItemAddonName.Contains(TextBoxSearchFourthSurvivorItemAddon))
+                    .Where(ia => ia.IdItem == SelectedFourthSurvivorItem.IdItem)
+                    .Where(ka => ka.ItemAddonName.Contains(SearchFourthSurvivorItemAddon))
                     .ToListAsync();
 
-                ItemAddonList.Clear();
+                FourthSurvivorItemAddonList.Clear();
 
                 foreach (var item in search)
                 {
-                    ItemAddonList.Add(item);
+                    FourthSurvivorItemAddonList.Add(item);
                 }
             }
         }
@@ -3629,40 +3388,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Методы получение данных  - заполнение списков
 
-        private void DeclareCollections()
-        {
-            GameModeList = [];
-            GameEventList = [];
-            MapList = [];
-            KillerOfferingList = [];
-            PatchList = [];
-            PlatformList = [];
-            PlayerAssociationList = [];
-            RoleList = [];
-            WhoPlacedMapList = [];
-
-            KillerList = [];
-            KillerRoleList = [];
-            KillerAddonList = [];
-            KillerPerkList = [];
-            KillerInfoList = [];
-
-            SurvivorList = [];
-            SurvivorRoleList = [];
-            SurvivorPerkList = [];
-            SurvivorInfoList = [];
-
-            FirstSurvivorOfferingList = [];
-            SecondSurvivorOfferingList = [];
-            ThirdSurvivorOfferingList = [];
-            FourthSurvivorOfferingList = [];
-
-            TypeDeathList = [];
-            ItemList = [];
-            ItemAddonList = [];
-        }
-
-        private void GetAllData()
+        private void GetData()
         {
             GetGameModeListData();
             GetGameEventListData();
@@ -3675,7 +3401,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
             GetKillerListData();
             GetKillerRoleListData();
-            GetKillerAddonListData();
             GetKillerPerkListData();
             GetKillerInfoListData();
             GetKillerOfferingListData();
@@ -3686,29 +3411,17 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             GetSurvivorInfoListData();
             GetTypeDeathListData();
             GetItemListData();
-            GetFirstSurvivorItemAddonListData();
-
-            GetFirstSurvivorOfferingListData();
-            GetSecondSurvivorOfferingListData();
-            GetThirdSurvivorItemAddonListData();
-            GetFourthSurvivorItemAddonListData();
-
-            GetFirstSurvivorItemAddonListData();
-            GetSecondSurvivorItemAddonListData();
-            GetThirdSurvivorItemAddonListData();
-            GetFourthSurvivorItemAddonListData();
         }
 
         private void SetNullKillerInfoData()
         {
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                var defaultPlatform = context.Platforms.Where(platform => platform.PlatformName == "Steam").FirstOrDefault();
-                SelectedKillerPlatform = defaultPlatform;
+                SelectedKillerPlatform = PlatformList.First();
 
-                KillerInfoAnonymousMode = false;
-                KillerInfoBot = false;
-                KillerInfoAccount = 0;
+                KillerAnonymousMode = false;
+                KillerBot = false;
+                KillerAccount = 0;
 
                 //var defaultPerk = context.KillerPerks.Where(perk => perk.PerkName == "Отсутствует").FirstOrDefault();
                 //SelectedKillerFirstPerk = null;
@@ -3716,102 +3429,100 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 //SelectedKillerThirdPerk = null;
                 //SelectedKillerFourthPerk = null;
 
-                //var defaultAddon = context.KillerAddons.Where(addon => addon.AddonName == "Отсутствует").FirstOrDefault();
                 SelectedKillerFirstAddon = null;
                 SelectedKillerSecondAddon = null;
-
-                //var defaultOffering = context.Offerings.Where(offering => offering.OfferingName == "Отсутствует").FirstOrDefault();
-
-                SelectedListViewKillerOffering = null;
+                SelectedKillerOffering = null;
             }
         }
 
         private void SetNullSurvivorInfoData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var platform = context.Platforms.FirstOrDefault(platform => platform.PlatformName == "Steam");
+            /* Выбор платформы, на которой играют выжившие на Steam */
+            SelectedFirstSurvivorPlatform = PlatformList.First();
+            SelectedSecondSurvivorPlatform = PlatformList.First();
+            SelectedThirdSurvivorPlatform = PlatformList.First();
+            SelectedFourthSurvivorPlatform = PlatformList.First();
 
-                SelectedFirstSurvivorPlatform = PlatformList.First();
-                SelectedSecondSurvivorPlatform = PlatformList.First();
-                SelectedThirdSurvivorPlatform = PlatformList.First();
-                SelectedFourthSurvivorPlatform = PlatformList.First();
+            /* Выбор типа смерти игрока в матче в "От крюка" */
+            SelectedFirstSurvivorTypeDeath = TypeDeathList.First();
+            SelectedSecondSurvivorTypeDeath = TypeDeathList.First();
+            SelectedThirdSurvivorTypeDeath = TypeDeathList.First();
+            SelectedFourthSurvivorTypeDeath = TypeDeathList.First();
 
-                FirstSurvivorPrestige = 0;
-                SecondSurvivorPrestige = 0;
-                ThirdSurvivorPrestige = 0;
-                FourthSurvivorPrestige = 0;
+            /* Установка престижей игроков на выживших в 0 */
+            FirstSurvivorPrestige = 0;
+            SecondSurvivorPrestige = 0;
+            ThirdSurvivorPrestige = 0;
+            FourthSurvivorPrestige = 0;
 
-                var typeDeath = context.TypeDeaths.FirstOrDefault(type => type.TypeDeathName == "От крюка");
+            /* Установка счета игроков на выживших в 0 */
+            FirstSurvivorAccount = 0;
+            SecondSurvivorAccount = 0;
+            ThirdSurvivorAccount = 0;
+            FourthSurvivorAccount = 0;
 
-                SelectedFirstSurvivorTypeDeath = TypeDeathList.First();
-                SelectedSecondSurvivorTypeDeath = TypeDeathList.First();
-                SelectedThirdSurvivorTypeDeath = TypeDeathList.First();
-                SelectedFourthSurvivorTypeDeath = TypeDeathList.First();
+            /* Установка анонимного режима игроков на выживших в "Не анонимный режим" */
+            FirstSurvivorAnonymousMode = false;
+            SecondSurvivorAnonymousMode = false;
+            ThirdSurvivorAnonymousMode = false;
+            FourthSurvivorAnonymousMode = false;
 
-                FirstSurvivorAccount = 0;
-                SecondSurvivorAccount = 0;
-                ThirdSurvivorAccount = 0;
-                FourthSurvivorAccount = 0;
+            /* Установка информации о выходе игроков на выживших из мматча во время игры "Отрицательно" */
+            FirstSurvivorBot = false;
+            SecondSurvivorBot = false;
+            ThirdSurvivorBot = false;
+            FourthSurvivorBot = false;
 
-                FirstSurvivorAnonymousMode = false;
-                SecondSurvivorAnonymousMode = false;
-                ThirdSurvivorAnonymousMode = false;
-                FourthSurvivorAnonymousMode = false;
+            /* Сброс первого перка игроков на выживших */
+            SelectedFirstSurvivorFirstPerk = null;
+            SelectedFirstSurvivorSecondPerk = null;
+            SelectedFirstSurvivorThirdPerk = null;
+            SelectedFirstSurvivorFourthPerk = null;
 
-                FirstSurvivorBot = false;
-                SecondSurvivorBot = false;
-                ThirdSurvivorBot = false;
-                FourthSurvivorBot = false;
+            /* Сброс второго перка игроков на выживших */
+            SelectedSecondSurvivorFirstPerk = null;
+            SelectedSecondSurvivorSecondPerk = null;
+            SelectedSecondSurvivorThirdPerk = null;
+            SelectedSecondSurvivorFourthPerk = null;
 
-                //var defaultPerk = context.SurvivorPerks.Where(perk => perk.PerkName == "Отсутствует").FirstOrDefault();
+            /* Сброс третьего перка игроков на выживших */
+            SelectedThirdSurvivorFirstPerk = null;
+            SelectedThirdSurvivorSecondPerk = null;
+            SelectedThirdSurvivorThirdPerk = null;
+            SelectedThirdSurvivorFourthPerk = null;
 
-                SelectedFirstSurvivorFirstPerk = null;
-                SelectedFirstSurvivorSecondPerk = null;
-                SelectedFirstSurvivorThirdPerk = null;
-                SelectedFirstSurvivorFourthPerk = null;
+            /* Сброс четвертого перка игроков на выживших */
+            SelectedFourthSurvivorFirstPerk = null;
+            SelectedFourthSurvivorSecondPerk = null;
+            SelectedFourthSurvivorThirdPerk = null;
+            SelectedFourthSurvivorFourthPerk = null;
 
-                SelectedSecondSurvivorFirstPerk = null;
-                SelectedSecondSurvivorSecondPerk = null;
-                SelectedSecondSurvivorThirdPerk = null;
-                SelectedSecondSurvivorFourthPerk = null;
+            /* Сброс первого предмета игроков на выживших */
+            SelectedFirstSurvivorFirstItemAddon = null;
+            SelectedFirstSurvivorSecondItemAddon = null;
 
-                SelectedThirdSurvivorFirstPerk = null;
-                SelectedThirdSurvivorSecondPerk = null;
-                SelectedThirdSurvivorThirdPerk = null;
-                SelectedThirdSurvivorFourthPerk = null;
+            /* Сброс второго предмета игроков на выживших */
+            SelectedSecondSurvivorFirstItemAddon = null;
+            SelectedSecondSurvivorSecondItemAddon = null;
 
-                SelectedFourthSurvivorFirstPerk = null;
-                SelectedFourthSurvivorSecondPerk = null;
-                SelectedFourthSurvivorThirdPerk = null;
-                SelectedFourthSurvivorFourthPerk = null;
+            /* Сброс третьего предмета игроков на выживших */
+            SelectedThirdSurvivorFirstItemAddon = null;
+            SelectedThirdSurvivorSecondItemAddon = null;
 
-                //var defaultItemAddon = context.ItemAddons.Where(addon => addon.ItemAddonName == "Отсутствует").FirstOrDefault();
+            /* Сброс четвертого предмета игроков на выживших */
+            SelectedFourthSurvivorFirstItemAddon = null;
+            SelectedFourthSurvivorSecondItemAddon = null;
 
-                SelectedFirstSurvivorFirstItemAddon = null;
-                SelectedFirstSurvivorSecondItemAddon = null;
-
-                SelectedSecondSurvivorFirstItemAddon = null;
-                SelectedSecondSurvivorSecondItemAddon = null;
-
-                SelectedThirdSurvivorFirstItemAddon = null;
-                SelectedThirdSurvivorSecondItemAddon = null;
-
-                SelectedFourthSurvivorFirstItemAddon = null;
-                SelectedFourthSurvivorSecondItemAddon = null;
-
-                //var defaultOffering = context.Offerings.Where(offering => offering.OfferingName == "Отсутствует").FirstOrDefault();
-
-                SelectedListViewFirstSurvivorOffering = null;
-                SelectedListViewSecondSurvivorOffering = null;
-                SelectedListViewThirdSurvivorOffering = null;
-                SelectedListViewFourthSurvivorOffering = null;
-            }
+            /* Сброс подношений игроков на выживших */
+            SelectedFirstSurvivorOffering = null;
+            SelectedSecondSurvivorOffering = null;
+            SelectedThirdSurvivorOffering = null;
+            SelectedFourthSurvivorOffering = null;
         }
 
         private void SetNullGameInfoData()
         {
-            CountKills = 0;
+            CheckKills();
             CountHooks = 0;
             SelectedMap = null;
             CountNumberRecentGenerators = 0;
@@ -3883,12 +3594,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    if (SelectedComboBoxRoleKiller == null)
+                    if (SelectedRoleKiller == null)
                     {
                         return;
                     }
                     var entities = context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleKiller.IdRole)
+                    .Where(off => off.IdRole == SelectedRoleKiller.IdRole)
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
@@ -3910,7 +3621,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    if (SelectedComboBoxRoleFirstSurvivor == null)
+                    if (SelectedRoleFirstSurvivor == null)
                     {
                         return;
                     }
@@ -3921,14 +3632,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     //.FirstOrDefault();
 
                     var entities = context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleFirstSurvivor.IdRole)
+                    .Where(off => off.IdRole == SelectedRoleFirstSurvivor.IdRole)
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         FirstSurvivorOfferingList.Clear();
-                        //FirstSurvivorOfferingList.Add(noOffering);
                         foreach (var entity in entities)
                         {
                             FirstSurvivorOfferingList.Add(entity);
@@ -3944,7 +3654,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    if (SelectedComboBoxRoleSecondSurvivor == null)
+                    if (SelectedRoleSecondSurvivor == null)
                     {
                         return;
                     }
@@ -3954,7 +3664,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     //.FirstOrDefault();
 
                     var entities = context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleSecondSurvivor.IdRole)
+                    .Where(off => off.IdRole == SelectedRoleSecondSurvivor.IdRole)
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
@@ -3977,7 +3687,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    if (SelectedComboBoxRoleThirdSurvivor == null)
+                    if (SelectedRoleThirdSurvivor == null)
                     {
                         return;
                     }
@@ -3987,7 +3697,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     //.FirstOrDefault();
 
                     var entities = context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleThirdSurvivor.IdRole)
+                    .Where(off => off.IdRole == SelectedRoleThirdSurvivor.IdRole)
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
@@ -4010,7 +3720,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    if (SelectedComboBoxRoleFourthSurvivor == null)
+                    if (SelectedRoleFourthSurvivor == null)
                     {
                         return;
                     }
@@ -4020,7 +3730,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     //.FirstOrDefault();
 
                     var entities = context.Offerings
-                    .Where(off => off.IdRole == SelectedComboBoxRoleFourthSurvivor.IdRole)
+                    .Where(off => off.IdRole == SelectedRoleFourthSurvivor.IdRole)
                     .OrderBy(off => off.IdRarity)
                     .ToList();
 
@@ -4082,13 +3792,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    var entities = context.PlayerAssociations.ToList();
+                    var survivorAssociation = context.PlayerAssociations.ToList();
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        foreach (var entity in entities)
+                        KillerAssociationList.Add(context.PlayerAssociations.FirstOrDefault(x => x.IdPlayerAssociation == 1));
+                        KillerAssociationList.Add(context.PlayerAssociations.FirstOrDefault(x => x.IdPlayerAssociation == 3));
+
+                        foreach (var entity in survivorAssociation)
                         {
-                            PlayerAssociationList.Add(entity);
+                            SurvivorAssociationList.Add(entity);
                         }
                     });
                 }
@@ -4191,6 +3904,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                         {
                             KillerList.Add(entity);
                         }
+                        SelectedKiller = KillerList.FirstOrDefault();
                     });
                 }
             }).Start();
@@ -4307,17 +4021,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-
-                    var noPerk = context.SurvivorPerks
-                    .Where(sp => sp.PerkName == "Отсутствует")
-                    .FirstOrDefault();
-
                     var entities = context.SurvivorPerks.ToList();
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         SurvivorPerkList.Clear();
-                        SurvivorPerkList.Add(noPerk);
 
                         foreach (var entity in entities)
                         {
@@ -4380,6 +4088,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                         {
                             ItemList.Add(entity);
                         }
+                        Item item = ItemList.FirstOrDefault(x => x.ItemName == "Отсутствует");
+                        SelectedFirstSurvivorItem = item;
+                        SelectedSecondSurvivorItem = item;
+                        SelectedThirdSurvivorItem = item;
+                        SelectedFourthSurvivorItem = item;
                     });
                 }
             }).Start();
@@ -4391,45 +4104,58 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (var context = new MasterAnalyticsDeadByDaylightDbContext())
                 {
-
-                    if (SelectedComboBoxFirstSurvivorItem == null)
+                    if (SelectedFirstSurvivorItem == null)
                     {
                         var entities = context.ItemAddons.ToList();
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke((Delegate)(() =>
                         {
-                            ItemAddonList.Clear();
+                            FirstSurvivorItemAddonList.Clear();
                             foreach (var entity in entities)
                             {
-                                ItemAddonList.Add(entity);
+                                FirstSurvivorItemAddonList.Add(entity);
                             }
-                        });
+                        }));
                     }
                     else
                     {
                         var entities = context.ItemAddons
-                        .Where(ia => ia.IdItem == SelectedComboBoxFirstSurvivorItem.IdItem)
+                        .Where(ia => ia.IdItem == SelectedFirstSurvivorItem.IdItem)
                         .ToList();
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke((Delegate)(() =>
                         {
-                            ItemAddonList.Clear();
+                            FirstSurvivorItemAddonList.Clear();
                             foreach (var entity in entities)
                             {
-                                ItemAddonList.Add(entity);
+                                FirstSurvivorItemAddonList.Add(entity);
                             }
 
-                            if (SelectedComboBoxFirstSurvivorItem.ItemName == "Отсутствует")
+                            if (SelectedFirstSurvivorItem.ItemName == "Отсутствует")
                             {
                                 SelectedFirstSurvivorFirstItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
                                 .Where(ia => ia.ItemAddonName == "Отсутствует")
                                 .FirstOrDefault();
 
                                 SelectedFirstSurvivorSecondItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
                                 .Where(ia => ia.ItemAddonName == "Отсутствует")
                                 .FirstOrDefault();
                             }
-                        });
+                            else
+                            {
+                                SelectedFirstSurvivorFirstItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+                                .OrderBy(x => x.IdRarity)
+                                .LastOrDefault();
+
+                                SelectedFirstSurvivorSecondItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+                                .OrderBy(x => x.IdRarity)
+                                .LastOrDefault();
+                            }
+                        }));
                     }
                 }
             }).Start();
@@ -4441,44 +4167,58 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (var context = new MasterAnalyticsDeadByDaylightDbContext())
                 {
-                    if (SelectedComboBoxSecondSurvivorItem == null)
+                    if (SelectedSecondSurvivorItem == null)
                     {
                         var entities = context.ItemAddons.ToList();
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke((Delegate)(() =>
                         {
-                            ItemAddonList.Clear();
+                            SecondSurvivorItemAddonList.Clear();
                             foreach (var entity in entities)
                             {
-                                ItemAddonList.Add(entity);
+                                SecondSurvivorItemAddonList.Add(entity);
                             }
-                        });
+                        }));
                     }
                     else
                     {
                         var entities = context.ItemAddons
-                        .Where(ia => ia.IdItem == SelectedComboBoxSecondSurvivorItem.IdItem)
+                        .Where(ia => ia.IdItem == SelectedSecondSurvivorItem.IdItem)
                         .ToList();
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke((Delegate)(() =>
                         {
-                            ItemAddonList.Clear();
+                            SecondSurvivorItemAddonList.Clear();
                             foreach (var entity in entities)
                             {
-                                ItemAddonList.Add(entity);
+                                SecondSurvivorItemAddonList.Add(entity);
                             }
 
-                            if (SelectedComboBoxSecondSurvivorItem.ItemName == "Отсутствует")
+                            if (SelectedSecondSurvivorItem.ItemName == "Отсутствует")
                             {
                                 SelectedSecondSurvivorFirstItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedSecondSurvivorItem.IdItem)
                                 .Where(ia => ia.ItemAddonName == "Отсутствует")
                                 .FirstOrDefault();
 
                                 SelectedSecondSurvivorSecondItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedSecondSurvivorItem.IdItem)
                                 .Where(ia => ia.ItemAddonName == "Отсутствует")
                                 .FirstOrDefault();
                             }
-                        });
+                            else
+                            {
+                                SelectedSecondSurvivorFirstItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+                                .OrderBy(x => x.IdRarity)
+                                .LastOrDefault();
+
+                                SelectedSecondSurvivorSecondItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+                                .OrderBy(x => x.IdRarity)
+                                .LastOrDefault();
+                            }
+                        }));
                     }
                 }
             }).Start();
@@ -4490,44 +4230,58 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (var context = new MasterAnalyticsDeadByDaylightDbContext())
                 {
-                    if (SelectedComboBoxThirdSurvivorItem == null)
+                    if (SelectedThirdSurvivorItem == null)
                     {
                         var entities = context.ItemAddons.ToList();
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke((Delegate)(() =>
                         {
-                            ItemAddonList.Clear();
+                            ThirdSurvivorItemAddonList.Clear();
                             foreach (var entity in entities)
                             {
-                                ItemAddonList.Add(entity);
+                                ThirdSurvivorItemAddonList.Add(entity);
                             }
-                        });
+                        }));
                     }
                     else
                     {
                         var entities = context.ItemAddons
-                        .Where(ia => ia.IdItem == SelectedComboBoxThirdSurvivorItem.IdItem)
+                        .Where(ia => ia.IdItem == SelectedThirdSurvivorItem.IdItem)
                         .ToList();
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke((Delegate)(() =>
                         {
-                            ItemAddonList.Clear();
+                            ThirdSurvivorItemAddonList.Clear();
                             foreach (var entity in entities)
                             {
-                                ItemAddonList.Add(entity);
+                                ThirdSurvivorItemAddonList.Add(entity);
                             }
 
-                            if (SelectedComboBoxThirdSurvivorItem.ItemName == "Отсутствует")
+                            if (SelectedThirdSurvivorItem.ItemName == "Отсутствует")
                             {
                                 SelectedThirdSurvivorFirstItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedThirdSurvivorItem.IdItem)
                                 .Where(ia => ia.ItemAddonName == "Отсутствует")
                                 .FirstOrDefault();
 
                                 SelectedThirdSurvivorSecondItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedThirdSurvivorItem.IdItem)
                                 .Where(ia => ia.ItemAddonName == "Отсутствует")
                                 .FirstOrDefault();
                             }
-                        });
+                            else
+                            {
+                                SelectedThirdSurvivorFirstItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+                                .OrderBy(x => x.IdRarity)
+                                .LastOrDefault();
+
+                                SelectedThirdSurvivorSecondItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+                                .OrderBy(x => x.IdRarity)
+                                .LastOrDefault();
+                            }
+                        }));
                     }
                 }
             }).Start();
@@ -4539,74 +4293,63 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 using (var context = new MasterAnalyticsDeadByDaylightDbContext())
                 {
-                    if (SelectedComboBoxFourthSurvivorItem == null)
+                    if (SelectedFourthSurvivorItem == null)
                     {
                         var entities = context.ItemAddons.ToList();
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke((Delegate)(() =>
                         {
-                            ItemAddonList.Clear();
+                            FourthSurvivorItemAddonList.Clear();
                             foreach (var entity in entities)
                             {
-                                ItemAddonList.Add(entity);
+                                FourthSurvivorItemAddonList.Add(entity);
                             }
-                        });
+                        }));
                     }
                     else
                     {
                         var entities = context.ItemAddons
-                        .Where(ia => ia.IdItem == SelectedComboBoxFourthSurvivorItem.IdItem)
+                        .Where(ia => ia.IdItem == SelectedFourthSurvivorItem.IdItem)
                         .ToList();
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke((Delegate)(() =>
                         {
-                            ItemAddonList.Clear();
+                            FourthSurvivorItemAddonList.Clear();
                             foreach (var entity in entities)
                             {
-                                ItemAddonList.Add(entity);
+                                FourthSurvivorItemAddonList.Add(entity);
                             }
 
-                            if (SelectedComboBoxFourthSurvivorItem.ItemName == "Отсутствует")
+                            if (SelectedFourthSurvivorItem.ItemName == "Отсутствует")
                             {
-                                SelectedFourthSurvivorFirstItemAddon = context.ItemAddons.
-                                Where(ia => ia.ItemAddonName == "Отсутствует")
+                                SelectedFourthSurvivorFirstItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFourthSurvivorItem.IdItem)
+                                .Where(ia => ia.ItemAddonName == "Отсутствует")
                                 .FirstOrDefault();
 
                                 SelectedFourthSurvivorSecondItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFourthSurvivorItem.IdItem)
                                 .Where(ia => ia.ItemAddonName == "Отсутствует")
                                 .FirstOrDefault();
                             }
-                        });
+                            else
+                            {
+                                SelectedFourthSurvivorFirstItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+                                .OrderBy(x => x.IdRarity)
+                                .LastOrDefault();
+
+                                SelectedFourthSurvivorSecondItemAddon = context.ItemAddons
+                                .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+                                .OrderBy(x => x.IdRarity)
+                                .LastOrDefault();
+                            }
+                        }));
                     }
                 }
             }).Start();
         }
 
-        #endregion
-
-        #region Методы для установки Visibility у ListView 
-
-        private void SetVisibilityListView()
-        {
-            ListViewKillerPerkVisibility = Visibility.Visible;
-            ListViewKillerAddonVisibility = Visibility.Visible;
-            ListViewKillerOfferingVisibility = Visibility.Visible;
-
-            ListViewSurvivorPerkVisibility = Visibility.Visible;
-            ListViewSurvivorItemAddonVisibility = Visibility.Visible;
-            ListViewSurvivorOfferingVisibility = Visibility.Visible;
-        }
-
-        private void SetContentButtonForVisibilityListView()
-        {
-            ContentButtonListViewKillerPerkVisibility = "Скрыть";
-            ContentButtonListViewKillerAddonVisibility = "Скрыть";
-            ContentButtonListViewKillerOfferingVisibility = "Скрыть";
-
-            ContentButtonListViewSurvivorPerkVisibility = "Скрыть";
-            ContentButtonListViewSurvivorItemAddonVisibility = "Скрыть";
-            ContentButtonListViewSurvivorOfferingVisibility = "Скрыть";
-        }
         #endregion
 
         #region Блок "Изображение"
@@ -4797,8 +4540,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _loadEndMatchImageCommand;
         public RelayCommand LoadEndMatchImageCommand { get => _loadEndMatchImageCommand ??= new(async obj => { EndMatchImage = await ImageHelper.GetEndMatchImageAsync(SelectedImage.PathImage); }); }
 
-        private RelayCommand _clearImageListCommandCommand;
-        public RelayCommand ClearImageListCommandCommand { get => _clearImageListCommandCommand ??= new(obj => { ImagesList.Clear(); }); }
+        private RelayCommand _clearImageListCommand;
+        public RelayCommand ClearImageListCommand { get => _clearImageListCommand ??= new(obj => { ImagesList.Clear(); }); }
 
         private RelayCommand _deleteSelectedImageCommand;
         public RelayCommand DeleteSelectedImageCommand { get => _deleteSelectedImageCommand ??= new(obj => { DeleteSelectImage(); }); }
@@ -4875,33 +4618,59 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        //private async Task GetImageAsync()
-        //{
-        //    OpenFileDialog openFileDialog = new()
-        //    {
-        //        Multiselect = true,
-        //        Filter = "Изображения (*.jpg; *.jpeg; *.png)|*.jpg; *.jpeg; *.png",
-        //        InitialDirectory = @"D:\Steam\userdata\189964443\760\remote\381210\screenshots"
-        //    };
-
-        //    if (openFileDialog.ShowDialog() == true)
-        //    {
-        //        foreach (var item in openFileDialog.FileNames)
-        //        {
-        //            FileInfo fileInfo = new(item);
-        //            ImagesList.Add(new ImageInformation
-        //            {
-        //                PathImage = item,
-        //                ResizeImage = await GetResizeImageFromDirectoryTumbnails(Path.GetFileName(item)),
-        //                FileName = Path.GetFileName(item),
-        //                FileCreatedTime = fileInfo.CreationTime.ToString()
-        //            });
-        //        }
-        //    }
-        //}
-
         #endregion
 
         #endregion  
+
+        #region Проверки
+
+        #region Проверка коректности введеного числа престижа
+
+        private bool CheckPrestige(int number)
+        {
+            if (number > 100 | number < 0)
+            {
+                return false;
+            }
+            else return true;
+        }
+
+        #endregion
+
+        #region Проверки ассоциации
+
+        #endregion
+
+        #region Проверка кол-во килов
+
+        private void CheckKills()
+        {
+            TypeDeath Escaped = TypeDeathList.FirstOrDefault(x => x.IdTypeDeath == 5);
+
+            var selectedTypes = new List<TypeDeath>()
+            {
+                SelectedFirstSurvivorTypeDeath,
+                SelectedSecondSurvivorTypeDeath,
+                SelectedThirdSurvivorTypeDeath,
+                SelectedFourthSurvivorTypeDeath
+            };
+
+            CountKills = selectedTypes.Count(type => type != Escaped);
+
+            //if (deathCount != CountKills)
+            //{
+            //    _dialogService.ShowMessage($"Ошибка: ожидалось {CountKills} убийств, но фактически {deathCount}.", "Ошибка заполнения", TypeMessage.Warning);
+            //    return false;
+            //}
+            //else
+            //{
+            //    _dialogService.ShowMessage("Проверка пройдена успешно.", "Успех", TypeMessage.Warning);
+            //      return true;
+            //}
+        }
+
+        #endregion
+
+        #endregion
     }
 }
