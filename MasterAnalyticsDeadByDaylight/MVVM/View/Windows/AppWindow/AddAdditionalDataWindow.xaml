@@ -15,39 +15,10 @@
         Title="Добавить игровой режим" Height="500" Width="800">
     
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="30" />
+        <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
-
-        <!--#region Стили для кнопок в строке заголовка -->
-        
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                                   Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
-        
-        <!--#endregion-->
-
         <!--#region Цвета для ListView -->
         
         <LinearGradientBrush x:Key="ListViewItemSelectedAndMousOver" EndPoint="1,0" StartPoint="1,0">
@@ -139,21 +110,18 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="30" Background="#F999">
+        <Grid Grid.Row="0" Style="{StaticResource HeaderGrid}">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                
-                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
-                       Width="35" Margin="2" 
-                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                <Image Style="{StaticResource HeaderImage}"/>
 
                 <TextBlock Text="{Binding Title}" 
-                           FontSize="20" 
-                           VerticalAlignment="Center"/>
+                           Style="{StaticResource HeaderTextBlock}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -171,9 +139,9 @@
 
             <!--#region Режим игры -->
 
-            <TabItem Style="{StaticResource TabItemStyleAdditional}" Height="30">
+            <TabItem Style="{StaticResource MainStyle}" Height="30">
                 <TabItem.Header>
-                    <TextBlock Text="Режим игры" Style="{StaticResource TextBlockTabItemHeader}"/>
+                    <TextBlock Text="Режим игры" Style="{StaticResource TextBlock.TabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -218,7 +186,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCardAddAdditionalData}">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
 
                             <Border Style="{StaticResource BorderHeading}">
@@ -229,14 +197,14 @@
 
                             <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <TextBox Style="{StaticResource TextBoxName}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                            <TextBox Style="{StaticResource NameAdditionalData}" 
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding GameMode}"/>
 
                             <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                             <TextBox Style="{StaticResource TextBoxDescription}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding GameModeDescription}" />
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -262,9 +230,9 @@
 
             <!--#region Игровые события -->
                    
-            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+            <TabItem Style="{StaticResource MainStyle}">
                 <TabItem.Header>
-                    <TextBlock Text="Игровое событие" Style="{StaticResource TextBlockTabItemHeader}"/>
+                    <TextBlock Text="Игровое событие" Style="{StaticResource TextBlock.TabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -309,7 +277,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCardAddAdditionalData}">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
 
                             <Border Style="{StaticResource BorderHeading}">
@@ -320,14 +288,14 @@
 
                             <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <TextBox Style="{StaticResource TextBoxName}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                            <TextBox Style="{StaticResource NameAdditionalData}" 
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding GameEvent}"/>
 
                             <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                             <TextBox Style="{StaticResource TextBoxDescription}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding GameEventDescription}"/>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -353,9 +321,9 @@
 
             <!--#region Платформа -->
                    
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
+            <TabItem Style="{DynamicResource MainStyle}">
                 <TabItem.Header>
-                    <TextBlock Text="Платформа" Style="{StaticResource TextBlockTabItemHeader}"/>
+                    <TextBlock Text="Платформа" Style="{StaticResource TextBlock.TabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -400,7 +368,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCardAddAdditionalData}">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
 
                             <Border Style="{StaticResource BorderHeading}">
@@ -411,14 +379,14 @@
 
                             <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <TextBox Style="{StaticResource TextBoxName}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                            <TextBox Style="{StaticResource NameAdditionalData}" 
+                                     Template="{StaticResource BaseTemplate}" 
                                      Text="{Binding Platform}"/>
 
                             <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                             <TextBox Style="{StaticResource TextBoxDescription}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding PlatformDescription}"/>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -444,9 +412,9 @@
 
             <!--#region Асоциация -->
             
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
+            <TabItem Style="{DynamicResource MainStyle}">
                 <TabItem.Header>
-                    <TextBlock Text="Асоциация" Style="{StaticResource TextBlockTabItemHeader}"/>
+                    <TextBlock Text="Асоциация" Style="{StaticResource TextBlock.TabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -491,7 +459,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCardAddAdditionalData}">
 
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
 
@@ -503,14 +471,14 @@
 
                             <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <TextBox Style="{StaticResource TextBoxName}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                            <TextBox Style="{StaticResource NameAdditionalData}" 
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding PlayerAssociation}"/>
 
                             <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                             <TextBox Style="{StaticResource TextBoxDescription}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding PlayerAssociationDescription}"/>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -536,9 +504,9 @@
 
             <!--#region Патч -->
             
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
+            <TabItem Style="{DynamicResource MainStyle}">
                 <TabItem.Header>
-                    <TextBlock Text="Патч" Style="{StaticResource TextBlockTabItemHeader}"/>
+                    <TextBlock Text="Патч" Style="{StaticResource TextBlock.TabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -583,7 +551,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCardAddAdditionalData}">
 
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
 
@@ -595,8 +563,8 @@
 
                             <TextBlock Text="Номер" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <TextBox Style="{StaticResource TextBoxName}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                            <TextBox Style="{StaticResource NameAdditionalData}" 
+                                     Template="{StaticResource BaseTemplate}" 
                                      Text="{Binding PatchNumber}"/>
 
                             <TextBlock Text="Дата выхода патча" Style="{StaticResource TextBlockNameAndDescription}"/>
@@ -629,9 +597,9 @@
 
             <!--#region Тип смерти -->
 
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
+            <TabItem Style="{DynamicResource MainStyle}">
                 <TabItem.Header>
-                    <TextBlock Text="Тип смерти" Style="{StaticResource TextBlockTabItemHeader}"/>
+                    <TextBlock Text="Тип смерти" Style="{StaticResource TextBlock.TabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -676,7 +644,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCardAddAdditionalData}">
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
 
                             <Border Style="{StaticResource BorderHeading}">
@@ -687,14 +655,14 @@
 
                             <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <TextBox Style="{StaticResource TextBoxName}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                            <TextBox Style="{StaticResource NameAdditionalData}" 
+                                     Template="{StaticResource BaseTemplate}" 
                                      Text="{Binding TypeDeath}"/>
 
                             <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                             <TextBox Style="{StaticResource TextBoxDescription}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding TypeDeathDescription}"/>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -720,9 +688,9 @@
 
             <!--#region Игровая роль -->
 
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
+            <TabItem Style="{DynamicResource MainStyle}">
                 <TabItem.Header>
-                    <TextBlock Text="Игровая роль" Style="{StaticResource TextBlockTabItemHeader}"/>
+                    <TextBlock Text="Игровая роль" Style="{StaticResource TextBlock.TabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -767,25 +735,25 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCardAddAdditionalData}">
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
 
                             <Border Style="{StaticResource BorderHeading}">
 
-                                <TextBlock Text="Игровая роль" Style="{StaticResource TextBlockCardHeader}"/>
+                                <TextBlock Text="Игровая роль" Style="{StaticResource HeaderStyle}"/>
 
                             </Border>
 
                             <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <TextBox Style="{StaticResource TextBoxName}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                            <TextBox Style="{StaticResource NameAdditionalData}" 
+                                     Template="{StaticResource BaseTemplate}" 
                                      Text="{Binding Role}"/>
 
                             <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                             <TextBox Style="{StaticResource TextBoxDescription}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding RoleDescription}"/>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -811,9 +779,9 @@
 
             <!--#region Измерение -->
 
-            <TabItem Style="{DynamicResource TabItemStyleAdditional}">
+            <TabItem Style="{DynamicResource MainStyle}">
                 <TabItem.Header>
-                    <TextBlock Text="Измерение" Style="{StaticResource TextBlockTabItemHeader}"/>
+                    <TextBlock Text="Измерение" Style="{StaticResource TextBlock.TabItemHeader}"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -859,7 +827,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Style="{StaticResource BorderAddCard}">
+                    <Border Grid.Column="1" Style="{StaticResource BorderAddCardAddAdditionalData}">
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
 
                             <Border Style="{StaticResource BorderHeading}">
@@ -870,14 +838,14 @@
 
                             <TextBlock Text="Название" Style="{StaticResource TextBlockNameAndDescription}"/>
 
-                            <TextBox Style="{StaticResource TextBoxName}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}" 
+                            <TextBox Style="{StaticResource NameAdditionalData}" 
+                                     Template="{StaticResource BaseTemplate}" 
                                      Text="{Binding Measurement}"/>
 
                             <TextBlock Text="Описание" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                             <TextBox Style="{StaticResource TextBoxDescription}" 
-                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                     Template="{StaticResource BaseTemplate}"
                                      Text="{Binding MeasurementDescription}"/>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

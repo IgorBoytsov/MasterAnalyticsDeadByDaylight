@@ -16,52 +16,8 @@
         Height="750" Width="850">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="30" />
+        <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
-
-    <Window.Resources>
-
-        <!--#region Стили для кнопок в строке заголовка -->
-
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                               Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                               RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE949;"/>
-        </Style>
-
-        <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE739;"/>
-        </Style>
-
-        <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE923;"/>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
-
-        <!--#endregion-->
-
-    </Window.Resources>
 
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
@@ -79,16 +35,13 @@
 
             <!--#region Разметка для Window chrome -->
 
-            <Grid Grid.Row="0" Height="40" Background="#F999" Grid.ColumnSpan="2">
+            <Grid Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource HeaderGrid}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-                    <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
-                           Width="35" Margin="2" 
-                           HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <Image Style="{StaticResource HeaderImage}"/>
 
                     <TextBlock Text="{Binding Title}" 
-                               FontSize="20" 
-                               VerticalAlignment="Center"/>
+                               Style="{StaticResource HeaderTextBlock}"/>
                 </StackPanel>
 
                 <!--#endregion-->
@@ -169,7 +122,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                         <TextBlock Text="Путь: " FontSize="16" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                        <TextBox Width="350" Height="25" FontSize="17" Text="{Binding SaveFilePath, Mode=TwoWay}" Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}" Margin="10,0,0,0"/>
+                        <TextBox Width="350" Height="25" FontSize="17" Text="{Binding SaveFilePath, Mode=TwoWay}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}" Margin="10,0,0,0"/>
                         <Button Content="Выбрать" Width="75" Command="{Binding GetPathDirectoryCommand}" Template="{StaticResource ControlButton}" Margin="10,0,0,0"/>
                     </StackPanel>
                 </Border>

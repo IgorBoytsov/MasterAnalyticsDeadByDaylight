@@ -13,38 +13,10 @@
         Title="Добавить предмет" Height="900" Width="1070">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="30" />
+        <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
-
-        <!--#region Стили для кнопок в строке заголовка -->
-
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                               Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                               RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
-
-        <!--#endregion-->
 
         <!--#region ListViewStyle -->
 
@@ -85,21 +57,18 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="30" Background="#F999">
+        <Grid Grid.Row="0" Style="{StaticResource HeaderGrid}">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
-                   Width="35" Margin="2" 
-                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Image Style="{StaticResource HeaderImage}"/>
 
-                <TextBlock Text="{Binding Title}" 
-                       FontSize="20" 
-                       VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Title}"
+                           Style="{StaticResource HeaderTextBlock}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -138,8 +107,7 @@
 
             <!--#region Списки убийц и их аддонов -->
 
-            <Border Grid.Row="1" Margin="15,0,7.5,10" BorderThickness="0,2,0,2"
-                    Style="{StaticResource BorderAroundListView}">
+            <Border Grid.Row="1" Style="{StaticResource BorderAroundListView}">
 
                 <ListView  ItemsSource="{Binding ItemList}" SelectedItem="{Binding SelectedItem}" d:ItemsSource="{d:SampleData ItemCount=10}"
                            SelectedIndex="0"
@@ -182,8 +150,7 @@
                 </ListView>
             </Border>
 
-            <Border Grid.Row="1" Grid.Column="1" Margin="7.5,0,15,10" BorderThickness="0,2,0,2"
-                    Style="{StaticResource BorderAroundListView}">
+            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource BorderAroundListView}">
 
                 <ListView  ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=10}"
                            SelectedIndex="0"
@@ -230,7 +197,7 @@
 
             <!--#region Добавление данных для убийц -->
 
-            <Border Grid.Row="2" Grid.Column="0" Margin="15,10,7.5,15" Style="{StaticResource BorderAroundListView}">
+            <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderAddCardWithShadow}">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -263,7 +230,7 @@
 
                     <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
 
-                        <TextBox Text="{Binding TextBoxItemName}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}" Width="220" Height="30"/>
+                        <TextBox Text="{Binding TextBoxItemName}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}" Width="220" Height="30"/>
 
                     </StackPanel>
 
@@ -271,13 +238,13 @@
 
                     <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
 
-                        <Border Width="185" Height="200" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,5,5,0">
+                        <Border Width="185" Height="200" Style="{StaticResource BorderAroundAddingImage}">
                             <StackPanel>
 
-                                <Image Source="{Binding ImageItem}" Width="140" Height="140" Margin="0,10,0,0">
+                                <Image Source="{Binding ImageItem}" Style="{StaticResource AddingImage}" Width="140" Height="140">
                                     <Image.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearItemImageCommand}"/>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>
@@ -333,7 +300,7 @@
 
             <!--#region Добавление данных для аддонов -->
 
-            <Border Grid.Column="1" Grid.Row="2" Margin="7.5,10,15,15" Style="{StaticResource BorderAroundListView}">
+            <Border Grid.Column="1" Grid.Row="2" Style="{StaticResource BorderAddCardWithShadow}">
 
                 <Grid >
                     <Grid.RowDefinitions>
@@ -368,9 +335,9 @@
 
                     <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
 
-                        <TextBox Text="{Binding TextBoxItemAddonName}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}" Width="190" Height="30"/>
+                        <TextBox Text="{Binding TextBoxItemAddonName}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}" Width="190" Height="30"/>
 
-                        <TextBlock Text="Редкость" FontSize="20" Width="190" Height="30" Margin="0,10,0,10"/>
+                        <TextBlock Text="Редкость" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                         <ComboBox ItemsSource="{Binding RarityList}" DisplayMemberPath="RarityName"
                                   SelectedItem="{Binding ComboBoxSelectedRarity}"
@@ -378,7 +345,7 @@
                                   Foreground="White"
                                   Width="200" Height="25" FontSize="16"/>
 
-                        <TextBlock Text="Предмет" FontSize="20" Width="190" Height="30" Margin="0,10,0,10"/>
+                        <TextBlock Text="Предмет" Style="{StaticResource TextBlockNameAndDescription}"/>
 
                         <ComboBox ItemsSource="{Binding ItemList}" DisplayMemberPath="ItemName"
                                   SelectedItem="{Binding ComboBoxSelectedItem}"
@@ -392,13 +359,13 @@
 
                     <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
 
-                        <Border Width="185" Height="200" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,5,5,0">
+                        <Border Width="185" Height="200" Style="{StaticResource BorderAroundAddingImage}">
                             <StackPanel>
 
-                                <Image Source="{Binding ImageItemAddon}" Width="140" Height="140" Margin="0,10,0,0">
+                                <Image Source="{Binding ImageItemAddon}" Style="{StaticResource AddingImage}" Width="140" Height="140">
                                     <Image.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearAddonImageCommand}"/>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>
@@ -460,269 +427,3 @@
     </Grid>
 
 </Window>
-    
-    
-    
-    <!--<>
-
-    <Window.Resources>
-
-        --><!--#region Стили для кнопок в строке заголовка --><!--
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                       Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                       RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
-        --><!--#endregion-->
-
-        <!--#region ListViewStyle --><!--
-        <Style TargetType="ListViewItem">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListViewItem">
-                        <Border Name="border" Background="#FF282C34" Padding="2" SnapsToDevicePixels="true">
-                            <ContentPresenter/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                                <Setter Property="Foreground" Value="Black"/>
-                            </Trigger>
-
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="border" Property="Background" Value="Gray"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                                <Setter Property="Foreground" Value="Black"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        --><!--#endregion--><!--
-
-    </Window.Resources>
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <TextBlock Grid.Column="0" Grid.Row="0" Text="Предмет" FontSize="20" HorizontalAlignment="Center"/>
-
-        <Border Grid.Column="0" Grid.Row="1" BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
-
-            <ListView  Background="#FF282C34" BorderThickness="0"
-                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                       ItemsSource="{Binding ItemList}" SelectedItem="{Binding SelectedItem}" d:ItemsSource="{d:SampleData ItemCount=5}"
-                       ScrollViewer.CanContentScroll="False"
-                       VirtualizingPanel.ScrollUnit="Pixel"
-                       ScrollViewer.VerticalScrollBarVisibility="Visible">
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="White" Height="40" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding ItemName}"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Удалить" Command="{Binding DeleteItemCommand}"/>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-
-            </ListView>
-
-        </Border>
-
-        <StackPanel Visibility="Visible" Grid.Column="0" Grid.Row="2" Orientation="Horizontal">
-            <StackPanel HorizontalAlignment="Center" Margin="20,0,0,0" >
-
-                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,15">
-                    <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                        <TextBlock Text="Название предмета" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBox Text="{Binding TextBoxItemName}"
-                             Style="{StaticResource SettingTextBoxStyle}" 
-                             Template="{StaticResource SettingTextBoxTemplate}" 
-                             Width="150" Height="20"/>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
-                    <Button Content="Сохранить" 
-                            Command="{Binding SaveItemCommand}" 
-                            Template="{StaticResource ControlButton}" 
-                            Width="90" Height="30"/>
-                    
-                    <Button Content="Обновить" 
-                            Command="{Binding UpdateItemCommand}" 
-                            Template="{StaticResource ControlButton}" 
-                            Width="90" Height="30" Margin="0,10,0,0"/>
-                </StackPanel>
-            </StackPanel>
-
-            <StackPanel HorizontalAlignment="Right" Margin="20,0,20,0">
-                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-                    <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                        <TextBlock Text="Изображение" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center">
-                    <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
-                        <Image Source="{Binding ImageItem}" Width="130" Height="130"/>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Button Content="Выбрать"
-                            Command="{Binding SelectImageItemCommand}" 
-                            Template="{StaticResource ControlButton}" 
-                            Width="90" Height="30"/>
-                </StackPanel>
-            </StackPanel>
-
-        </StackPanel>
-
-
-        <TextBlock Grid.Column="1" Grid.Row="0" Text="Аддоны" FontSize="20" HorizontalAlignment="Center"/>
-
-        <Border Grid.Column="1" Grid.Row="1" BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
-
-            <ListView  Background="#FF282C34" BorderThickness="0"
-                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                       ItemsSource="{Binding ItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=5}"
-                       ScrollViewer.CanContentScroll="False"
-                       VirtualizingPanel.ScrollUnit="Pixel"
-                       ScrollViewer.VerticalScrollBarVisibility="Visible">
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="White" Height="40" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding ItemAddonName}"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Удалить" Command="{Binding DeleteItemCommand}"/>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-
-            </ListView>
-
-        </Border>
-
-        <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="20,0,0,0">
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,10">
-                <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                    <TextBlock Text="Добавить аддон" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,5">
-                <TextBlock Text="Выбрать предмета"/>
-            </StackPanel>
-
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-                <ComboBox ItemsSource="{Binding ItemList}" DisplayMemberPath="ItemName"
-                          SelectedItem="{Binding ComboBoxSelectedItem}"
-                          Style="{DynamicResource ComboBoxStyleApp}" 
-                          Foreground="White"
-                          Width="150" Height="25" FontSize="16" Margin="0,0,0,20"/>
-
-                <TextBlock Text="Выбрать качество" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-
-                <ComboBox ItemsSource="{Binding RarityList}" DisplayMemberPath="RarityName"
-                          SelectedItem="{Binding ComboBoxSelectedRarity}"
-                          Style="{DynamicResource ComboBoxStyleApp}" 
-                          Foreground="White"
-                          Width="150" Height="25" FontSize="16"/>
-            </StackPanel>
-
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,5">
-                <TextBlock Text="Название аддона"/>
-            </StackPanel>
-
-            <StackPanel HorizontalAlignment="Center">
-                <TextBox Text="{Binding TextBoxItemAddonName}"
-                         Style="{StaticResource SettingTextBoxStyle}"
-                         Template="{StaticResource SettingTextBoxTemplate}"
-                         Width="150" Height="20"/>
-            </StackPanel>
-
-            <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
-                <Button Content="Сохранить" 
-                        Template="{StaticResource ControlButton}"
-                        Command="{Binding SaveItemAddonCommand}"
-                        Width="90" Height="30"/>
-                
-                <Button Content="Обновить" 
-                        Template="{StaticResource ControlButton}"
-                        Command="{Binding UpdateItemAddonCommand}"
-                        Width="90" Height="30" Margin="0,10,0,0"/>
-            </StackPanel>
-        </StackPanel>
-
-        <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,20,0">
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-                <Border Height="25" Width="140" Background="#50545C" CornerRadius="10">
-                    <TextBlock Text="Изображение" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
-            </StackPanel>
-
-            <StackPanel HorizontalAlignment="Center">
-                <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
-                    <Image Source="{Binding ImageItemAddon}" Width="130" Height="130"/>
-                </Border>
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
-                <Button Content="Выбрать" Command="{Binding SelectImageItemAddonCommand}" Template="{StaticResource ControlButton}" Width="90" Height="30"/>
-            </StackPanel>
-        </StackPanel>
-
-    </Grid>
-</Window>-->

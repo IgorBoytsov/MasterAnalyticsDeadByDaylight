@@ -4,48 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow" 
-         xmlns:fa="http://schemas.fontawesome.com/icons/" 
+        xmlns:fa="http://schemas.fontawesome.com/icons/" 
         xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" 
         d:DataContext="{d:DesignInstance Type=windowsviewmodels:AddSurvivorWindowViewModel}"
         mc:Ignorable="d"
         ResizeMode="NoResize"
         Style="{StaticResource WindowStyle}"
         WindowStartupLocation="CenterScreen"
-        Title="Добавить вижившиго" Height="875" Width="760">
+        Title="Добавить вижившиго" Height="910" Width="760">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="30" />
+        <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
 
-        <!--#region Стили для кнопок в строке заголовка -->
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                           Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                           RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
-        <!--#endregion-->
-
         <!--#region ListViewStyle -->
+        
         <Style TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
@@ -71,6 +46,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <!--#endregion-->
 
     </Window.Resources>
@@ -81,22 +57,21 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="30" Background="#F999">
+        <!--#region Header -->
+        
+        <Grid Grid.Row="0" Style="{StaticResource HeaderGrid}">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
-                       Width="35" Margin="2" 
-                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Image Style="{StaticResource HeaderImage}"/>
 
                 <TextBlock Text="{Binding Title}" 
-                           FontSize="20" 
-                           VerticalAlignment="Center"/>
+                           Style="{StaticResource HeaderTextBlock}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -109,15 +84,18 @@
             </StackPanel>
 
         </Grid>
-
+        
+        <!--#endregion-->
+        
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="450"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Margin="15,10,15,10" BorderThickness="0,2,0,2"
-                    Style="{StaticResource BorderAroundListView}">
+            <!--#region Список выживших -->
+            
+            <Border Grid.Row="0" Style="{StaticResource BorderAroundListView}">
 
                 <ListView  ItemsSource="{Binding SurvivorList}" SelectedItem="{Binding SelectedSurvivorItem}" d:ItemsSource="{d:SampleData ItemCount=10}"
                            SelectedIndex="0"
@@ -159,9 +137,12 @@
 
                 </ListView>
             </Border>
+            
+            <!--#endregion-->
 
-            <Border Grid.Row="1" Margin="15,10,15,10"
-                    Style="{StaticResource BorderAroundListView}">
+            <!--#region Добавление данных -->
+           
+            <Border Grid.Row="1" Style="{StaticResource BorderAddCardWithShadow}">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -184,7 +165,9 @@
 
                     <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
 
-                        <TextBox Text="{Binding SurvivorName}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}"
+                        <TextBox Text="{Binding SurvivorName}" 
+                                 Style="{StaticResource BaseStyle}" 
+                                 Template="{StaticResource BaseTemplate}"
                                  Width="230" Height="230" Margin="5,0,5,0"/>
 
                     </StackPanel>
@@ -199,7 +182,7 @@
 
                     <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
 
-                        <TextBox Text="{Binding SurvivorDescription}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}"
+                        <TextBox Text="{Binding SurvivorDescription}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"
                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                                  Width="230" Height="230" Margin="5,0,5,0"/>
 
@@ -215,18 +198,18 @@
 
                     <StackPanel Grid.Column="2" Grid.Row="1" Margin="5,0,5,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 
-                        <Border Height="255" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,0,5,0">
+                        <Border Height="255" Style="{StaticResource BorderAroundAddingImage}">
                             <StackPanel>
 
-                                <Image Source="{Binding ImageSurvivor}" Width="190" Height="190" Margin="0,10,0,0">
+                                <Image Source="{Binding ImageSurvivor}" Style="{StaticResource AddingImage}" Width="190" Height="190">
                                     <Image.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>
-
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                <Separator Background="Gray"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,0">
                                     <Button HorizontalAlignment="Center"
                                             Command="{Binding ClearImageCommand}" 
                                             Template="{StaticResource ManagementButton}"
@@ -255,10 +238,14 @@
 
                 </Grid>
             </Border>
+            
+            <!--#endregion-->
+
         </Grid>
 
-        <Border Grid.Row="3" Margin="15,0,15,10"
-                Style="{StaticResource BorderAroundListView}">
+        <!--#region Кнопки -->
+       
+        <Border Grid.Row="3" Height="40" Style="{StaticResource BorderAddCardWithShadow}">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
                 <Button Content="Сохранить" 
@@ -273,6 +260,8 @@
             </StackPanel>
 
         </Border>
-
+        
+        <!--#endregion-->
+        
     </Grid>
 </Window>

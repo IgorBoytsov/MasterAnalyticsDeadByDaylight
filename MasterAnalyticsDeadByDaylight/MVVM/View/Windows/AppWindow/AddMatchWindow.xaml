@@ -69,16 +69,13 @@
 
             <!--#region Window chrome область -->
 
-            <Grid Grid.Row="0" Height="40" Background="#F999">
+            <Grid Grid.Row="0" Style="{StaticResource HeaderGrid}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-                    <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
-                           Width="35" Margin="2" 
-                           HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <Image Style="{StaticResource HeaderImage}"/>
 
                     <TextBlock Text="{Binding Title}" 
-                           FontSize="20" 
-                           VerticalAlignment="Center"/>
+                               Style="{StaticResource HeaderTextBlock}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
@@ -273,9 +270,9 @@
 
                             <!--#region Киллер -->
 
-                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                            <TabItem Style="{StaticResource MainStyle}">
                                 <TabItem.Header>
-                                    <TextBlock Text="Киллер" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                    <TextBlock Text="Киллер" FontSize="20" Style="{StaticResource TextBlock.TabItemHeader}"/>
                                 </TabItem.Header>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -340,12 +337,12 @@
                                                     <TextBox Width="150" Height="25"
                                                              Text="{Binding KillerPrestige}"
                                                              Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Width="150" Height="25" 
                                                              Text="{Binding KillerAccount}"
                                                              Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <CheckBox Content="Анонимный?"
                                                               Width="150" FontSize="20"
@@ -403,34 +400,34 @@
                                                 <StackPanel Grid.Column="1">
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
                                                              Text="{Binding SelectedKillerFirstPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              IsReadOnly="True"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
                                                              Text="{Binding SelectedKillerSecondPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              IsReadOnly="True"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedKillerThirdPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              IsReadOnly="True"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
                                                              Text="{Binding SelectedKillerFourthPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              IsReadOnly="True"/>
 
                                                     <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
                                                              Text="{Binding SelectedKillerFirstAddonName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              IsReadOnly="True"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
                                                              Text="{Binding SelectedKillerSecondAddonName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              IsReadOnly="True"/>
                                                 </StackPanel>
 
@@ -464,7 +461,7 @@
                                                 <StackPanel Grid.Column="1">
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}"
                                                              Text="{Binding SelectedKillerOfferingName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              IsReadOnly="True"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"
@@ -490,7 +487,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchKillerPerk, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -555,7 +552,7 @@
                                         <TextBlock Text="Аддона" Width="Auto" Style="{StaticResource TextBlockAddMatchInputData}">
                                         </TextBlock>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchKillerAddon, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -614,7 +611,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchKillerOffering, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -665,9 +662,9 @@
 
                             <!--#region Первый выживший -->
 
-                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                            <TabItem Style="{StaticResource MainStyle}">
                                 <TabItem.Header>
-                                    <TextBlock Text="Выживший №1" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                    <TextBlock Text="Выживший №1" FontSize="20" Style="{StaticResource TextBlock.TabItemHeader}"/>
                                 </TabItem.Header>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -739,11 +736,11 @@
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding FirstSurvivorPrestige}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding FirstSurvivorAccount}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <CheckBox Content="Анонимный?"
                                                                   Width="150" FontSize="20" 
@@ -797,19 +794,19 @@
                                                 <StackPanel Grid.Column="1">
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedFirstSurvivorFirstPerkName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedFirstSurvivorSecondPerkName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedFirstSurvivorThirdPerkName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedFirstSurvivorFourthPerkName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
                                                 </StackPanel>
 
                                             </Grid>
@@ -851,17 +848,17 @@
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedFirstSurvivorFirstItemAddonName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedFirstSurvivorSecondItemAddonName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedFirstSurvivorOfferingName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
                                                                   ItemsSource="{Binding SurvivorRoleList}"
@@ -881,7 +878,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Template="{StaticResource BaseTemplate}"
                                                      Text="{Binding SearchSurvivorPerk, UpdateSourceTrigger=PropertyChanged}"
                                                      Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -941,7 +938,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Template="{StaticResource BaseTemplate}"
                                                      Text="{Binding SearchFirstSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
                                                      Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -999,7 +996,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Template="{StaticResource BaseTemplate}"
                                                      Text="{Binding SearchFirstSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
                                                      Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -1050,9 +1047,9 @@
 
                             <!--#region Второй выживший -->
 
-                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                            <TabItem Style="{StaticResource MainStyle}">
                                 <TabItem.Header>
-                                    <TextBlock Text="Выживший №2" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                    <TextBlock Text="Выживший №2" FontSize="20" Style="{StaticResource TextBlock.TabItemHeader}"/>
                                 </TabItem.Header>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -1124,11 +1121,11 @@
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SecondSurvivorPrestige}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SecondSurvivorAccount}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <CheckBox Content="Анонимный?"
                                                                   Width="150" FontSize="20" 
@@ -1182,19 +1179,19 @@
                                                 <StackPanel Grid.Column="1">
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedSecondSurvivorFirstPerkName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedSecondSurvivorSecondPerkName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedSecondSurvivorThirdPerkName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedSecondSurvivorFourthPerkName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
                                                 </StackPanel>
 
                                             </Grid>
@@ -1236,17 +1233,17 @@
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedSecondSurvivorFirstItemAddonName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedSecondSurvivorSecondItemAddonName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                                  Text="{Binding SelectedSecondSurvivorOfferingName}"
-                                                                 Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                                 Template="{StaticResource BaseTemplate}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
                                                                   ItemsSource="{Binding SurvivorRoleList}"
@@ -1266,7 +1263,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Template="{StaticResource BaseTemplate}"
                                                      Text="{Binding SearchSurvivorPerk, UpdateSourceTrigger=PropertyChanged}"
                                                      Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -1326,7 +1323,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Template="{StaticResource BaseTemplate}"
                                                      Text="{Binding SearchSecondSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
                                                      Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -1384,7 +1381,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                     Template="{StaticResource SettingTextBoxTemplate}"
+                                                     Template="{StaticResource BaseTemplate}"
                                                      Text="{Binding TextBoxSearchSecondSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
                                                      Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -1435,9 +1432,9 @@
 
                             <!--#region Третий выживший -->
 
-                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                            <TabItem Style="{StaticResource MainStyle}">
                                 <TabItem.Header>
-                                    <TextBlock Text="Выживший №3" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                    <TextBlock Text="Выживший №3" FontSize="20" Style="{StaticResource TextBlock.TabItemHeader}"/>
                                 </TabItem.Header>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -1509,11 +1506,11 @@
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding ThirdSurvivorPrestige}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding ThirdSurvivorAccount}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <CheckBox Content="Анонимный?"
                                                               Width="150" FontSize="20" 
@@ -1567,19 +1564,19 @@
                                                 <StackPanel Grid.Column="1">
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedThirdSurvivorFirstPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedThirdSurvivorSecondPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedThirdSurvivorThirdPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedThirdSurvivorFourthPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
                                                 </StackPanel>
 
                                             </Grid>
@@ -1621,17 +1618,17 @@
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedThirdSurvivorFirstItemAddonName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedThirdSurvivorSecondItemAddonName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedThirdSurvivorOfferingName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
                                                               ItemsSource="{Binding SurvivorRoleList}"
@@ -1651,7 +1648,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchSurvivorPerk, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -1711,7 +1708,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}"   
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchThirdSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -1769,7 +1766,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchThirdSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -1820,9 +1817,9 @@
 
                             <!--#region Четвертый выживший -->
 
-                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                            <TabItem Style="{StaticResource MainStyle}">
                                 <TabItem.Header>
-                                    <TextBlock Text="Выживший №4" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                    <TextBlock Text="Выживший №4" FontSize="20" Style="{StaticResource TextBlock.TabItemHeader}"/>
                                 </TabItem.Header>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -1894,11 +1891,11 @@
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding FourthSurvivorPrestige}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding FourthSurvivorAccount}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <CheckBox Content="Анонимный?"
                                                               Width="150" FontSize="20" 
@@ -1952,19 +1949,19 @@
                                                 <StackPanel Grid.Column="1">
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedFourthSurvivorFirstPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedFourthSurvivorSecondPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedFourthSurvivorThirdPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedFourthSurvivorFourthPerkName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
                                                 </StackPanel>
 
                                             </Grid>
@@ -2006,17 +2003,17 @@
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedFourthSurvivorFirstItemAddonName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedFourthSurvivorSecondItemAddonName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
                                                              Text="{Binding SelectedFourthSurvivorOfferingName}"
-                                                             Template="{StaticResource SettingTextBoxTemplate}"/>
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
                                                               ItemsSource="{Binding SurvivorRoleList}"
@@ -2036,7 +2033,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Перка" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchSurvivorPerk, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -2096,7 +2093,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}"   
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchFourthSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -2154,7 +2151,7 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Подношения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                 Template="{StaticResource SettingTextBoxTemplate}"
+                                                 Template="{StaticResource BaseTemplate}"
                                                  Text="{Binding SearchFourthSurvivorOffering, UpdateSourceTrigger=PropertyChanged}"
                                                  Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
@@ -2204,9 +2201,9 @@
 
                             <!--#region Итоги матча -->
 
-                            <TabItem Style="{StaticResource TabItemStyleAdditional}">
+                            <TabItem Style="{StaticResource MainStyle}">
                                 <TabItem.Header>
-                                    <TextBlock Text="Конец игры" FontSize="20" Style="{StaticResource TextBlockTabItemHeader}"/>
+                                    <TextBlock Text="Конец игры" FontSize="20" Style="{StaticResource TextBlock.TabItemHeader}"/>
                                 </TabItem.Header>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -2294,14 +2291,14 @@
                                                                HorizontalAlignment="Left"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              Text="{Binding CountKills}"
                                                              FontSize="17" 
                                                              HorizontalAlignment="Left" 
                                                              TextAlignment="Center"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              Text="{Binding CountHooks}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"
@@ -2310,7 +2307,7 @@
                                                               DisplayMemberPath="MapName"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                             Template="{StaticResource SettingTextBoxTemplate}"
+                                                             Template="{StaticResource BaseTemplate}"
                                                              Text="{Binding CountNumberRecentGenerators}"/>
                                                 </StackPanel>
                                             </Grid>
@@ -2372,7 +2369,7 @@
                                             </Border>
 
                                             <TextBox  Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                      Template="{StaticResource SettingTextBoxTemplate}"
+                                                      Template="{StaticResource BaseTemplate}"
                                                       Text="{Binding DescriptionGame}"
                                                       TextAlignment="Left"
                                                       Width="500" Height="200"/>

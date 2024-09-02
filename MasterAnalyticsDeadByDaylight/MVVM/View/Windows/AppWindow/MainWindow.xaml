@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight"
-        xmlns:fa="http://schemas.fontawesome.com/icons/" 
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" 
         d:DataContext="{d:DesignInstance Type=windowsviewmodels:MainWindowViewModel}"
         mc:Ignorable="d"
@@ -19,50 +19,6 @@
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
-
-    <Window.Resources>
-
-        <!--#region Стили для кнопок в строке заголовка -->
-        
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                                       Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE949;"/>
-        </Style>
-
-        <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE739;"/>
-        </Style>
-
-        <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE923;"/>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
-        
-        <!--#endregion-->
-
-    </Window.Resources>
 
     <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
         <Grid>
@@ -133,59 +89,63 @@
 
             <Menu Grid.Row="1" FontSize="15" Foreground="White" Background="#121212" Grid.ColumnSpan="2">
 
-                <MenuItem Header="Добавить" Style="{DynamicResource MenuItemStyle}" Foreground="White">
+                <MenuItem Header="Добавить" Foreground="White" Style="{StaticResource MainMenuItemStyle}">
 
-                    <MenuItem Header="Добавить матч" Command="{Binding OpenAddMatchWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
-
-                    <Separator/>
-
-                    <MenuItem Header="Добавить убийцу"  Command="{Binding OpenAddKillerWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
-                    
-                    <MenuItem Header="Добавить выжившиго"  Command="{Binding OpenAddSurvivorWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Добавить матч" InputGestureText="Ctrl+M" Command="{Binding OpenAddMatchWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Regular_Calendar" Foreground="White"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
 
                     <Separator/>
 
-                    <MenuItem Header="Добавить перк"  Command="{Binding OpenAddPerkWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Добавить убийцу"  Command="{Binding OpenAddKillerWindowCommand}"/>
                     
-                    <MenuItem Header="Добавить карту"  Command="{Binding OpenAddMapWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
-                    
-                    <MenuItem Header="Добавить подношение" Command="{Binding OpenAddOfferingWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
-                    
-                    <MenuItem Header="Добавить предмет"  Command="{Binding OpenAddItemWindowCommand}"  Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Добавить выжившиго"  Command="{Binding OpenAddSurvivorWindowCommand}"/>
 
                     <Separator/>
 
-                    <MenuItem Header="Добавить доп. данные" Command="{Binding OpenAdditionalDataWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Добавить перк"  Command="{Binding OpenAddPerkWindowCommand}"/>
+                    
+                    <MenuItem Header="Добавить карту"  Command="{Binding OpenAddMapWindowCommand}"/>
+                    
+                    <MenuItem Header="Добавить подношение" Command="{Binding OpenAddOfferingWindowCommand}"/>
+                    
+                    <MenuItem Header="Добавить предмет"  Command="{Binding OpenAddItemWindowCommand}"/>
 
                     <Separator/>
 
-                    <MenuItem Header="Выход из приложение" Command="{Binding CloseAppCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Добавить доп. данные" Command="{Binding OpenAdditionalDataWindowCommand}"/>
+
+                    <Separator/>
+
+                    <MenuItem Header="Выход из приложение" Command="{Binding CloseAppCommand}"/>
                     
-                    <MenuItem Header="Свернуть в трей"  Command="{Binding}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Свернуть в трей"  Command="{Binding}"/>
                     
                 </MenuItem>
 
                 <MenuItem Header="Создать">
 
-                    <MenuItem Header="Отчет" Command="{Binding OpenReportCreationWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Отчет" Command="{Binding OpenReportCreationWindowCommand}"/>
 
-                    <MenuItem Header="Отправить на почту" Command="{Binding}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Отправить на почту" Command="{Binding}" />
                     
                 </MenuItem>
 
                 <MenuItem Header="Сервис">
 
-                    <MenuItem Header="Настройки" Command="{Binding }" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Настройки" Command="{Binding }"/>
                     
-                    <MenuItem Header="Бекап данных" Command="{Binding OpenDataBackupWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Бекап данных" Command="{Binding OpenDataBackupWindowCommand}"/>
 
                 </MenuItem>
                 
                 <MenuItem Header="Справка">
 
-                    <MenuItem Header="Как пользоватся?"  Command="{Binding OpenHowToUseWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Как пользоватся?"  Command="{Binding OpenHowToUseWindowCommand}"/>
 
-                    <MenuItem Header="О программе"  Command="{Binding OpenAboutTheProgramWindowCommand}" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="О программе"  Command="{Binding OpenAboutTheProgramWindowCommand}"/>
                     
                 </MenuItem>
 

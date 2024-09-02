@@ -1,49 +1,66 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!--#region МБ УДАЛИТЬ -->
+   
     <Style x:Key="TextBlockStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="25"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <!--<Setter Property="Margin" Value="0,0,0,10"/>-->
     </Style>
+    
+    <!--#endregion-->
 
-    <Style x:Key="HeaderAdditionalStatistics" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="25"/>
-        <Setter Property="Foreground" Value="White"/>
+    <!--#region Заголовок для карточек добавление или вывода данных (Все окна) -->
+    
+    <Style x:Key="HeaderStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="Foreground" Value="Black"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="FontWeight" Value="Bold"/>
     </Style>
+    
+    <!--#endregion-->
+   
+    <!--#region Текст в TabItem.Header -->
 
-    <!-- Стили для окна << AddAdditionalDataWindow >> -->
-
-    <!--#region TextBlock TabItem.Header -->
-
-    <Style x:Key="TextBlockTabItemHeader" TargetType="TextBlock">
+    <Style x:Key="TextBlock.TabItemHeader" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="White"/>
     </Style>
 
     <!--#endregion-->
-
-    <!--#region TextBlock заголовка -->
-
-    <Style x:Key="TextBlockCardHeader" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="20"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
-
-    <!--#endregion-->
-
-    <!--#region TextBlock(Название и описание) -->
+    
+    <!--#region Название и описание -->
 
     <Style x:Key="TextBlockNameAndDescription" TargetType="TextBlock">
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="0,10,0,0"/>
+        <Setter Property="Margin" Value="0,10,0,10"/>
     </Style>
 
     <!--#endregion-->
 
+    <!--#region TextBlock (Описание вносимых данных в окне AddMatch) -->
+
+    <Style x:Key="TextBlockAddMatchInputData" TargetType="TextBlock">
+        <Setter Property="Width" Value="150"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Margin" Value="0,5,0,5"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region TextBlock для название окна в Header -->
+
+    <Style x:Key="HeaderTextBlock" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!--#endregion-->
 
 </ResourceDictionary>

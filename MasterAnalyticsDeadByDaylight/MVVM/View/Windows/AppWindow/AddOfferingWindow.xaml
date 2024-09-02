@@ -14,38 +14,13 @@
         Title="Добавить подношение" Height="955" Width="760">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="30" />
+        <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
 
-        <!--#region Стили для кнопок в строке заголовка -->
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                           Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                           RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
-        <!--#endregion-->
-
         <!--#region ListViewStyle -->
+        
         <Style TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
@@ -71,6 +46,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <!--#endregion-->
 
     </Window.Resources>
@@ -81,22 +57,19 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="30" Background="#F999">
+        <Grid Grid.Row="0" Style="{StaticResource HeaderGrid}">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
-                       Width="35" Margin="2" 
-                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Image Style="{StaticResource HeaderImage}"/>
 
                 <TextBlock Text="{Binding Title}" 
-                           FontSize="20" 
-                           VerticalAlignment="Center"/>
+                           Style="{StaticResource HeaderTextBlock}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -117,7 +90,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource BaseBorder}" Margin="15,10,15,10">
+            <!--#region Выбор роли -->
+
+            <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource BorderAddCardWithShadow}">
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
@@ -133,7 +108,7 @@
 
                     <TextBox Text="{Binding SearchTextBox, UpdateSourceTrigger=PropertyChanged}"
                              Style="{StaticResource SettingTextBoxStyle}" 
-                             Template="{StaticResource SettingTextBoxTemplate}" 
+                             Template="{StaticResource BaseTemplate}" 
                              Foreground="White" Width="150" Height="25" FontSize="16"/>-->
 
                     <StackPanel/>
@@ -141,6 +116,10 @@
                 </StackPanel>
 
             </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Список подношений -->
 
             <Border Grid.Row="1" Margin="15,10,15,10" BorderThickness="0,2,0,2"
                     Style="{StaticResource BorderAroundListView}">
@@ -185,9 +164,12 @@
 
                 </ListView>
             </Border>
+            
+            <!--#endregion-->
 
-            <Border Grid.Row="2" Margin="15,10,15,10"
-                    Style="{StaticResource BaseBorder}">
+            <!--#region Добавление данных -->
+           
+            <Border Grid.Row="2" Style="{StaticResource BorderAddCardWithShadow}">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -210,9 +192,11 @@
 
                     <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
 
-                        <TextBox Text="{Binding OfferingName}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}"
+                        <TextBox Text="{Binding OfferingName}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"
                                  Width="230" Height="50" Margin="5,0,5,0"/>
-
+                        
+                        <TextBlock Text="Качество" Style="{StaticResource TextBlockNameAndDescription}"/>
+                        
                         <ComboBox ItemsSource="{Binding RarityList}" DisplayMemberPath="RarityName"
                                   SelectedItem="{Binding SelectedRarity}"
                                   Style="{DynamicResource ComboBoxStyleApp}" 
@@ -231,7 +215,7 @@
 
                     <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
 
-                        <TextBox Text="{Binding OfferingDescription}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}"
+                        <TextBox Text="{Binding OfferingDescription}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"
                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                                  Width="230" Height="230" Margin="5,0,5,0"/>
 
@@ -247,10 +231,10 @@
 
                     <StackPanel Grid.Column="2" Grid.Row="1" Margin="5,0,5,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 
-                        <Border Height="255" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,0,5,0">
+                        <Border Height="255" Style="{StaticResource BorderAroundAddingImage}">
                             <StackPanel>
 
-                                <Image Source="{Binding OfferingImage}" Width="190" Height="190" Margin="0,10,0,0">
+                                <Image Source="{Binding OfferingImage}" Style="{StaticResource AddingImage}" Width="190" Height="190">
                                     <Image.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
@@ -287,10 +271,14 @@
 
                 </Grid>
             </Border>
+
+            <!--#endregion-->
+
         </Grid>
 
-        <Border Grid.Row="3" Height="40" Margin="15,10,15,10"
-                Style="{StaticResource BorderAroundListView}">
+        <!--#region Кнопки -->
+     
+        <Border Grid.Row="3" Height="40" Style="{StaticResource BorderAddCardWithShadow}">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
                 <Button Content="Сохранить" 
@@ -305,6 +293,8 @@
             </StackPanel>
 
         </Border>
-
+        
+        <!--#endregion-->
+        
     </Grid>
 </Window>

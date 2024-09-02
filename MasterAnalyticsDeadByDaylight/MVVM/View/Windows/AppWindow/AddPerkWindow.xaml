@@ -14,38 +14,13 @@
         Title="Добавить перк"  Height="960" Width="760">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="30" />
+        <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
 
-        <!--#region Стили для кнопок в строке заголовка -->
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="50" Height="auto">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                           Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
-                           RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
-        <!--#endregion-->
-
         <!--#region ListViewStyle -->
+        
         <Style TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
@@ -71,6 +46,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <!--#endregion-->
 
     </Window.Resources>
@@ -81,22 +57,19 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="30" Background="#F999">
+        <Grid Grid.Row="0" Style="{StaticResource HeaderGrid}">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-                <Image Source="/Resources/icons8-dead-by-daylight-256.png" 
-                       Width="35" Margin="2" 
-                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Image Style="{StaticResource HeaderImage}"/>
 
                 <TextBlock Text="{Binding Title}" 
-                           FontSize="20" 
-                           VerticalAlignment="Center"/>
+                           Style="{StaticResource HeaderTextBlock}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -117,8 +90,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Margin="15,10,15,10" Style="{StaticResource BaseBorder}">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"> 
+            <!--#region Выбор роли и персонажа -->
+           
+            <Border Margin="15,10,15,10" Style="{StaticResource BorderAddCardWithShadow}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Text="Роль" FontSize="25" Margin="10,0,15,0"/>
 
                     <ComboBox ItemsSource="{Binding RoleList}" DisplayMemberPath="RoleName"
@@ -136,8 +111,12 @@
                 </StackPanel>
             </Border>
             
+            <!--#endregion-->
+
+            <!--#region Список перков -->
+
             <Border Grid.Row="1" Margin="15,10,15,10" BorderThickness="0,2,0,2"
-                    Style="{StaticResource BorderAroundListView}">
+                    Style="{StaticResource BorderAddCardWithShadow}">
 
                 <ListView  ItemsSource="{Binding PerkList}" SelectedItem="{Binding SelectedPerk}" d:ItemsSource="{d:SampleData ItemCount=10}"
                            SelectedIndex="0"
@@ -179,9 +158,12 @@
 
                 </ListView>
             </Border>
+            
+            <!--#endregion-->
 
-            <Border Grid.Row="2" Margin="15,10,15,10"
-                    Style="{StaticResource BorderAroundListView}">
+            <!--#region Добавление данных -->
+            
+            <Border Grid.Row="2" Style="{StaticResource BorderAddCardWithShadow}">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -204,7 +186,7 @@
 
                     <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
 
-                        <TextBox Text="{Binding PerkNameTextBox}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}"
+                        <TextBox Text="{Binding PerkNameTextBox}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"
                                  Width="230" Height="230" Margin="5,0,5,0"/>
 
                     </StackPanel>
@@ -219,7 +201,7 @@
 
                     <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
 
-                        <TextBox Text="{Binding PerkDescriptionTextBox}" Style="{StaticResource TextBoxName}" Template="{StaticResource SettingTextBoxTemplate}"
+                        <TextBox Text="{Binding PerkDescriptionTextBox}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"
                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                                  Width="230" Height="230" Margin="5,0,5,0"/>
 
@@ -235,10 +217,10 @@
 
                     <StackPanel Grid.Column="2" Grid.Row="1" Margin="5,0,5,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 
-                        <Border Height="255" BorderBrush="Gray" BorderThickness="2" CornerRadius="10" Margin="5,0,5,0">
+                        <Border Height="255" Style="{StaticResource BorderAroundAddingImage}">
                             <StackPanel>
 
-                                <Image Source="{Binding ImagePerk}" Width="190" Height="190" Margin="0,10,0,0">
+                                <Image Source="{Binding ImagePerk}" Style="{StaticResource AddingImage}" Width="190" Height="190">
                                     <Image.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
@@ -275,10 +257,15 @@
 
                 </Grid>
             </Border>
+
+            <!--#endregion-->
+
         </Grid>
 
+        <!--#region Кнопки -->
+        
         <Border Grid.Row="3" Height="40" Margin="15,10,15,10"
-                Style="{StaticResource BorderAroundListView}">
+                Style="{StaticResource BorderAddCardWithShadow}">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
                 <Button Content="Сохранить" 
@@ -293,110 +280,8 @@
             </StackPanel>
 
         </Border>
-
+        
+        <!--#endregion-->
+        
     </Grid>
 </Window>
-
-
-<!--
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="250"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-            
-            <StackPanel/>
-        </DockPanel>
-
-        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" BorderBrush="#F0F1F3" BorderThickness="0,2,0,2" CornerRadius="10" Margin="4,7,4,7" Padding="5">
-
-            <ListView  Background="#FF282C34" BorderThickness="0"
-               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-               ItemsSource="{Binding PerkList}" SelectedItem="{Binding SelectedPerk}">
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="White" Height="40" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock TextWrapping="WrapWithOverflow" Foreground="White" FontSize="15" Text="{Binding PerkName}"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Удалить" Command="{Binding DeletePerkCommand}"/>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-
-            </ListView>
-
-        </Border>
-
-        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
-            <StackPanel Margin="10,0,0,0">
-                <TextBlock Text="Название" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-                <TextBox Text="{Binding PerkNameTextBox}" 
-                         Style="{StaticResource SettingTextBoxStyle}" 
-                         Template="{StaticResource SettingTextBoxTemplate}" 
-                         Width="150" FontSize="18"/>
-                
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
-                    
-                    <Button Content="Сохранить" 
-                            Command="{Binding AddPerkCommand}" 
-                            Template="{StaticResource ControlButton}" 
-                            Width="90" Height="30"/>
-
-                    <Button Content="Обновить" 
-                            Command="{Binding UpdatePerkCommand}" 
-                            Template="{StaticResource ControlButton}" 
-                            Width="90" Height="30" Margin="0,10,0,0"/>
-                    
-                </StackPanel>
-            </StackPanel>
-
-            <StackPanel Margin="10,0,0,0">
-                
-                <TextBlock Text="Изображение" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-                <Border Width="145" Height="145" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
-                    <Image Source="{Binding ImagePerk}" Width="130" Height="130"/>
-                </Border>
-                
-                <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Button Content="Выбрать"
-                            Command="{Binding SelectImagePerkCommand}" 
-                            Template="{StaticResource ControlButton}" 
-                            Width="90" Height="30"/>
-                </StackPanel>
-
-            </StackPanel>
-
-        </StackPanel>
-
-        <StackPanel Grid.Row="2" Grid.Column="1">
-            <TextBlock Text="Описание" HorizontalAlignment="Center" Margin="0,5,0,5"/>
-            <TextBox Text="{Binding PerkDescriptionTextBox}" 
-                     Style="{StaticResource SettingTextBoxStyle}" 
-                     Template="{StaticResource SettingTextBoxTemplate}"              
-                     Margin="10" Width="190" Height="180" 
-                     FontSize="18" TextWrapping="WrapWithOverflow"
-                     Background="Gray" />
-        </StackPanel>
-        
-
-    </Grid>
-</Window>-->
