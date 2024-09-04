@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Foreground="White"
-        Title="Добавить игровой режим" Height="500" Width="800">
+        Title="Добавить игровой режим" Height="540" Width="800">
     
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="40" />
@@ -175,8 +175,14 @@
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Удалить" Command="{Binding DeleteGameModeItemCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Удалить"
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding DeleteGameModeItemCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
                                 </ListView>
@@ -266,8 +272,14 @@
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Удалить" Command="{Binding DeleteGameEventItemCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Удалить" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding DeleteGameEventItemCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
                                 </ListView>
@@ -357,8 +369,14 @@
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Удалить" Command="{Binding DeletePlatformItemCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Удалить" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding DeletePlatformItemCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
                                 </ListView>
@@ -448,8 +466,14 @@
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Удалить" Command="{Binding DeletePlayerAssociationItemCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Удалить" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding DeletePlayerAssociationItemCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
                                 </ListView>
@@ -540,8 +564,14 @@
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Удалить" Command="{Binding DeletePatchItemCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Удалить" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}" 
+                                                      Command="{Binding DeletePatchItemCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
                                 </ListView>
@@ -633,8 +663,14 @@
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Удалить" Command="{Binding DeleteTypeDeathItemCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Удалить"
+                                                      Style="{StaticResource MainContextMenuItemStyle}" 
+                                                      Command="{Binding DeleteTypeDeathItemCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
                                 </ListView>
@@ -724,8 +760,14 @@
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Удалить" Command="{Binding DeleteRoleItemCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Удалить" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding DeleteRoleItemCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
                                 </ListView>
@@ -816,8 +858,14 @@
                                         </GridView>
                                     </ListView.View>
                                     <ListView.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Удалить" Command="{Binding DeleteMeasurementItemCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Удалить" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding DeleteMeasurementItemCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
                                 </ListView>

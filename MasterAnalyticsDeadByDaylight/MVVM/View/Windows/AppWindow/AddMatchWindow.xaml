@@ -190,12 +190,23 @@
                         </ListView.ItemTemplate>
 
                         <ListView.ContextMenu>
-                            <ContextMenu BorderBrush="Black">
-                                <MenuItem Header="Итоговая таблицу" FontSize="15" Command="{Binding LoadResultMatchImageCommand}"/>
-                                <MenuItem Header="Начало игры" FontSize="15" Command="{Binding LoadStartMatchImageCommand}"/>
-                                <MenuItem Header="Конец игры" FontSize="15" Command="{Binding LoadEndMatchImageCommand}"/>
-                                <Separator/>
-                                <MenuItem Header="Удалить" FontSize="15" Command="{Binding DeleteSelectedImageCommand}"/>
+                            <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                <MenuItem Header="Итоговая таблицу" 
+                                          Style="{StaticResource MainContextMenuItemStyle}"
+                                          Command="{Binding LoadResultMatchImageCommand}"/>
+                                <MenuItem Header="Начало игры" 
+                                          Style="{StaticResource MainContextMenuItemStyle}"
+                                          Command="{Binding LoadStartMatchImageCommand}"/>
+                                <MenuItem Header="Конец игры" 
+                                          Style="{StaticResource MainContextMenuItemStyle}"
+                                          Command="{Binding LoadEndMatchImageCommand}"/>
+                                <MenuItem Header="Удалить" 
+                                          Style="{StaticResource MainContextMenuItemStyle}"
+                                          Command="{Binding DeleteSelectedImageCommand}">
+                                    <MenuItem.Icon>
+                                        <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>
@@ -527,11 +538,19 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedKillerFirstPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedKillerSecondPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedKillerThirdPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedKillerFourthPerkCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedKillerFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedKillerSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedKillerThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк"
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedKillerFourthPerkCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -593,9 +612,13 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I аддон" Command="{Binding SelectedKillerFirstAddonCommand}"/>
-                                                    <MenuItem Header="Выбрать как II аддон" Command="{Binding SelectedKillerSecondAddonCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I аддон" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedKillerFirstAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II аддон" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedKillerSecondAddonCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -918,11 +941,19 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedFirstSurvivorFirstPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedFirstSurvivorSecondPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedFirstSurvivorThirdPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedFirstSurvivorFourthPerkCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}" 
+                                                              Command="{Binding SelectedFirstSurvivorFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFirstSurvivorSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFirstSurvivorThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFirstSurvivorFourthPerkCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -938,9 +969,9 @@
                                         <fa:ImageAwesome Icon="Solid_Search" Foreground="White" Width="20"/>
                                         <TextBlock Text="Улучшения" Width="Auto" TextAlignment="Center" Style="{StaticResource TextBlockAddMatchInputData}"/>
                                         <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                     Template="{StaticResource BaseTemplate}"
-                                                     Text="{Binding SearchFirstSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
-                                                     Width="200" FontSize="16" Margin="10,0,0,0"/>
+                                                 Template="{StaticResource BaseTemplate}"
+                                                 Text="{Binding SearchFirstSurvivorItemAddon, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="200" FontSize="16" Margin="10,0,0,0"/>
                                     </StackPanel>
 
                                     <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
@@ -978,9 +1009,13 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I улучшени" Command="{Binding SelectedListViewSurvivorFirstItemAddonCommand}"/>
-                                                    <MenuItem Header="Выбрать как II улучшени" Command="{Binding SelectedListViewSurvivorSecondItemAddonCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I улучшени" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}" 
+                                                              Command="{Binding SelectedListViewSurvivorFirstItemAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II улучшени" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}" 
+                                                              Command="{Binding SelectedListViewSurvivorSecondItemAddonCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -1303,11 +1338,19 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedSecondSurvivorFirstPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedSecondSurvivorSecondPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedSecondSurvivorThirdPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedSecondSurvivorFourthPerkCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedSecondSurvivorFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedSecondSurvivorSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedSecondSurvivorThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedSecondSurvivorFourthPerkCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -1363,9 +1406,13 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I улучшени" Command="{Binding SelectedSecondSurvivorFirstItemAddonCommand}"/>
-                                                    <MenuItem Header="Выбрать как II улучшени" Command="{Binding SelectedSecondSurvivorSecondItemAddonCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I улучшени" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedSecondSurvivorFirstItemAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II улучшени"
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedSecondSurvivorSecondItemAddonCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -1688,11 +1735,19 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedThirdSurvivorFirstPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedThirdSurvivorSecondPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedThirdSurvivorThirdPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedThirdSurvivorFourthPerkCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedThirdSurvivorFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedThirdSurvivorSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedThirdSurvivorThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedThirdSurvivorFourthPerkCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -1748,9 +1803,13 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I улучшени" Command="{Binding SelectedThirdSurvivorFirstItemAddonCommand}"/>
-                                                    <MenuItem Header="Выбрать как II улучшени" Command="{Binding SelectedThirdSurvivorSecondItemAddonCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I улучшени"
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedThirdSurvivorFirstItemAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II улучшени" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedThirdSurvivorSecondItemAddonCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -2073,11 +2132,19 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I перк" Command="{Binding SelectedFourthSurvivorFirstPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как II перк" Command="{Binding SelectedFourthSurvivorSecondPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как III перк" Command="{Binding SelectedFourthSurvivorThirdPerkCommand}"/>
-                                                    <MenuItem Header="Выбрать как IV перк" Command="{Binding SelectedFourthSurvivorFourthPerkCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFourthSurvivorFirstPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как II перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFourthSurvivorSecondPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как III перк" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFourthSurvivorThirdPerkCommand}"/>
+                                                    <MenuItem Header="Выбрать как IV перк"
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFourthSurvivorFourthPerkCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 
@@ -2133,9 +2200,13 @@
                                             </ListView.ItemTemplate>
 
                                             <ListView.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Выбрать как I улучшени" Command="{Binding SelectedFourthSurvivorFirstItemAddonCommand}"/>
-                                                    <MenuItem Header="Выбрать как II улучшени" Command="{Binding SelectedFourthSurvivorSecondItemAddonCommand}"/>
+                                                <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                    <MenuItem Header="Выбрать как I улучшени" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFourthSurvivorFirstItemAddonCommand}"/>
+                                                    <MenuItem Header="Выбрать как II улучшени" 
+                                                              Style="{StaticResource MainContextMenuItemStyle}"
+                                                              Command="{Binding SelectedFourthSurvivorSecondItemAddonCommand}"/>
                                                 </ContextMenu>
                                             </ListView.ContextMenu>
 

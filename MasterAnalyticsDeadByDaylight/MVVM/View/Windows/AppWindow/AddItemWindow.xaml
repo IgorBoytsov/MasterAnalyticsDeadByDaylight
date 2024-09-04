@@ -142,8 +142,14 @@
                     </ListView.ItemTemplate>
 
                     <ListView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Удалить" Command="{Binding DeleteItemCommand}"/>
+                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                            <MenuItem Header="Удалить" 
+                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                      Command="{Binding DeleteItemCommand}">
+                                <MenuItem.Icon>
+                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -185,8 +191,14 @@
                     </ListView.ItemTemplate>
 
                     <ListView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Удалить" Command="{Binding DeleteKillerAddonCommand}"/>
+                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                            <MenuItem Header="Удалить" 
+                                      Style="{StaticResource MainContextMenuItemStyle}" 
+                                      Command="{Binding DeleteKillerAddonCommand}">
+                                <MenuItem.Icon>
+                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -243,8 +255,14 @@
 
                                 <Image Source="{Binding ImageItem}" Style="{StaticResource AddingImage}" Width="140" Height="140">
                                     <Image.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearItemImageCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Очистить изображение" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding ClearItemImageCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>
@@ -364,8 +382,14 @@
 
                                 <Image Source="{Binding ImageItemAddon}" Style="{StaticResource AddingImage}" Width="140" Height="140">
                                     <Image.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearAddonImageCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Очистить изображение" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding ClearAddonImageCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>

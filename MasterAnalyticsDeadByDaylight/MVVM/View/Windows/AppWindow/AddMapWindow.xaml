@@ -137,8 +137,14 @@
                     </ListView.ItemTemplate>
 
                     <ListView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Удалить" Command="{Binding DeleteOfferingCommand}"/>
+                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                            <MenuItem Header="Удалить" 
+                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                      Command="{Binding DeleteOfferingCommand}">
+                                <MenuItem.Icon>
+                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -164,8 +170,14 @@
 
                                 <Image Source="{Binding ImageMap}" Height="250" Margin="5">
                                     <Image.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}"> 
+                                            <MenuItem Header="Очистить изображение" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding ClearImageCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>

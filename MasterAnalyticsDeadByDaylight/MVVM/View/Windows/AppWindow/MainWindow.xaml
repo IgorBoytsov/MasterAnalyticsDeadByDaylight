@@ -20,6 +20,28 @@
         <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
 
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Ctrl" Key="M" Command="{Binding OpenAddMatchWindowCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="K" Command="{Binding OpenAddKillerWindowCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding OpenAddSurvivorWindowCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="P" Command="{Binding OpenAddPerkWindowCommand}"/>
+        <KeyBinding Modifiers="Alt" Key="M" Command="{Binding OpenAddMapWindowCommand}"/>
+        <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenAddOfferingWindowCommand}"/>
+        <KeyBinding Modifiers="Control" Key="I" Command="{Binding OpenAddItemWindowCommand}"/>
+        <KeyBinding Modifiers="Control" Key="A" Command="{Binding OpenAdditionalDataWindowCommand}"/>
+        <KeyBinding Modifiers="Control" Key="A" Command="{Binding OpenAdditionalDataWindowCommand}"/>
+        <KeyBinding Modifiers="Control" Key="Esc" Command="{Binding CloseAppCommand}"/>
+        
+        <KeyBinding Modifiers="Control" Key="R" Command="{Binding OpenReportCreationWindowCommand}"/>
+        <KeyBinding Modifiers="Control" Key="E" Command="{Binding OpenSendEmailWindowCommand}"/>
+        
+        <KeyBinding Modifiers="Alt" Key="S" Command="{Binding OpenSettingsWindowCommand}"/>
+        <KeyBinding Modifiers="Control" Key="B" Command="{Binding OpenDataBackupWindowCommand}"/>
+
+        <KeyBinding Key="F1" Command="{Binding OpenHowToUseWindowCommand}"/>
+        <KeyBinding Key="F2" Command="{Binding OpenAboutTheProgramWindowCommand}"/>
+    </Window.InputBindings>
+    
     <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
         <Grid>
             <Grid.ColumnDefinitions>
@@ -87,65 +109,105 @@
 
             <!--#region Меню -->
 
-            <Menu Grid.Row="1" FontSize="15" Foreground="White" Background="#121212" Grid.ColumnSpan="2">
+            <Menu Grid.Row="1" FontSize="15" Background="#121212" Grid.ColumnSpan="2">
 
-                <MenuItem Header="Добавить" Foreground="White" Style="{StaticResource MainMenuItemStyle}">
+                <MenuItem Header="Добавить" Style="{StaticResource MainMenuItemStyle}">
 
                     <MenuItem Header="Добавить матч" InputGestureText="Ctrl+M" Command="{Binding OpenAddMatchWindowCommand}">
                         <MenuItem.Icon>
-                            <fa:FontAwesome Icon="Regular_Calendar" Foreground="White"/>
+                            <fa:FontAwesome Icon="Regular_Calendar" Foreground="#FF519EED"/>
                         </MenuItem.Icon>
                     </MenuItem>
 
                     <Separator/>
 
-                    <MenuItem Header="Добавить убийцу"  Command="{Binding OpenAddKillerWindowCommand}"/>
-                    
-                    <MenuItem Header="Добавить выжившиго"  Command="{Binding OpenAddSurvivorWindowCommand}"/>
+                    <MenuItem Header="Добавить убийцу" InputGestureText="Ctrl+K" Command="{Binding OpenAddKillerWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Solid_SkullCrossbones" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="Добавить выжившиго" InputGestureText="Ctrl+S" Command="{Binding OpenAddSurvivorWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Solid_PeopleArrows" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
 
                     <Separator/>
 
-                    <MenuItem Header="Добавить перк"  Command="{Binding OpenAddPerkWindowCommand}"/>
+                    <MenuItem Header="Добавить перк" InputGestureText="Ctrl+P" Command="{Binding OpenAddPerkWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Brands_Perbyte" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                     
-                    <MenuItem Header="Добавить карту"  Command="{Binding OpenAddMapWindowCommand}"/>
-                    
-                    <MenuItem Header="Добавить подношение" Command="{Binding OpenAddOfferingWindowCommand}"/>
-                    
-                    <MenuItem Header="Добавить предмет"  Command="{Binding OpenAddItemWindowCommand}"/>
+                    <MenuItem Header="Добавить карту" InputGestureText="Alt+M" Command="{Binding OpenAddMapWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Regular_Map" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="Добавить подношение" InputGestureText="Ctrl+O" Command="{Binding OpenAddOfferingWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Regular_Map" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="Добавить предмет" InputGestureText="Ctrl+I" Command="{Binding OpenAddItemWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Regular_HandPaper" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
 
                     <Separator/>
 
-                    <MenuItem Header="Добавить доп. данные" Command="{Binding OpenAdditionalDataWindowCommand}"/>
+                    <MenuItem Header="Добавить доп. данные" InputGestureText="Ctrl+A" Command="{Binding OpenAdditionalDataWindowCommand}"/>
 
                     <Separator/>
 
-                    <MenuItem Header="Выход из приложение" Command="{Binding CloseAppCommand}"/>
-                    
-                    <MenuItem Header="Свернуть в трей"  Command="{Binding}"/>
-                    
-                </MenuItem>
+                    <MenuItem Header="Выход из приложение" InputGestureText="Ctrl+Esc" Command="{Binding CloseAppCommand}"/>
 
-                <MenuItem Header="Создать">
-
-                    <MenuItem Header="Отчет" Command="{Binding OpenReportCreationWindowCommand}"/>
-
-                    <MenuItem Header="Отправить на почту" Command="{Binding}" />
+                    <MenuItem Header="Свернуть в трей" Command="{Binding}"/>
                     
                 </MenuItem>
 
-                <MenuItem Header="Сервис">
+                <MenuItem Header="Создать" Style="{StaticResource MainMenuItemStyle}">
 
-                    <MenuItem Header="Настройки" Command="{Binding }"/>
+                    <MenuItem Header="Отчет" InputGestureText="Ctrl+R" Command="{Binding OpenReportCreationWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Solid_FileImport" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="Отправить на почту" InputGestureText="Ctrl+E" Command="{Binding}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Regular_EnvelopeOpen" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                     
-                    <MenuItem Header="Бекап данных" Command="{Binding OpenDataBackupWindowCommand}"/>
+                </MenuItem>
+
+                <MenuItem Header="Сервис" Style="{StaticResource MainMenuItemStyle}">
+
+                    <MenuItem Header="Бекап данных" InputGestureText="Ctrl+B" Command="{Binding OpenDataBackupWindowCommand}">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Regular_Copy" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="Настройки" InputGestureText="Alt+S" Command="{Binding }">
+                        <MenuItem.Icon>
+                            <fa:FontAwesome Icon="Solid_Wrench" Foreground="#FF519EED"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
 
                 </MenuItem>
-                
-                <MenuItem Header="Справка">
 
-                    <MenuItem Header="Как пользоватся?"  Command="{Binding OpenHowToUseWindowCommand}"/>
+                <MenuItem Header="Справка" Style="{StaticResource MainMenuItemStyle}">
 
-                    <MenuItem Header="О программе"  Command="{Binding OpenAboutTheProgramWindowCommand}"/>
+                    <MenuItem Header="Как пользоватся?" InputGestureText="F1" Command="{Binding OpenHowToUseWindowCommand}"/>
+
+                    <MenuItem Header="О программе" InputGestureText="F2" Command="{Binding OpenAboutTheProgramWindowCommand}"/>
                     
                 </MenuItem>
 

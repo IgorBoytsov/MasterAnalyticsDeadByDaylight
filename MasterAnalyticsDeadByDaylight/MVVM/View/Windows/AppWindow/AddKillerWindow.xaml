@@ -143,8 +143,14 @@
                     </ListView.ItemTemplate>
 
                     <ListView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Удалить" Command="{Binding DeleteKillerCommand}"/>
+                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                            <MenuItem Header="Удалить" 
+                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                      Command="{Binding DeleteKillerCommand}">
+                                <MenuItem.Icon>
+                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -186,8 +192,14 @@
                     </ListView.ItemTemplate>
 
                     <ListView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Удалить" Command="{Binding DeleteKillerAddonCommand}"/>
+                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                            <MenuItem Header="Удалить" 
+                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                      Command="{Binding DeleteKillerAddonCommand}">
+                                <MenuItem.Icon>
+                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -253,8 +265,14 @@
 
                                 <Image Source="{Binding ImageKiller}" Style="{StaticResource AddingImage}" Width="140" Height="140">
                                     <Image.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearKillerImageCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Очистить изображение"
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding ClearKillerImageCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>
@@ -293,8 +311,14 @@
 
                                 <Image Source="{Binding ImageKillerAbility}" Style="{StaticResource AddingImage}" Width="140" Height="140">
                                     <Image.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearKillerAbilityImageCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Очистить изображение" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding ClearKillerAbilityImageCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>
@@ -406,8 +430,14 @@
 
                                 <Image Source="{Binding ImageKillerAddon}" Style="{StaticResource AddingImage}" Width="140" Height="140">
                                     <Image.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearAddonImageCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Очистить изображение" 
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding ClearAddonImageCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>

@@ -151,8 +151,14 @@
                     </ListView.ItemTemplate>
 
                     <ListView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Удалить" Command="{Binding DeleteSurvivorCommand}"/>
+                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                            <MenuItem Header="Удалить" 
+                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                      Command="{Binding DeletePerkCommand}">
+                                <MenuItem.Icon>
+                                    <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -222,8 +228,14 @@
 
                                 <Image Source="{Binding ImagePerk}" Style="{StaticResource AddingImage}" Width="190" Height="190">
                                     <Image.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Очистить изображение" Command="{Binding ClearImageCommand}"/>
+                                        <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                            <MenuItem Header="Очистить изображение"
+                                                      Style="{StaticResource MainContextMenuItemStyle}"
+                                                      Command="{Binding ClearImageCommand}">
+                                                <MenuItem.Icon>
+                                                    <fa:ImageAwesome Icon="Solid_Ban" Foreground="Red"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>
