@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel
 {
-    class KillerKillRateTracker
+    public class KillerKillRateTracker
     {
         public double KillRate { get; set; }
 

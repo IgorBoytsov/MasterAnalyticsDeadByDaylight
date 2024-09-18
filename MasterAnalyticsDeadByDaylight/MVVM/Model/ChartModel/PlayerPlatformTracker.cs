@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel
 {
-    class PlayerPlatformTracker
+    public class PlayerPlatformTracker
     {
         public string PlatformName { get; set; }
 

@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel
 {
-    public class SurvivorAnonymousTracker
+    public class CountMatchTracker
     {
-        public double PlayerAnonymous { get; set; }
+        public string DateTime { get; set; }
 
-        public int CountPlayerAnonymous { get; set; }
-
-        public int CountPlayer { get; set; }
+        public double CountMatch { get; set; }
     }
 }

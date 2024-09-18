@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel
 {
-    class RecentGeneratorsTracker
+    public class RecentGeneratorsTracker
     {
         public string CountRecentGeneratorsName { get; set; }
 

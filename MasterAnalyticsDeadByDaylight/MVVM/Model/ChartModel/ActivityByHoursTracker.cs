@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel
 {
-    class KillerCountMatchTracker
+    public class ActivityByHoursTracker
     {
-        public string DateTime { get; set; }
+        public DateTime Hours { get; set; }
 
         public double CountMatch { get; set; }
     }

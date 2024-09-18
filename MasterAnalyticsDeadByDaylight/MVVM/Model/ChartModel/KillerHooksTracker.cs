@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel
 {
-    internal class KillerHooksTracker
+    public class KillerHooksTracker
     {
         public string CountHookName { get; set; }
 

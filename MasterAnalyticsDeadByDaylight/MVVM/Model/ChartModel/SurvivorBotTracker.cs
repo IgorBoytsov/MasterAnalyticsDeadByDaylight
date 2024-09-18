@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel
 {
-    internal class SurvivorBotTracker
+    public class SurvivorBotTracker
     {
         public double PlayerBot {  get; set; }
 

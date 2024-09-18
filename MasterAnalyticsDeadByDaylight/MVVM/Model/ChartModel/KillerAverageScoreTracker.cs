@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel
 {
-    class KillerAverageScoreTracker
+     public class KillerAverageScoreTracker
     {
         public string DateTime { get; set; }
 
