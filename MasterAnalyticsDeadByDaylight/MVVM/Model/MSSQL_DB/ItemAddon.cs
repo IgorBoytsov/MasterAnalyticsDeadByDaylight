@@ -21,6 +21,10 @@ public partial class ItemAddon
 
     public virtual Rarity IdRarityNavigation { get; set; }
 
+    public virtual ICollection<SurvivorBuild> SurvivorBuildIdAddonItem1Navigations { get; set; } = new List<SurvivorBuild>();
+
+    public virtual ICollection<SurvivorBuild> SurvivorBuildIdAddonItem2Navigations { get; set; } = new List<SurvivorBuild>();
+
     public virtual ICollection<SurvivorInfo> SurvivorInfoIdAddon1Navigations { get; set; } = new List<SurvivorInfo>();
 
     public virtual ICollection<SurvivorInfo> SurvivorInfoIdAddon2Navigations { get; set; } = new List<SurvivorInfo>();

@@ -21,6 +21,10 @@ public partial class KillerAddon
 
     public virtual Rarity IdRarityNavigation { get; set; }
 
+    public virtual ICollection<KillerBuild> KillerBuildIdAddon1Navigations { get; set; } = new List<KillerBuild>();
+
+    public virtual ICollection<KillerBuild> KillerBuildIdAddon2Navigations { get; set; } = new List<KillerBuild>();
+
     public virtual ICollection<KillerInfo> KillerInfoIdAddon1Navigations { get; set; } = new List<KillerInfo>();
 
     public virtual ICollection<KillerInfo> KillerInfoIdAddon2Navigations { get; set; } = new List<KillerInfo>();

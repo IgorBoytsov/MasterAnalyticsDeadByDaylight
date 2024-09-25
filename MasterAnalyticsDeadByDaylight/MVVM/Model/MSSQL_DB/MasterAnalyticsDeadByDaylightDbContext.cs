@@ -29,6 +29,8 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
     public virtual DbSet<KillerAddon> KillerAddons { get; set; }
 
+    public virtual DbSet<KillerBuild> KillerBuilds { get; set; }
+
     public virtual DbSet<KillerInfo> KillerInfos { get; set; }
 
     public virtual DbSet<KillerPerk> KillerPerks { get; set; }
@@ -50,6 +52,8 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Survivor> Survivors { get; set; }
+
+    public virtual DbSet<SurvivorBuild> SurvivorBuilds { get; set; }
 
     public virtual DbSet<SurvivorInfo> SurvivorInfos { get; set; }
 
@@ -221,6 +225,57 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.HasOne(d => d.IdRarityNavigation).WithMany(p => p.KillerAddons)
                 .HasForeignKey(d => d.IdRarity)
                 .HasConstraintName("FK_KillerAddon_Rarity");
+        });
+
+        modelBuilder.Entity<KillerBuild>(entity =>
+        {
+            entity.HasKey(e => e.IdBuild);
+
+            entity.ToTable("KillerBuild");
+
+            entity.Property(e => e.IdBuild).HasColumnName("id_Build");
+            entity.Property(e => e.IdAddon1).HasColumnName("id_Addon_1");
+            entity.Property(e => e.IdAddon2).HasColumnName("id_Addon_2");
+            entity.Property(e => e.IdKiller).HasColumnName("id_Killer");
+            entity.Property(e => e.IdPerk1).HasColumnName("id_Perk_1");
+            entity.Property(e => e.IdPerk2).HasColumnName("id_Perk_2");
+            entity.Property(e => e.IdPerk3).HasColumnName("id_Perk_3");
+            entity.Property(e => e.IdPerk4).HasColumnName("id_Perk_4");
+
+            entity.HasOne(d => d.IdAddon1Navigation).WithMany(p => p.KillerBuildIdAddon1Navigations)
+                .HasForeignKey(d => d.IdAddon1)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KillerBuild_KillerAddon");
+
+            entity.HasOne(d => d.IdAddon2Navigation).WithMany(p => p.KillerBuildIdAddon2Navigations)
+                .HasForeignKey(d => d.IdAddon2)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KillerBuild_KillerAddon1");
+
+            entity.HasOne(d => d.IdKillerNavigation).WithMany(p => p.KillerBuilds)
+                .HasForeignKey(d => d.IdKiller)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KillerBuild_Killer");
+
+            entity.HasOne(d => d.IdPerk1Navigation).WithMany(p => p.KillerBuildIdPerk1Navigations)
+                .HasForeignKey(d => d.IdPerk1)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KillerBuild_KillerPerk");
+
+            entity.HasOne(d => d.IdPerk2Navigation).WithMany(p => p.KillerBuildIdPerk2Navigations)
+                .HasForeignKey(d => d.IdPerk2)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KillerBuild_KillerPerk1");
+
+            entity.HasOne(d => d.IdPerk3Navigation).WithMany(p => p.KillerBuildIdPerk3Navigations)
+                .HasForeignKey(d => d.IdPerk3)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KillerBuild_KillerPerk2");
+
+            entity.HasOne(d => d.IdPerk4Navigation).WithMany(p => p.KillerBuildIdPerk4Navigations)
+                .HasForeignKey(d => d.IdPerk4)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KillerBuild_KillerPerk3");
         });
 
         modelBuilder.Entity<KillerInfo>(entity =>
@@ -415,6 +470,57 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
             entity.Property(e => e.IdSurvivor).HasColumnName("id_Survivor");
             entity.Property(e => e.SurvivorName).IsRequired();
+        });
+
+        modelBuilder.Entity<SurvivorBuild>(entity =>
+        {
+            entity.HasKey(e => e.IdBuild);
+
+            entity.ToTable("SurvivorBuild");
+
+            entity.Property(e => e.IdBuild).HasColumnName("id_Build");
+            entity.Property(e => e.IdAddonItem1).HasColumnName("id_AddonItem_1");
+            entity.Property(e => e.IdAddonItem2).HasColumnName("id_AddonItem_2");
+            entity.Property(e => e.IdItem).HasColumnName("id_Item");
+            entity.Property(e => e.IdPerk1).HasColumnName("id_Perk_1");
+            entity.Property(e => e.IdPerk2).HasColumnName("id_Perk_2");
+            entity.Property(e => e.IdPerk3).HasColumnName("id_Perk_3");
+            entity.Property(e => e.IdPerk4).HasColumnName("id_Perk_4");
+
+            entity.HasOne(d => d.IdAddonItem1Navigation).WithMany(p => p.SurvivorBuildIdAddonItem1Navigations)
+                .HasForeignKey(d => d.IdAddonItem1)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SurvivorBuild_ItemAddon");
+
+            entity.HasOne(d => d.IdAddonItem2Navigation).WithMany(p => p.SurvivorBuildIdAddonItem2Navigations)
+                .HasForeignKey(d => d.IdAddonItem2)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SurvivorBuild_ItemAddon1");
+
+            entity.HasOne(d => d.IdItemNavigation).WithMany(p => p.SurvivorBuilds)
+                .HasForeignKey(d => d.IdItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SurvivorBuild_Item");
+
+            entity.HasOne(d => d.IdPerk1Navigation).WithMany(p => p.SurvivorBuildIdPerk1Navigations)
+                .HasForeignKey(d => d.IdPerk1)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SurvivorBuild_SurvivorPerk");
+
+            entity.HasOne(d => d.IdPerk2Navigation).WithMany(p => p.SurvivorBuildIdPerk2Navigations)
+                .HasForeignKey(d => d.IdPerk2)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SurvivorBuild_SurvivorPerk1");
+
+            entity.HasOne(d => d.IdPerk3Navigation).WithMany(p => p.SurvivorBuildIdPerk3Navigations)
+                .HasForeignKey(d => d.IdPerk3)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SurvivorBuild_SurvivorPerk2");
+
+            entity.HasOne(d => d.IdPerk4Navigation).WithMany(p => p.SurvivorBuildIdPerk4Navigations)
+                .HasForeignKey(d => d.IdPerk4)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SurvivorBuild_SurvivorPerk3");
         });
 
         modelBuilder.Entity<SurvivorInfo>(entity =>
