@@ -1,14 +1,9 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.ModalWindow;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.Services.DialogService
 {
-    public class DialogService : IDialogService
+    public class CustomDialogService : ICustomDialogService
     {
         public bool ShowMessage(string message, 
                                 string messageDescription = "Ошибка", 
