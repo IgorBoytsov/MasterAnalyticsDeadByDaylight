@@ -14,5 +14,17 @@ namespace MasterAnalyticsDeadByDaylight.Services.DatabaseServices
         Task RemoveAsync<T>(T entity) where T : class;
         Task RemoveRangeAsync<T>(IEnumerable<T> entities) where T : class;
         Task<T> FindAsync<T>(int id) where T : class;
+
+
+        IEnumerable<T> GetAllData<T>(Func<IQueryable<T>, IQueryable<T>> include = null) where T : class;
+        List<T> GetAllDataInList<T>(Func<IQueryable<T>, IQueryable<T>> include = null) where T : class;
+        T GetById<T>(int id, string nameProperty, Func<IQueryable<T>, IQueryable<T>> include = null) where T : class;
+        T FindByValue<T>(string propertyName, object value, Func<IQueryable<T>, IQueryable<T>> include = null) where T : class;
+        bool Exists<T>(Expression<Func<T, bool>> predicate) where T : class;
+        void Add<T>(T entity) where T : class;
+        void Update<T>(T entity) where T : class;
+        void Remove<T>(T entity) where T : class;
+        void RemoveRange<T>(IEnumerable<T> entities) where T : class;
+        T Find<T>(int id) where T : class;
     }
 }

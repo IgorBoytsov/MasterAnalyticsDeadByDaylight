@@ -8,6 +8,8 @@ namespace MasterAnalyticsDeadByDaylight.Services.DatabaseServices
     {
         private readonly Func<MasterAnalyticsDeadByDaylightDbContext> _contextFactory = contextFactory;
 
+        #region Асинхронные методы
+
         public async Task<IEnumerable<T>> GetAllDataAsync<T>(Func<IQueryable<T>, IQueryable<T>> include = null) where T : class
         {
             using (var context = _contextFactory())
@@ -138,5 +140,142 @@ namespace MasterAnalyticsDeadByDaylight.Services.DatabaseServices
                 await context.SaveChangesAsync();
             }
         }
+
+        #endregion
+
+        #region Обычные методы
+
+        public IEnumerable<T> GetAllData<T>(Func<IQueryable<T>, IQueryable<T>> include = null) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                IQueryable<T> query = context.Set<T>();
+
+                if (include != null)
+                {
+                    query = include(query);
+                }
+
+                return query.ToList();
+            }
+        }
+
+        public List<T> GetAllDataInList<T>(Func<IQueryable<T>, IQueryable<T>> include = null) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                IQueryable<T> query = context.Set<T>();
+
+                if (include != null)
+                {
+                    query = include(query);
+                }
+
+                return query.ToList();
+            }
+        }
+
+        public T GetById<T>(int id, string nameProperty, Func<IQueryable<T>, IQueryable<T>> include = null) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                IQueryable<T> query = context.Set<T>();
+
+                if (include != null)
+                {
+                    query = include(query);
+                }
+
+                try
+                {
+                    return query.FirstOrDefault(e => EF.Property<int>(e, nameProperty) == id);
+                }
+                catch (Exception)
+                {
+                    throw new Exception($"Свойства {nameProperty} не существует");
+                }
+            }
+        }
+
+        public T FindByValue<T>(string propertyName, object value, Func<IQueryable<T>, IQueryable<T>> include = null) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                IQueryable<T> query = context.Set<T>();
+
+                if (include != null)
+                {
+                    query = include(query);
+                }
+
+                try
+                {
+                    return query.FirstOrDefault(e => EF.Property<object>(e, propertyName).Equals(value));
+                }
+                catch (Exception)
+                {
+                    throw new Exception($"Свойства {propertyName} не существует");
+                }
+            }
+        }
+
+        public T Find<T>(int id) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                return context.Set<T>().Find(id);
+            }
+        }
+
+        public bool Exists<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                return context.Set<T>().Any(predicate);
+            }
+        }
+
+        public void Add<T>(T entity) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                context.Set<T>().Add(entity);
+                context.SaveChanges();
+            }
+        }
+
+        public void Remove<T>(T entity) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                context.Set<T>().Remove(entity);
+                context.SaveChanges();
+            }
+        }
+
+        public void RemoveRange<T>(IEnumerable<T> entities) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                context.Set<T>().RemoveRange(entities);
+                context.SaveChanges();
+            }
+        }
+
+        public void Update<T>(T entity) where T : class
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "Объект не найден");
+            }
+
+            using (var context = _contextFactory())
+            {
+                context.Set<T>().Update(entity);
+                context.SaveChanges();
+            }
+        }
+
+        #endregion 
     }
 }
