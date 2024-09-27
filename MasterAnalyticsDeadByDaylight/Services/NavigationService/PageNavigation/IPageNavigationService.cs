@@ -7,7 +7,7 @@ using System.Windows.Controls;
 
 namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation
 {
-    interface IPageNavigationService
+    public interface IPageNavigationService
     {
         void NavigateTo(string pageName, object parameter = null);
     }
