@@ -1,10 +1,9 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -23,39 +22,39 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedItem;
             set
             {
-                _selectedItem = value;
                 if (value == null) { return; }
+                _selectedItem = value;
 
-                TextBoxItemName = value.ItemName;
+                ItemName = value.ItemName;
                 ImageItem = value.ItemImage;
                 ImageItemAddon = null;
                 GetItemAddonData();
 
-                TextBoxItemAddonName = string.Empty;
-                TextBoxItemAddonDescription = string.Empty;
+                ItemAddonName = string.Empty;
+                ItemAddonDescription = string.Empty;
 
                 OnPropertyChanged();
             }
         }
 
-        private string _textBoxItemName;
-        public string TextBoxItemName
+        private string _itemName;
+        public string ItemName
         {
-            get => _textBoxItemName;
+            get => _itemName;
             set
             {
-                _textBoxItemName = value;
+                _itemName = value;
                 OnPropertyChanged();
             }
         }
 
-        private string _textBoxItemDescription;
-        public string TextBoxItemDescription
+        private string _itemDescription;
+        public string ItemDescription
         {
-            get => _textBoxItemDescription;
+            get => _itemDescription;
             set
             {
-                _textBoxItemDescription = value;
+                _itemDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -79,13 +78,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedItemAddon;
             set
             {
-                _selectedItemAddon = value;
                 if (value == null) { return; }
+                _selectedItemAddon = value;
 
-                TextBoxItemAddonName = value.ItemAddonName;
-                TextBoxItemAddonDescription = value.ItemAddonDescription;
+                ItemAddonName = value.ItemAddonName;
+                ItemAddonDescription = value.ItemAddonDescription;
                 ImageItemAddon = value.ItemAddonImage;
-                ComboBoxSelectedRarity = RarityList.FirstOrDefault(r => r.IdRarity == value.IdRarity);
+                SelectedRarity = RarityList.FirstOrDefault(r => r.IdRarity == value.IdRarity);
                 ComboBoxSelectedItem = ItemList.FirstOrDefault(r => r.IdItem == value.IdItem);
                 OnPropertyChanged();
             }
@@ -103,24 +102,24 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private string _textBoxItemAddonName;
-        public string TextBoxItemAddonName
+        private string _itemAddonName;
+        public string ItemAddonName
         {
-            get => _textBoxItemAddonName;
+            get => _itemAddonName;
             set
             {
-                _textBoxItemAddonName = value;
+                _itemAddonName = value;
                 OnPropertyChanged();
             }
         }
 
-        private string _textBoxItemAddonDescription;
-        public string TextBoxItemAddonDescription
+        private string _itemAddonDescription;
+        public string ItemAddonDescription
         {
-            get => _textBoxItemAddonDescription;
+            get => _itemAddonDescription;
             set
             {
-                _textBoxItemAddonDescription = value;
+                _itemAddonDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -149,24 +148,23 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         public ObservableCollection<Rarity> RarityList { get; set; } = [];
 
-        private Rarity _comboBoxSelectedRarity;
-        public Rarity ComboBoxSelectedRarity
+        private Rarity _selectedRarity;
+        public Rarity SelectedRarity
         {
-            get => _comboBoxSelectedRarity;
+            get => _selectedRarity;
             set
             {
-                _comboBoxSelectedRarity = value;
+                _selectedRarity = value;
                 OnPropertyChanged();
             }
         }
 
         #endregion
+        private readonly IDataService _dateService;
 
-        IDialogService _dialogService;
-
-        public AddItemWindowViewModel(IDialogService service)
+        public AddItemWindowViewModel(IDataService dateService)
         {
-            _dialogService = service;
+            _dateService = dateService;
             Title = "Добавление предмета";
 
             GetItemData();
@@ -210,22 +208,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             get => _deleteItemAddonCommand ??= new(async obj =>
             {
-                if (SelectedItemAddon == null)
+                if (SelectedItemAddon == null) return;
+
+                if (MessageHelper.MessageDelete(SelectedItemAddon.ItemAddonName) == MessageButtons.Yes)
                 {
-                    return;
-                }
-                if (_dialogService.ShowMessageButtons(
-                    $"Вы точно хотите удалить «{SelectedItemAddon.ItemAddonName}»? При удаление данном записи, могут быть связанные записи в других таблицах, что может привести к проблемам.",
-                    "Предупреждение об удаление.",
-                    TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
-                {
-                    await DataBaseHelper.DeleteEntityAsync(SelectedItemAddon);
+                    await _dateService.RemoveAsync(SelectedItemAddon);
                     GetItemAddonData();
-                }
-                else
-                {
-                    return;
-                }
+                } else return;
             });
         }
 
@@ -235,110 +224,92 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetItemData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var items = await context.Items.ToListAsync();
-                ItemList.Clear();
+            var items = await _dateService.GetAllDataAsync<Item>();
 
-                foreach (var item in items)
-                {
-                    ItemList.Add(item);
-                }
-                SelectedItem = ItemList.FirstOrDefault();
+            ItemList.Clear();
+            foreach (var item in items)
+            {
+                ItemList.Add(item);
             }
+
+            SelectedItem = ItemList.FirstOrDefault();
         }    
 
         private async void GetRarityData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var items = await context.Rarities.ToListAsync();
-                ItemList.Clear();
+            var items = await _dateService.GetAllDataAsync<Rarity>();
 
-                foreach (var item in items)
-                {
-                    RarityList.Add(item);
-                }
+            ItemList.Clear();
+            foreach (var item in items)
+            {
+                RarityList.Add(item);
             }
         }
 
-        private void AddItem()
+        private async void AddItem()
         {
-            var newItem = new Item() { ItemName = TextBoxItemName, ItemImage = ImageItem, ItemDescription = TextBoxItemDescription };
+            var newItem = new Item() { ItemName = ItemName, ItemImage = ImageItem, ItemDescription = ItemDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            bool exists = await _dateService.ExistsAsync<Item>(x => x.ItemName.ToLower() == newItem.ItemName.ToLower());
+
+            if (exists || string.IsNullOrWhiteSpace(ItemName))
             {
-                bool exists = context.Items.Any(item => item.ItemName.ToLower() == newItem.ItemName.ToLower());
+                MessageHelper.MessageExist();
+            }
+            else
+            {
+                await _dateService.AddAsync(newItem);
+                GetItemData();
+                ItemName = string.Empty;
+                ItemDescription = string.Empty;
+                ImageItem = null;
+                SelectedItem = null;
+            }
+        }
 
-                if (exists || string.IsNullOrWhiteSpace(TextBoxItemName))
+        private async void UpdateItem()
+        {
+
+            if (SelectedItem == null) return;
+
+            var entityToUpdate = await _dateService.FindAsync<Item>(SelectedItem.IdItem);
+
+            if (entityToUpdate != null)
+            {
+                if (MessageHelper.MessageUpdate(SelectedItem.ItemName, ItemName, SelectedItem.ItemDescription, ItemAddonDescription) == MessageButtons.Yes)
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
-                }
-                else
-                {
-                    context.Items.Add(newItem);
-                    context.SaveChanges();
+                    entityToUpdate.ItemName = ItemName;
+                    entityToUpdate.ItemDescription = ItemDescription;
+                    entityToUpdate.ItemImage = ImageItem;
+                    await _dateService.UpdateAsync(entityToUpdate);
+
+                    ItemList.Clear();
                     GetItemData();
-                    TextBoxItemName = string.Empty;
-                    TextBoxItemDescription = string.Empty;
+
+                    ItemName = string.Empty;
+                    ItemDescription = string.Empty;
                     ImageItem = null;
                     SelectedItem = null;
                 }
             }
+            else { MessageBox.Show("Нечего обновлять"); }
         }
 
-        private void UpdateItem()
+        private async void DeleteItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (MessageHelper.MessageDelete(SelectedItem.ItemName) == MessageButtons.Yes)
             {
-                if (SelectedItem == null)
-                {
-                    return;
-                }
-
-                var entityToUpdate = context.Items.Find(SelectedItem.IdItem);
-
-                if (entityToUpdate != null)
-                {
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedItem.ItemName} на {TextBoxItemName} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    {
-                        entityToUpdate.ItemName = TextBoxItemName;
-                        entityToUpdate.ItemDescription = TextBoxItemDescription;
-                        entityToUpdate.ItemImage = ImageItem;
-                        context.SaveChanges();
-
-                        ItemList.Clear();
-                        GetItemData();
-
-                        TextBoxItemName = string.Empty;
-                        TextBoxItemDescription = string.Empty;
-                        ImageItem = null;
-                        SelectedItem = null;
-                    }
-                }
-                else { MessageBox.Show("Нечего обновлять"); }
-            }
-        }
-
-        private void DeleteItem()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var itemToDelete = context.Items.Find(SelectedItem.IdItem);
+                var itemToDelete = await _dateService.FindAsync<Item>(SelectedItem.IdItem);
                 if (itemToDelete != null)
                 {
-                    var itemAddonToDelete = context.ItemAddons.Where(itemAddon => itemAddon.IdItem == SelectedItem.IdItem);
-                    if (itemAddonToDelete != null)
+                    var itemAddonsToDelete = await _dateService.GetAllDataAsync<ItemAddon>(x => x.Where(itemAddon => itemAddon.IdItem == SelectedItem.IdItem)); /*context.ItemAddons.Where(itemAddon => itemAddon.IdItem == SelectedItem.IdItem);*/
+                    if (itemAddonsToDelete != null)
                     {
-                        context.ItemAddons.RemoveRange(itemAddonToDelete);
-                        context.SaveChanges();
+                        await _dateService.RemoveRangeAsync<ItemAddon>(itemAddonsToDelete);
                         GetItemAddonData();
                     }
 
-                    context.Items.Remove(itemToDelete);
-                    context.SaveChanges();
+                    await _dateService.RemoveAsync<Item>(itemToDelete);
                     GetItemData();
                 }
             }
@@ -346,102 +317,67 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetItemAddonData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedItem == null) ItemAddonList.Clear();
+            else
             {
-                List<ItemAddon> Addons = new();
+               var addons = await _dateService.GetAllDataAsync<ItemAddon>(x => x.Include(x => x.IdRarityNavigation).Where(x => x.IdItem == SelectedItem.IdItem));
+               ItemAddonList.Clear();
 
-                if (SelectedItem == null)
-                {
-                    ItemAddonList.Clear();
-                }
-                else
-                {
-                    Addons = await context.ItemAddons.Include(rarity => rarity.IdRarityNavigation).Where(ia => ia.IdItem == SelectedItem.IdItem).ToListAsync();
-                }
-
-                ItemAddonList.Clear();
-
-                foreach (var item in Addons)
-                {
-                    ItemAddonList.Add(item);
-                }
-                SelectedItemAddon = ItemAddonList.FirstOrDefault(x => x.IdItem == SelectedItem.IdItem);
+               foreach (var item in addons)
+               {
+                   ItemAddonList.Add(item);
+               }
+               SelectedItemAddon = ItemAddonList.FirstOrDefault(x => x.IdItem == SelectedItem.IdItem);
             }
         }
 
-        private void AddItemAddon()
+        private async void AddItemAddon()
         {
-            var newItemAddon = new ItemAddon() { IdItem = SelectedItem.IdItem, ItemAddonName = TextBoxItemAddonName, ItemAddonDescription = TextBoxItemAddonDescription, ItemAddonImage = ImageItemAddon, IdRarity = ComboBoxSelectedRarity.IdRarity };
+            var newItemAddon = new ItemAddon() { IdItem = SelectedItem.IdItem, ItemAddonName = ItemAddonName, ItemAddonDescription = ItemAddonDescription, ItemAddonImage = ImageItemAddon, IdRarity = SelectedRarity.IdRarity };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            bool exists = ItemAddonList.Any(x => x.ItemAddonName.ToLower() == newItemAddon.ItemAddonName.ToLower());
+
+            if (exists || string.IsNullOrWhiteSpace(ItemName))
             {
-                bool exists = context.ItemAddons.Where(ia => ia.IdItem == ComboBoxSelectedItem.IdItem).Any(itemAddon => itemAddon.ItemAddonName.ToLower() == newItemAddon.ItemAddonName.ToLower());
+               MessageHelper.MessageExist();
+            }
+            else
+            {
+                await _dateService.AddAsync(newItemAddon);
+                GetItemAddonData();
+                ItemAddonName = string.Empty;
+                ItemAddonDescription = string.Empty;
+                ImageItemAddon = null;
+                SelectedItemAddon = null;
+            }
+        }
 
-                if (exists || string.IsNullOrWhiteSpace(TextBoxItemName))
+        private async void UpdateItemAddon()
+        {
+            if (SelectedItemAddon == null) return;
+
+            var entityToUpdate = await _dateService.FindAsync<ItemAddon>(SelectedItemAddon.IdItemAddon);
+
+            if (entityToUpdate != null)
+            {
+                if (MessageHelper.MessageUpdate(SelectedItemAddon.ItemAddonName, ItemAddonName, SelectedItemAddon.ItemAddonDescription, ItemAddonDescription) == MessageButtons.Yes)
                 {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
-                }
-                else
-                {
-                    context.ItemAddons.Add(newItemAddon);
-                    context.SaveChanges();
+                    entityToUpdate.IdItem = ComboBoxSelectedItem.IdItem;
+                    entityToUpdate.ItemAddonName = ItemAddonName;
+                    entityToUpdate.ItemAddonDescription = ItemAddonDescription;
+                    entityToUpdate.ItemAddonImage = ImageItemAddon;
+                    entityToUpdate.IdRarity = SelectedRarity.IdRarity;
+                    await _dateService.UpdateAsync(entityToUpdate);
+
                     GetItemAddonData();
-                    TextBoxItemAddonName = string.Empty;
-                    TextBoxItemAddonDescription = string.Empty;
+
+                    ItemAddonName = string.Empty;
+                    ItemAddonDescription = string.Empty;
                     ImageItemAddon = null;
                     SelectedItemAddon = null;
                 }
             }
         }
-
-        private void UpdateItemAddon()
-        {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                if (SelectedItemAddon == null)
-                {
-                    return;
-                }
-
-                var entityToUpdate = context.ItemAddons.Find(SelectedItemAddon.IdItemAddon);
-
-                if (entityToUpdate != null)
-                {
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedItemAddon.ItemAddonName} на {TextBoxItemAddonName} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    {
-                        entityToUpdate.IdItem = ComboBoxSelectedItem.IdItem;
-                        entityToUpdate.ItemAddonName = TextBoxItemAddonName;
-                        entityToUpdate.ItemAddonDescription = TextBoxItemAddonDescription;
-                        entityToUpdate.ItemAddonImage = ImageItemAddon;
-                        entityToUpdate.IdRarity = ComboBoxSelectedRarity.IdRarity;
-                        context.SaveChanges();
-
-                        GetItemAddonData();
-
-                        TextBoxItemAddonName = string.Empty;
-                        TextBoxItemAddonDescription = string.Empty;
-                        ImageItemAddon = null;
-                        SelectedItemAddon = null;
-                    }
-                }
-                else { MessageBox.Show("Нечего обновлять"); }
-            }
-        }
-
-        //private void DeleteItemAddon()
-        //{
-        //    using (MasterAnalyticsDeadByDaylightDbContext context = new())
-        //    {
-        //        var itemToDelete = context.ItemAddons.Find(SelectedItemAddon.IdItemAddon);
-        //        if (itemToDelete != null)
-        //        {
-        //            context.ItemAddons.Remove(itemToDelete);
-        //            GetItemAddonData();
-        //        }
-        //    }
-        //}
 
         private void SelectImageItem()
         {

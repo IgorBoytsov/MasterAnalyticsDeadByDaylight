@@ -1,6 +1,7 @@
-﻿using MasterAnalyticsDeadByDaylight.Command;
+﻿using LiveCharts.Wpf;
+using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
@@ -88,7 +89,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _mapSearch = value;
-                Task.Run(SearchMap);
+                SearchMap();
                 OnPropertyChanged();
             }
         }  
@@ -106,11 +107,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        private readonly IDialogService _dialogService;
+        private readonly ICustomDialogService _dialogService;
+        private readonly IDataService _dataService;
 
-        public AddMapWindowViewModel(IDialogService service)
+        public AddMapWindowViewModel(ICustomDialogService dialogService, IDataService dataService)
         {
-            _dialogService = service;
+            _dialogService = dialogService;
+            _dataService = dataService;
             Title = "Добавление карт";
             GetMapData();
             GetMeasurementData();
@@ -129,21 +132,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             get => _deleteMapItemCommand ??= new(async obj =>
             {
-                if (SelectedMapItem == null)
+                if (SelectedMapItem == null) return;
+
+                if (MessageHelper.MessageDelete(SelectedMapItem.MapName) == MessageButtons.Yes)
                 {
-                    return;
-                }
-                if (_dialogService.ShowMessageButtons(
-                    $"Вы точно хотите удалить «{SelectedMapItem.MapName}»? При удаление данном записи, могут быть связанные записи в других таблицах, что может привести к проблемам.",
-                    "Предупреждение об удаление.",
-                    TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
-                {
-                    await DataBaseHelper.DeleteEntityAsync(SelectedMapItem);
+                    await _dataService.RemoveAsync(SelectedMapItem);
                     GetMapData();
-                }
-                else
-                {
-                    return;
                 }
             });
         }
@@ -160,129 +154,99 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetMapData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            var maps = await _dataService.GetAllDataAsync<Map>();
+            foreach (var item in maps)
             {
-                var maps = await context.Maps.ToListAsync();
-                foreach (var item in maps)
-                {
-                    MapList.Add(item);
-                }
+                MapList.Add(item);
             }
         }
 
         private async void GetMeasurementData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            var measurements = await _dataService.GetAllDataAsync<Measurement>();
+            foreach (var item in measurements)
             {
-                var measurements = await context.Measurements.ToListAsync();
-                foreach (var item in measurements)
-                {
-                    MeasurementList.Add(item);
-                }
+                MeasurementList.Add(item);
             }
         }
 
-        private void AddMap()
+        private async void AddMap()
         {
             var newMap = new Map { MapName = MapName, MapImage = ImageMap, MapDescription = MapDescription, IdMeasurement = SelectedMeasurementItem.IdMeasurement };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.Maps.Any(map => map.MapName.ToLower() == newMap.MapName.ToLower());
+            bool exists = await _dataService.ExistsAsync<Map>(x => x.MapName.ToLower() == newMap.MapName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(MapName))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
-                }
-                else
-                {
-                    context.Maps.Add(newMap);
-                    context.SaveChanges();
-                    MapList.Clear();
-                    GetMapData();
-                    MapName = string.Empty;
-                    MapDescription = string.Empty;
-                    ImageMap = null;
-                }
+            if (exists || string.IsNullOrEmpty(MapName))
+            {
+                MessageHelper.MessageExist();
+            }
+            else
+            {
+                await _dataService.AddAsync(newMap);
+                MapList.Clear();
+                GetMapData();
+                MapName = string.Empty;
+                MapDescription = string.Empty;
+                ImageMap = null;
             }
         }
  
-        private void UpdateMap()
+        private async void UpdateMap()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedMapItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<Map>(SelectedMapItem.IdMap);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedMapItem == null)
+                bool exists = await _dataService.ExistsAsync<Map>(x => x.MapName.ToLower() == MapName.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.Maps.Find(SelectedMapItem.IdMap);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.Maps.Any(x => x.MapName.ToLower() == MapName.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedMapItem.MapName}» на «{MapName}» ?",
-                            $"Надпись с именем «{SelectedMapItem.MapName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.MapName = MapName;
-                            entityToUpdate.MapDescription = MapDescription;
-                            entityToUpdate.MapImage = ImageMap;
-                            entityToUpdate.IdMeasurement = SelectedMeasurementItem.IdMeasurement;
-                            context.SaveChanges();
-                            MapList.Clear();
-                            GetMapData();
-                            SelectedMapItem = null;
-                            MapName = string.Empty;
-                            MapDescription = string.Empty;
-                            ImageMap = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedMapItem.MapName, MapName, SelectedMapItem.MapDescription, MapDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.MapName = MapName;
                         entityToUpdate.MapDescription = MapDescription;
                         entityToUpdate.MapImage = ImageMap;
                         entityToUpdate.IdMeasurement = SelectedMeasurementItem.IdMeasurement;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
                         MapList.Clear();
                         GetMapData();
                         SelectedMapItem = null;
                         MapName = string.Empty;
                         MapDescription = string.Empty;
                         ImageMap = null;
-                    }    
+                    }
+                }
+                else
+                {
+                    entityToUpdate.MapName = MapName;
+                    entityToUpdate.MapDescription = MapDescription;
+                    entityToUpdate.MapImage = ImageMap;
+                    entityToUpdate.IdMeasurement = SelectedMeasurementItem.IdMeasurement;
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    MapList.Clear();
+                    GetMapData();
+                    SelectedMapItem = null;
+                    MapName = string.Empty;
+                    MapDescription = string.Empty;
+                    ImageMap = null;
                 }
             }
         }
 
-        private async Task SearchMap()
+        private async void SearchMap()
         {
-            await Task.Run(() =>
-            {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var search = context.Maps.Include(x => x.IdMeasurementNavigation).Where(map => map.MapName.Contains(MapSearch))
-                        .Union(context.Maps.Include(x => x.IdMeasurementNavigation).Where(x => x.IdMeasurementNavigation.MeasurementName.Contains(MapSearch)));
+            var search = await _dataService.GetAllDataAsync<Map>(x => x
+            .Include(x => x.IdMeasurementNavigation)
+            .Where(x => x.MapName.Contains(MapSearch) || 
+            x.IdMeasurementNavigation.MeasurementName.Contains(MapSearch)));
 
-                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        MapList.Clear();
-                        foreach (var item in search)
-                        {
-                            MapList.Add(item);
-                        }
-                    });
-                }
-            });
+            MapList.Clear();
+            foreach (var item in search)
+            {
+                MapList.Add(item);
+            }
         }
 
         private void SelectImage()

@@ -1,11 +1,9 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using System.Windows.Forms;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
@@ -21,8 +19,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedGameModeItem;
             set
             {
-                _selectedGameModeItem = value;
                 if (value == null) { return; }
+                _selectedGameModeItem = value;
                 GameMode = value.GameModeName;
                 GameModeDescription = value.GameModeDescription;
                 OnPropertyChanged();
@@ -37,8 +35,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedGameEventItem;
             set
             {
-                _selectedGameEventItem = value;
                 if (value == null) { return; }
+                _selectedGameEventItem = value;
                 GameEvent = value.GameEventName;
                 GameEventDescription = value.GameEventDescription;
                 OnPropertyChanged();
@@ -53,8 +51,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedPlatformItem;
             set
             {
-                _selectedPlatformItem = value;
                 if (value == null) { return; }
+                _selectedPlatformItem = value;
                 Platform = value.PlatformName;
                 PlatformDescription = value.PlatformDescription;
                 OnPropertyChanged();
@@ -64,20 +62,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         public ObservableCollection<PlayerAssociation> AssociationList { get; set; } = [];
 
-        private PlayerAssociation _selectedPlayerAssociationItem;
+        private PlayerAssociation _selectedAssociationItem;
         public PlayerAssociation SelectedAssociationItem
         {
-            get => _selectedPlayerAssociationItem;
+            get => _selectedAssociationItem;
             set
             {
-                _selectedPlayerAssociationItem = value;
                 if (value == null) { return; }
+                _selectedAssociationItem = value;
                 PlayerAssociation = value.PlayerAssociationName;
                 PlayerAssociationDescription = value.PlayerAssociationDescription;
                 OnPropertyChanged();
             }
         }
-
 
         public ObservableCollection<Patch> PatchList { get; set; } = [];
 
@@ -87,14 +84,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedPatchItem;
             set
             {
-                _selectedPatchItem = value;
                 if (value == null) { return; }
+                _selectedPatchItem = value;
                 PatchNumber = value.PatchNumber;
                 PatchDateRelease = value.PatchDateRelease.ToDateTime(TimeOnly.MinValue);
                 OnPropertyChanged();
             }
         }
-
 
         public ObservableCollection<TypeDeath> DeathList { get; set; } = [];
 
@@ -104,14 +100,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedTypeDeath;
             set
             {
-                _selectedTypeDeath = value;
                 if (value == null) { return; }
+                _selectedTypeDeath = value;
                 TypeDeath = value.TypeDeathName;
                 TypeDeathDescription = value.TypeDeathDescription;
                 OnPropertyChanged();
             }
         }
-
 
         public ObservableCollection<Role> GameRoleList { get; set; } = [];
 
@@ -121,15 +116,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedRole;
             set
             {
-                _selectedRole = value;
                 if (value == null) { return; }
+                _selectedRole = value;
                 Role = value.RoleName;
                 RoleDescription = value.RoleDescription;
                 OnPropertyChanged();
-
             }
         }
-
 
         public ObservableCollection<Measurement> MeasurementList { get; set; } = [];
 
@@ -139,12 +132,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedMeasurementItem;
             set
             {
-                _selectedMeasurementItem = value;
                 if (value == null) { return; }
+                _selectedMeasurementItem = value;
                 Measurement = value.MeasurementName;
                 MeasurementDescription = value.MeasurementDescription;
                 OnPropertyChanged();
-
             }
         }
 
@@ -154,11 +146,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _title;
             set
             {
-                if (_title != value)
-                {
-                    _title = value;
-                    OnPropertyChanged();
-                }
+                _title = value;
+                OnPropertyChanged();
             }
         }
 
@@ -172,7 +161,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 OnPropertyChanged();
             }
         }
-        
+
         private string _gameModeDescription;
         public string GameModeDescription
         {
@@ -190,11 +179,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _gameEvent;
             set
             {
-                if (_gameEvent != value)
-                {
-                    _gameEvent = value;
-                    OnPropertyChanged();
-                }
+                _gameEvent = value;
+                OnPropertyChanged();
             }
         }
 
@@ -343,11 +329,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        private readonly IDialogService _dialogService;
+        private static IDataService _dataService;
 
-        public AddAdditionalDataWindowViewModel(IDialogService dialogService)
+        public AddAdditionalDataWindowViewModel(IDataService dataService)
         {
-            _dialogService = dialogService;
+            _dataService = dataService;
             GetAndUpdateData();
             Title = "Добавление базовых данных";
             PatchDateRelease = DateTime.Now;
@@ -385,12 +371,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedGameModeItem == null) return;
 
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedGameModeItem.GameModeName}»?", 
-                "Предупреждение об удаление.", 
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            if (MessageHelper.MessageDelete(SelectedGameModeItem.GameModeName) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedGameModeItem);
+                await _dataService.RemoveAsync(SelectedGameModeItem);
                 GetGameModeData();
             } 
             else return;
@@ -401,12 +384,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedGameEventItem == null) return;
 
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedGameEventItem.GameEventName}»? Это может привести к удалению связанных записей!",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            if (MessageHelper.MessageDelete(SelectedGameEventItem.GameEventName) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedGameEventItem);
+                await _dataService.RemoveAsync(SelectedGameEventItem);
                 GetGameEventData();
             } 
             else return;
@@ -417,12 +397,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedPlatformItem == null) return;
 
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedPlatformItem.PlatformName}»? Это может привести к удалению связанных записей!",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            if (MessageHelper.MessageDelete(SelectedPlatformItem.PlatformName) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedPlatformItem);
+                await _dataService.RemoveAsync(SelectedPlatformItem);
                 GetPlatformData();
             }
             else return;
@@ -433,12 +410,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedAssociationItem == null) return;
 
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedAssociationItem.PlayerAssociationName}»? Это может привести к удалению связанных записей!",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            if (MessageHelper.MessageDelete(SelectedAssociationItem.PlayerAssociationName) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedAssociationItem);
+                await _dataService.RemoveAsync(SelectedAssociationItem);
                 GetPlayerAssociationData();
             }
             else return;
@@ -449,12 +423,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedPatchItem == null) return;
 
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedPatchItem.PatchNumber}»? Это может привести к удалению связанных записей!",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            if (MessageHelper.MessageDelete(SelectedPatchItem.PatchNumber) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedPatchItem);
+                await _dataService.RemoveAsync(SelectedPatchItem);
                 GetPatchData();
             }
             else return;
@@ -465,12 +436,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedTypeDeathItem == null) return;
 
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedTypeDeathItem.TypeDeathName}»? Это может привести к удалению связанных записей!",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            if (MessageHelper.MessageDelete(SelectedTypeDeathItem.TypeDeathName) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedTypeDeathItem);
+                await _dataService.RemoveAsync(SelectedTypeDeathItem);
                 GetTypeDeathData();
             }
             else return;
@@ -481,12 +449,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedRoleItem == null) return;
 
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedRoleItem.RoleName}»? Это может привести к удалению связанных записей!",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            if (MessageHelper.MessageDelete(SelectedRoleItem.RoleName) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedRoleItem);
+                await _dataService.RemoveAsync(SelectedRoleItem);
                 GetRoleData();
             }
             else return;
@@ -497,12 +462,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedMeasurementItem == null) return;
 
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedMeasurementItem.MeasurementName}»? Это может привести к удалению связанных записей!",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
+            if (MessageHelper.MessageDelete(SelectedMeasurementItem.MeasurementName) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedMeasurementItem);
+                await _dataService.RemoveAsync(SelectedMeasurementItem);
                 GetMeasurementData();
             }
             else return;
@@ -551,121 +513,89 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetGameModeData()
         {
-            GameModeList.Clear();
-            GameMode = string.Empty;
-            GameModeDescription = string.Empty;
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            SetNullGameMode();
+            var gameMode = await _dataService.GetAllDataAsync<GameMode>();
+
+            foreach (var item in gameMode)
             {
-                var gameevents = await context.GameModes.ToListAsync();
-                foreach (var item in gameevents)
-                {
-                    GameModeList.Add(item);
-                }
+                GameModeList.Add(item);
             }
         }
 
         private async void GetGameEventData()
         {
-            GameEventList.Clear();
-            GameEvent = string.Empty;
-            GameEventDescription = string.Empty;
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            SetNullGameEvent();
+            var gameEvents = await _dataService.GetAllDataAsync<GameEvent>();
+
+            foreach (var item in gameEvents)
             {
-                var gameevents = await context.GameEvents.ToListAsync();
-                foreach (var item in gameevents)
-                {
-                    GameEventList.Add(item);
-                }
+                GameEventList.Add(item);
             }
         }
 
         private async void GetPlatformData()
         {
-            PlatformList.Clear();
-            Platform = string.Empty;
-            PlatformDescription = string.Empty;
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            SetNullPlatform();
+            var platforms = await _dataService.GetAllDataAsync<Platform>();
+
+            foreach (var item in platforms)
             {
-                var platforms = await context.Platforms.ToListAsync();
-                foreach (var item in platforms)
-                {
-                    PlatformList.Add(item);
-                }
+                PlatformList.Add(item);
             }
         }
 
         private async void GetPlayerAssociationData()
         {
-            AssociationList.Clear();
-            PlayerAssociation = string.Empty;
-            PlayerAssociationDescription = string.Empty;
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            SetNullPlayerAssociation();
+            var associations = await _dataService.GetAllDataAsync<PlayerAssociation>();
+
+            foreach (var item in associations)
             {
-                var associations = await context.PlayerAssociations.ToListAsync();
-                foreach (var item in associations)
-                {
-                    AssociationList.Add(item);
-                }
+                AssociationList.Add(item);
             }
         }
 
         private async void GetPatchData()
         {
-            PatchList.Clear();
-            PatchNumber = string.Empty;
-            PatchDateRelease = DateTime.MinValue;
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            SetNullPatch();
+            var patches = await _dataService.GetAllDataAsync<Patch>();
+
+            foreach (var item in patches)
             {
-                var patches = await context.Patches.ToListAsync();
-                foreach (var item in patches)
-                {
-                    PatchList.Add(item);
-                }
+                PatchList.Add(item);
             }
         }
 
         private async void GetTypeDeathData()
         {
-            DeathList.Clear();
-            TypeDeath = string.Empty;
-            TypeDeathDescription = string.Empty;
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+           SetNullTypeDeath();
+            var typeDeaths = await _dataService.GetAllDataAsync<TypeDeath>();
+
+            foreach (var item in typeDeaths)
             {
-                var typedeaths = await context.TypeDeaths.ToListAsync();
-                foreach (var item in typedeaths)
-                {
-                    DeathList.Add(item);
-                }
+                DeathList.Add(item);
             }
         }
 
         private async void GetRoleData()
         {
-            GameRoleList.Clear();
-            Role = string.Empty;
-            RoleDescription = string.Empty;
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            SetNullGameRole();
+            var roles = await _dataService.GetAllDataAsync<Role>();
+
+            foreach (var item in roles)
             {
-                var roles = await context.Roles.ToListAsync();
-                foreach (var item in roles)
-                {
-                    GameRoleList.Add(item);
-                }
+                GameRoleList.Add(item);
             }
         }
         
         private async void GetMeasurementData()
         {
-            MeasurementList.Clear();
-            Measurement = string.Empty;
-            MeasurementDescription = string.Empty;
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            SetNullMeasurement();
+            var measurements = await _dataService.GetAllDataAsync<Measurement>();
+
+            foreach (var item in measurements)
             {
-                var measurements = await context.Measurements.ToListAsync();
-                foreach (var item in measurements)
-                {
-                    MeasurementList.Add(item);
-                }
+                MeasurementList.Add(item);
             }
         }
 
@@ -673,553 +603,432 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Методы добавление данных в БД
 
-        private void AddGameMode()
+        private async void AddGameMode()
         {
             var newGameMode = new GameMode { GameModeName = GameMode, GameModeDescription = GameModeDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.GameModes.Any(GM => GM.GameModeName.ToLower() == newGameMode.GameModeName.ToLower());
+            bool exists = await _dataService.ExistsAsync<GameMode>(GM => GM.GameModeName.ToLower() == newGameMode.GameModeName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(GameMode))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали","Ошибка добавления",TypeMessage.Warning);
-                }
-                else
-                {
-                    context.GameModes.Add(newGameMode);
-                    context.SaveChanges();
-                    GameModeList.Clear();
-                    GetGameModeData();
-                    GameMode = string.Empty;
-                }
+            if (exists || string.IsNullOrEmpty(GameMode)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newGameMode);
+                GetGameModeData();
             }
         }
-
-        private void AddGameEvent()
+      
+        private async void AddGameEvent()
         {
             var newGameEvent = new GameEvent { GameEventName = GameEvent, GameEventDescription = GameEventDescription};
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.GameEvents.Any(GE => GE.GameEventName.ToLower() == newGameEvent.GameEventName.ToLower());
+            bool exists = await _dataService.ExistsAsync<GameEvent>(GE => GE.GameEventName.ToLower() == newGameEvent.GameEventName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(GameEvent))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
-                }
-                else
-                {
-                    context.GameEvents.Add(newGameEvent);
-                    context.SaveChanges();
-                    GameEventList.Clear();
-                    GetGameEventData();
-                    GameEvent = string.Empty;
-                }
+            if (exists || string.IsNullOrEmpty(GameEvent)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newGameEvent);
+                GetGameEventData();
             }
         }
 
-        private void AddPlatform()
+        private async void AddPlatform()
         {
             var newPlatform = new Platform { PlatformName = Platform, PlatformDescription = PlatformDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.Platforms.Any(P => P.PlatformName.ToLower() == newPlatform.PlatformName.ToLower());
+            bool exists = await _dataService.ExistsAsync<Platform>(P => P.PlatformName.ToLower() == newPlatform.PlatformName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(Platform))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
-                }
-                else
-                {
-                    context.Platforms.Add(newPlatform);
-                    context.SaveChanges();
-                    PlatformList.Clear();
-                    GetPlatformData();
-                    Platform = string.Empty;
-                }
+            if (exists || string.IsNullOrEmpty(Platform)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newPlatform);
+                GetPlatformData();
             }
         }
 
-        private void AddPlayerAssociation()
+        private async void AddPlayerAssociation()
         {
             var newPlayerAssociation = new PlayerAssociation { PlayerAssociationName = PlayerAssociation, PlayerAssociationDescription = PlayerAssociationDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.PlayerAssociations.Any(P => P.PlayerAssociationName.ToLower() == newPlayerAssociation.PlayerAssociationName.ToLower());
+            bool exists = await _dataService.ExistsAsync<PlayerAssociation>(P => P.PlayerAssociationName.ToLower() == newPlayerAssociation.PlayerAssociationName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(PlayerAssociation))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
-                }
-                else
-                {
-                    context.PlayerAssociations.Add(newPlayerAssociation);
-                    context.SaveChanges();
-                    AssociationList.Clear();
-                    GetPlayerAssociationData();
-                    PlayerAssociation = string.Empty;
-                }
+            if (exists || string.IsNullOrEmpty(PlayerAssociation)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newPlayerAssociation);
+                GetPlayerAssociationData();
             }
         }
 
-        private void AddPatch()
+        private async void AddPatch()
         {
             var newPatch = new Patch { PatchNumber = PatchNumber, PatchDateRelease = DateOnly.FromDateTime(PatchDateRelease) };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.Patches.Any(P => P.PatchNumber == newPatch.PatchNumber);
+            bool exists = await _dataService.ExistsAsync<Patch>(P => P.PatchNumber == newPatch.PatchNumber);
 
-                if (exists || string.IsNullOrEmpty(PatchNumber))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
-                }
-                else
-                {
-                    context.Patches.Add(newPatch);
-                    context.SaveChanges();
-                    PatchList.Clear();
-                    GetPatchData();
-                    PatchNumber = string.Empty;
-                }
+            if (exists || string.IsNullOrEmpty(PatchNumber)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newPatch);
+                GetPatchData();
             }
         }
 
-        private void AddTypeDeath()
+        private async void AddTypeDeath()
         {
             var newTypeDeath = new TypeDeath { TypeDeathName = TypeDeath, TypeDeathDescription = TypeDeathDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.TypeDeaths.Any(TP => TP.TypeDeathName == newTypeDeath.TypeDeathName);
+            bool exists = await _dataService.ExistsAsync<TypeDeath>(TP => TP.TypeDeathName == newTypeDeath.TypeDeathName);
 
-                if (exists || string.IsNullOrEmpty(TypeDeath))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
-                }
-                else
-                {
-                    context.TypeDeaths.Add(newTypeDeath);
-                    context.SaveChanges();
-                    DeathList.Clear();
-                    GetTypeDeathData();
-                    TypeDeath = string.Empty;
-                }
+            if (exists || string.IsNullOrEmpty(TypeDeath)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync<TypeDeath>(newTypeDeath);
+                GetTypeDeathData();
             }
         }
 
-        private void AddRole()
+        private async void AddRole()
         {
             var newRole = new Role { RoleName = Role, RoleDescription = RoleDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.Roles.Any(R => R.RoleName == newRole.RoleName);
+            bool exists = await _dataService.ExistsAsync<Role>(R => R.RoleName == newRole.RoleName);
 
-                if (exists || string.IsNullOrEmpty(Role))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
-                }
-                else
-                {
-                    context.Roles.Add(newRole);
-                    context.SaveChanges();
-                    GameRoleList.Clear();
-                    GetRoleData();
-                    Role = string.Empty;
-                }
+            if (exists || string.IsNullOrEmpty(Role)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newRole);
+                GetRoleData();
             }
         }
         
-        private void AddMeasurement()
+        private async void AddMeasurement()
         {
             var newMeasurement = new Measurement { MeasurementName = Measurement, MeasurementDescription = MeasurementDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.Measurements.Any(R => R.MeasurementName == newMeasurement.MeasurementName);
+            bool exists = await _dataService.ExistsAsync<Measurement>(R => R.MeasurementName == newMeasurement.MeasurementName);
 
-                if (exists || string.IsNullOrEmpty(Measurement))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Ошибка добавления", TypeMessage.Warning);
-                }
-                else
-                {
-                    context.Measurements.Add(newMeasurement);
-                    context.SaveChanges();
-                    MeasurementList.Clear();
-                    GetMeasurementData();
-                    Measurement = string.Empty;
-                }
+            if (exists || string.IsNullOrEmpty(Measurement)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newMeasurement);
+                GetMeasurementData();
             }
         }
+
         #endregion
 
         #region Методы редактирования данных из БД
 
-        private void UpdateGameModeItem()
+        private async void UpdateGameModeItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedGameModeItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<GameMode>(SelectedGameModeItem.IdGameMode);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedGameModeItem == null)
+                bool exists = await _dataService.ExistsAsync<GameMode>(x => x.GameModeName.ToLower() == GameMode.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.GameModes.Find(SelectedGameModeItem.IdGameMode);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = exists = context.GameModes.Any(x => x.GameModeName.ToLower() == GameMode.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedGameModeItem.GameModeName}» на «{GameMode}» и «{SelectedGameModeItem.GameModeDescription}» на «{GameModeDescription}»",
-                            $"Надпись с именем «{SelectedGameModeItem.GameModeName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.GameModeName = GameMode;
-                            entityToUpdate.GameModeDescription = GameModeDescription;
-                            context.SaveChanges();
-                            GameModeList.Clear();
-                            GetGameModeData();
-                            SelectedGameModeItem = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedGameModeItem.GameModeName, GameMode, SelectedGameModeItem.GameModeDescription, GameModeDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.GameModeName = GameMode;
                         entityToUpdate.GameModeDescription = GameModeDescription;
-                        context.SaveChanges();
-                        GameModeList.Clear();
+                        await _dataService.UpdateAsync(entityToUpdate);
                         GetGameModeData();
-                        SelectedGameModeItem = null;
                     }
+                }
+                else
+                {
+                    entityToUpdate.GameModeName = GameMode;
+                    entityToUpdate.GameModeDescription = GameModeDescription;
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    GetGameModeData();
                 }
             }
         }
 
-        private void UpdateGameEventItem()
+        private async void UpdateGameEventItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedGameEventItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<GameEvent>(SelectedGameEventItem.IdGameEvent);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedGameEventItem == null)
+                bool exists = await _dataService.ExistsAsync<GameEvent>(x => x.GameEventName.ToLower() == GameEvent.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.GameEvents.Find(SelectedGameEventItem.IdGameEvent);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.GameEvents.Any(x => x.GameEventName.ToLower() == GameEvent.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedGameEventItem.GameEventName}» на «{GameEvent}» и «{SelectedGameEventItem.GameEventDescription}» на «{GameEventDescription}»",
-                            $"Надпись с именем «{SelectedGameEventItem.GameEventName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.GameEventName = GameEvent;
-                            entityToUpdate.GameEventDescription = GameEventDescription;
-                            context.SaveChanges();
-                            GetGameEventData();
-                            SelectedGameEventItem = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedGameEventItem.GameEventName, GameEvent, SelectedGameEventItem.GameEventDescription, GameEventDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.GameEventName = GameEvent;
                         entityToUpdate.GameEventDescription = GameEventDescription;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
                         GetGameEventData();
-                        SelectedGameEventItem = null;
                     }
+                }
+                else
+                {
+                    entityToUpdate.GameEventName = GameEvent;
+                    entityToUpdate.GameEventDescription = GameEventDescription;
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    GetGameEventData();
                 }
             }
         }
 
-        private void UpdatePlatformItem()
+        private async void UpdatePlatformItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedPlatformItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<Platform>(SelectedPlatformItem.IdPlatform);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedPlatformItem == null)
+                bool exists = await _dataService.ExistsAsync<Platform>(x => x.PlatformName.ToLower() == Platform.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.Platforms.Find(SelectedPlatformItem.IdPlatform);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.Platforms.Any(x => x.PlatformName.ToLower() == Platform.ToLower());              
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedPlatformItem.PlatformName}» на «{Platform}» и «{SelectedPlatformItem.PlatformDescription}» на «{PlatformDescription}»",
-                            $"Надпись с именем «{SelectedPlatformItem.PlatformName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.PlatformName = Platform;
-                            entityToUpdate.PlatformDescription = PlatformDescription;
-                            context.SaveChanges();
-                            GetPlatformData();
-                            SelectedPlatformItem = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedPlatformItem.PlatformName, Platform, SelectedPlatformItem.PlatformDescription, PlatformDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.PlatformName = Platform;
                         entityToUpdate.PlatformDescription = PlatformDescription;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
                         GetPlatformData();
-                        SelectedPlatformItem = null;
                     }
+                }
+                else
+                {
+                    entityToUpdate.PlatformName = Platform;
+                    entityToUpdate.PlatformDescription = PlatformDescription;
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    GetPlatformData();
                 }
             }
         }
 
-        private void UpdatePlayerAssociationItem()
+        private async void UpdatePlayerAssociationItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedAssociationItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<PlayerAssociation>(SelectedAssociationItem.IdPlayerAssociation);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedAssociationItem == null)
+                bool exists = await _dataService.ExistsAsync<PlayerAssociation>(x => x.PlayerAssociationName.ToLower() == PlayerAssociation.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.PlayerAssociations.Find(SelectedAssociationItem.IdPlayerAssociation);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.PlayerAssociations.Any(x => x.PlayerAssociationName.ToLower() == PlayerAssociation.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedAssociationItem.PlayerAssociationName}» на «{PlayerAssociation}» и «{SelectedAssociationItem.PlayerAssociationDescription}» на «{PlayerAssociationDescription}»",
-                            $"Надпись с именем «{SelectedAssociationItem.PlayerAssociationName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.PlayerAssociationName = PlayerAssociation;
-                            entityToUpdate.PlayerAssociationDescription = PlayerAssociationDescription;
-                            context.SaveChanges();
-                            GetPlayerAssociationData();
-                            SelectedAssociationItem = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedAssociationItem.PlayerAssociationName, PlayerAssociation, SelectedAssociationItem.PlayerAssociationDescription, PlayerAssociationDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.PlayerAssociationName = PlayerAssociation;
                         entityToUpdate.PlayerAssociationDescription = PlayerAssociationDescription;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
                         GetPlayerAssociationData();
-                        SelectedAssociationItem = null;
                     }
+                }
+                else
+                {
+                    entityToUpdate.PlayerAssociationName = PlayerAssociation;
+                    entityToUpdate.PlayerAssociationDescription = PlayerAssociationDescription;
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    GetPlayerAssociationData();
                 }
             }
         }
 
-        private void UpdatePatchItem()
+        private async void UpdatePatchItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedPatchItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<Patch>(SelectedPatchItem.IdPatch);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedPatchItem == null)
+                bool exists = await _dataService.ExistsAsync<Patch>(x => x.PatchNumber.ToLower() == PatchNumber.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.Patches.Find(SelectedPatchItem.IdPatch);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.Patches.Any(x => x.PatchNumber.ToLower() == PatchNumber.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedPatchItem.PatchNumber}» на «{PatchNumber}» и «{SelectedPatchItem.PatchDateRelease}» на «{PatchDateRelease}»",
-                            $"Надпись с именем «{SelectedPatchItem.PatchNumber}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.PatchNumber = PatchNumber;
-                            entityToUpdate.PatchDateRelease = DateOnly.FromDateTime(PatchDateRelease);
-                            context.SaveChanges();
-                            GetPatchData();
-                            SelectedPatchItem = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedPatchItem.PatchNumber, PatchNumber, SelectedPatchItem.PatchDateRelease.ToString(), PatchDateRelease.ToString()) == MessageButtons.Yes)
                     {
                         entityToUpdate.PatchNumber = PatchNumber;
                         entityToUpdate.PatchDateRelease = DateOnly.FromDateTime(PatchDateRelease);
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
                         GetPatchData();
-                        SelectedPatchItem = null;
                     }
+                }
+                else
+                {
+                    entityToUpdate.PatchNumber = PatchNumber;
+                    entityToUpdate.PatchDateRelease = DateOnly.FromDateTime(PatchDateRelease);
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    GetPatchData();
                 }
             }
         }
 
-        private void UpdateTypeDeathItem()
+        private async void UpdateTypeDeathItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedTypeDeathItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<TypeDeath>(SelectedTypeDeathItem.IdTypeDeath);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedTypeDeathItem == null)
+                bool exists = await _dataService.ExistsAsync<TypeDeath>(x => x.TypeDeathName.ToLower() == TypeDeath.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.TypeDeaths.Find(SelectedTypeDeathItem.IdTypeDeath);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.TypeDeaths.Any(x => x.TypeDeathName.ToLower() == TypeDeath.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedTypeDeathItem.TypeDeathName}» на «{TypeDeath}» и «{SelectedTypeDeathItem.TypeDeathDescription}» на «{TypeDeathDescription}»",
-                            $"Надпись с именем «{SelectedTypeDeathItem.TypeDeathName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.TypeDeathName = TypeDeath;
-                            entityToUpdate.TypeDeathDescription = TypeDeathDescription;
-                            context.SaveChanges();
-                            GetTypeDeathData();
-                            SelectedTypeDeathItem = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedTypeDeathItem.TypeDeathName, TypeDeath, SelectedTypeDeathItem.TypeDeathDescription, TypeDeathDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.TypeDeathName = TypeDeath;
                         entityToUpdate.TypeDeathDescription = TypeDeathDescription;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
                         GetTypeDeathData();
-                        SelectedTypeDeathItem = null;
                     }
+                }
+                else
+                {
+                    entityToUpdate.TypeDeathName = TypeDeath;
+                    entityToUpdate.TypeDeathDescription = TypeDeathDescription;
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    GetTypeDeathData();
                 }
             }
         }
 
-        private void UpdateRoleItem()
+        private async void UpdateRoleItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedRoleItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<Role>(SelectedRoleItem.IdRole);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedRoleItem == null)
+                bool exists = await _dataService.ExistsAsync<Role>(x => x.RoleName.ToLower() == Role.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.Roles.Find(SelectedRoleItem.IdRole);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.Roles.Any(x => x.RoleName.ToLower() == Role.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedRoleItem.RoleName}» на «{Role}» и «{SelectedRoleItem.RoleDescription}» на «{RoleDescription}»",
-                            $"Надпись с именем «{SelectedRoleItem.RoleName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.RoleName = Role;
-                            entityToUpdate.RoleDescription = RoleDescription;
-                            context.SaveChanges();
-                            GetRoleData();
-                            SelectedRoleItem = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedRoleItem.RoleName, Role, SelectedRoleItem.RoleDescription, RoleDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.RoleName = Role;
                         entityToUpdate.RoleDescription = RoleDescription;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync<Role>(entityToUpdate);
                         GetRoleData();
-                        SelectedRoleItem = null;
                     }
+                }
+                else
+                {
+                    entityToUpdate.RoleName = Role;
+                    entityToUpdate.RoleDescription = RoleDescription;
+                    await _dataService.UpdateAsync<Role>(entityToUpdate);
+                    GetRoleData();
                 }
             }
         }
 
-        private void UpdateMeasurementItem()
+        private async void UpdateMeasurementItem()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedMeasurementItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<Measurement>(SelectedMeasurementItem.IdMeasurement);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedMeasurementItem == null)
+                bool exists = await _dataService.ExistsAsync<Measurement>(x => x.MeasurementName.ToLower() == Measurement.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.Measurements.Find(SelectedMeasurementItem.IdMeasurement);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.Measurements.Any(x => x.MeasurementName.ToLower() == Measurement.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена с «{SelectedMeasurementItem.MeasurementName}» на «{Measurement}» и «{SelectedMeasurementItem.MeasurementDescription}» на «{MeasurementDescription}»",
-                            $"Надпись с именем «{SelectedMeasurementItem.MeasurementName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.MeasurementName = Measurement;
-                            entityToUpdate.MeasurementDescription = MeasurementDescription;
-                            context.SaveChanges();
-                            GetMeasurementData();
-                            SelectedMeasurementItem = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedMeasurementItem.MeasurementName, Measurement, SelectedMeasurementItem.MeasurementDescription, MeasurementDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.MeasurementName = Measurement;
                         entityToUpdate.MeasurementDescription = MeasurementDescription;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
                         GetMeasurementData();
-                        SelectedMeasurementItem = null;
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
+                else
+                {
+                    entityToUpdate.MeasurementName = Measurement;
+                    entityToUpdate.MeasurementDescription = MeasurementDescription;
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    GetMeasurementData();
+                }
             }
+        }
+
+        #endregion
+
+        #region Методы обнуление выводимых данных
+
+        private void SetNullGameMode()
+        {
+            GameModeList.Clear();
+            GameMode = string.Empty;
+            GameModeDescription = string.Empty;
+            SelectedGameModeItem = null;
+        }
+
+        private void SetNullGameEvent()
+        {
+            GameEventList.Clear();
+            GameEvent = string.Empty;
+            GameEventDescription = string.Empty;
+            SelectedGameEventItem = null;
+        } 
+        
+        private void SetNullPlatform()
+        {
+            PlatformList.Clear();
+            Platform = string.Empty;
+            PlatformDescription = string.Empty;
+            SelectedPlatformItem = null;
+        }
+
+        private void SetNullPlayerAssociation()
+        {
+            AssociationList.Clear();
+            PlayerAssociation = string.Empty;
+            PlayerAssociationDescription = string.Empty;
+            SelectedAssociationItem = null;
+        }
+        
+        private void SetNullPatch()
+        {
+            PatchList.Clear();
+            PatchNumber = string.Empty;
+            PatchDateRelease = DateTime.MinValue;
+            SelectedPatchItem = null;
+        }
+        
+        private void SetNullTypeDeath()
+        {
+            DeathList.Clear();
+            TypeDeath = string.Empty;
+            TypeDeathDescription = string.Empty;
+            SelectedTypeDeathItem = null;
+        } 
+        
+        private void SetNullGameRole()
+        {
+            GameRoleList.Clear();
+            Role = string.Empty;
+            RoleDescription = string.Empty;
+            SelectedRoleItem = null;
+        } 
+        
+        private void SetNullMeasurement()
+        {
+            MeasurementList.Clear();
+            Measurement = string.Empty;
+            MeasurementDescription = string.Empty;
+            SelectedMeasurementItem = null;
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
@@ -27,7 +28,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 if (value == null) { return; }
                 _selectedRole = value;
-                OfferingList.Clear();
                 GetOfferingData();
 
                 SearchTextBox = string.Empty;
@@ -125,15 +125,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        IDialogService _dialogService;
+        ICustomDialogService _dialogService;
+        IDataService _dataService;
 
-        public AddOfferingWindowViewModel(IDialogService service)
+        public AddOfferingWindowViewModel(ICustomDialogService service, IDataService dataService)
         {
             _dialogService = service;
+            _dataService = dataService;
             Title = "Добавление подношение";
-            GetOfferingData();
-            GetRoleData();
             GetRarityData();
+            GetRoleData();
         }
 
         #region Команды
@@ -144,21 +145,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _deleteOfferingCommand;
         public RelayCommand DeleteOfferingCommand { get => _deleteOfferingCommand ??= new(async obj => 
         {
-            if (SelectedOffering == null)
+            if (SelectedOffering == null) return;
+            if (MessageHelper.MessageDelete(SelectedOffering.OfferingName) == MessageButtons.Yes)
             {
-                return;
-            }
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedOffering.OfferingName}»? При удаление данном записи, могут быть связанные записи в других таблицах, что может привести к проблемам.",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
-            {
-                await DataBaseHelper.DeleteEntityAsync(SelectedOffering);
+                await _dataService.RemoveAsync(SelectedOffering);
                 GetOfferingData();
-            }
-            else
-            {
-                return;
             }
         }); }
 
@@ -176,164 +167,119 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         #region Методы
 
         private async void GetOfferingData()
-        {
-            OfferingList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+        {         
+            if (SelectedRole == null) OfferingList.Clear();
+            else
             {
-
-                List<Offering> offering = new();
-
-                if (SelectedRole == null)
-                {
-                    OfferingList.Clear();
-                }
-                else
-                {
-                    offering = await context.Offerings.Include(rarity => rarity.IdRarityNavigation).Where(ia => ia.IdRole == SelectedRole.IdRole).OrderBy(x => x.IdRarity).ToListAsync();
-                }
+                List<Offering> offList = await _dataService.GetAllDataInListAsync<Offering>(x => x
+                .Include(x => x.IdRarityNavigation)
+                .Where(x => x.IdRole == SelectedRole.IdRole)
+                .OrderBy(x => x.IdRarity));
 
                 OfferingList.Clear();
 
-                foreach (var item in offering)
+                foreach (var item in offList)
                 {
                     OfferingList.Add(item);
                 }
-
-                //if (SelectedRole == null) 
-                //{
-                //    return;
-                //}
-
-                //var offerings = await context.Offerings.Include(offering => offering.IdRarityNavigation).Where(off => off.IdRole == SelectedRole.IdRole).ToListAsync();             
-                //foreach (var item in offerings)
-                //{
-                //    OfferingList.Add(item);
-                //}
             }
         }
 
         private async void GetRoleData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var offerings = await context.Roles.ToListAsync();
+            var roles = await _dataService.GetAllDataAsync<Role>();
 
-                foreach (var item in offerings)
-                {
-                    RoleList.Add(item);
-                }
-                SelectedRole = RoleList.FirstOrDefault();
+            foreach (var item in roles)
+            {
+                RoleList.Add(item);
             }
+            SelectedRole = RoleList.FirstOrDefault();
         }
 
         private async void GetRarityData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var rarities = await context.Rarities.ToListAsync();
+            var rarities = await _dataService.GetAllDataAsync<Rarity>();
 
-                foreach (var item in rarities)
-                {
-                    RarityList.Add(item);
-                }
+            foreach (var item in rarities)
+            {
+                RarityList.Add(item);
             }
         }
 
-        private void AddOffering()
+        private async void AddOffering()
         {
-
             var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingName, OfferingImage = OfferingImage, OfferingDescription = OfferingDescription, IdRarity = SelectedRarity.IdRarity };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.Offerings.Where(off => off.IdRole == SelectedRole.IdRole).Any(off => off.OfferingName.ToLower() == newOffering.OfferingName.ToLower());
+            bool exists = OfferingList.Any(x => x.OfferingName.ToLower() == newOffering.OfferingName.ToLower());
 
-                if (exists || string.IsNullOrEmpty(OfferingName))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
-                }
-                else
-                {
-                    context.Offerings.Add(newOffering);
-                    context.SaveChanges();
-                    GetOfferingData();
-                    OfferingName = string.Empty;
-                    OfferingDescription = string.Empty;
-                    SelectedOffering = null;
-                }
+            if (exists || string.IsNullOrEmpty(OfferingName)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newOffering);
+                GetOfferingData();
+                OfferingName = string.Empty;
+                OfferingDescription = string.Empty;
+                SelectedOffering = null;
             }
         }
 
-        private void UpdateOffering()
+        private async void UpdateOffering()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedOffering == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<Offering>(SelectedOffering.IdOffering);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedOffering == null)
+                bool exists = OfferingList.Any(x => x.OfferingName.ToLower() == OfferingName.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.Offerings.Find(SelectedOffering.IdOffering);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.Offerings.Where(off => off.IdRole == SelectedRole.IdRole).Any(x => x.OfferingName.ToLower() == OfferingName.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                           $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedOffering.OfferingName}» на «{OfferingName}» ?",
-                           $"Надпись с именем «{SelectedOffering.OfferingName}» уже существует.",
-                           TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.OfferingName = OfferingName;
-                            entityToUpdate.OfferingDescription = OfferingDescription;
-                            entityToUpdate.OfferingImage = OfferingImage;
-                            entityToUpdate.IdRole = SelectedRole.IdRole;
-                            entityToUpdate.IdRarity = SelectedRarity.IdRarity;
-                            context.SaveChanges();
-                            GetOfferingData();
-
-                            OfferingName = string.Empty;
-                            OfferingDescription = string.Empty;
-                            OfferingImage = null;
-                            SelectedOffering = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedOffering.OfferingName, OfferingName, SelectedOffering.OfferingDescription, OfferingDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.OfferingName = OfferingName;
                         entityToUpdate.OfferingDescription = OfferingDescription;
                         entityToUpdate.OfferingImage = OfferingImage;
                         entityToUpdate.IdRole = SelectedRole.IdRole;
                         entityToUpdate.IdRarity = SelectedRarity.IdRarity;
-                        context.SaveChanges();
-                        GetOfferingData();
+                        await _dataService.UpdateAsync(entityToUpdate);
 
+                        GetOfferingData();
                         OfferingName = string.Empty;
                         OfferingDescription = string.Empty;
                         OfferingImage = null;
                         SelectedOffering = null;
                     }
                 }
+                else
+                {
+                    entityToUpdate.OfferingName = OfferingName;
+                    entityToUpdate.OfferingDescription = OfferingDescription;
+                    entityToUpdate.OfferingImage = OfferingImage;
+                    entityToUpdate.IdRole = SelectedRole.IdRole;
+                    entityToUpdate.IdRarity = SelectedRarity.IdRarity;
+                    await _dataService.UpdateAsync(entityToUpdate);
+
+                    GetOfferingData();
+                    OfferingName = string.Empty;
+                    OfferingDescription = string.Empty;
+                    OfferingImage = null;
+                    SelectedOffering = null;
+                }
             }
         }
 
-        private void SearchOffering()
+        private async void SearchOffering()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var search = context.Offerings.Where(off => off.IdRole == SelectedRole.IdRole).Where(off => off.OfferingName.Contains(SearchTextBox));
-                OfferingList.Clear();
+            var search = await _dataService.GetAllDataInListAsync<Offering>(x => x
+                .Where(x => x.IdRole == SelectedRole.IdRole)
+                .Where(x => x.OfferingName.Contains(SearchTextBox)));
 
-                foreach (var item in search)
-                {
-                    OfferingList.Add(item);
-                }
+            OfferingList.Clear();
+
+            foreach (var item in search)
+            {
+                OfferingList.Add(item);
             }
         }
 

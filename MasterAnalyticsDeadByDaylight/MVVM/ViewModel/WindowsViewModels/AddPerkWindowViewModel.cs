@@ -1,8 +1,10 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -13,19 +15,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
     {
         #region Свойства
 
-        public ObservableCollection<Killer> KillerList { get; set; }
+        public ObservableCollection<Killer> KillerList { get; set; } = [];
 
-        public ObservableCollection<Survivor> SurvivorList { get; set; }
+        public ObservableCollection<Survivor> SurvivorList { get; set; } = [];
 
-        public ObservableCollection<Role> RoleList { get; set; }
+        public ObservableCollection<Role> RoleList { get; set; } = [];
 
-        public ObservableCollection<Character> CharacterList { get; set; }
+        public ObservableCollection<Character> CharacterList { get; set; } = [];
 
-        public ObservableCollection<Perk> PerkList { get; set; }
+        public ObservableCollection<Perk> PerkList { get; set; } = [];
 
-        public ObservableCollection<KillerPerk> KillerPerkList { get; set; }
+        public ObservableCollection<KillerPerk> KillerPerkList { get; set; } = [];
 
-        public ObservableCollection<SurvivorPerk> SurvivorPerkList { get; set; }
+        public ObservableCollection<SurvivorPerk> SurvivorPerkList { get; set; } = [];
 
         private Role _selectedRole;
         public Role SelectedRole
@@ -33,13 +35,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedRole;
             set
             {
+                if (value == null) return;
                 _selectedRole = value;
-                if (value == null) { return; }
                 GetCharacterList();
-                if (CharacterList.Count != 0)
-                {
-                    SelectedCharacter = CharacterList.First();
-                }
+                if (CharacterList.Count != 0) SelectedCharacter = CharacterList.First();
                 OnPropertyChanged();
             }
         }
@@ -50,8 +49,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedCharacter;
             set
             {
+                if (value == null) return;
                 _selectedCharacter = value;
-                if (value == null) { return; }
                 GetPerkData();
                 PerkNameTextBox = string.Empty;
                 ImagePerk = null;
@@ -66,8 +65,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedPerk;
             set
             {
+                if (value == null) return;
                 _selectedPerk = value;
-                if (value == null) { return; }
                 PerkNameTextBox = value.PerkName;
                 ImagePerk = value.PerkImage;
                 PerkDescriptionTextBox = value.PerkDescription;
@@ -132,17 +131,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        public AddPerkWindowViewModel()
-        {
-            Title = "Добавить перк";
-            KillerList = new ObservableCollection<Killer>();
-            KillerPerkList = new ObservableCollection<KillerPerk>();
-            SurvivorList = new ObservableCollection<Survivor>();
-            SurvivorPerkList = new ObservableCollection<SurvivorPerk>();
-            RoleList = new ObservableCollection<Role>();
-            CharacterList = new ObservableCollection<Character>();
-            PerkList = new ObservableCollection<Perk>();
+        private readonly ICustomDialogService _dialogService;
+        private readonly IDataService _dataService;
 
+        public AddPerkWindowViewModel(ICustomDialogService dialogService,IDataService dataService)
+        {
+            _dialogService = dialogService;
+            _dataService = dataService;
+            Title = "Добавить перк";
             GetKillerData();
             GetSurvivorData();
             GetRoleData();
@@ -203,149 +199,90 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void GetPerkData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            PerkList.Clear();
+
+            if (SelectedRole == null) { return; }
+
+            else if (SelectedRole.RoleName == "Убийца")
             {
                 PerkList.Clear();
+                GetKillerPerkData();
+            }
 
-                if (SelectedRole == null) { return; }
-
-                else if (SelectedRole.RoleName == "Убийца")
-                {
-                    PerkList.Clear();
-                    GetKillerPerkData();
-                }
-
-                else if (SelectedRole.RoleName == "Выживший")
-                {
-                    PerkList.Clear();
-                    GetSurvivorPerkData();
-                }
+            else if (SelectedRole.RoleName == "Выживший")
+            {
+                PerkList.Clear();
+                GetSurvivorPerkData();
             }
         }
 
         private async void GetRoleData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var items = await context.Roles.ToListAsync();
-                RoleList.Clear();
+            var items = await _dataService.GetAllDataAsync<Role>();
+            RoleList.Clear();
 
-                foreach (var item in items)
-                {
-                    RoleList.Add(item);
-                }
+            foreach (var item in items)
+            {
+                RoleList.Add(item);
             }
         }
 
         private async void GetKillerData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var items = await context.Killers.ToListAsync();
-                KillerList.Clear();
+            var items = await _dataService.GetAllDataAsync<Killer>();
+            KillerList.Clear();
 
-                foreach (var item in items)
-                {
-                    KillerList.Add(item);
-                }
+            foreach (var item in items)
+            {
+                KillerList.Add(item);
             }
         }
 
         private async void GetSurvivorData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var items = await context.Survivors.ToListAsync();
-                SurvivorList.Clear();
+            var items = await _dataService.GetAllDataAsync<Survivor>();
+            SurvivorList.Clear();
 
-                foreach (var item in items)
-                {
-                    SurvivorList.Add(item);
-                }
+            foreach (var item in items)
+            {
+                SurvivorList.Add(item);
             }
         }
 
         private async void GetKillerPerkData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            var items = await _dataService.GetAllDataAsync<KillerPerk>(x => x.Where(x => x.IdKiller == SelectedCharacter.IdCharacter));
+
+            foreach (var item in items)
             {
-                if (SelectedCharacter == null)
+                var perks = new Perk()
                 {
-                    var items = await context.KillerPerks.ToListAsync();
+                    IdCharacter = item.IdKiller,
+                    IdPerk = item.IdKillerPerk,
+                    PerkName = item.PerkName,
+                    PerkImage = item.PerkImage,
+                    PerkDescription = item.PerkDescription
+                };
 
-                    foreach (var item in items)
-                    {
-                        var perks = new Perk()
-                        {
-                            IdCharacter = item.IdKiller,
-                            IdPerk = item.IdKillerPerk,
-                            PerkName = item.PerkName,
-                            PerkImage = item.PerkImage,
-                            PerkDescription = item.PerkDescription
-                        };
-
-                        PerkList.Add(perks);
-                    }
-                }
-                else
-                {
-                    var items = await context.KillerPerks.Where(kp => kp.IdKiller == SelectedCharacter.IdCharacter).ToListAsync();
-
-                    foreach (var item in items)
-                    {
-                        var perks = new Perk()
-                        {
-                            IdCharacter = item.IdKiller,
-                            IdPerk = item.IdKillerPerk,
-                            PerkName = item.PerkName,
-                            PerkImage = item.PerkImage,
-                            PerkDescription = item.PerkDescription
-                        };
-
-                        PerkList.Add(perks);
-                    }
-                }
+                PerkList.Add(perks);
             }
         }
 
         private async void GetSurvivorPerkData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            var items = await _dataService.GetAllDataAsync<SurvivorPerk>(x => x.Where(sp => sp.IdSurvivor == SelectedCharacter.IdCharacter));
+            foreach (var item in items)
             {
-                if (SelectedCharacter == null)
+                var perks = new Perk()
                 {
-                    var items = await context.SurvivorPerks.ToListAsync();
-                    foreach (var item in items)
-                    {
-                        var perks = new Perk()
-                        {
-                            IdCharacter = item.IdSurvivor,
-                            IdPerk = item.IdSurvivorPerk,
-                            PerkName = item.PerkName,
-                            PerkImage = item.PerkImage,
-                            PerkDescription = item.PerkDescription
-                        };
+                    IdCharacter = item.IdSurvivor,
+                    IdPerk = item.IdSurvivorPerk,
+                    PerkName = item.PerkName,
+                    PerkImage = item.PerkImage,
+                    PerkDescription = item.PerkDescription
+                };
 
-                        PerkList.Add(perks);
-                    }
-                }
-                else
-                {
-                    var items = await context.SurvivorPerks.Where(sp => sp.IdSurvivor == SelectedCharacter.IdCharacter).ToListAsync();
-                    foreach (var item in items)
-                    {
-                        var perks = new Perk()
-                        {
-                            IdCharacter = item.IdSurvivor,
-                            IdPerk = item.IdSurvivorPerk,
-                            PerkName = item.PerkName,
-                            PerkImage = item.PerkImage,
-                            PerkDescription = item.PerkDescription
-                        };
-
-                        PerkList.Add(perks);
-                    }
-                }
+                PerkList.Add(perks);
             }
         }
 
@@ -355,58 +292,45 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void AddPerk()
         {
-            if (SelectedRole == null) { MessageBox.Show("Вы не выбрали игровую роль"); return; }
-            if (SelectedCharacter == null) { MessageBox.Show("Вы не выбрали персонажа"); return; }
+            if (SelectedRole == null) { _dialogService.ShowMessage("Вы не выбрали игровую роль"); return; }
+            if (SelectedCharacter == null) { _dialogService.ShowMessage("Вы не выбрали персонажа"); return; }
             if (SelectedRole.RoleName == "Убийца") { AddKillerPerk(); }
             if (SelectedRole.RoleName == "Выживший") { AddSurvivorPerk(); }
         }
 
-        private void AddSurvivorPerk()
+        private async void AddSurvivorPerk()
         {
             var newPerk = new SurvivorPerk() { IdSurvivor = SelectedCharacter.IdCharacter, PerkName = PerkNameTextBox, PerkImage = ImagePerk, PerkDescription = PerkDescriptionTextBox };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (string.IsNullOrWhiteSpace(PerkNameTextBox)) return;
+
+            bool exists = await _dataService.ExistsAsync<SurvivorPerk>(x => x.PerkName.ToLower() == newPerk.PerkName.ToLower());
+
+            if (exists || string.IsNullOrWhiteSpace(PerkNameTextBox)) MessageHelper.MessageExist();
+            else
             {
-                if (string.IsNullOrWhiteSpace(PerkNameTextBox)) { return; }
-
-                bool exists = context.SurvivorPerks.Any(sp => sp.PerkName.ToLower() == newPerk.PerkName.ToLower());
-
-                if (exists || string.IsNullOrWhiteSpace(PerkNameTextBox))
-                {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
-                }
-                else
-                {
-                    context.SurvivorPerks.Add(newPerk);
-                    context.SaveChanges();
-                    GetPerkData();
-                    PerkNameTextBox = string.Empty;
-                    ImagePerk = null;
-                }
+                await _dataService.AddAsync(newPerk);
+                GetPerkData();
+                PerkNameTextBox = string.Empty;
+                ImagePerk = null;
             }
         }
 
-        private void AddKillerPerk()
+        private async void AddKillerPerk()
         {
             var newPerk = new KillerPerk() { IdKiller = SelectedCharacter.IdCharacter, PerkName = PerkNameTextBox, PerkImage = ImagePerk, PerkDescription = PerkDescriptionTextBox };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                if (string.IsNullOrWhiteSpace(PerkNameTextBox)) { return; }
-                bool exists = context.KillerPerks.Any(kp => kp.PerkName.ToLower() == newPerk.PerkName.ToLower());
+            if (string.IsNullOrWhiteSpace(PerkNameTextBox)) return;
 
-                if (exists || string.IsNullOrWhiteSpace(PerkNameTextBox))
-                {
-                    MessageBox.Show("Эта запись уже имеется, либо вы ничего не написали");
-                }
-                else
-                {
-                    context.KillerPerks.Add(newPerk);
-                    context.SaveChanges();
-                    GetPerkData();
-                    PerkNameTextBox = string.Empty;
-                    ImagePerk = null;
-                }
+            bool exists = await _dataService.ExistsAsync<KillerPerk>(kp => kp.PerkName.ToLower() == newPerk.PerkName.ToLower());
+
+            if (exists || string.IsNullOrWhiteSpace(PerkNameTextBox)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newPerk);
+                GetPerkData();
+                PerkNameTextBox = string.Empty;
+                ImagePerk = null;
             }
         }
 
@@ -421,31 +345,24 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             if (SelectedRole.RoleName == "Выживший") { DeleteSurvivorPerk(); }
         }
 
-        private void DeleteKillerPerk()
+        private async void DeleteKillerPerk()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            var itemToDelete = _dataService.FindAsync<KillerPerk>(SelectedPerk.IdPerk); 
+
+            if (itemToDelete != null)
             {
-                var itemToDelete = context.KillerPerks.Find(SelectedPerk.IdPerk);
-                if (itemToDelete != null)
-                {
-                    context.KillerPerks.Remove(itemToDelete);
-                    context.SaveChanges();
-                    GetPerkData();
-                }
+                await _dataService.RemoveAsync(itemToDelete);
+                GetPerkData();
             }
         }
 
-        private void DeleteSurvivorPerk()
+        private async void DeleteSurvivorPerk()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            var itemToDelete = await _dataService.FindAsync<SurvivorPerk>(SelectedPerk.IdPerk);
+            if (itemToDelete != null)
             {
-                var itemToDelete = context.SurvivorPerks.Find(SelectedPerk.IdPerk);
-                if (itemToDelete != null)
-                {
-                    context.SurvivorPerks.Remove(itemToDelete);
-                    context.SaveChanges();
-                    GetPerkData();
-                }
+                await _dataService.RemoveAsync(itemToDelete);
+                GetPerkData();
             }
         }
 
@@ -456,72 +373,60 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private void UpdatePerk()
         {
             if (SelectedPerk == null) { return; }
-            if (SelectedRole.RoleName == "Общая") { MessageBox.Show("Вы не выбрали роль"); return; }
-            if (SelectedCharacter == null) { MessageBox.Show("Вы не выбрали персонажа"); return; }
+            if (SelectedRole.RoleName == "Общая") { _dialogService.ShowMessage("Вы не выбрали роль"); return; }
+            if (SelectedCharacter == null) { _dialogService.ShowMessage("Вы не выбрали персонажа"); return; }
 
             if (SelectedRole.RoleName == "Убийца") { UpdateKillerPerk(); }
             if (SelectedRole.RoleName == "Выживший") { UpdateSurvivorPerk(); }
         }
 
-        private void UpdateKillerPerk()
+        private async void UpdateKillerPerk()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedPerk == null) { return; }
+
+            var entityToUpdate = await _dataService.FindAsync<KillerPerk>(SelectedPerk.IdPerk);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedPerk == null) { return; }
-
-                var entityToUpdate = context.KillerPerks.Find(SelectedPerk.IdPerk);
-
-                if (entityToUpdate != null)
+                if (MessageHelper.MessageUpdate(SelectedPerk.PerkName, PerkNameTextBox, SelectedPerk.PerkDescription, PerkDescriptionTextBox) == MessageButtons.Yes)
                 {
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedPerk.PerkName} на {PerkNameTextBox} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    {
-                        entityToUpdate.PerkName = PerkNameTextBox;
-                        entityToUpdate.PerkImage = ImagePerk;
-                        entityToUpdate.PerkDescription = PerkDescriptionTextBox;
-                        context.SaveChanges();
+                    entityToUpdate.PerkName = PerkNameTextBox;
+                    entityToUpdate.PerkImage = ImagePerk;
+                    entityToUpdate.PerkDescription = PerkDescriptionTextBox;
+                    await _dataService.UpdateAsync(entityToUpdate);
 
-                        GetPerkData();
+                    GetPerkData();
 
-                        PerkNameTextBox = string.Empty;
-                        PerkDescriptionTextBox = string.Empty;
-                        ImagePerk = null;
-                        SelectedPerk = null;
-                    }
+                    PerkNameTextBox = string.Empty;
+                    PerkDescriptionTextBox = string.Empty;
+                    ImagePerk = null;
+                    SelectedPerk = null;
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 
-        private void UpdateSurvivorPerk()
+        private async void UpdateSurvivorPerk()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedPerk == null) { return; }
+
+            var entityToUpdate = await _dataService.FindAsync<SurvivorPerk>(SelectedPerk.IdPerk);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedPerk == null) { return; }
-
-                var entityToUpdate = context.SurvivorPerks.Find(SelectedPerk.IdPerk);
-
-                if (entityToUpdate != null)
+                if (MessageHelper.MessageUpdate(SelectedPerk.PerkName, PerkNameTextBox, SelectedPerk.PerkDescription, PerkDescriptionTextBox) == MessageButtons.Yes)
                 {
-                    if (MessageBox.Show($"Вы точно хотите изменить {SelectedPerk.PerkName} на {PerkNameTextBox} ?",
-                        "Предупреждение",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    {
-                        entityToUpdate.PerkName = PerkNameTextBox;
-                        entityToUpdate.PerkImage = ImagePerk;
-                        entityToUpdate.PerkDescription = PerkDescriptionTextBox;
-                        context.SaveChanges();
+                    entityToUpdate.PerkName = PerkNameTextBox;
+                    entityToUpdate.PerkImage = ImagePerk;
+                    entityToUpdate.PerkDescription = PerkDescriptionTextBox;
+                    await _dataService.UpdateAsync(entityToUpdate);
 
-                        GetPerkData();
+                    GetPerkData();
 
-                        PerkNameTextBox = string.Empty;
-                        PerkDescriptionTextBox = string.Empty;
-                        ImagePerk = null;
-                        SelectedPerk = null;
-                    }
+                    PerkNameTextBox = string.Empty;
+                    PerkDescriptionTextBox = string.Empty;
+                    ImagePerk = null;
+                    SelectedPerk = null;
                 }
-                else { MessageBox.Show("Нечего обновлять"); }
             }
         }
 

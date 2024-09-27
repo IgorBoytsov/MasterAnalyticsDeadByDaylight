@@ -1,11 +1,9 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -27,22 +25,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedKillerItem;
             set
             {
-                if (value != null)
-                {
-                    _selectedKillerItem = value;
-                    KillerName = value.KillerName;
-                    ImageKiller = value.KillerImage;
-                    ImageKillerAbility = value.KillerAbilityImage;
+                if (value == null) return;
 
-                    KillerAddonName = string.Empty;
-                    ImageKillerAddon = null;
-                    GetKillerAddonData();
-                }
-                else
-                {
-                    return;
-                }
-                
+                _selectedKillerItem = value;
+                KillerName = value.KillerName;
+                ImageKiller = value.KillerImage;
+                ImageKillerAbility = value.KillerAbilityImage;
+
+                KillerAddonName = string.Empty;
+                ImageKillerAddon = null;
+                GetKillerAddonData();
             }
         }
 
@@ -103,18 +95,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedKillerAddonItem;
             set
             {
-                if (value != null)
-                {
-                    _selectedKillerAddonItem = value;
-                    KillerAddonName = value.AddonName;
-                    ImageKillerAddon = value.AddonImage;
-                    SelectedRarity = RarityList.FirstOrDefault(x => x.IdRarity == value.IdRarity);
-                }
-                else
-                {
-                    return;
-                }
-               
+                if (value == null) return;
+
+                _selectedKillerAddonItem = value;
+                KillerAddonName = value.AddonName;
+                ImageKillerAddon = value.AddonImage;
+                SelectedRarity = RarityList.FirstOrDefault(x => x.IdRarity == value.IdRarity);
             }
         }
 
@@ -166,12 +152,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private readonly IDialogService _dialogService;
+        private readonly ICustomDialogService _dialogService;
+        private readonly IDataService _dataService;
 
-        public AddKillerWindowViewModel(IDialogService dialogService)
+        public AddKillerWindowViewModel(ICustomDialogService dialogService, IDataService dataService)
         {
             _dialogService = dialogService;
-
+            _dataService = dataService;
             GetRarityData();
             GetKillerData();
             GetKillerAddonData();
@@ -213,42 +200,23 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _deleteKillerCommand;
         public RelayCommand DeleteKillerCommand { get => _deleteKillerCommand ??= new(async obj => 
         {
-            if (SelectedKillerItem == null)
+            if (SelectedKillerItem == null) return;
+
+            if (MessageHelper.MessageDelete(SelectedKillerItem.KillerName) == MessageButtons.Yes)
             {
-                return;
-            }
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedKillerItem.KillerName}»? При удаление данном записи, могут быть связанные записи в других таблицах, что может привести к проблемам.",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
-            {
-                await DataBaseHelper.DeleteEntityAsync(SelectedKillerItem);
+                await _dataService.RemoveAsync(SelectedKillerItem);
                 GetKillerData();
-            }
-            else
-            {
-                return;
             }
         }); }
 
         private RelayCommand _deleteKillerAddonCommand;
         public RelayCommand DeleteKillerAddonCommand { get => _deleteKillerAddonCommand ??= new(async obj => 
         {
-            if (SelectedKillerAddonItem == null)
+            if (SelectedKillerAddonItem == null) return;
+            if (MessageHelper.MessageDelete(SelectedKillerAddonItem.AddonName) == MessageButtons.Yes)
             {
-                return;
-            }
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedKillerAddonItem.AddonName}»?",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
-            {
-                await DataBaseHelper.DeleteEntityAsync(SelectedKillerAddonItem);
+                await _dataService.RemoveAsync(SelectedKillerAddonItem);
                 GetKillerAddonData();
-            }
-            else
-            {
-                return;
             }
         }); }
 
@@ -259,35 +227,23 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private async void GetKillerData()
         {
             KillerList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            var killers = await _dataService.GetAllDataAsync<Killer>();
+            foreach (var item in killers.Skip(1))
             {
-                var killers = await context.Killers.Skip(1).ToListAsync();
-
-                foreach (var item in killers)
-                {
-                    KillerList.Add(item);
-                }
-                KillerList.Add(context.Killers.FirstOrDefault(x => x.KillerName == "Общий"));
+                KillerList.Add(item);
             }
+            KillerList.Add(killers.FirstOrDefault(x => x.KillerName == "Общий"));
         }
 
         private async void GetKillerAddonData()
         {
             KillerAddonList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedKillerItem == null) KillerAddonList.Clear();
+            else
             {
-                List<KillerAddon> Addons = new();
+                var addon = await _dataService.GetAllDataAsync<KillerAddon>(x => x.Where(x => x.IdKiller == SelectedKillerItem.IdKiller).OrderBy(x => x.IdRarity));
 
-                if (SelectedKillerItem == null)
-                {
-                    KillerAddonList.Clear();
-                }
-                else
-                {
-                    Addons = await context.KillerAddons.Where(ka => ka.IdKiller == SelectedKillerItem.IdKiller).OrderBy(x => x.IdRarity).ToListAsync();
-                }
-
-                foreach (var item in Addons)
+                foreach (var item in addon)
                 {
                     KillerAddonList.Add(item);
                 }
@@ -297,45 +253,38 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetRarityData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var rarities = await context.Rarities.ToListAsync();
+            var rarities = await _dataService.GetAllDataAsync<Rarity>();
 
-                foreach (var item in rarities)
-                {
-                    RarityList.Add(item);
-                }
+            foreach (var item in rarities)
+            {
+                RarityList.Add(item);
             }
         }
+
         #endregion
 
         #region Методы добавление данных
 
-        private void AddKiller()
+        private async void AddKiller()
         {
             var newKiller = new Killer { KillerName = KillerName, KillerImage = ImageKiller, KillerAbilityImage = ImageKillerAbility };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.Killers.Any(killer => killer.KillerName.ToLower() == newKiller.KillerName.ToLower());
+            bool exists = await _dataService.ExistsAsync<Killer>(x => x.KillerName.ToLower() == newKiller.KillerName.ToLower()); 
 
-                if (exists || string.IsNullOrEmpty(KillerName))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
-                }
-                else
-                {
-                    context.Killers.Add(newKiller);
-                    context.SaveChanges();
-                    KillerList.Clear();
-                    GetKillerData();
-                    KillerName = string.Empty;
-                    ImageKiller = null;
-                }
+            if (exists || string.IsNullOrEmpty(KillerName)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newKiller);;
+
+                KillerList.Clear();
+                GetKillerData();
+
+                KillerName = string.Empty;
+                ImageKiller = null;
             }
         }
 
-        private void AddKillerAddon()
+        private async void AddKillerAddon()
         {
             if (SelectedKillerItem == null)
             {
@@ -344,119 +293,51 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
             var newKillerAddon = new KillerAddon { IdKiller = SelectedKillerItem.IdKiller, IdRarity = SelectedRarity.IdRarity ,AddonName = KillerAddonName, AddonImage = ImageKillerAddon, AddonDescription = KillerAddonDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            bool exists = await _dataService.ExistsAsync<KillerAddon>(x => x.AddonName.ToLower() == newKillerAddon.AddonName.ToLower());
+
+            if (exists || string.IsNullOrEmpty(KillerAddonName))
             {
-                bool exists = context.KillerAddons.Any(KA => KA.AddonName.ToLower() == newKillerAddon.AddonName.ToLower());
+                MessageHelper.MessageExist();
+            }
+            else
+            {
+                await _dataService.AddAsync(newKillerAddon);
 
-                if (exists || string.IsNullOrEmpty(KillerAddonName))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
-                }
-                else
-                {
-                    context.KillerAddons.Add(newKillerAddon);
-                    context.SaveChanges();
+                KillerAddonList.Clear();
+                GetKillerAddonData();
 
-                    KillerAddonList.Clear();
-                    GetKillerAddonData();
-
-                    KillerAddonName = string.Empty;
-                    KillerAddonDescription = string.Empty;
-                    ImageKillerAddon = null;
-                    SelectedRarity = null;
-                }
+                KillerAddonName = string.Empty;
+                KillerAddonDescription = string.Empty;
+                ImageKillerAddon = null;
+                SelectedRarity = null;
             }
         }
 
         #endregion
 
-        #region Методы удаление данных
-
-        //private void DeleteKiller()
-        //{
-        //    using (MasterAnalyticsDeadByDaylightDbContext context = new())
-        //    {
-        //        var entityToDelete = context.Killers.Find(SelectedKillerItem.IdKiller);
-        //        if (entityToDelete != null)
-        //        {
-        //            context.RemoveRange(entityToDelete.KillerAddons);
-        //            context.RemoveRange(entityToDelete.KillerInfos);
-        //            context.RemoveRange(entityToDelete.KillerPerks);
-        //            //context.RemoveRange(context.KillerAddons.Where(ka => ka.IdKiller == SelectedKillerItem.IdKiller));
-
-        //            context.Remove(entityToDelete);
-        //            context.SaveChanges();
-        //            KillerList.Clear();
-        //            GetKillerData();
-        //        }
-        //    }
-        //}
-
-        //private void DeleteKillerAddon()
-        //{
-        //    using (MasterAnalyticsDeadByDaylightDbContext context = new())
-        //    {
-        //        var entityToDelete = context.KillerAddons.Find(SelectedKillerAddonItem.IdKillerAddon);
-        //        if (entityToDelete != null)
-        //        {
-        //            context.Remove(entityToDelete);
-        //            context.SaveChanges();
-        //            KillerAddonList.Clear();
-        //            GetKillerAddonData();
-        //        }
-        //    }
-        //}
-
-        #endregion
-
         #region Методы обновление данных 
 
-        private void UpdateKiller()
+        private async void UpdateKiller()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedKillerItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<Killer>(SelectedKillerItem.IdKiller);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedKillerItem == null)
+                bool exists = await _dataService.ExistsAsync<Killer>(x => x.KillerName.ToLower() == KillerName.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.Killers.Find(SelectedKillerItem.IdKiller);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.Killers.Any(x => x.KillerName.ToLower() == KillerName.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                           $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedKillerItem.KillerName}» на «{KillerName}» ?",
-                           $"Надпись с именем «{SelectedKillerItem.KillerName}» уже существует.",
-                           TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.KillerName = KillerName;
-                            entityToUpdate.KillerImage = ImageKiller;
-                            entityToUpdate.KillerAbilityImage = ImageKillerAbility;
-                            context.SaveChanges();
-
-                            KillerList.Clear();
-                            GetKillerData();
-
-                            SelectedKillerItem = null;
-                            KillerName = string.Empty;
-                            ImageKiller = null;
-                            ImageKillerAbility = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (_dialogService.ShowMessageButtons(
+                       $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedKillerItem.KillerName}» на «{KillerName}» ?",
+                       $"Надпись с именем «{SelectedKillerItem.KillerName}» уже существует.",
+                       TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
                     {
                         entityToUpdate.KillerName = KillerName;
                         entityToUpdate.KillerImage = ImageKiller;
                         entityToUpdate.KillerAbilityImage = ImageKillerAbility;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
 
                         KillerList.Clear();
                         GetKillerData();
@@ -464,64 +345,69 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                         SelectedKillerItem = null;
                         KillerName = string.Empty;
                         ImageKiller = null;
-                        ImageKillerAbility = null; 
+                        ImageKillerAbility = null;
                     }
+                }
+                else
+                {
+                    entityToUpdate.KillerName = KillerName;
+                    entityToUpdate.KillerImage = ImageKiller;
+                    entityToUpdate.KillerAbilityImage = ImageKillerAbility;
+                    await _dataService.UpdateAsync(entityToUpdate);
+                    
+                    KillerList.Clear();
+                    GetKillerData();
+
+                    SelectedKillerItem = null;
+                    KillerName = string.Empty;
+                    ImageKiller = null;
+                    ImageKillerAbility = null;
                 }
             }
         }
 
-        private void UpdateKillerAddon()
+        private async void UpdateKillerAddon()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedKillerAddonItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<KillerAddon>(SelectedKillerAddonItem.IdKillerAddon);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedKillerAddonItem == null)
+                bool exists = await _dataService.ExistsAsync<KillerAddon>(x => x.AddonName.ToLower() == KillerAddonName.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.KillerAddons.Find(SelectedKillerAddonItem.IdKillerAddon);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.KillerAddons.Any(x => x.AddonName.ToLower() == KillerAddonName.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                           $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedKillerAddonItem.AddonName}» на «{KillerName}» ?",
-                           $"Надпись с именем «{SelectedKillerAddonItem.AddonName}» уже существует.",
-                           TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.IdKiller = SelectedKillerItem.IdKiller;
-                            entityToUpdate.IdRarity = SelectedRarity.IdRarity;
-                            entityToUpdate.AddonName = KillerAddonName;
-                            entityToUpdate.AddonImage = ImageKillerAddon;
-                            entityToUpdate.AddonDescription = KillerAddonDescription;
-                            context.SaveChanges();
-                            GetKillerAddonData();
-
-                            KillerAddonName = string.Empty;
-                            ImageKillerAddon = null;
-                            SelectedRarity = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (_dialogService.ShowMessageButtons(
+                       $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedKillerAddonItem.AddonName}» на «{KillerName}» ?",
+                       $"Надпись с именем «{SelectedKillerAddonItem.AddonName}» уже существует.",
+                       TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
                     {
                         entityToUpdate.IdKiller = SelectedKillerItem.IdKiller;
+                        entityToUpdate.IdRarity = SelectedRarity.IdRarity;
                         entityToUpdate.AddonName = KillerAddonName;
                         entityToUpdate.AddonImage = ImageKillerAddon;
                         entityToUpdate.AddonDescription = KillerAddonDescription;
-                        context.SaveChanges();
-                        GetKillerAddonData();
+                        await _dataService.UpdateAsync<KillerAddon>(entityToUpdate);
 
+                        GetKillerAddonData();
                         KillerAddonName = string.Empty;
                         ImageKillerAddon = null;
                         SelectedRarity = null;
-                    } 
+                    }
+                }
+                else
+                {
+                    entityToUpdate.IdKiller = SelectedKillerItem.IdKiller;
+                    entityToUpdate.AddonName = KillerAddonName;
+                    entityToUpdate.AddonImage = ImageKillerAddon;
+                    entityToUpdate.AddonDescription = KillerAddonDescription;
+                    await _dataService.UpdateAsync<KillerAddon>(entityToUpdate);
+                    GetKillerAddonData();
+
+                    KillerAddonName = string.Empty;
+                    ImageKillerAddon = null;
+                    SelectedRarity = null;
                 }
             }
         }

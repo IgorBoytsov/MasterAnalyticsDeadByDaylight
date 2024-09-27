@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
-    public class ErrorWindowViewModel : BaseViewModel
+    class SettingsViewModel
     {
     }
 }

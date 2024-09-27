@@ -1,7 +1,10 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
+using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow;
 using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.ModalWindow;
+using MasterAnalyticsDeadByDaylight.Services;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
+using Microsoft.EntityFrameworkCore;
 using System.Windows;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
@@ -72,6 +75,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void CloseApp()
         {
+            //_context.Dispose();
             Application.Current.Shutdown();
         }
 
@@ -152,6 +156,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _openDataBackupWindowCommand;
         public RelayCommand OpenDataBackupWindowCommand { get => _openDataBackupWindowCommand ??= new(obj => OpenDataBackupWindow()); }
 
+        private RelayCommand _openSettingsWindowCommand;
+        public RelayCommand OpenSettingsWindowCommand { get => _openSettingsWindowCommand ??= new(obj => OpenSettingsWindow()); }
+
         #endregion
 
         #region Методы для открытие Window
@@ -227,6 +234,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             DataBackupWindow dataBackupWindow = new DataBackupWindow();
             dataBackupWindow.ShowDialog();
         }
+         
+        private static void OpenSettingsWindow()
+        {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.Show();
+        }
 
         private void SetTitle()
         {
@@ -237,8 +250,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private readonly IPageNavigationService _pageNavigationService;
 
-        public MainWindowViewModel(PageNavigationService pageNavigationService)
+        //private static MasterAnalyticsDeadByDaylightDbContext _context;
+
+        public MainWindowViewModel(IPageNavigationService pageNavigationService)
         {
+            //_context = context;
             _pageNavigationService = pageNavigationService ?? throw new ArgumentNullException(nameof(pageNavigationService));
 
             SetTitle();

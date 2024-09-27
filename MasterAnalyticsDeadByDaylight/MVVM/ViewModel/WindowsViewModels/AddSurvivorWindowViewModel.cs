@@ -1,5 +1,6 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
@@ -85,11 +86,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        private readonly IDialogService _dialogService;
+        private readonly ICustomDialogService _dialogService;
+        private readonly IDataService _dataService;
 
-        public AddSurvivorWindowViewModel(IDialogService dialogService)
+        public AddSurvivorWindowViewModel(ICustomDialogService dialogService, IDataService dataService)
         {
             _dialogService = dialogService;
+            _dataService = dataService;
             Title = "Список выживших";
             GetSurvivorData();
         }
@@ -103,7 +106,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public RelayCommand ClearImageCommand { get => _clearImageCommand ??= new(obj => { ImageSurvivor = null; }); }
 
         private RelayCommand _saveSurvivorCommand;
-        public RelayCommand SaveSurvivorCommand { get => _saveSurvivorCommand ??= new(obj => { SaveSurvivor(); }); }
+        public RelayCommand SaveSurvivorCommand { get => _saveSurvivorCommand ??= new(obj => { AddSurvivor(); }); }
 
         private RelayCommand _updateSurvivorCommand;
         public RelayCommand UpdateSurvivorCommand { get => _updateSurvivorCommand ??= new(obj => { UpdateSurvivor(); }); }
@@ -111,21 +114,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _deleteSurvivorCommand;
         public RelayCommand DeleteSurvivorCommand { get => _deleteSurvivorCommand ??= new(async obj => 
         {
-            if (SelectedSurvivorItem == null)
+            if (SelectedSurvivorItem == null) return;
+            if (MessageHelper.MessageDelete(SelectedSurvivorItem.SurvivorName) == MessageButtons.Yes)
             {
-                return;
-            }
-            if (_dialogService.ShowMessageButtons(
-                $"Вы точно хотите удалить «{SelectedSurvivorItem.SurvivorName}»? При удаление данном записи, могут удалится связанные записи в других таблицах.",
-                "Предупреждение об удаление.",
-                TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
-            {
-                await DataBaseHelper.DeleteEntityAsync(SelectedSurvivorItem);
+                await _dataService.RemoveAsync(SelectedSurvivorItem);
                 GetSurvivorData();
-            }
-            else
-            {
-                return;
             }
         }); }
 
@@ -135,17 +128,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void GetSurvivorData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var survivors = await context.Survivors.Skip(1).ToListAsync();
-                SurvivorList.Clear();
+            var survivors = await _dataService.GetAllDataAsync<Survivor>();
 
-                foreach (var item in survivors)
-                {
-                    SurvivorList.Add(item);
-                }
-                SurvivorList.Add(context.Survivors.FirstOrDefault(x => x.SurvivorName == "Общий"));
+            SurvivorList.Clear();
+
+            foreach (var item in survivors.Skip(1))
+            {
+                SurvivorList.Add(item);
             }
+            SurvivorList.Add(survivors.FirstOrDefault(x => x.SurvivorName == "Общий"));
         }
 
         private void SelectImageSurvivor()
@@ -160,76 +151,42 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private void SaveSurvivor()
+        private async void AddSurvivor()
         {
             var newSurvivor = new Survivor() { SurvivorName = SurvivorName, SurvivorImage = ImageSurvivor, SurvivorDescription = SurvivorDescription };
 
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                bool exists = context.Survivors.Any(survivor => survivor.SurvivorName.ToLower() == newSurvivor.SurvivorName.ToLower());
+            bool exists = await _dataService.ExistsAsync<Survivor>(x => x.SurvivorName.ToLower() == newSurvivor.SurvivorName.ToLower());
 
-                if (exists || string.IsNullOrWhiteSpace(SurvivorName))
-                {
-                    _dialogService.ShowMessage("Эта запись уже имеется, либо вы ничего не написали", "Совпадение имени");
-                }
-                else
-                {
-                    var survivor = context.Survivors.Add(newSurvivor);
-                    context.SaveChanges();
-                    GetSurvivorData();
-                    SurvivorName = string.Empty;
-                    SurvivorDescription = string.Empty;
-                    ImageSurvivor = null;
-                    SelectedSurvivorItem = null;
-                }
+            if (exists || string.IsNullOrWhiteSpace(SurvivorName)) MessageHelper.MessageExist();
+            else
+            {
+                await _dataService.AddAsync(newSurvivor);
+                GetSurvivorData();
+                SurvivorName = string.Empty;
+                SurvivorDescription = string.Empty;
+                ImageSurvivor = null;
+                SelectedSurvivorItem = null;
             }
         }
 
-        private void UpdateSurvivor()
+        private async void UpdateSurvivor()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            if (SelectedSurvivorItem == null) return;
+
+            var entityToUpdate = await _dataService.FindAsync<Survivor>(SelectedSurvivorItem.IdSurvivor);
+
+            if (entityToUpdate != null)
             {
-                if (SelectedSurvivorItem == null)
+                bool exists = await _dataService.ExistsAsync<Survivor>(x => x.SurvivorName.ToLower() == SurvivorName.ToLower());
+
+                if (exists)
                 {
-                    return;
-                }
-
-                var entityToUpdate = context.Survivors.Find(SelectedSurvivorItem.IdSurvivor);
-
-                if (entityToUpdate != null)
-                {
-                    bool exists = context.Survivors.Any(x => x.SurvivorName.ToLower() == SurvivorName.ToLower());
-
-                    if (exists)
-                    {
-                        if (_dialogService.ShowMessageButtons(
-                            $"Вы точно хотите обновить ее? Если да, то будет произведена замена имени с «{SelectedSurvivorItem.SurvivorName}» на «{SurvivorName}» ?\n"+$"А так же замена описание с «{SelectedSurvivorItem.SurvivorDescription}» на «{SurvivorDescription}» ?",
-                            $"Надпись с именем «{SelectedSurvivorItem.SurvivorName}» уже существует.",
-                            TypeMessage.Notification, MessageButtons.YesNoCancel) == MessageButtons.Yes)
-                        {
-                            entityToUpdate.SurvivorName = SurvivorName;
-                            entityToUpdate.SurvivorImage = ImageSurvivor;
-                            entityToUpdate.SurvivorDescription = SurvivorDescription;
-                            context.SaveChanges();
-
-                            GetSurvivorData();
-
-                            SelectedSurvivorItem = null;
-                            SurvivorName = string.Empty;
-                            SurvivorDescription = string.Empty;
-                            ImageSurvivor = null;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
+                    if (MessageHelper.MessageUpdate(SelectedSurvivorItem.SurvivorName, SurvivorName, SelectedSurvivorItem.SurvivorDescription, SurvivorDescription) == MessageButtons.Yes)
                     {
                         entityToUpdate.SurvivorName = SurvivorName;
                         entityToUpdate.SurvivorImage = ImageSurvivor;
                         entityToUpdate.SurvivorDescription = SurvivorDescription;
-                        context.SaveChanges();
+                        await _dataService.UpdateAsync(entityToUpdate);
 
                         GetSurvivorData();
 
@@ -238,8 +195,22 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                         SurvivorDescription = string.Empty;
                         ImageSurvivor = null;
                     }
-                   
                 }
+                else
+                {
+                    entityToUpdate.SurvivorName = SurvivorName;
+                    entityToUpdate.SurvivorImage = ImageSurvivor;
+                    entityToUpdate.SurvivorDescription = SurvivorDescription; 
+                    await _dataService.UpdateAsync(entityToUpdate);
+
+                    GetSurvivorData();
+
+                    SelectedSurvivorItem = null;
+                    SurvivorName = string.Empty;
+                    SurvivorDescription = string.Empty;
+                    ImageSurvivor = null;
+                }
+
             }
         }
  

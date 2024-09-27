@@ -1,6 +1,8 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -44,9 +46,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private List<KillerAddon> KillersAddonsTable {  get; set; } = [];
 
+        private List<KillerBuild> KillersBuildsTable {  get; set; } = [];
+
         private List<SurvivorInfo> SurvivorInfosTable {  get; set; } = [];
 
         private List<Survivor> SurvivorsTable { get; set; } = [];
+
+        private List<SurvivorBuild> SurvivorBuildsTable { get; set; } = [];
 
         private List<SurvivorPerk> SurvivorPerksTable { get; set; } = [];
 
@@ -152,8 +158,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        public DataBackupWindowViewModel()
+        private readonly ICustomDialogService _dialogService;
+        private readonly IDataService _dataService;
+
+        public DataBackupWindowViewModel(ICustomDialogService dialogService, IDataService dataService)
         {
+            _dialogService = dialogService;
+            _dataService = dataService;
             Title = "Создание копии данных";
             FillBackupsList();
         }
@@ -220,7 +231,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (string.IsNullOrWhiteSpace(SaveFilePath))
             {
-                System.Windows.MessageBox.Show("Не указан путь сохранения");
+                _dialogService.ShowMessage("Не указан путь сохранения");
             }
             if (JsonCheckBox == true)
             {       
@@ -241,9 +252,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 { "Список убийц", () => FileHelper.CreateJsonBackupFileAsync(KillersTable, SaveFilePath + @"\Список убийц.json") },
                 { "Перки убийцы", () => FileHelper.CreateJsonBackupFileAsync(KillerPerksTable, SaveFilePath + @"\Перки убийцы.json") },
                 { "Аддоны убийц", () => FileHelper.CreateJsonBackupFileAsync(KillersAddonsTable, SaveFilePath + @"\Аддоны убийц.json") },
+                { "Билды убийцы", () => FileHelper.CreateJsonBackupFileAsync(KillersBuildsTable, SaveFilePath + @"\Билды убийцы.json") },
                 { "Информация по выжившем", () => FileHelper.CreateJsonBackupFileAsync(SurvivorInfosTable, SaveFilePath + @"\Информация по выжившем.json") },
                 { "Список выживших", () => FileHelper.CreateJsonBackupFileAsync(SurvivorsTable, SaveFilePath + @"\Список выживших.json") },
                 { "Перки выживших", () => FileHelper.CreateJsonBackupFileAsync(SurvivorPerksTable, SaveFilePath + @"\Перки выживших.json") },
+                { "Билды выжившего", () => FileHelper.CreateJsonBackupFileAsync(SurvivorBuildsTable, SaveFilePath + @"\Билды выжившего.json") },
                 { "Предметы", () => FileHelper.CreateJsonBackupFileAsync(ItemsTable, SaveFilePath + @"\Предметы.json") },
                 { "Аддоны для предметов", () => FileHelper.CreateJsonBackupFileAsync(ItemAddonsTable, SaveFilePath + @"\Аддоны для предметов.json") },
                 { "Подношение", () => FileHelper.CreateJsonBackupFileAsync(OfferingsTable, SaveFilePath + @"\Подношение.json") },
@@ -283,9 +296,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 { "Список убийц", () => FileHelper.CreateXmlBackupFileAsync(KillersTable, SaveFilePath + @"\Список убийц.xml") },
                 { "Перки убийцы", () => FileHelper.CreateXmlBackupFileAsync(KillerPerksTable, SaveFilePath + @"\Перки убийцы.xml") },
                 { "Аддоны убийц", () => FileHelper.CreateXmlBackupFileAsync(KillersAddonsTable, SaveFilePath + @"\Аддоны убийц.xml") },
+                { "Билды убийцы", () => FileHelper.CreateXmlBackupFileAsync(KillersBuildsTable, SaveFilePath + @"\Билды убийцы.xml") },
                 { "Информация по выжившем", () => FileHelper.CreateXmlBackupFileAsync(SurvivorInfosTable, SaveFilePath + @"\Информация по выжившем.xml") },
                 { "Список выживших", () => FileHelper.CreateXmlBackupFileAsync(SurvivorsTable, SaveFilePath + @"\Список выживших.xml") },
                 { "Перки выживших", () => FileHelper.CreateXmlBackupFileAsync(SurvivorPerksTable, SaveFilePath + @"\Перки выживших.xml") },
+                { "Билды выжившего", () => FileHelper.CreateXmlBackupFileAsync(SurvivorBuildsTable, SaveFilePath + @"\Билды выжившего.xml") },
                 { "Предметы", () => FileHelper.CreateXmlBackupFileAsync(ItemsTable, SaveFilePath + @"\Предметы.xml") },
                 { "Аддоны для предметов", () => FileHelper.CreateXmlBackupFileAsync(ItemAddonsTable, SaveFilePath + @"\Аддоны для предметов.xml") },
                 { "Подношение", () => FileHelper.CreateXmlBackupFileAsync(OfferingsTable, SaveFilePath + @"\Подношение.xml") },
@@ -389,10 +404,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Список убийц" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Перки убийцы" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Аддоны убийц" });
+            BackupsTable.Add(new Backup { IsCheck = false, Name = "Билды убийцы" });
 
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Информация по выжившем" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Список выживших" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Перки выживших" });
+            BackupsTable.Add(new Backup { IsCheck = false, Name = "Билды выжившего" });
 
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Предметы" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Аддоны для предметов" });
@@ -422,10 +439,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             await GetKillerData();
             await GetKillerPerkData();
             await GetKillerAddonData();
+            await GetKillerBuildData();
 
             await GetSurvivorInfoData();
             await GetSurvivorData();
             await GetSurvivorPerkData();
+            await GetSurvivorBuildData();
 
             await GetItemData();
             await GetItemAddonData();
@@ -477,6 +496,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             KillersAddonsTable = await KillerAddonData();
         }
 
+        private async Task GetKillerBuildData()
+        {
+            KillersBuildsTable.Clear();
+            KillersBuildsTable = await KillerBuildData();
+        }
         private async Task GetSurvivorInfoData()
         {
             SurvivorInfosTable.Clear();
@@ -493,6 +517,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             SurvivorPerksTable.Clear();
             SurvivorPerksTable = await SurvivorPerkData();
+        }
+
+        private async Task GetSurvivorBuildData()
+        {
+            SurvivorBuildsTable.Clear();
+            SurvivorBuildsTable = await SurvivorBuildData();
         }
 
         private async Task GetItemData()
@@ -583,224 +613,124 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Методы получение данных
 
-        public static async Task<List<GameStatistic>> GameStatisticData()
+        public async Task<List<GameStatistic>> GameStatisticData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var gameStatistic = await context.GameStatistics.ToListAsync();
-
-                return gameStatistic;
-            }
+            return await _dataService.GetAllDataInListAsync<GameStatistic>();
         }
 
-        public static async Task<List<KillerInfo>> KillerInfoData()
+        public async Task<List<KillerInfo>> KillerInfoData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var killerInfos = await context.KillerInfos.ToListAsync();
-
-                return killerInfos;
-            }
+            return await _dataService.GetAllDataInListAsync<KillerInfo>();
         }
 
-        public static async Task<List<Killer>> KillerData()
+        public async Task<List<Killer>> KillerData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var killers = await context.Killers.ToListAsync();
-
-                return killers;
-            }
+            return await _dataService.GetAllDataInListAsync<Killer>();
         }
 
-        public static async Task<List<KillerPerk>> KillerPerkData()
+        public async Task<List<KillerPerk>> KillerPerkData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var killerPerks = await context.KillerPerks.ToListAsync();
-
-                return killerPerks;
-            }
+            return await _dataService.GetAllDataInListAsync<KillerPerk>();
         }
 
-        public static async Task<List<KillerAddon>> KillerAddonData()
+        public async Task<List<KillerAddon>> KillerAddonData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var killerAddons = await context.KillerAddons.ToListAsync();
-
-                return killerAddons;
-            }
+            return await _dataService.GetAllDataInListAsync<KillerAddon>();
         }
 
-        public static async Task<List<SurvivorInfo>> SurvivorInfoData()
+        public async Task<List<KillerBuild>> KillerBuildData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var survivorInfos = await context.SurvivorInfos.ToListAsync();
-
-                return survivorInfos;
-            }
+            return await _dataService.GetAllDataInListAsync<KillerBuild>();
         }
 
-        public static async Task<List<Survivor>> SurvivorData()
+        public async Task<List<SurvivorInfo>> SurvivorInfoData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var survivors = await context.Survivors.ToListAsync();
-
-                return survivors;
-            }
+            return await _dataService.GetAllDataInListAsync<SurvivorInfo>();
         }
 
-        public static async Task<List<SurvivorPerk>> SurvivorPerkData()
+        public async Task<List<Survivor>> SurvivorData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var survivorPerks = await context.SurvivorPerks.ToListAsync();
-
-                return survivorPerks;
-            }
+            return await _dataService.GetAllDataInListAsync<Survivor>();
         }
 
-        public static async Task<List<Item>> ItemData()
+        public async Task<List<SurvivorBuild>> SurvivorBuildData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var items = await context.Items.ToListAsync();
-
-                return items;
-            }
+            return await _dataService.GetAllDataInListAsync<SurvivorBuild>();
         }
 
-        public static async Task<List<ItemAddon>> ItemAddonData()
+        public async Task<List<SurvivorPerk>> SurvivorPerkData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var itemAddons = await context.ItemAddons.ToListAsync();
-
-                return itemAddons;
-            }
+            return await _dataService.GetAllDataInListAsync<SurvivorPerk>();
         }
 
-        public static async Task<List<Offering>> OfferingData()
+        public async Task<List<Item>> ItemData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var offering = await context.Offerings.ToListAsync();
-
-                return offering;
-            }
+            return await _dataService.GetAllDataInListAsync<Item>();
         }
 
-        public static async Task<List<Rarity>> RarityData()
+        public async Task<List<ItemAddon>> ItemAddonData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var rarities = await context.Rarities.ToListAsync();
-
-                return rarities;
-            }
+            return await _dataService.GetAllDataInListAsync<ItemAddon>();
         }
 
-        public static async Task<List<Role>> RoleData()
+        public async Task<List<Offering>> OfferingData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var roles = await context.Roles.ToListAsync();
-
-                return roles;
-            }
+            return await _dataService.GetAllDataInListAsync<Offering>();
         }
 
-        public static async Task<List<Map>> MapData()
+        public async Task<List<Rarity>> RarityData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var maps = await context.Maps.ToListAsync();
-
-                return maps;
-            }
+            return await _dataService.GetAllDataInListAsync<Rarity>();
         }
 
-        public static async Task<List<Measurement>> MeasurementData()
+        public async Task<List<Role>> RoleData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var measurements = await context.Measurements.ToListAsync();
-
-                return measurements;
-            }
+            return await _dataService.GetAllDataInListAsync<Role>();
         }
 
-        public static async Task<List<WhoPlacedMap>> WhoPlacedMapData()
+        public async Task<List<Map>> MapData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var whoPlacedMaps = await context.WhoPlacedMaps.ToListAsync();
-
-                return whoPlacedMaps;
-            }
+            return await _dataService.GetAllDataInListAsync<Map>();
         }
 
-        public static async Task<List<Patch>> PatchData()
+        public async Task<List<Measurement>> MeasurementData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var patches = await context.Patches.ToListAsync();
-
-                return patches;
-            }
+            return await _dataService.GetAllDataInListAsync<Measurement>();
         }
 
-        public static async Task<List<GameMode>> GameModeData()
+        public async Task<List<WhoPlacedMap>> WhoPlacedMapData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var gameModes = await context.GameModes.ToListAsync();
-
-                return gameModes;
-            }
+            return await _dataService.GetAllDataInListAsync<WhoPlacedMap>();
         }
 
-        public static async Task<List<GameEvent>> GameEventData()
+        public async Task<List<Patch>> PatchData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var gameEvents = await context.GameEvents.ToListAsync();
-
-                return gameEvents;
-            }
+            return await _dataService.GetAllDataInListAsync<Patch>();
         }
 
-        public static async Task<List<TypeDeath>> TypeDeathData()
+        public async Task<List<GameMode>> GameModeData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var typeDeaths = await context.TypeDeaths.ToListAsync();
-
-                return typeDeaths;
-            }
+            return await _dataService.GetAllDataInListAsync<GameMode>();
         }
 
-        public static async Task<List<PlayerAssociation>> PlayerAssociationData()
+        public async Task<List<GameEvent>> GameEventData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var playerAssociations = await context.PlayerAssociations.ToListAsync();
-
-                return playerAssociations;
-            }
+            return await _dataService.GetAllDataInListAsync<GameEvent>();
         }
 
-        public static async Task<List<Platform>> PlatformData()
+        public async Task<List<TypeDeath>> TypeDeathData()
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var platforms = await context.Platforms.ToListAsync();
+            return await _dataService.GetAllDataInListAsync<TypeDeath>();
+        }
 
-                return platforms;
-            }
+        public async Task<List<PlayerAssociation>> PlayerAssociationData()
+        {
+            return await _dataService.GetAllDataInListAsync<PlayerAssociation>();
+        }
+
+        public async Task<List<Platform>> PlatformData()
+        {
+            return await _dataService.GetAllDataInListAsync<Platform>();
         }
 
         #endregion
