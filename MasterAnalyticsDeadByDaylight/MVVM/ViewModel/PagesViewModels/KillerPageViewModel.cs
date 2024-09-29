@@ -4,35 +4,34 @@ using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Numerics;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel;
-using System.Linq;
+using MasterAnalyticsDeadByDaylight.Utils.Enum;
+using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerService;
+using MasterAnalyticsDeadByDaylight.Services.CalculationService.MapService;
+using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
     internal class KillerPageViewModel : BaseViewModel
     {
-
         #region Колекции 
 
-        private ObservableCollection<KillerStat> KillerStatList { get; set; }
+        private ObservableCollection<KillerStat> KillerStatList { get; set; } = [];
 
-        public ObservableCollection<KillerStat> KillerStatSortedList { get; set; }
+        public ObservableCollection<KillerStat> KillerStatSortedList { get; set; } = [];
 
-        public ObservableCollection<GameStatistic> MatchesSelectedKillerList { get; set; }
+        public ObservableCollection<GameStatistic> MatchesSelectedKillerList { get; set; } = [];
 
-        public ObservableCollection<PlayerAssociation> PlayerAssociationList { get; set; }
+        public List<PlayerAssociation> PlayerAssociationList { get; set; } = [];
 
-        public ObservableCollection<Survivor> SurvivorList { get; set; } = [];
+        public List<TypeDeath> TypeDeathList { get; set; } = [];
 
-        public ObservableCollection<TypeDeath> TypeDeathList { get; set; } = [];
-
-        public ObservableCollection<Map> MapList { get; set; } = [];
+        //public List<Map> MapList { get; set; } = [];
 
         public ObservableCollection<string> SortingList { get; set; } =
             [
@@ -45,7 +44,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             "Количеству выигранных игр (Убыв.)", "Количеству выигранных игр (Возр.)",
             ];
 
-        public ObservableCollection<string> Names { get; set; } = ["Ноль", "Один", "Два", "Три", "Четыре", "Пять", "Шесть", "Семь", "Восемь", "Девять", "Десять", "Одиннадцать", "Двенадцать"];
         #endregion
 
         #region Свойства Selected
@@ -57,7 +55,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             set
             {
                 _selectedKillerStatSortItem = value;
-                GetKillerStatisticData();
                 OnPropertyChanged();
             }
         }
@@ -69,7 +66,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             set
             {
                 _selectedPlayerAssociationStatItem = value;
-                GetKillerStatisticData();
                 OnPropertyChanged();
             }
         }
@@ -141,16 +137,45 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #endregion
 
-        public KillerPageViewModel()
+        #region Pupup
+
+        private bool _isFilterPopupOpen;
+        public bool IsFilterPopupOpen
         {
-            DeclareCollections();
+            get => _isFilterPopupOpen;
+            set
+            {
+                _isFilterPopupOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        private KillerPage _killerPage;
+
+        private readonly IDataService _dataService;
+        private readonly IKillerCalculationService _killerCalculationService;
+        private readonly IMapCalculationService _mapCalculationService;
+
+        public KillerPageViewModel(KillerPage KillerPage,
+                                   IDataService dataService, 
+                                   IKillerCalculationService killerCalculationService,
+                                   IMapCalculationService mapCalculationService)
+        {
+            _killerPage = KillerPage;
+            _dataService = dataService;
+            _killerCalculationService = killerCalculationService;
+            _mapCalculationService = mapCalculationService;
+
             GetPlayerAssociationData();
-            GetSurvivorData();
-            GetTypeDeathData();
-            GetMapData();
-            SelectedPlayerAssociationStatItem = PlayerAssociationList.First();
-            SetDefaultVisibility();
+
             SelectedKillerStatSortItem = SortingList.First();
+
+            SetDefaultVisibility();
+            IsFilterPopupOpen = false;
+
+            GetKillerStatisticData();
         }
 
         #region Команды
@@ -164,71 +189,62 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             KillerListVisibility = Visibility.Visible;
             SortMenuVisibility = Visibility.Visible;
             DetailedInformationVisibility = Visibility.Collapsed;
+            _killerPage.MainScrollViewer.ScrollToTop();
         }); }
 
         private RelayCommand _reloadDataCommand;
         public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { GetKillerStatisticData(); SortKillerStatsByDescendingOrder(); SearchTextBox = string.Empty; }); }
 
+        private RelayCommand _openFilterCommand;
+        public RelayCommand OpenFilterCommand { get => _openFilterCommand ??= new(obj => { IsFilterPopupOpen = true; }); }
+
+        private RelayCommand _closeFilterCommand;
+        public RelayCommand CloseFilterCommand { get => _closeFilterCommand ??= new(obj => 
+        { 
+            IsFilterPopupOpen = false;
+            GetKillerStatisticData();
+        }); }
+
         #endregion
 
-        #region Объявление списков
+        #region Методы видимости элементов
 
-        private void DeclareCollections()
+        private void SetDefaultVisibility()
         {
-            KillerStatList = [];
-            KillerStatSortedList = [];
-            PlayerAssociationList = [];
+            SortMenuVisibility = Visibility.Visible;
+            DetailedInformationVisibility = Visibility.Collapsed;
         }
 
         #endregion
 
         #region Методы получение данных
 
-        private void GetKillerStatisticData()
+        private async void GetKillerStatisticData()
         {
             KillerStatList.Clear();
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                List<Killer> KillerList = context.Killers.Skip(1).ToList();
+                List<Killer> KillerList = await _dataService.GetAllDataInListAsync<Killer>(x => x.Skip(1));
 
-                int CountMatch = context.GameStatistics
-                    .Include(gs => gs.IdKillerNavigation)
-                    .ThenInclude(killerInfo => killerInfo.IdAssociationNavigation)
-                    .Where(gs => gs.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                    .Count();
+                int CountMatch = await _killerCalculationService.GetAllKillerCountMatch(SelectedPlayerAssociationStatItem.IdPlayerAssociation);
 
                 foreach (var killer in KillerList)
                 {
-                    List<GameStatistic> GameStat = context.GameStatistics
-                        .Include(gs => gs.IdKillerNavigation)
-                        .ThenInclude(killerInfo => killerInfo.IdKillerNavigation)
+                    List<GameStatistic> GameStat = await _killerCalculationService.GetSelectedKillerMatch(killer.IdKiller, SelectedPlayerAssociationStatItem.IdPlayerAssociation);
+                    double CountKill = await _killerCalculationService.CalculatingCountKill(GameStat);
+                    double KillRate = await _killerCalculationService.CalculatingKillRate(GameStat, CountKill);
+                    double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(KillRate);
+                    double PickRate = await _killerCalculationService.CalculatingPickRate(GameStat.Count, CountMatch);
+                    double MatchWin = await _killerCalculationService.CalculatingKillerCountMatchWin(GameStat);
+                    double WinRate = await _killerCalculationService.CalculatingWinRate((int)MatchWin, GameStat.Count);
 
-                        .Include(gs => gs.IdKillerNavigation)
-                        .ThenInclude(killerInfo => killerInfo.IdAssociationNavigation)
+                    var KillDistribution = await _killerCalculationService.CalculatingKillerKillDistribution(GameStat);
 
-                        .Where(gs => gs.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(gs => gs.IdKillerNavigation.IdKillerNavigation.IdKiller == killer.IdKiller)
-                        .ToList();
-
-                    double CountKill = 0;
-                    double KillRate;
-                    double KillRatePercentage;
-                    foreach (var item in GameStat) { CountKill += item.CountKills; }
-
-                    if (GameStat.Count == 0) { KillRate = 0; }
-                    else { KillRate = Math.Round(CountKill / GameStat.Count, 1); }
-
-                    KillRatePercentage = Math.Round(KillRate / 4 * 100, 2);
-
-                    double PickRate = Math.Round((double)GameStat.Count / CountMatch * 100, 2);
-                    double MatchWin = GameStat.Where(gs => gs.CountKills == 3 | gs.CountKills == 4).Count();
-                    double WinRate = Math.Round(MatchWin / GameStat.Count * 100, 2);
-
-                    double KillingZero = Math.Round((double)GameStat.Where(gs => gs.CountKills == 0).Count() / GameStat.Count * 100, 2);
-                    double KillingOne = Math.Round((double)GameStat.Where(gs => gs.CountKills == 1).Count() / GameStat.Count * 100, 2);
-                    double KillingTwo = Math.Round((double)GameStat.Where(gs => gs.CountKills == 2).Count() / GameStat.Count * 100, 2);
-                    double KillingThree = Math.Round((double)GameStat.Where(gs => gs.CountKills == 3).Count() / GameStat.Count * 100, 2);
-                    double KillingFour = Math.Round((double)GameStat.Where(gs => gs.CountKills == 4).Count() / GameStat.Count * 100, 2);
+                    double KillingZero = KillDistribution.KillingZero;
+                    double KillingOne = KillDistribution.KillingOne;
+                    double KillingTwo = KillDistribution.KillingTwo;
+                    double KillingThree = KillDistribution.KillingThree;
+                    double KillingFour = KillDistribution.KillingFour;
 
                     var killerStat = new KillerStat()
                     {
@@ -253,84 +269,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             }
         }
 
-        private void GetPlayerAssociationData()
+        private async void GetPlayerAssociationData()
         {
             PlayerAssociationList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var association = context.PlayerAssociations.Where(pa => pa.IdPlayerAssociation == 1 || pa.IdPlayerAssociation == 3).ToList();
-                foreach (var item in association)
-                {
-                    PlayerAssociationList.Add(item);
-                }
-            }
-        }
-
-        private void GetSurvivorData()
-        {
-            SurvivorList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var survivors = context.Survivors.ToList();
-                foreach (var item in survivors)
-                {
-                    SurvivorList.Add(item);
-                }
-            }
-        }
-
-        private void GetTypeDeathData()
-        {
-            TypeDeathList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var typeDeaths = context.TypeDeaths.ToList();
-
-                foreach (var item in typeDeaths)
-                {
-                    TypeDeathList.Add(item);
-                }
-            }
-        }
-
-        private void GetMapData()
-        {
-            MapList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                var maps = context.Maps.Include(x => x.IdMeasurementNavigation).OrderBy(x => x.IdMeasurement).ToList();
-
-                foreach (var item in maps)
-                {
-                    MapList.Add(item);
-                }
-            }
+            var association = await _dataService.GetAllDataInListAsync<PlayerAssociation>();
+            PlayerAssociationList.AddRange(association.Where(x => x.IdPlayerAssociation == 1 || x.IdPlayerAssociation == 3));
+            SelectedPlayerAssociationStatItem = PlayerAssociationList.First();
         }
 
         #endregion
-
-        #region Методы видимости элементов
-
-        private void ShowDetailsKiller(object parameter)
-        {
-            if (parameter is KillerStat CurrentKiller)
-            {
-                KillerListVisibility = Visibility.Collapsed;
-                SortMenuVisibility = Visibility.Collapsed;
-                DetailedInformationVisibility = Visibility.Visible;
-
-                SelectedKiller = CurrentKiller;
-                GetDateChart();
-            }
-        }
-
-        private void SetDefaultVisibility()
-        {
-            SortMenuVisibility = Visibility.Visible;
-            DetailedInformationVisibility = Visibility.Collapsed;
-        }
-
-        #endregion  
 
         #region Методы сортировки
 
@@ -386,15 +333,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void SearchKillerName()
         {
             KillerStatSortedList.Clear();
-            foreach (var item in KillerStatList.Where(ks => ks.KillerName.ToLower().Contains(SearchTextBox.ToLower())))
+            foreach (var item in KillerStatList.Where(x => x.KillerName.ToLower().Contains(SearchTextBox.ToLower())))
             {
                 KillerStatSortedList.Add(item);
-            }
-
-            //if (SearchTextBox == string.Empty)
-            //{
-            //    SortKillerStatList();
-            //} 
+            } 
         }
 
         private void SortKillerStatsByDescendingOrder()
@@ -526,98 +468,60 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #region Метод подсчета дополнительное статистики
 
+        private void ShowDetailsKiller(object parameter)
+        {
+            if (parameter is KillerStat CurrentKiller)
+            {
+                SelectedKiller = CurrentKiller;
+
+                KillerListVisibility = Visibility.Collapsed;
+                SortMenuVisibility = Visibility.Collapsed;
+                DetailedInformationVisibility = Visibility.Visible;
+
+
+                _killerPage.MainScrollViewer.ScrollToTop();
+            }
+        }
+
         private async void GetAdditionalStatistics()
         {
-            TypeTime = "Месяц";
-            await CountSurvivorsKilledAsync();
-            await CountHookPercentageAsync();
-            await CountNumberRecentGeneratorsPercentageAsync();
-            await CountTypeTypeDeathSurvivorAsync();
-            await CountMatchPlayedOnMapAsync();
-            await CountPlayersPlatformsAsync();
-            await CountPlayersBotAsync();
-            await CountPlayersAnonymousAsync();
-            await AverageScoreAsync();
-            await KillerCountMatchAsync();
-            await KillerKillRateAsync();
-            await KillerWinRateAsync();
-            await GetStatTimeMatchAsync();
-        }
-
-        #endregion
-
-        public string _typeTime;
-        public string TypeTime
-        {
-            get => _typeTime;
-            set
+            await GetMatches();
+            var tasks = new List<Task>
             {
-                _typeTime = value;
-                OnPropertyChanged();
-            }
-        }
+                GetStatTimeMatchAsync(),
+                AverageScoreAsync(),
+                KillerCountMatchAsync(),
+                KillerActivityByHours(),
+                KillerKillRateAsync(),
+                KillerWinRateAsync(),
 
-        #region Граффик
+                CountPlayersPlatformsAsync(),
+                CountPlayersBotAsync(),
+                CountPlayersAnonymousAsync(),
 
-        private SeriesCollection _seriesCollection;
-        public SeriesCollection SeriesCollection
-        {
-            get => _seriesCollection;
-            set
-            {
-                _seriesCollection = value;
-                OnPropertyChanged();
-            }
-        }
+                CountSurvivorsKilledAsync(),
 
-        private string[] _labels;
-        public string[] Labels
-        {
-            get => _labels;
-            set
-            {
-                _labels = value;
-                OnPropertyChanged();
-            }
-        }
+                CountHookPercentageAsync(),
+                CountNumberRecentGeneratorsPercentageAsync(),
+                CountTypeTypeDeathSurvivorAsync(),
 
-        private Func<double, string> _yFormatter;
-        public Func<double, string> YFormatter
-        {
-            get => _yFormatter;
-            set
-            {
-                _yFormatter = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void GetDateChart()
-        {
-
-            SeriesCollection = new SeriesCollection
-            {
-                new ColumnSeries
-                {
-                    Title = "Матчей",
-                    Values = new ChartValues<double>(KillerStatList.Select(x => x.KillerCountGame)),
-                    LabelsPosition = 0,
-
-                },
-                new ColumnSeries
-                {
-                    Title = "Килрейт",
-                    Values = new ChartValues<double>(KillerStatList.Select(x => x.KillerKillRate)),
-                    LabelsPosition = 0,
-
-                }
+                CountMatchPlayedOnMapAsync(),
             };
 
-            Labels = KillerStatList.Select(x => x.KillerName).ToArray();
-            YFormatter = value => value.ToString();
+            await Task.WhenAll(tasks);
         }
 
         #endregion
+
+        #region Доп статистика
+
+        private readonly List<GameStatistic> Matches = [];
+
+        private async Task GetMatches()
+        {
+            Matches.Clear();
+            Matches.AddRange(await _killerCalculationService.GetMatchForKillerAsync(SelectedKiller.KillerID, SelectedPlayerAssociationStatItem.IdPlayerAssociation));
+        }
 
         #region Статистика в виде списка
 
@@ -653,20 +557,23 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 OnPropertyChanged();
             }
         }
+
+        // TODO: Убрать Using
         private async Task GetStatTimeMatchAsync()
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
+                var matches = await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                       .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID &&
+                                   x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation));
+
+                if (matches.Count == 0)
+                    return;
                 using (MasterAnalyticsDeadByDaylightDbContext context = new())
                 {
-                    var matches = context.GameStatistics.Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    if (matches.Count == 0)
-                        return;
-
                     TimeSpan[] timeSpans = context.GameStatistics
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                    .Select(s => TimeSpan.Parse(s.GameTimeMatch)).ToArray();
+                               .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
+                                    .Select(s => TimeSpan.Parse(s.GameTimeMatch)).ToArray();
 
                     ShortestMatch = timeSpans.Max().ToString();
                     FastestMatch = timeSpans.Min().ToString();
@@ -680,7 +587,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     TimeSpan averageMatchTime = TimeSpan.FromTicks(totalTime.Ticks / timeSpans.Length);
                     averageMatchTime = new TimeSpan(averageMatchTime.Hours, averageMatchTime.Minutes, averageMatchTime.Seconds);
                     AVGMatchMatch = averageMatchTime.ToString();
-                }
+                } 
             });
         }
 
@@ -693,229 +600,29 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task AverageScoreAsync()
         {
             KillerAVGScore.Clear();
-            await Task.Run(() =>
+            List<KillerAverageScoreTracker> avg = await _killerCalculationService.AverageKillerScoreAsync(Matches, TypeTime.Month);
+
+            foreach (var item in avg)
             {
-                
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Include(x => x.IdKillerNavigation).Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    if (matches.Count == 0)
-                    {
-                        var KillerScore = new KillerAverageScoreTracker
-                        {
-                            AvgScore = 0,
-                            DateTime = "Отсутствует",
-                        };
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            KillerAVGScore.Add(KillerScore);
-                        });
-
-                        return;
-                    }               
-
-                    var FirstMatch = matches.FirstOrDefault();
-                    DateTime FirstMathDate = FirstMatch.DateTimeMatch.Value;
-
-                    var LastMatch = matches.LastOrDefault();
-                    DateTime LastMathDate = LastMatch.DateTimeMatch.Value;
-
-                    if (TypeTime == "День")
-                    {
-                        for (DateTime date = FirstMathDate; date <= LastMathDate; date = date.AddDays(1))
-                        {
-                            //var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch) == DateOnly.FromDateTime(date)).ToList(); // Так же рабочий вариант
-                            var matchByDate = matches
-                            .Where(x => x.DateTimeMatch.Value.Year == date.Year)
-                            .Where(x => x.DateTimeMatch.Value.Month == date.Month)
-                            .Where(x => x.DateTimeMatch.Value.Day == date.Day).ToList();
-
-                            int Account = 0;
-                            foreach (var item in matchByDate)
-                            {
-                                Account += item.IdKillerNavigation.KillerAccount;
-                            }
-
-                            double avg = Account == 0 ? 0 : Math.Round(Account / (double)matchByDate.Count, 0);
-
-                            var KillerScore = new KillerAverageScoreTracker
-                            {
-                                AvgScore = avg,
-                                DateTime = date.ToString("D"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerAVGScore.Add(KillerScore);
-                            });
-                        }
-                    }
-                    if (TypeTime == "Месяц")
-                    {
-                        for (DateTime date = FirstMathDate; date.Month <= LastMathDate.Month; date = date.AddMonths(1))
-                        {
-                            //var matchByDate = matches.Where(x => x.DateTimeMatch.Value.Month == date.Month).ToList();
-                            var matchByDate = matches
-                            .Where(x => x.DateTimeMatch.Value.Year == date.Year)
-                            .Where(x => x.DateTimeMatch.Value.Month == date.Month).ToList();
-
-                            int Account = 0;
-
-                            foreach (var item in matchByDate)
-                            {
-                                Account += item.IdKillerNavigation.KillerAccount;
-                            }
-
-                            double avg = Account == 0 ? 0 : Math.Round(Account / (double)matchByDate.Count, 0);
-
-                            var KillerScore = new KillerAverageScoreTracker
-                            {
-                                AvgScore = avg,
-                                DateTime = date.ToString("Y"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerAVGScore.Add(KillerScore);
-                            });
-                        }
-                    }
-                    if (TypeTime == "Год")
-                    {
-                        for (DateTime date = FirstMathDate; date <= LastMathDate; date = date.AddYears(1))
-                        {
-                            //var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch) == DateOnly.FromDateTime(date)).ToList();                            
-                            var matchByDate = matches.Where(x => x.DateTimeMatch.Value.Year == date.Year).ToList();
-
-                            int Account = 0;
-
-                            foreach (var item in matchByDate)
-                            {
-                                Account += item.IdKillerNavigation.KillerAccount;
-                            }
-
-                            double avg = Account == 0 ? 0 : Math.Round(Account / (double)matchByDate.Count, 0);
-
-                            var KillerScore = new KillerAverageScoreTracker
-                            {
-                                AvgScore = avg,
-                                DateTime = date.ToString("yyy"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerAVGScore.Add(KillerScore);
-                            });
-                        }
-                    }
-                }
-            });
+                KillerAVGScore.Add(item);
+            }
         }
 
         #endregion
 
         #region Количество сыгранных матчей
 
-        public ObservableCollection<KillerCountMatchTracker> KillerCountMatch { get; set; } = [];
+        public ObservableCollection<CountMatchTracker> KillerCountMatch { get; set; } = [];
 
         private async Task KillerCountMatchAsync()
         {
             KillerCountMatch.Clear();
-            await Task.Run(() =>
+            List<CountMatchTracker> countMatch = await _killerCalculationService.CountMatchAsync(Matches, TypeTime.Month);
+
+            foreach (var item in countMatch)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Include(x => x.IdKillerNavigation).Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    if (matches.Count == 0)
-                    {
-                        var CountMatch = new KillerCountMatchTracker
-                        {
-                            CountMatch = 0,
-                            DateTime = "Отсутствует",
-                        };
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            KillerCountMatch.Add(CountMatch);
-                        });
-
-                        return;
-                    }
-
-                    var FirstMatch = matches.First();
-                    DateTime FirstMathDate = FirstMatch.DateTimeMatch.Value;
-
-                    var LastMatch = matches.Last();
-                    DateTime LastMathDate = LastMatch.DateTimeMatch.Value;
-
-                    if (TypeTime == "День")
-                    {
-                        for (DateTime date = FirstMathDate; date <= LastMathDate; date = date.AddDays(1))
-                        {
-                            //var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch) == DateOnly.FromDateTime(date)).ToList();
-                            var matchByDate = matches
-                            .Where(x => x.DateTimeMatch.Value.Year == date.Year)
-                            .Where(x => x.DateTimeMatch.Value.Month == date.Month)
-                            .Where(x => x.DateTimeMatch.Value.Day == date.Day).ToList();
-
-                            var CountMatch = new KillerCountMatchTracker
-                            {
-                                CountMatch = matchByDate.Count,
-                                DateTime = date.ToString("D"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerCountMatch.Add(CountMatch);
-                            });
-                        }
-                    }
-                    if (TypeTime == "Месяц")
-                    {
-                        for (DateTime date = FirstMathDate; date.Month <= LastMathDate.Month; date = date.AddMonths(1))
-                        {
-                            /*var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch).Month == DateOnly.FromDateTime((DateTime)date).Month).ToList();*/ //Один из возможно рабочих вариантов
-                            var matchByDate = matches
-                            .Where(x => x.DateTimeMatch.Value.Year == date.Year)
-                            .Where(x => x.DateTimeMatch.Value.Month == date.Month).ToList();
-                            var CountMatch = new KillerCountMatchTracker
-                            {
-                                CountMatch = matchByDate.Count,
-                                DateTime = date.ToString("Y"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerCountMatch.Add(CountMatch);
-                            });
-                        }
-                    }
-                    if (TypeTime == "Год")
-                    {
-                        for (DateTime date = FirstMathDate; date <= LastMathDate; date = date.AddYears(1))
-                        {
-                            //var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch) == DateOnly.FromDateTime(date)).ToList();
-                            var matchByDate = matches.Where(x => x.DateTimeMatch.Value.Year == date.Year).ToList();
-
-                            var CountMatch = new KillerCountMatchTracker
-                            {
-                                CountMatch = matchByDate.Count,
-                                DateTime = date.ToString("yyy"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerCountMatch.Add(CountMatch);
-                            });
-                        }
-                    }
-                }
-            });
+                KillerCountMatch.Add(item);
+            }
         }
 
         #endregion
@@ -927,149 +634,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task KillerKillRateAsync()
         {
             KillerKillRate.Clear();
-            await Task.Run(() =>
+            List<KillerKillRateTracker> killRate = await _killerCalculationService.KillRateAsync(Matches, TypeTime.Month);
+
+            foreach (var item in killRate)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Include(x => x.IdKillerNavigation).Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    if (matches.Count == 0)
-                    {
-                        var CountMatch = new KillerKillRateTracker
-                        {
-                            KillRate = 0,
-                            DateTime = "Отсутствует",
-                        };
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            KillerKillRate.Add(CountMatch);
-                        });
-
-                        return;
-                    }
-
-                    var FirstMatch = matches.First();
-                    DateTime FirstMathDate = FirstMatch.DateTimeMatch.Value;
-
-                    var LastMatch = matches.Last();
-                    DateTime LastMathDate = LastMatch.DateTimeMatch.Value;
-
-                    if (TypeTime == "День")
-                    {
-                        for (DateTime date = FirstMathDate; date <= LastMathDate; date = date.AddDays(1))
-                        {
-                            //var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch) == DateOnly.FromDateTime(date)).ToList();
-                            var matchByDate = matches
-                            .Where(x => x.DateTimeMatch.Value.Year == date.Year)
-                            .Where(x => x.DateTimeMatch.Value.Month == date.Month)
-                            .Where(x => x.DateTimeMatch.Value.Day == date.Day).ToList();
-
-                            double CountKill = 0;
-                            double KillRate;
-
-                            foreach (var item in matchByDate) 
-                            { 
-                                CountKill += item.CountKills; 
-                            }
-
-                            if (matchByDate.Count == 0) 
-                            { 
-                                KillRate = 0;
-                            }
-                            else 
-                            { 
-                                KillRate = Math.Round(CountKill / matchByDate.Count, 1); 
-                            }
-
-                            var CountMatch = new KillerKillRateTracker
-                            {
-                                KillRate = KillRate,
-                                DateTime = date.ToString("D"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerKillRate.Add(CountMatch);
-                            });
-                        }
-                    }
-                    if (TypeTime == "Месяц")
-                    {
-                        for (DateTime date = FirstMathDate; date.Month <= LastMathDate.Month; date = date.AddMonths(1))
-                        {
-                            /*var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch).Month == DateOnly.FromDateTime((DateTime)date).Month).ToList();*/ //Один из возможно рабочих вариантов
-                            var matchByDate = matches
-                            .Where(x => x.DateTimeMatch.Value.Year == date.Year)
-                            .Where(x => x.DateTimeMatch.Value.Month == date.Month).ToList();
-
-                            double CountKill = 0;
-                            double KillRate = 0;
-
-                            foreach (var item in matchByDate)
-                            {
-                                CountKill += item.CountKills;
-                            }
-                            if (matchByDate.Count == 0)
-                            {
-                                KillRate = 0;
-                            }
-                            else
-                            {
-                                KillRate = Math.Round(CountKill / matchByDate.Count, 1);
-                            }
-
-                            var KillRateMatch = new KillerKillRateTracker
-                            {
-                                KillRate = KillRate,
-                                DateTime = date.ToString("Y"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerKillRate.Add(KillRateMatch);
-                            });
-                        }
-                    }
-                    if (TypeTime == "Год")
-                    {
-                        for (DateTime date = FirstMathDate; date <= LastMathDate; date = date.AddYears(1))
-                        {
-                            //var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch) == DateOnly.FromDateTime(date)).ToList();
-                            var matchByDate = matches.Where(x => x.DateTimeMatch.Value.Year == date.Year).ToList();
-
-                            double CountKill = 0;
-                            double KillRate;
-
-                            foreach (var item in matchByDate)
-                            {
-                                CountKill += item.CountKills;
-                            }
-
-                            if (matchByDate.Count == 0)
-                            {
-                                KillRate = 0;
-                            }
-                            else
-                            {
-                                KillRate = Math.Round(CountKill / matchByDate.Count, 1);
-                            }
-
-                            var CountMatch = new KillerKillRateTracker
-                            {
-                                KillRate = KillRate,
-                                DateTime = date.ToString("D"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerKillRate.Add(CountMatch);
-                            });
-                        }
-                    }
-                }
-            });
+                KillerKillRate.Add(item);
+            }
         }
 
         #endregion
@@ -1081,111 +651,29 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task KillerWinRateAsync()
         {
             KillerWinRate.Clear();
-            await Task.Run(() =>
+            List<KillerWinRateTracker> killRate = await _killerCalculationService.WinRateAsync(Matches, TypeTime.Month);
+
+            foreach (var item in killRate)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Include(x => x.IdKillerNavigation).Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
+                KillerWinRate.Add(item);
+            }
+        }
 
-                    if (matches.Count == 0)
-                    {
-                        var WinRateStat = new KillerWinRateTracker
-                        {
-                            WinRate = 0,
-                            DateTime = "Отсутствует",
-                        };
+        #endregion
 
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            KillerWinRate.Add(WinRateStat);
-                        });
-                        
-                        return;
-                    }
+        #region Количество матчей по часам (Активность по часам)
 
-                    var FirstMatch = matches.First();
-                    DateTime FirstMathDate = FirstMatch.DateTimeMatch.Value;
+        public ObservableCollection<ActivityByHoursTracker> ActivityByHours { get; set; } = [];
 
-                    var LastMatch = matches.Last();
-                    DateTime LastMathDate = LastMatch.DateTimeMatch.Value;
+        private async Task KillerActivityByHours()
+        {
+            ActivityByHours.Clear();
+            List<ActivityByHoursTracker> activityByHours = await _killerCalculationService.ActivityByHourAsync(Matches);
 
-                    if (TypeTime == "День")
-                    {
-                        for (DateTime date = FirstMathDate; date <= LastMathDate; date = date.AddDays(1))
-                        {
-                            //var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch) == DateOnly.FromDateTime(date)).ToList();
-                            var matchByDate = matches
-                            .Where(x => x.DateTimeMatch.Value.Year == date.Year)
-                            .Where(x => x.DateTimeMatch.Value.Month == date.Month)
-                            .Where(x => x.DateTimeMatch.Value.Day == date.Day).ToList();
-
-                            var MatchWin = matchByDate.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
-
-                            double WinRate = Math.Round((double)MatchWin / matchByDate.Count * 100, 2);
-
-                            var WinRateStat = new KillerWinRateTracker
-                            {
-                                WinRate = WinRate,
-                                DateTime = date.ToString("D"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerWinRate.Add(WinRateStat);
-                            });
-                        }
-                    }
-                    if (TypeTime == "Месяц")
-                    {
-                        for (DateTime date = FirstMathDate; date.Month <= LastMathDate.Month; date = date.AddMonths(1))
-                        {
-                            /*var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch).Month == DateOnly.FromDateTime((DateTime)date).Month).ToList();*/ //Один из возможно рабочих вариантов
-                            var matchByDate = matches
-                            .Where(x => x.DateTimeMatch.Value.Year == date.Year)
-                            .Where(x => x.DateTimeMatch.Value.Month == date.Month).ToList();
-
-                            var MatchWin = matchByDate.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
-
-                            double WinRate = Math.Round((double)MatchWin / matchByDate.Count * 100, 2);
-
-                            var WinRateStat = new KillerWinRateTracker
-                            {
-                                WinRate = WinRate,
-                                DateTime = date.ToString("Y"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerWinRate.Add(WinRateStat);
-                            });
-                        }
-                    }
-                    if (TypeTime == "Год")
-                    {
-                        for (DateTime date = FirstMathDate; date <= LastMathDate; date = date.AddYears(1))
-                        {
-                            //var matchByDate = matches.Where(x => DateOnly.FromDateTime((DateTime)x.DateTimeMatch) == DateOnly.FromDateTime(date)).ToList();
-                            var matchByDate = matches.Where(x => x.DateTimeMatch.Value.Year == date.Year).ToList();
-
-                            var MatchWin = matchByDate.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
-
-                            double WinRate = Math.Round((double)MatchWin / matchByDate.Count * 100, 2);
-
-                            var WinRateStat = new KillerWinRateTracker
-                            {
-                                WinRate = WinRate,
-                                DateTime = date.ToString("D"),
-                            };
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                KillerWinRate.Add(WinRateStat);
-                            });
-                        }
-                    }
-                }
-            });
+            foreach (var item in activityByHours)
+            {
+                ActivityByHours.Add(item);
+            }
         }
 
         #endregion
@@ -1197,41 +685,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountPlayersPlatformsAsync()
         {
             PlayerPlatformTrackers.Clear();
-            await Task.Run(() =>
+            using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
+                List<PlayerPlatformTracker> platformTrackers = await _killerCalculationService.CalculatingPlayersByPlatformsAsync(Matches);
+
+                foreach (var item in platformTrackers)
                 {
-                    var matches = context.GameStatistics.Include(x => x.IdSurvivors1Navigation).Include(x => x.IdSurvivors2Navigation).Include(x => x.IdSurvivors3Navigation).Include(x => x.IdSurvivors4Navigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    var platforms = context.Platforms.ToList();
-
-                    foreach (var item in platforms)
-                    {
-                        int first = matches.Where(x => x.IdSurvivors1Navigation.IdPlatform == item.IdPlatform).Count();
-                        int second = matches.Where(x => x.IdSurvivors2Navigation.IdPlatform == item.IdPlatform).Count();
-                        int third = matches.Where(x => x.IdSurvivors3Navigation.IdPlatform == item.IdPlatform).Count();
-                        int fourth = matches.Where(x => x.IdSurvivors4Navigation.IdPlatform == item.IdPlatform).Count();
-
-                        int platformCount = first + second + third + fourth;
-
-                        double platformPercentages = Math.Round((double)platformCount / (matches.Count * 4) * 100, 2);
-                        platformPercentages = double.IsNaN(platformPercentages) ? 0 : platformPercentages;
-
-                        var playerPlatform = new PlayerPlatformTracker
-                        {
-                            PlatformName = item.PlatformName,
-                            PlayerCount = platformCount,
-                            PlatformPercentages = platformPercentages
-                        };
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            PlayerPlatformTrackers.Add(playerPlatform);
-                        });
-                    }
+                    PlayerPlatformTrackers.Add(item);
                 }
-            });
+            }        
         }
 
         #endregion
@@ -1243,36 +705,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountPlayersBotAsync()
         {
             SurvivorBotTracker.Clear();
-            await Task.Run(() =>
+            List<SurvivorBotTracker> survivorBotTrackers = await _killerCalculationService.CalculatingPlayersBotAsync(Matches);
+
+            foreach (var item in survivorBotTrackers)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Include(x => x.IdSurvivors1Navigation).Include(x => x.IdSurvivors2Navigation).Include(x => x.IdSurvivors3Navigation).Include(x => x.IdSurvivors4Navigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    int firstBot = matches.Where(x => x.IdSurvivors1Navigation.Bot == true).Count();
-                    int secondBot = matches.Where(x => x.IdSurvivors2Navigation.Bot == true).Count();
-                    int thirdBot = matches.Where(x => x.IdSurvivors3Navigation.Bot == true).Count();
-                    int fourthBot = matches.Where(x => x.IdSurvivors4Navigation.Bot == true).Count();
-
-                    int playerBot = firstBot + secondBot + thirdBot + fourthBot;
-
-                    double playerBotPercentages = Math.Round((double)playerBot / (matches.Count * 4) * 100, 2);
-                    playerBotPercentages = double.IsNaN(playerBotPercentages) ? 0 : playerBotPercentages;
-
-                    var botTracker = new SurvivorBotTracker
-                    {
-                        PlayerBot = playerBotPercentages,
-                        CountPlayerBot = playerBot,
-                        CountPlayer = matches.Count * 4,
-                    };
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        SurvivorBotTracker.Add(botTracker);
-                    });
-                }
-            });
+                SurvivorBotTracker.Add(item);
+            }
         }
 
         #endregion
@@ -1284,40 +722,17 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountPlayersAnonymousAsync()
         {
             SurvivorAnonymousTracker.Clear();
-            await Task.Run(() =>
+            List<SurvivorAnonymousTracker> survivorAnonymousTrackers = await _killerCalculationService.CalculatingAnonymousPlayerAsync(Matches);
+
+            foreach (var item in survivorAnonymousTrackers)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Include(x => x.IdSurvivors1Navigation).Include(x => x.IdSurvivors2Navigation).Include(x => x.IdSurvivors3Navigation).Include(x => x.IdSurvivors4Navigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    int firstAnonymous = matches.Where(x => x.IdSurvivors1Navigation.AnonymousMode == true).Count();
-                    int secondAnonymous = matches.Where(x => x.IdSurvivors2Navigation.AnonymousMode == true).Count();
-                    int thirdAnonymous = matches.Where(x => x.IdSurvivors3Navigation.AnonymousMode == true).Count();
-                    int fourthAnonymous = matches.Where(x => x.IdSurvivors4Navigation.AnonymousMode == true).Count();
-
-                    int playerAnonymous = firstAnonymous + secondAnonymous + thirdAnonymous + fourthAnonymous;
-
-                    double playerAnonymousPercentages = Math.Round((double)playerAnonymous / (matches.Count * 4) * 100, 2);
-                    playerAnonymousPercentages = double.IsNaN(playerAnonymousPercentages) ? 0 : playerAnonymousPercentages;
-
-                    var anonymousTracker = new SurvivorAnonymousTracker
-                    {
-                        PlayerAnonymous = playerAnonymousPercentages,
-                        CountPlayerAnonymous = playerAnonymous,
-                        CountPlayer = matches.Count * 4,
-                    };
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        SurvivorAnonymousTracker.Add(anonymousTracker);
-                    });
-                }
-            });
+                SurvivorAnonymousTracker.Add(item);
+            }
         }
 
         #endregion
 
+        // TODO: Решить оставлять ли этот расчет на этой странички, либо перенести в профиль.
         #region Частота встречамости Выживших
 
         private List<SurvivorDeathTracker> _survivorDeathTracker { get; set; } = [];
@@ -1490,31 +905,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountHookPercentageAsync()
         {
             KillerHooks.Clear();
-            await Task.Run(() => 
+            List<KillerHooksTracker> killerHooksTrackers = await _killerCalculationService.CalculatingCountHooksAsync(Matches);
+
+            foreach (var item in killerHooksTrackers)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    for (int i = 0; i <= 12; i++)
-                    {
-                        double HookPercentages = Math.Round((double)matches.Where(x => x.CountHooks == i).Count() / matches.Count * 100, 2);
-                        HookPercentages = double.IsNaN(HookPercentages) ? 0 : HookPercentages;
-
-                        var killerHook = new KillerHooksTracker
-                        {
-                            CountHookName = Names[i],
-                            CountHookPercentages = HookPercentages,
-                            CountGame = matches.Where(x => x.CountHooks == i).Count(),
-                        };
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            KillerHooks.Add(killerHook);
-                        });
-                    }
-                }
-            });
+                KillerHooks.Add(item);
+            }
         }
 
         #endregion
@@ -1526,31 +922,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountNumberRecentGeneratorsPercentageAsync()
         {
             RecentGenerators.Clear();
-            await Task.Run(() =>
+            List<RecentGeneratorsTracker> recentGeneratorsTrackers = await _killerCalculationService.CalculatingRecentGeneratorsAsync(Matches);
+
+            foreach (var item in recentGeneratorsTrackers)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    for (int i = 0; i <= 5; i++)
-                    {
-                        double RecentGeneratorsPercentages = Math.Round((double)matches.Where(x => x.NumberRecentGenerators == i).Count() / matches.Count * 100, 2);
-                        RecentGeneratorsPercentages = double.IsNaN(RecentGeneratorsPercentages) ? 0 : RecentGeneratorsPercentages;
-
-                        var recentGenerators = new RecentGeneratorsTracker
-                        {
-                            CountRecentGeneratorsName = Names[i],
-                            CountRecentGeneratorsPercentages = RecentGeneratorsPercentages,
-                            CountGame = matches.Where(x => x.NumberRecentGenerators == i).Count(),
-                        };
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            RecentGenerators.Add(recentGenerators);
-                        });
-                    }
-                }
-            });
+                RecentGenerators.Add(item);
+            }
         }
 
         #endregion
@@ -1562,38 +939,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountTypeTypeDeathSurvivorAsync()
         {
             SurvivorTypeDeathTrackerList.Clear();
-            await Task.Run(() => 
+            List<SurvivorTypeDeathTracker> survivorTypeDeathTrackers = await _killerCalculationService.CalculatingTypeDeathSurvivorAsync(Matches);
+
+            foreach (var item in survivorTypeDeathTrackers)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Include(x => x.IdSurvivors1Navigation).Include(x => x.IdSurvivors2Navigation).Include(x => x.IdSurvivors3Navigation).Include(x => x.IdSurvivors4Navigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    foreach (var item in TypeDeathList)
-                    {
-                        int first = matches.Where(x => x.IdSurvivors1Navigation.IdTypeDeath == item.IdTypeDeath).Count();
-                        int second = matches.Where(x => x.IdSurvivors2Navigation.IdTypeDeath == item.IdTypeDeath).Count();
-                        int third = matches.Where(x => x.IdSurvivors3Navigation.IdTypeDeath == item.IdTypeDeath).Count();
-                        int fourth = matches.Where(x => x.IdSurvivors4Navigation.IdTypeDeath == item.IdTypeDeath).Count();
-
-                        int countSurvivorDeath = first + second + third + fourth;
-
-                        double countSurvivorTypeDeathPercentages = Math.Round((double)countSurvivorDeath / (matches.Count * 4) * 100, 2);
-
-                        var SurvivorTypeDeath = new SurvivorTypeDeathTracker
-                        {
-                            TypeDeathName = item.TypeDeathName,
-                            TypeDeathPercentages = countSurvivorTypeDeathPercentages,
-                            CountGame = countSurvivorDeath
-                        };
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            SurvivorTypeDeathTrackerList.Add(SurvivorTypeDeath);
-                        });
-                    } 
-                }
-            });
+                SurvivorTypeDeathTrackerList.Add(item);
+            }
         }
 
         #endregion
@@ -1605,40 +956,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountMatchPlayedOnMapAsync()
         {
             MapStatList.Clear();
-            await Task.Run(() => 
+            List<MapStat> mapStats = await _mapCalculationService.CalculatingMapStatAsync(Matches);
+            
+            foreach (var item in mapStats)
             {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var matches = context.GameStatistics.Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
-                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation).ToList();
-
-                    foreach (var item in MapList)
-                    {
-                        double countGameMap = matches.Where(x => x.IdMap == item.IdMap).Count();
-                        double winRateMap = Math.Round((double)matches.Where(x => x.IdMap == item.IdMap).Where(x => x.CountKills == 3 | x.CountKills == 4).Count() / matches.Where(x => x.IdMap == item.IdMap).Count() * 100, 2);
-                        winRateMap = double.IsNaN(winRateMap) ? 0 : winRateMap;
-
-                        double pickRateMap = Math.Round((double)matches.Where(x => x.IdMap == item.IdMap).Count() / matches.Count * 100, 2);
-                        pickRateMap = double.IsNaN(pickRateMap) ? 0 : pickRateMap;
-
-                        var mapstat = new MapStat
-                        {
-                            MapName = item.MapName,
-                            MapImage = item.MapImage,
-                            MapMeasurement = item.IdMeasurementNavigation.MeasurementName,
-                            CountGame = countGameMap,
-                            WinRateMap = winRateMap,
-                            PickRateMap = pickRateMap,
-                        };
-
-                        Application.Current.Dispatcher.Invoke(() => 
-                        {
-                            MapStatList.Add(mapstat);
-                        });
-                    }
-                }
-            });
+                MapStatList.Add(item);
+            }
         }
+
+        #endregion
 
         #endregion
     }
