@@ -1,9 +1,7 @@
-﻿using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow;
+﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
-using MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation;
 using System.Windows;
-using System.Windows.Navigation;
 
 namespace MasterAnalyticsDeadByDaylight
 {
@@ -16,7 +14,10 @@ namespace MasterAnalyticsDeadByDaylight
         {
             InitializeComponent();
             StateChanged += MainWindowStateChangeRaised;
-            DataContext = new MainWindowViewModel(new PageNavigationService(MainFrame));
+
+            IPageNavigationService pageNavigationService = new PageNavigationService(MainFrame);
+
+            DataContext = new MainWindowViewModel(pageNavigationService);
         }
 
         private void MainWindowStateChangeRaised(object sender, EventArgs e)

@@ -1,4 +1,6 @@
-﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
+﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
+using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using System.Windows;
 using System.Windows.Input;
@@ -13,8 +15,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
         public AddMapWindow()
         {
             InitializeComponent();
-            IDialogService service = new DialogService();
-            DataContext = new AddMapWindowViewModel(service);
+            Func<MasterAnalyticsDeadByDaylightDbContext> contextFactory = () => new MasterAnalyticsDeadByDaylightDbContext(); 
+            ICustomDialogService dialogService = new CustomDialogService();
+            IDataService dataService = new DataService(contextFactory);
+            DataContext = new AddMapWindowViewModel(dialogService, dataService);
         }
         private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
