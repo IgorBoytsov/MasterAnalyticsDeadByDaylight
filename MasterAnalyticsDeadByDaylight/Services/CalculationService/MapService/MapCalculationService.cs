@@ -2,6 +2,7 @@
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 
 namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.MapService
 {
@@ -9,19 +10,127 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.MapService
     {
         private readonly DataService _dataService = new(contextFactory);
 
-        public async Task<List<GameStatistic>> GetGameStatisticsAsync()
+        public async Task<List<GameStatistic>> GetMatchForMapAsync(int idMap, string typeSortStatValue)
         {
-            return await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
-            .Include(x => x.IdMapNavigation)
-                .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
-                    .Include(x => x.IdKillerNavigation)
-                        .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
-                            .Include(x => x.IdSurvivors1Navigation)
-                                .Include(x => x.IdSurvivors2Navigation)
-                                    .Include(x => x.IdSurvivors3Navigation)
-                                        .Include(x => x.IdSurvivors4Navigation));
+
+            return typeSortStatValue switch
+            {
+                "Общая" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                 .Include(x => x.IdMapNavigation)
+                                     .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                             .Include(x => x.IdWhoPlacedMapNavigation)
+                                                 .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                     .Where(x => x.IdMapNavigation.IdMap == idMap)),
+                "Личная за Убийц" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                           .Include(x => x.IdMapNavigation)
+                                                .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                                    .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                                        .Include(x => x.IdWhoPlacedMapNavigation)
+                                                            .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 1)
+                                                                    .Where(x => x.IdMapNavigation.IdMap == idMap)),
+                "Личная за Выживших" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                              .Include(x => x.IdMapNavigation)
+                                                   .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                                            .Include(x => x.IdWhoPlacedMapNavigation).Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 3)
+                                                                    .Where(x => x.IdMapNavigation.IdMap == idMap)),
+                _ => throw new Exception("Такого типа статистик нету")
+            };
         }
 
+        public async Task<List<GameStatistic>> GetMatchForMeasurementAsync(int idMeasurement, string typeSortStatValue)
+        {
+            return typeSortStatValue switch
+            {
+                "Общая" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                 .Include(x => x.IdMapNavigation)
+                                    .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                            .Include(x => x.IdWhoPlacedMapNavigation)
+                                                .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                    .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
+                "Личная за Убийц" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                           .Include(x => x.IdMapNavigation)
+                                                .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                                    .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                                        .Include(x => x.IdWhoPlacedMapNavigation)
+                                                            .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 1)
+                                                                    .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
+                "Личная за Выживших" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                              .Include(x => x.IdMapNavigation)
+                                                   .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                                            .Include(x => x.IdWhoPlacedMapNavigation)
+                                                                .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                                    .Where(x => x.IdKillerNavigation.IdAssociation == 3)
+                                                                        .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
+                _ => throw new Exception("Такого типа статистик нету")
+            };
+        }
+
+        #region Расчеты
+
+        public async Task<double> CalculatingPickRate(int selectedMatchesOnMap, int countAllMatch)
+        {
+            return await Task.Run(() =>
+            {
+                return Math.Round((double)selectedMatchesOnMap / countAllMatch * 100, 2);
+            });
+        }
+
+        public async Task<int>  CalculatingEscapeSurvivor(int countMatch, int countKill)
+        {
+            return await Task.Run(() => 
+            {
+                return countMatch * 4 - (int)countKill;
+            });
+        }
+
+        public async Task<double> CalculatingEscapeRate(int escapeSurvivor, int countMatch)
+        {
+            return await Task.Run(() =>
+            {
+                return Math.Round((double)escapeSurvivor / (countMatch * 4) * 100, 2);
+            }); 
+        }
+
+        public async Task<double> CalculatingWinRateRate(int SelectedMatchesWon, int SelectedAllMatch)
+        {
+            return await Task.Run(() =>
+            {
+                return Math.Round((double)SelectedMatchesWon / SelectedAllMatch * 100, 2);
+            });
+        }
+
+        public async Task<int> CalculatingRandomMap(List<GameStatistic> matches)
+        {
+            return await Task.Run(() =>
+            {
+                return matches.Where(x => x.IdWhoPlacedMapWin == 1).Count();
+            });
+        }
+
+        public async Task<int> CalculatingOfferingMap(List<GameStatistic> matches)
+        {
+            return await Task.Run(() =>
+            {
+                return matches.Where(x => x.IdWhoPlacedMapWin == 2 | x.IdWhoPlacedMapWin == 3 | x.IdWhoPlacedMapWin == 4).Count();
+            });
+        }
+
+        public async Task<double> CalculatingDropMapPercent(int countMatchOnMap, int CountAllMatches)
+        {
+            return await Task.Run(() =>
+            {
+                return Math.Round((double)countMatchOnMap / CountAllMatches * 100, 2);
+            });
+        }
+
+        #endregion
 
         #region Количество сыгранных матчей на картах ( W\R, K\R, без подношений, с подношениями)
 
@@ -45,7 +154,7 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.MapService
                     MapImage = item.MapImage,
                     MapMeasurement = item.IdMeasurementNavigation.MeasurementName,
                     CountGame = countGameMap,
-                    WinRateMap = winRateMap,
+                    WinRateMapPercent = winRateMap,
                     PickRateMap = pickRateMap,
                 };
 
