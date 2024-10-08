@@ -26,5 +26,6 @@ namespace MasterAnalyticsDeadByDaylight.Services.DatabaseServices
         void Remove<T>(T entity) where T : class;
         void RemoveRange<T>(IEnumerable<T> entities) where T : class;
         T Find<T>(int id) where T : class;
+        int Count<T>(Func<IQueryable<T>, IQueryable<T>> include = null) where T : class;
     }
 }

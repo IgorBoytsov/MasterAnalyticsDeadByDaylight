@@ -227,6 +227,21 @@ namespace MasterAnalyticsDeadByDaylight.Services.DatabaseServices
             }
         }
 
+        public int Count<T>(Func<IQueryable<T>, IQueryable<T>> include = null) where T : class
+        {
+            using (var context = _contextFactory())
+            {
+                IQueryable<T> query = context.Set<T>();
+
+                if (include != null)
+                {
+                    query = include(query);
+                }
+
+                return query.Count();
+            }
+        }
+
         public bool Exists<T>(Expression<Func<T, bool>> predicate) where T : class
         {
             using (var context = _contextFactory())
