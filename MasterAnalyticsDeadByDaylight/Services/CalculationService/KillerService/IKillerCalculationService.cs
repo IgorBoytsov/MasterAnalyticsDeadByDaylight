@@ -12,8 +12,9 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerServic
         public Task<int> GetAllKillerCountMatch(int IdPlayerAssociation);
         public Task<List<GameStatistic>> GetSelectedKillerMatch(int idKiller, int IdPlayerAssociation);
         public Task<double> CalculatingCountKill(List<GameStatistic> killerMatches);
-        public Task<double> CalculatingKillRate(List<GameStatistic> killerMatches, double countKill);
-        public Task<double> CalculatingKillRatePercentage(double killRate);
+        public Task<double> CalculatingAVGKillRate(List<GameStatistic> killerMatches, double countKill);
+        public Task<double> CalculatingAVGKillRatePercentage(double killRate);
+        public Task<double> CalculatingKillRatePercentage(int countMatches, double countKills);
         public Task<double> CalculatingPickRate(int selectedCharacterMatches, int countAllMatch);
         public Task<double> CalculatingKillerCountMatchWin(List<GameStatistic> selectedKillerMatches);
         public Task<double> CalculatingWinRate(int selectedCharacterMatchesWin, int countAllMatch);

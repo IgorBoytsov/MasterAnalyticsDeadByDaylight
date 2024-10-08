@@ -114,19 +114,17 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerServic
         /// </summary>
         /// <param name="killerMatches"> Количество матчей на конкретном персонаже. </param>
         /// <returns>Возвращает K\R на персонаже.</returns>
-        public async Task<double> CalculatingKillRate(List<GameStatistic> killerMatches, double countKill)
+        public async Task<double> CalculatingAVGKillRate(List<GameStatistic> killerMatches, double countKill)
         {
             return await Task.Run(() =>
             {
-                double KillRate = 0;
                 if (killerMatches.Count == 0)
                 {
                     return 0;
                 }
                 else
                 {
-                    KillRate = Math.Round(countKill / killerMatches.Count, 1);
-                    return KillRate;
+                    return Math.Round(countKill / killerMatches.Count, 1);
                 }
             });
         }
@@ -137,12 +135,19 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerServic
         /// </summary>
         /// <param name="killRate"> Килрейт на персонаже. </param>
         /// <returns>Возвращает K\R на персонаже в %.</returns>
-        public async Task<double> CalculatingKillRatePercentage(double killRate)
+        public async Task<double> CalculatingAVGKillRatePercentage(double killRate)
         {
             return await Task.Run(() =>
             {
-                double KillRatePercentage = Math.Round(killRate / 4 * 100, 2);
-                return KillRatePercentage;
+                return Math.Round(killRate / 4 * 100, 2);
+            });
+        }
+
+        public async Task<double> CalculatingKillRatePercentage(int countMatches ,double countKills)
+        {
+            return await Task.Run(() =>
+            {
+                return Math.Round(countKills / (countMatches * 4) * 100, 2);
             });
         }
 
@@ -427,7 +432,7 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerServic
                     {
                         killRateTracker.Add(new KillerKillRateTracker
                         {
-                            KillRate = await CalculatingKillRate(matchByDate, await CalculatingCountKill(matchByDate)),
+                            KillRate = await CalculatingAVGKillRate(matchByDate, await CalculatingCountKill(matchByDate)),
                             DateTime = date.ToString(dateFormat),
                         });
                     }
