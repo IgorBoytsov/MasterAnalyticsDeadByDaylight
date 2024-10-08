@@ -1,8 +1,10 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
+using MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerService;
+using MasterAnalyticsDeadByDaylight.Services.CalculationService.MapService;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
@@ -13,13 +15,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #region Колекции 
 
-        public ObservableCollection<MapStat> MapStatList { get; set; }
+        public ObservableCollection<MapStat> MapStatList { get; set; } = [];
 
-        public ObservableCollection<MapStat> MapStatSortedList { get; set; }
+        public ObservableCollection<MapStat> MapStatSortedList { get; set; } = [];
 
-        public ObservableCollection<PlayerAssociation> PlayerAssociationList { get; set; }
+        public ObservableCollection<PlayerAssociation> PlayerAssociationList { get; set; } = [];
 
-        public ObservableCollection<string> SortingList { get; set; } =
+        public ObservableCollection<string> SortingList { get; set; } = 
             [
             "Измерению (Убыв.)", "Измерению (Возр.)",
             "Дате выхода (Убыв.)", "Дате выхода (Возр.)",
@@ -29,10 +31,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             "Киллрейт (Убыв.)","Киллрейт (Возр.)",
             "Количеству сыгранных игр (Убыв.)", "Количеству сыгранных игр (Возр.)",
             "Количеству игр с подношениями (Убыв.)", "Количеству игр с подношениями (Возр.)",
-            "Количеству игр без подношений (Убыв.)", "Количеству игр без подношений (Возр.)",
+            "Количеству игр без подношений (Убыв.)", "Количеству игр без подношений (Возр.)"
             ];
 
-        public ObservableCollection<string> Association { get; set; } = [ "Общая", "Личная за Убийц", "Личная за Выживших"];
+        public ObservableCollection<string> TypeMapList { get; set; } = ["Карты", "Измерение"];
+
+        public ObservableCollection<string> TypeStatsList { get; set; } = [ "Общая", "Личная за Убийц", "Личная за Выживших"];
 
         #endregion
 
@@ -50,14 +54,24 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             }
         }
 
-        private string _selectedAssociation; // ВЫБОР ЭЛЕМЕНТА ИЗ СПИСКА
-        public string SelectedAssociation
+        private string _selectedTypeMap;
+        public string SelectedTypeMap
         {
-            get => _selectedAssociation;
+            get => _selectedTypeMap;
             set
             {
-                _selectedAssociation = value;
-                SortMapStatList();
+                _selectedTypeMap = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _selectedTypeStat;
+        public string SelectedTypeStat
+        {
+            get => _selectedTypeStat;
+            set
+            {
+                _selectedTypeStat = value;
                 OnPropertyChanged();
             }
         }
@@ -87,317 +101,178 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #endregion
 
-        public MapPageViewModel()
+        #region Pupup
+
+        private bool _isFilterPopupOpen;
+        public bool IsFilterPopupOpen
         {
-            PlayerAssociationList = [];
-            MapStatList = [];
-            MapStatSortedList = [];
+            get => _isFilterPopupOpen;
+            set
+            {
+                _isFilterPopupOpen = value;
+                OnPropertyChanged();
+            }
+        }
 
-            GetPlayerAssociation();
+        #endregion
 
-            SelectedAssociation = Association[1];
+        private readonly IDataService _dataService;
+        private readonly IMapCalculationService _mapCalculationService;
+        private readonly IKillerCalculationService _killerCalculationService;
+
+        public MapPageViewModel(IDataService dataService, IMapCalculationService mapCalculationService, IKillerCalculationService killerCalculationService)
+        {
+            _dataService = dataService;
+            _mapCalculationService = mapCalculationService;
+            _killerCalculationService = killerCalculationService;
+            IsFilterPopupOpen = false;
+
             SelectedMapStatSortItem = SortingList[1];
-            SelectedTypePlayerItem = PlayerAssociationList.First();
+            SelectedTypeMap = TypeMapList.First();
+            SelectedTypeStat = TypeStatsList[1];
+
+            GetMapInfo(SelectedTypeMap);
         }
 
         #region Команды
 
         private RelayCommand _reloadDataCommand;
-        public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { GetMapStatisticData(); }); }
+        public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { GetMapInfo(SelectedTypeMap); }); }
+
+        private RelayCommand _openFilterCommand;
+        public RelayCommand OpenFilterCommand { get => _openFilterCommand ??= new(obj => { IsFilterPopupOpen = true; }); }
+
+        private RelayCommand _applyCommand;
+        public RelayCommand ApplyCommand { get => _applyCommand ??= new(obj => 
+        {
+            GetMapInfo(SelectedTypeMap);
+            IsFilterPopupOpen = false;
+        }); }
 
         #endregion
 
         #region Методы
 
-        //private void GetMapStatisticData()
-        //{
-        //    MapStatList.Clear();
-        //    using (MasterAnalyticsDeadByDaylightDbContext context = new())
-        //    {
-        //        List<Map> Maps = context.Maps.Include(mapMeasurement => mapMeasurement.IdMeasurementNavigation).ToList();
-
-        //        int CountMatch = context.GameStatistics
-        //            .Include(gs => gs.IdKillerNavigation)
-        //            .ThenInclude(killerInfo => killerInfo.IdAssociationNavigation)
-        //            .Where(gs => gs.IdKillerNavigation.IdAssociation == 1)
-        //            .Count();
-
-        //        var idRandomMap = context.WhoPlacedMaps.FirstOrDefault(WPM => WPM.WhoPlacedMapName == "Рандом");
-        //        var idOfferingMap = context.WhoPlacedMaps.FirstOrDefault(WPM => WPM.WhoPlacedMapName == "Выживший" | WPM.WhoPlacedMapName == "Я");
-
-        //        foreach (var item in Maps)
-        //        {
-        //            List<GameStatistic> GameStat = context.GameStatistics
-        //                .Include(gs => gs.IdMapNavigation)
-        //                .Include(gs => gs.IdKillerNavigation)
-        //                .ThenInclude(gs => gs.IdKillerNavigation)
-        //                .Include(gs => gs.IdMapNavigation)
-        //                .ThenInclude(Map => Map.IdMeasurementNavigation)
-        //                .Where(gs => gs.IdKillerNavigation.IdAssociation == 1)
-        //                .Where(gs => gs.IdMapNavigation.IdMap == item.IdMap)
-        //                .ToList();
-
-
-        //            int MapRandom = GameStat.Where(gs => gs.IdWhoPlacedMapWin == idRandomMap.IdWhoPlacedMap).Count();
-        //            int MapOffering = GameStat.Where(gs => gs.IdWhoPlacedMapWin == idOfferingMap.IdWhoPlacedMap).Count();
-
-        //            double MapRandomPercent = Math.Round((double)MapRandom / GameStat.Count, 2);
-        //            double MapOfferingPercent = Math.Round((double)MapOffering / GameStat.Count, 2);
-
-        //            double PickRate = Math.Round((double)GameStat.Count / CountMatch, 2);
-
-        //            var mapStat = new MapStat()
-        //            {
-        //                idMap = item.IdMap,
-        //                MapName = item.MapName,
-        //                MapMeasurement = item.IdMeasurementNavigation.MeasurementName,
-        //                MapImage = item.MapImage,
-        //                CountGame = GameStat.Count,
-        //                PickRateMap = PickRate,
-        //                FalloutMapRandom = MapRandom,
-        //                FalloutMapRandomPercent = MapRandomPercent,
-        //                FalloutMapOffering = MapOffering,
-        //                FalloutMapOfferingPercent = MapOfferingPercent,
-        //            };
-        //            MapStatList.Add(mapStat);
-        //        }
-        //    }
-        //}
-
-        private void GetPlayerAssociation()
+        private void GetMapInfo(string typeMapName)
         {
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            Action action = typeMapName switch
             {
-                var playerAssociation = context.PlayerAssociations.ToList();
-                foreach (var item in playerAssociation)
-                {
-                    PlayerAssociationList.Add(item);
-                }
-            }
+                "Карты" => GetMapStat,
+                "Измерение" => GetMeasurementStat,
+                _ => throw new Exception("Такого типа статистики нету!")
+            };
+            action.Invoke();
         }
 
-        private void GetMapStatisticData()
-        {
-            if (SelectedAssociation == "Общая")
-            {
-                GetTotalMapStat();
-            }
-            if (SelectedAssociation == "Личная за Убийц")
-            {
-                GetPersonalKillerMapStat();
-            }
-            if (SelectedAssociation == "Личная за Выживших")
-            {
-                GetPersonalSurvivorMapStat();
-            }
-        }
-
-        private void GetTotalMapStat()
+        private async void GetMapStat()
         {
             MapStatList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+
+            int CountMatch = SelectedTypeStat switch
             {
-                int CountMatch = context.GameStatistics.Count();
+                "Общая" => _dataService.Count<GameStatistic>(),
+                "Личная за Убийц" => _dataService.Count<GameStatistic>(x => x.Include(gs => gs.IdKillerNavigation).ThenInclude(killerInfo => killerInfo.IdAssociationNavigation).Where(gs => gs.IdKillerNavigation.IdAssociation == 1)),
+                "Личная за Выживших" => _dataService.Count<GameStatistic>(x => x.Include(gs => gs.IdKillerNavigation).ThenInclude(killerInfo => killerInfo.IdAssociationNavigation).Where(gs => gs.IdKillerNavigation.IdAssociation == 3)),
+                _ => throw new Exception("Такого типа статистик нету")
+            };
 
-                List<Map> maps = context.Maps.Include(x => x.IdMeasurementNavigation).ToList();
+            List<Map> Maps = await _dataService.GetAllDataInListAsync<Map>(x => x.Include(x => x.IdMeasurementNavigation));
 
-                WhoPlacedMap idRandomMap = context.WhoPlacedMaps.FirstOrDefault(WPM => WPM.WhoPlacedMapName == "Рандом");
-                WhoPlacedMap idOfferingMap = context.WhoPlacedMaps.FirstOrDefault(WPM => WPM.WhoPlacedMapName == "Выживший" | WPM.WhoPlacedMapName == "Я");
+            foreach (var item in Maps)
+            {
+                List<GameStatistic> GameStat = await _mapCalculationService.GetMatchForMapAsync(item.IdMap, SelectedTypeStat);
 
-                foreach (var map in maps)
+                double PickRate = await _mapCalculationService.CalculatingPickRate(GameStat.Count, CountMatch);
+                int CountKills = (int)await _killerCalculationService.CalculatingCountKill(GameStat);
+                //double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(GameStat.Count, CountKills);
+                double AVGKillRate = await _killerCalculationService.CalculatingAVGKillRate(GameStat, CountKills);
+                double KillRatePercentage = await _killerCalculationService.CalculatingAVGKillRatePercentage(AVGKillRate);
+                int EscapeSurvivor = await _mapCalculationService.CalculatingEscapeSurvivor(GameStat.Count, CountKills);
+                double EscapeRate = await _mapCalculationService.CalculatingEscapeRate(EscapeSurvivor, GameStat.Count);
+                int WinMatch = GameStat.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
+                double WinRatePercent = await _mapCalculationService.CalculatingWinRateRate(WinMatch, GameStat.Count);
+                int MapRandom = await _mapCalculationService.CalculatingRandomMap(GameStat);
+                int MapOffering = await _mapCalculationService.CalculatingOfferingMap(GameStat);
+                double MapRandomPercent = await _mapCalculationService.CalculatingDropMapPercent(MapRandom, GameStat.Count);
+                double MapOfferingPercent = await _mapCalculationService.CalculatingDropMapPercent(MapOffering, GameStat.Count);
+
+                var mapStat = new MapStat()
                 {
-                    List<GameStatistic> GameStat = context.GameStatistics
-                        .Include(gs => gs.IdMapNavigation)
-                        .ThenInclude(Map => Map.IdMeasurementNavigation)
-                        .Include(WPM => WPM.IdWhoPlacedMapNavigation)
-                        .Include(WPM => WPM.IdWhoPlacedMapWinNavigation)
-                        .Where(gs => gs.IdMapNavigation.IdMap == map.IdMap)
-                        .ToList();
-
-                    double PickRate = Math.Round((double)GameStat.Count / CountMatch * 100, 2);
-
-                    int CountKills = 0;
-                    foreach (var item in GameStat)
-                    {
-                        CountKills += item.CountKills;
-                    }
-                    double KillRate = Math.Round((double)CountKills / GameStat.Count / 4 * 100, 2);
-
-                    int EscapeSurvivor = GameStat.Count * 4 - CountKills;
-                    double Escape = Math.Round((double)EscapeSurvivor / (GameStat.Count * 4) * 100, 2);
-
-                    double Win = Math.Round((double)GameStat.Where(x => x.CountKills == 3 | x.CountKills == 4).Count() / GameStat.Count * 100, 2);
-
-                    int MapRandom = GameStat.Where(gs => gs.IdWhoPlacedMapWin == idRandomMap.IdWhoPlacedMap).Count();
-                    int MapOffering = GameStat.Where(gs => gs.IdWhoPlacedMapWin == idOfferingMap.IdWhoPlacedMap).Count();
-
-                    double MapRandomPercent = Math.Round((double)MapRandom / GameStat.Count * 100, 2);
-                    double MapOfferingPercent = Math.Round((double)MapOffering / GameStat.Count * 100, 2);
-
-                    var mapStat = new MapStat()
-                    {
-                        idMap = map.IdMap,
-                        MapName = map.MapName,
-                        MapMeasurement = map.IdMeasurementNavigation.MeasurementName,
-                        idMapMeasurement = map.IdMeasurementNavigation.IdMeasurement,
-                        MapImage = map.MapImage,
-                        CountGame = GameStat.Count,
-                        PickRateMap = PickRate,
-                        KillRateMap = KillRate,
-                        EscapeRateMap = Escape,
-                        WinRateMap = Win,
-                        FalloutMapRandom = MapRandom,
-                        FalloutMapRandomPercent = MapRandomPercent,
-                        FalloutMapOffering = MapOffering,
-                        FalloutMapOfferingPercent = MapOfferingPercent,
-                    };
-                    MapStatList.Add(mapStat);
-                }
+                    idMap = item.IdMap,
+                    MapName = item.MapName,
+                    MapMeasurement = item.IdMeasurementNavigation.MeasurementName,
+                    idMapMeasurement = item.IdMeasurementNavigation.IdMeasurement,
+                    MapImage = item.MapImage,
+                    CountGame = GameStat.Count,
+                    PickRateMap = PickRate,
+                    KillRateMap = AVGKillRate,
+                    KillRateMapPercent = KillRatePercentage,
+                    EscapeRateMap = EscapeRate,
+                    WinRateMap = WinMatch,
+                    WinRateMapPercent = WinRatePercent,
+                    FalloutMapRandom = MapRandom,
+                    FalloutMapRandomPercent = MapRandomPercent,
+                    FalloutMapOffering = MapOffering,
+                    FalloutMapOfferingPercent = MapOfferingPercent,
+                };
+                MapStatList.Add(mapStat);
             }
+            SortMapStatList();
         }
 
-        private void GetPersonalKillerMapStat()
+        private async void GetMeasurementStat()
         {
             MapStatList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+
+            int CountMatch = SelectedTypeStat switch
             {
-                List<Map> Maps = context.Maps.Include(mapMeasurement => mapMeasurement.IdMeasurementNavigation).ToList();
+                "Общая" => _dataService.Count<GameStatistic>(),
+                "Личная за Убийц" => _dataService.Count<GameStatistic>(x => x.Include(gs => gs.IdKillerNavigation).ThenInclude(killerInfo => killerInfo.IdAssociationNavigation).Where(gs => gs.IdKillerNavigation.IdAssociation == 1)),
+                "Личная за Выживших" => _dataService.Count<GameStatistic>(x => x.Include(gs => gs.IdKillerNavigation).ThenInclude(killerInfo => killerInfo.IdAssociationNavigation).Where(gs => gs.IdKillerNavigation.IdAssociation == 3)),
+                _ => throw new Exception("Такого типа статистик нету")
+            };
 
-                int CountMatch = context.GameStatistics
-                    .Include(gs => gs.IdKillerNavigation)
-                    .ThenInclude(killerInfo => killerInfo.IdAssociationNavigation)
-                    .Where(gs => gs.IdKillerNavigation.IdAssociation == 1)
-                    .Count();
+            List<Measurement> Measurements = await _dataService.GetAllDataInListAsync<Measurement>();
+            List<Map> Maps = await _dataService.GetAllDataInListAsync<Map>(x => x.Include(x => x.IdMeasurementNavigation));
 
-                var idRandomMap = context.WhoPlacedMaps.FirstOrDefault(WPM => WPM.WhoPlacedMapName == "Рандом");
-                var idOfferingMap = context.WhoPlacedMaps.FirstOrDefault(WPM => WPM.WhoPlacedMapName == "Выживший" | WPM.WhoPlacedMapName == "Я");
-
-                foreach (var map in Maps)
-                {
-                    List<GameStatistic> GameStat = context.GameStatistics
-                        .Include(gs => gs.IdMapNavigation)
-                        .Include(gs => gs.IdKillerNavigation)
-                        .ThenInclude(gs => gs.IdKillerNavigation)
-                        .Include(gs => gs.IdMapNavigation)
-                        .ThenInclude(Map => Map.IdMeasurementNavigation)
-                        .Include(WPM => WPM.IdWhoPlacedMapNavigation)
-                        .Include(WPM => WPM.IdWhoPlacedMapWinNavigation)
-                        .Where(gs => gs.IdKillerNavigation.IdAssociation == 1)
-                        .Where(gs => gs.IdMapNavigation.IdMap == map.IdMap)
-                        .ToList();
-
-                    double PickRate = Math.Round((double)GameStat.Count / CountMatch * 100, 2);
-
-                    int CountKills = 0;
-                    foreach (var item in GameStat)
-                    {
-                        CountKills += item.CountKills;
-                    }
-                    double KillRate = Math.Round((double)CountKills / GameStat.Count / 4 * 100, 2);
-
-                    int EscapeSurvivor = GameStat.Count * 4 - CountKills;
-                    double Escape = Math.Round((double)EscapeSurvivor / (GameStat.Count * 4) * 100, 2);
-
-                    double Win = Math.Round((double)GameStat.Where(x => x.CountKills == 3 | x.CountKills == 4).Count() / GameStat.Count * 100, 2);
-
-                    int MapRandom = GameStat.Where(gs => gs.IdWhoPlacedMapWin == idRandomMap.IdWhoPlacedMap).Count();
-                    int MapOffering = GameStat.Where(gs => gs.IdWhoPlacedMapWin == idOfferingMap.IdWhoPlacedMap).Count();
-
-                    double MapRandomPercent = Math.Round((double)MapRandom / GameStat.Count * 100, 2);
-                    double MapOfferingPercent = Math.Round((double)MapOffering / GameStat.Count * 100, 2);
-
-                    var mapStat = new MapStat()
-                    {
-                        idMap = map.IdMap,
-                        MapName = map.MapName,
-                        MapMeasurement = map.IdMeasurementNavigation.MeasurementName,
-                        idMapMeasurement = map.IdMeasurementNavigation.IdMeasurement,
-                        MapImage = map.MapImage,
-                        CountGame = GameStat.Count,
-                        PickRateMap = PickRate,
-                        KillRateMap = KillRate,
-                        EscapeRateMap = Escape,
-                        WinRateMap = Win,
-                        FalloutMapRandom = MapRandom,
-                        FalloutMapRandomPercent = MapRandomPercent,
-                        FalloutMapOffering = MapOffering,
-                        FalloutMapOfferingPercent = MapOfferingPercent,
-                    };
-                    MapStatList.Add(mapStat);
-                }
-            }
-        }
-
-        private void GetPersonalSurvivorMapStat()
-        {
-            MapStatList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            foreach (var item in Measurements)
             {
-                List<Map> Maps = context.Maps.Include(mapMeasurement => mapMeasurement.IdMeasurementNavigation).ToList();
+                List<GameStatistic> GameStat = await _mapCalculationService.GetMatchForMeasurementAsync(item.IdMeasurement, SelectedTypeStat);
 
-                int CountMatch = context.GameStatistics
-                    .Include(gs => gs.IdKillerNavigation)
-                    .ThenInclude(killerInfo => killerInfo.IdAssociationNavigation)
-                    .Where(gs => gs.IdKillerNavigation.IdAssociation == 3)
-                    .Count();
+                double PickRate = await _mapCalculationService.CalculatingPickRate(GameStat.Count, CountMatch);
+                int CountKills = (int)await _killerCalculationService.CalculatingCountKill(GameStat);
+                //double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(GameStat.Count, CountKills);
+                double AVGKillRate = await _killerCalculationService.CalculatingAVGKillRate(GameStat, CountKills);
+                double KillRatePercentage = await _killerCalculationService.CalculatingAVGKillRatePercentage(AVGKillRate);
+                int EscapeSurvivor = await _mapCalculationService.CalculatingEscapeSurvivor(GameStat.Count, CountKills);
+                double EscapeRate = await _mapCalculationService.CalculatingEscapeRate(EscapeSurvivor, GameStat.Count);
+                int WinMatch = GameStat.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
+                double WinRatePercent = await _mapCalculationService.CalculatingWinRateRate(WinMatch, GameStat.Count);
+                int MapRandom = await _mapCalculationService.CalculatingRandomMap(GameStat);
+                int MapOffering = await _mapCalculationService.CalculatingOfferingMap(GameStat);
+                double MapRandomPercent = await _mapCalculationService.CalculatingDropMapPercent(MapRandom, GameStat.Count);
+                double MapOfferingPercent = await _mapCalculationService.CalculatingDropMapPercent(MapOffering, GameStat.Count);
 
-                var idRandomMap = context.WhoPlacedMaps.FirstOrDefault(WPM => WPM.WhoPlacedMapName == "Рандом");
-                var idOfferingMap = context.WhoPlacedMaps.FirstOrDefault(WPM => WPM.WhoPlacedMapName == "Выживший" | WPM.WhoPlacedMapName == "Я");
-
-                foreach (var map in Maps)
+                var mapStat = new MapStat()
                 {
-                    List<GameStatistic> GameStat = context.GameStatistics
-                        .Include(gs => gs.IdMapNavigation)
-                        .Include(gs => gs.IdKillerNavigation)
-                        .ThenInclude(gs => gs.IdKillerNavigation)
-                        .Include(gs => gs.IdMapNavigation)
-                        .ThenInclude(Map => Map.IdMeasurementNavigation)
-                        .Include(WPM => WPM.IdWhoPlacedMapNavigation)
-                        .Include(WPM => WPM.IdWhoPlacedMapWinNavigation)
-                        .Where(gs => gs.IdKillerNavigation.IdAssociation == 3)
-                        .Where(gs => gs.IdMapNavigation.IdMap == map.IdMap)
-                        .ToList();
-
-                    double PickRate = Math.Round((double)GameStat.Count / CountMatch * 100, 2);
-
-                    int CountKills = 0;
-                    foreach (var item in GameStat)
-                    {
-                        CountKills += item.CountKills;
-                    }
-                    double KillRate = Math.Round((double)CountKills / GameStat.Count / 4 * 100, 2);
-
-                    int EscapeSurvivor = GameStat.Count * 4 - CountKills;
-                    double Escape = Math.Round((double)EscapeSurvivor / (GameStat.Count * 4) * 100, 2);
-
-                    double Win = Math.Round((double)GameStat.Where(x => x.CountKills == 3 | x.CountKills == 4).Count() / GameStat.Count * 100, 2);
-
-                    int MapRandom = GameStat.Where(gs => gs.IdWhoPlacedMapWin == idRandomMap.IdWhoPlacedMap).Count();
-                    int MapOffering = GameStat.Where(gs => gs.IdWhoPlacedMapWin == idOfferingMap.IdWhoPlacedMap).Count();
-
-                    double MapRandomPercent = Math.Round((double)MapRandom / GameStat.Count * 100, 2);
-                    double MapOfferingPercent = Math.Round((double)MapOffering / GameStat.Count * 100, 2);
-
-                    var mapStat = new MapStat()
-                    {
-                        idMap = map.IdMap,
-                        MapName = map.MapName,
-                        MapMeasurement = map.IdMeasurementNavigation.MeasurementName,
-                        idMapMeasurement = map.IdMeasurementNavigation.IdMeasurement,
-                        MapImage = map.MapImage,
-                        CountGame = GameStat.Count,
-                        PickRateMap = PickRate,
-                        KillRateMap = KillRate,
-                        EscapeRateMap = Escape,
-                        WinRateMap = Win,
-                        FalloutMapRandom = MapRandom,
-                        FalloutMapRandomPercent = MapRandomPercent,
-                        FalloutMapOffering = MapOffering,
-                        FalloutMapOfferingPercent = MapOfferingPercent,
-                    };
-                    MapStatList.Add(mapStat);
-                }
+                    MapName = item.MeasurementName,
+                    idMapMeasurement = item.IdMeasurement,
+                    MapImage = Maps.FirstOrDefault(x => x.IdMeasurement == item.IdMeasurement).MapImage,
+                    CountGame = GameStat.Count,
+                    PickRateMap = PickRate,
+                    KillRateMap = AVGKillRate,
+                    KillRateMapPercent = KillRatePercentage,
+                    EscapeRateMap = EscapeRate,
+                    WinRateMap = WinMatch,
+                    WinRateMapPercent = WinRatePercent,
+                    FalloutMapRandom = MapRandom,
+                    FalloutMapRandomPercent = MapRandomPercent,
+                    FalloutMapOffering = MapOffering,
+                    FalloutMapOfferingPercent = MapOfferingPercent,
+                };
+                MapStatList.Add(mapStat);
             }
+            SortMapStatList();
         }
 
         #endregion
@@ -406,8 +281,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         private void SortMapStatList()
         {
-            GetMapStatisticData();
-
             switch (SelectedMapStatSortItem)
             {
                 case "Измерению (Убыв.)":
@@ -480,6 +353,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
                 case "Количеству игр без подношений (Возр.)":
                     SortMapStatsByCountGameWithoutOfferingAscendingOrder();
+                    break;
+                case null:
+                    SortMapStatsByMeasurementByAscendingOrder();
                     break;
             }
         }
@@ -559,7 +435,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void SortMapStatsByWinRateDescendingOrder()
         {
             MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(Map => Map.WinRateMap))
+            foreach (var item in MapStatList.OrderByDescending(Map => Map.WinRateMapPercent))
             {
                 MapStatSortedList.Add(item);
             }
@@ -568,7 +444,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void SortMapStatsByWinRateAscendingOrder()
         {
             MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(Map => Map.WinRateMap))
+            foreach (var item in MapStatList.OrderBy(Map => Map.WinRateMapPercent))
             {
                 MapStatSortedList.Add(item);
             }
@@ -577,7 +453,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void SortMapStatsByKillRateDescendingOrder()
         {
             MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(Map => Map.KillRateMap))
+            foreach (var item in MapStatList.OrderByDescending(Map => Map.KillRateMapPercent))
             {
                 MapStatSortedList.Add(item);
             }
@@ -586,7 +462,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void SortMapStatsByKillRateAscendingOrder()
         {
             MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(Map => Map.KillRateMap))
+            foreach (var item in MapStatList.OrderBy(Map => Map.KillRateMapPercent))
             {
                 MapStatSortedList.Add(item);
             }
