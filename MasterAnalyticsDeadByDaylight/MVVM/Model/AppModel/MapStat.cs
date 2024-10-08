@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 {
-    class MapStat
+    public class MapStat
     {
         /// <summary>
         /// Название карты
@@ -64,9 +64,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         public double FalloutMapOfferingPercent { get; set; }
 
         /// <summary>
-        /// % убийств на карте
+        /// AVG убийств на карте
         /// </summary>
         public double KillRateMap { get; set; }
+
+        /// <summary>
+        /// % убийств на карте
+        /// </summary>
+        public double KillRateMapPercent { get; set; }
 
         /// <summary>
         /// % побега выживших с карты
@@ -75,6 +80,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 
         /// <summary>
         /// % побед на карте
+        /// </summary>
+        public double WinRateMapPercent { get; set; }
+
+        /// <summary>
+        /// Количество победных игр на карте
         /// </summary>
         public double WinRateMap { get; set; }
     }
