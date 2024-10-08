@@ -6,6 +6,7 @@ using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
@@ -637,7 +638,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        #region Popup
+        #region Popup - Билд киллера
 
         private bool _isOpenKillerBuildPopup;
         public bool IssOpenKillerBuildPopup
@@ -689,23 +690,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             get => _selectedKillerBuild;
             set
             {
-                _selectedKillerBuild = value;
-                SelectedKillerFirstPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk1);
-                SelectedKillerSecondPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk2);
-                SelectedKillerThirdPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk3);
-                SelectedKillerFourthPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk4);
-
-                if (ConsiderKiller == true)
+                if (_selectedKillerBuild != value)
                 {
-                    SelectedKiller = KillerList.FirstOrDefault(x => x.IdKiller == value.IdKiller);
+                    _selectedKillerBuild = value;
+                    OnPropertyChanged();
+                    SelectBuild(value);
                 }
-                if (ConsiderAddon == true)
-                {
-                    SelectedKiller = KillerList.FirstOrDefault(x => x.IdKiller == value.IdKiller);
-                    SelectedKillerFirstAddon = _dataService.GetById<KillerAddon>(value.IdAddon1, "IdKillerAddon");
-                    SelectedKillerSecondAddon = _dataService.GetById<KillerAddon>(value.IdAddon2, "IdKillerAddon"); ;
-                }
-                OnPropertyChanged();
             }
         }
 
@@ -727,7 +717,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 "Предупреждение об удаление.",
                 TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
             {
-                await DataBaseHelper.DeleteEntityAsync(SelectedKillerBuild);
+                await _dataService.RemoveAsync(SelectedKillerBuild);
                 GetKillerBuildListData();
             }
             else
@@ -769,6 +759,28 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 else
                 {
                     _dialogService.ShowMessage("Если у вас что то выбрано, либо в билде нету перка, аддона, то выберите <<Отсутствует>>");
+                }
+            }
+        }
+
+        private void SelectBuild(KillerBuild value)
+        {
+            if (value != null)
+            {
+                SelectedKillerFirstPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk1);
+                SelectedKillerSecondPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk2);
+                SelectedKillerThirdPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk3);
+                SelectedKillerFourthPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk4);
+
+                if (ConsiderKiller == true)
+                {
+                    SelectedKiller = KillerList.FirstOrDefault(x => x.IdKiller == value.IdKiller);
+                }
+                if (ConsiderAddon == true)
+                {
+                    SelectedKiller = KillerList.FirstOrDefault(x => x.IdKiller == value.IdKiller);
+                    SelectedKillerFirstAddon = _dataService.GetById<KillerAddon>(value.IdAddon1, "IdKillerAddon");
+                    SelectedKillerSecondAddon = _dataService.GetById<KillerAddon>(value.IdAddon2, "IdKillerAddon"); ;
                 }
             }
         }
@@ -2966,7 +2978,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _addMatchCommand;
         public RelayCommand AddMatchCommand { get => _addMatchCommand ??= new(obj => { AddGameStatistic(); }); }
 
-        private async void AddGameStatistic()
+        private void AddGameStatistic()
         {
             if (SelectedKiller != null &&
                 SelectedKillerPlatform != null &&
@@ -3045,13 +3057,55 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 return;
             }
 
+            if (FirstSurvivorAccount != 0 &&
+               SecondSurvivorAccount != 0 &&
+               ThirdSurvivorAccount != 0 &&
+               FourthSurvivorAccount != 0 ) { }
+            else
+            {
+                if (_dialogService.ShowMessageButtons("У какого то выжившего счет 0! Вы уверены?", "Ошибка заполнения", TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.No)
+                {
+                    return;
+                }
+            }
+
+            if (FirstSurvivorPrestige != 0 &&
+               SecondSurvivorPrestige != 0 &&
+               ThirdSurvivorPrestige != 0 &&
+               FourthSurvivorPrestige != 0) { }
+            else
+            {
+                if (_dialogService.ShowMessageButtons("У какого то выжившего престиж 0! Вы уверены?", "Ошибка заполнения", TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.No)
+                {
+                    return;
+                }
+            }
+
+            if (KillerAccount != 0) { }
+            else
+            {
+                if (_dialogService.ShowMessageButtons("У киллера счет 0! Вы уверены?", "Ошибка заполнения", TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.No)
+                {
+                    return;
+                }
+            }
+
+            if (KillerPrestige != 0) { }
+            else
+            {
+                if (_dialogService.ShowMessageButtons("У киллера престиж 0! Вы уверены?", "Ошибка заполнения", TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.No)
+                {
+                    return;
+                }
+            }
+
             AddKillerInfo();
             AddFirstSurvivorInfo();
             AddSecondSurvivorInfo();
             AddThirdSurvivorInfo();
             AddFourthSurvivorInfo();
 
-            var lastID = await _dataService.GetAllDataInListAsync<KillerInfo>(x => x
+            var lastID = _dataService.GetAllDataInList<KillerInfo>(x => x
                 .OrderByDescending(x => x.IdKillerInfo));
 
             var lastIDKiller = lastID.FirstOrDefault();
@@ -3061,7 +3115,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             SurvivorInfo thirdSurvivor;
             SurvivorInfo fourthSurvivor;
 
-            var lastFourRecords = await _dataService.GetAllDataInListAsync<SurvivorInfo>(x => x
+            var lastFourRecords = _dataService.GetAllDataInList<SurvivorInfo>(x => x
                 .OrderByDescending(x => x.IdSurvivorInfo)
                     .Take(4)
                         .Reverse());
@@ -3092,17 +3146,17 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 DescriptionGame = DescriptionGame,
             };
 
-            await _dataService.AddAsync(newGameStatistic);
+            _dataService.Add(newGameStatistic);
 
             SetNullKillerData();
             SetNullSurvivorData();
             SetNullGameData();
             SetNullImage();
-
+            SetNullBuild();
             _dialogService.ShowMessage("Данные успешно добавлены", "Успешно!", TypeMessage.Notification);
         }
 
-        private async void AddKillerInfo()
+        private void AddKillerInfo()
         {
             var newKillerInfo = new KillerInfo()
             {
@@ -3121,10 +3175,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 AnonymousMode = KillerAnonymousMode,
                 KillerAccount = KillerAccount,
             };
-            await _dataService.AddAsync(newKillerInfo);
+            _dataService.Add(newKillerInfo);
         }
 
-        private async void AddFirstSurvivorInfo()
+        private void AddFirstSurvivorInfo()
         {
             var newSurvivorInfo = new SurvivorInfo()
             {
@@ -3145,10 +3199,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 AnonymousMode = FirstSurvivorAnonymousMode,
                 SurvivorAccount = FirstSurvivorAccount,
             };
-            await _dataService.AddAsync(newSurvivorInfo);
+            _dataService.Add(newSurvivorInfo);
         }
 
-        private async void AddSecondSurvivorInfo()
+        private void AddSecondSurvivorInfo()
         {
             var newSurvivorInfo = new SurvivorInfo()
             {
@@ -3169,10 +3223,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 AnonymousMode = SecondSurvivorAnonymousMode,
                 SurvivorAccount = SecondSurvivorAccount,
             };
-            await _dataService.AddAsync(newSurvivorInfo);
+            _dataService.Add(newSurvivorInfo);
         }
 
-        private async void AddThirdSurvivorInfo()
+        private void AddThirdSurvivorInfo()
         {
             var newSurvivorInfo = new SurvivorInfo()
             {
@@ -3193,10 +3247,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 AnonymousMode = ThirdSurvivorAnonymousMode,
                 SurvivorAccount = ThirdSurvivorAccount,
             };
-            await _dataService.AddAsync(newSurvivorInfo);
+            _dataService.Add(newSurvivorInfo);
         }
 
-        private async void AddFourthSurvivorInfo()
+        private void AddFourthSurvivorInfo()
         {
             var newSurvivorInfo = new SurvivorInfo()
             {
@@ -3217,7 +3271,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 AnonymousMode = FourthSurvivorAnonymousMode,
                 SurvivorAccount = FourthSurvivorAccount,
             };
-            await _dataService.AddAsync(newSurvivorInfo);
+            _dataService.Add(newSurvivorInfo);
         }
 
         #endregion
@@ -3522,7 +3576,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 KillerList.Add(item);
             }
-
             SelectedKiller = KillerList.FirstOrDefault();
         }
 
@@ -3952,6 +4005,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             ResultMatchFourthSurvivorImage = null;
         }
 
+        private void SetNullBuild()
+        {
+            SelectedKillerBuild = null;
+        }
+
         #endregion
 
         #endregion
@@ -4212,13 +4270,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void DeleteSelectImage()
         {
-            if (File.Exists(SelectedImage.PathImage))
+            if (_dialogService.ShowMessageButtons("Вы точно хотите удалить изображение с устройства?", 
+                                                  "Предупреждение!", 
+                                                  TypeMessage.Warning,
+                                                  MessageButtons.YesNoCancel) == MessageButtons.Yes)
             {
-                File.Delete(SelectedImage.PathImage);
-                await GetImageAsync();
-                ResultMatchImage = null;
-                StartMatchImage = null;
-                EndMatchImage = null;
+                if (File.Exists(SelectedImage.PathImage))
+                {
+                    File.Delete(SelectedImage.PathImage);
+                    await GetImageAsync();
+                    ResultMatchImage = null;
+                    StartMatchImage = null;
+                    EndMatchImage = null;
+                }
             }
         }
 
