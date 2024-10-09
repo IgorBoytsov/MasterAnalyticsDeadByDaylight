@@ -41,6 +41,8 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
     public virtual DbSet<Offering> Offerings { get; set; }
 
+    public virtual DbSet<OfferingCategory> OfferingCategories { get; set; }
+
     public virtual DbSet<Patch> Patches { get; set; }
 
     public virtual DbSet<Platform> Platforms { get; set; }
@@ -390,9 +392,14 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.ToTable("Offering");
 
             entity.Property(e => e.IdOffering).HasColumnName("id_Offering");
+            entity.Property(e => e.IdCategory).HasColumnName("id_Category");
             entity.Property(e => e.IdRarity).HasColumnName("id_Rarity");
             entity.Property(e => e.IdRole).HasColumnName("id_Role");
             entity.Property(e => e.OfferingName).IsRequired();
+
+            entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.Offerings)
+                .HasForeignKey(d => d.IdCategory)
+                .HasConstraintName("FK_Offering_OfferingCategory");
 
             entity.HasOne(d => d.IdRarityNavigation).WithMany(p => p.Offerings)
                 .HasForeignKey(d => d.IdRarity)
@@ -402,6 +409,18 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
                 .HasForeignKey(d => d.IdRole)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Offering_Role");
+        });
+
+        modelBuilder.Entity<OfferingCategory>(entity =>
+        {
+            entity.HasKey(e => e.IdCategory);
+
+            entity.ToTable("OfferingCategory");
+
+            entity.Property(e => e.IdCategory).HasColumnName("id_Category");
+            entity.Property(e => e.CategoryName)
+                .IsRequired()
+                .HasMaxLength(50);
         });
 
         modelBuilder.Entity<Patch>(entity =>

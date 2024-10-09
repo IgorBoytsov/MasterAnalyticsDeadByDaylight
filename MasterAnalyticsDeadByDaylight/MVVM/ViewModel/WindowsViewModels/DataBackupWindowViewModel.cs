@@ -62,6 +62,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private List<Offering> OfferingsTable { get; set; } = [];
 
+        private List<OfferingCategory> OfferingsCategoriesTable { get; set; } = [];
+
         private List<Rarity> RarityTable { get; set; } = [];
 
         private List<Role> RoleTable { get; set; } = [];
@@ -260,6 +262,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 { "Предметы", () => FileHelper.CreateJsonBackupFileAsync(ItemsTable, SaveFilePath + @"\Предметы.json") },
                 { "Аддоны для предметов", () => FileHelper.CreateJsonBackupFileAsync(ItemAddonsTable, SaveFilePath + @"\Аддоны для предметов.json") },
                 { "Подношение", () => FileHelper.CreateJsonBackupFileAsync(OfferingsTable, SaveFilePath + @"\Подношение.json") },
+                { "Категории подношений", () => FileHelper.CreateJsonBackupFileAsync(OfferingsCategoriesTable, SaveFilePath + @"\Категории Подношений.json") },
                 { "Редкость", () => FileHelper.CreateJsonBackupFileAsync(RarityTable, SaveFilePath + @"\Редкость.json") },
                 { "Игровая роль", () => FileHelper.CreateJsonBackupFileAsync(RoleTable, SaveFilePath + @"\Игровая роль.json") },
                 { "Список карт", () => FileHelper.CreateJsonBackupFileAsync(MapsTable, SaveFilePath + @"\Список карт.json") },
@@ -304,6 +307,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 { "Предметы", () => FileHelper.CreateXmlBackupFileAsync(ItemsTable, SaveFilePath + @"\Предметы.xml") },
                 { "Аддоны для предметов", () => FileHelper.CreateXmlBackupFileAsync(ItemAddonsTable, SaveFilePath + @"\Аддоны для предметов.xml") },
                 { "Подношение", () => FileHelper.CreateXmlBackupFileAsync(OfferingsTable, SaveFilePath + @"\Подношение.xml") },
+                { "Категории подношений", () => FileHelper.CreateXmlBackupFileAsync(OfferingsCategoriesTable, SaveFilePath + @"\Категории подношений.xml") },
                 { "Редкость", () => FileHelper.CreateXmlBackupFileAsync(RarityTable, SaveFilePath + @"\Редкость.xml") },
                 { "Игровая роль", () => FileHelper.CreateXmlBackupFileAsync(RoleTable, SaveFilePath + @"\Игровая роль.xml") },
                 { "Список карт", () => FileHelper.CreateXmlBackupFileAsync(MapsTable, SaveFilePath + @"\Список карт.xml") },
@@ -415,6 +419,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Аддоны для предметов" });
 
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Подношение" });
+            BackupsTable.Add(new Backup { IsCheck = false, Name = "Категории подношений" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Редкость" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Игровая роль" });
 
@@ -450,6 +455,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             await GetItemAddonData();
 
             await GetOfferingData();
+            await GetOfferingCategoryData();
             await GetRarityData();
             await GetRoleData();
 
@@ -541,6 +547,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             OfferingsTable.Clear();
             OfferingsTable = await OfferingData();
+        }
+
+         private async Task GetOfferingCategoryData()
+        {
+            OfferingsCategoriesTable.Clear();
+            OfferingsCategoriesTable = await OfferingCategoryData();
         }
 
         private async Task GetRarityData()
@@ -678,6 +690,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             return await _dataService.GetAllDataInListAsync<Offering>();
         }
 
+        public async Task<List<OfferingCategory>> OfferingCategoryData()
+        {
+            return await _dataService.GetAllDataInListAsync<OfferingCategory>();
+        }
         public async Task<List<Rarity>> RarityData()
         {
             return await _dataService.GetAllDataInListAsync<Rarity>();

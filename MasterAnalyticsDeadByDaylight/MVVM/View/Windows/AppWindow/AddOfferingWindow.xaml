@@ -208,6 +208,14 @@
                                   Style="{DynamicResource ComboBoxStyleApp}" 
                                   Foreground="White"
                                   Width="230" Height="25" FontSize="16" Margin="0,15,0,0"/>
+                        
+                        <TextBlock Text="Категория" Style="{StaticResource TextBlockNameAndDescription}"/>
+
+                        <ComboBox ItemsSource="{Binding OfferingCategoryList}" DisplayMemberPath="CategoryName"
+                                  SelectedItem="{Binding SelectedOfferingCategory}"
+                                  Style="{DynamicResource ComboBoxStyleApp}" 
+                                  Foreground="White"
+                                  Width="230" Height="25" FontSize="16" Margin="0,15,0,0"/>
 
                     </StackPanel>
 

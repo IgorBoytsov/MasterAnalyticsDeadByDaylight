@@ -19,6 +19,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public ObservableCollection<Role> RoleList { get; set; } = [];
 
         public ObservableCollection<Offering> OfferingList { get; set; } = [];
+        
+        public ObservableCollection<OfferingCategory> OfferingCategoryList { get; set; } = [];
 
         private Role _selectedRole;
         public Role SelectedRole
@@ -50,6 +52,18 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 OfferingDescription = value.OfferingDescription;
                 OfferingImage = value.OfferingImage;
                 SelectedRarity = RarityList.FirstOrDefault(x => x.IdRarity == value.IdRarity);
+                SelectedOfferingCategory = OfferingCategoryList.FirstOrDefault(x => x.IdCategory == value.IdCategory);
+                OnPropertyChanged();
+            }
+        }
+
+        private OfferingCategory _selectedOfferingCategory;
+        public OfferingCategory SelectedOfferingCategory
+        {
+            get => _selectedOfferingCategory;
+            set
+            {
+                _selectedOfferingCategory = value;
                 OnPropertyChanged();
             }
         }
@@ -135,6 +149,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             Title = "Добавление подношение";
             GetRarityData();
             GetRoleData();
+            GetOfferingCategoryData();
         }
 
         #region Команды
@@ -185,6 +200,16 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
+        private async void GetOfferingCategoryData()
+        {
+            var offeringCategory = await _dataService.GetAllDataAsync<OfferingCategory>();
+
+            foreach (var item in offeringCategory)
+            {
+                OfferingCategoryList.Add(item);
+            }
+        }
+
         private async void GetRoleData()
         {
             var roles = await _dataService.GetAllDataAsync<Role>();
@@ -208,7 +233,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void AddOffering()
         {
-            var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingName, OfferingImage = OfferingImage, OfferingDescription = OfferingDescription, IdRarity = SelectedRarity.IdRarity };
+            var newOffering = new Offering() { IdRole = SelectedRole.IdRole, OfferingName = OfferingName, OfferingImage = OfferingImage, OfferingDescription = OfferingDescription, IdRarity = SelectedRarity.IdRarity, IdCategory = SelectedOfferingCategory.IdCategory };
 
             bool exists = OfferingList.Any(x => x.OfferingName.ToLower() == newOffering.OfferingName.ToLower());
 
@@ -242,6 +267,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                         entityToUpdate.OfferingImage = OfferingImage;
                         entityToUpdate.IdRole = SelectedRole.IdRole;
                         entityToUpdate.IdRarity = SelectedRarity.IdRarity;
+                        entityToUpdate.IdCategory = SelectedOfferingCategory.IdCategory;
                         await _dataService.UpdateAsync(entityToUpdate);
 
                         GetOfferingData();
@@ -258,6 +284,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     entityToUpdate.OfferingImage = OfferingImage;
                     entityToUpdate.IdRole = SelectedRole.IdRole;
                     entityToUpdate.IdRarity = SelectedRarity.IdRarity;
+                    entityToUpdate.IdCategory = SelectedOfferingCategory.IdCategory;
                     await _dataService.UpdateAsync(entityToUpdate);
 
                     GetOfferingData();
