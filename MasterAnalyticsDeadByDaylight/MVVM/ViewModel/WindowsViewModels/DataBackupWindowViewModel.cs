@@ -44,6 +44,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private List<KillerPerk> KillerPerksTable {  get; set; } = [];
 
+        private List<KillerPerkCategory> KillerCategoryPerksTable {  get; set; } = [];
+
         private List<KillerAddon> KillersAddonsTable {  get; set; } = [];
 
         private List<KillerBuild> KillersBuildsTable {  get; set; } = [];
@@ -55,6 +57,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private List<SurvivorBuild> SurvivorBuildsTable { get; set; } = [];
 
         private List<SurvivorPerk> SurvivorPerksTable { get; set; } = [];
+
+        private List<SurvivorPerkCategory> SurvivorCategoryPerksTable { get; set; } = [];
 
         private List<Item> ItemsTable { get; set; } = [];
 
@@ -253,11 +257,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 { "Информация по убийце", () => FileHelper.CreateJsonBackupFileAsync(KillerInfosTable, SaveFilePath + @"\Информация по убийце.json") },
                 { "Список убийц", () => FileHelper.CreateJsonBackupFileAsync(KillersTable, SaveFilePath + @"\Список убийц.json") },
                 { "Перки убийцы", () => FileHelper.CreateJsonBackupFileAsync(KillerPerksTable, SaveFilePath + @"\Перки убийцы.json") },
+                { "Категории перков убийцы", () => FileHelper.CreateJsonBackupFileAsync(KillerCategoryPerksTable, SaveFilePath + @"\Категории перков убийцы.json") },
                 { "Аддоны убийц", () => FileHelper.CreateJsonBackupFileAsync(KillersAddonsTable, SaveFilePath + @"\Аддоны убийц.json") },
                 { "Билды убийцы", () => FileHelper.CreateJsonBackupFileAsync(KillersBuildsTable, SaveFilePath + @"\Билды убийцы.json") },
                 { "Информация по выжившем", () => FileHelper.CreateJsonBackupFileAsync(SurvivorInfosTable, SaveFilePath + @"\Информация по выжившем.json") },
                 { "Список выживших", () => FileHelper.CreateJsonBackupFileAsync(SurvivorsTable, SaveFilePath + @"\Список выживших.json") },
                 { "Перки выживших", () => FileHelper.CreateJsonBackupFileAsync(SurvivorPerksTable, SaveFilePath + @"\Перки выживших.json") },
+                { "Категории перков выжившего", () => FileHelper.CreateJsonBackupFileAsync(SurvivorCategoryPerksTable, SaveFilePath + @"\Категории перков выжившего.json") },
                 { "Билды выжившего", () => FileHelper.CreateJsonBackupFileAsync(SurvivorBuildsTable, SaveFilePath + @"\Билды выжившего.json") },
                 { "Предметы", () => FileHelper.CreateJsonBackupFileAsync(ItemsTable, SaveFilePath + @"\Предметы.json") },
                 { "Аддоны для предметов", () => FileHelper.CreateJsonBackupFileAsync(ItemAddonsTable, SaveFilePath + @"\Аддоны для предметов.json") },
@@ -298,11 +304,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 { "Информация по убийце", () => FileHelper.CreateXmlBackupFileAsync(KillerInfosTable, SaveFilePath + @"\Информация по убийце.xml") },
                 { "Список убийц", () => FileHelper.CreateXmlBackupFileAsync(KillersTable, SaveFilePath + @"\Список убийц.xml") },
                 { "Перки убийцы", () => FileHelper.CreateXmlBackupFileAsync(KillerPerksTable, SaveFilePath + @"\Перки убийцы.xml") },
+                { "Категории перков убийцы", () => FileHelper.CreateXmlBackupFileAsync(KillerCategoryPerksTable, SaveFilePath + @"\Категории перков убийцы.xml") },
                 { "Аддоны убийц", () => FileHelper.CreateXmlBackupFileAsync(KillersAddonsTable, SaveFilePath + @"\Аддоны убийц.xml") },
                 { "Билды убийцы", () => FileHelper.CreateXmlBackupFileAsync(KillersBuildsTable, SaveFilePath + @"\Билды убийцы.xml") },
                 { "Информация по выжившем", () => FileHelper.CreateXmlBackupFileAsync(SurvivorInfosTable, SaveFilePath + @"\Информация по выжившем.xml") },
                 { "Список выживших", () => FileHelper.CreateXmlBackupFileAsync(SurvivorsTable, SaveFilePath + @"\Список выживших.xml") },
                 { "Перки выживших", () => FileHelper.CreateXmlBackupFileAsync(SurvivorPerksTable, SaveFilePath + @"\Перки выживших.xml") },
+                { "Категории перков выжившего", () => FileHelper.CreateXmlBackupFileAsync(SurvivorCategoryPerksTable, SaveFilePath + @"\Категории перков выжившего.xml") },
                 { "Билды выжившего", () => FileHelper.CreateXmlBackupFileAsync(SurvivorBuildsTable, SaveFilePath + @"\Билды выжившего.xml") },
                 { "Предметы", () => FileHelper.CreateXmlBackupFileAsync(ItemsTable, SaveFilePath + @"\Предметы.xml") },
                 { "Аддоны для предметов", () => FileHelper.CreateXmlBackupFileAsync(ItemAddonsTable, SaveFilePath + @"\Аддоны для предметов.xml") },
@@ -407,12 +415,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Информация по убийце" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Список убийц" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Перки убийцы" });
+            BackupsTable.Add(new Backup { IsCheck = false, Name = "Категории перков убийцы" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Аддоны убийц" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Билды убийцы" });
 
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Информация по выжившем" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Список выживших" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Перки выживших" });
+            BackupsTable.Add(new Backup { IsCheck = false, Name = "Категории перков выжившего" });
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Билды выжившего" });
 
             BackupsTable.Add(new Backup { IsCheck = false, Name = "Предметы" });
@@ -443,12 +453,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             await GetKillerInfoData();
             await GetKillerData();
             await GetKillerPerkData();
+            await GetKillerPerkCategoryData();
             await GetKillerAddonData();
             await GetKillerBuildData();
 
             await GetSurvivorInfoData();
             await GetSurvivorData();
             await GetSurvivorPerkData();
+            await GetSurvivorPerkCategoryData();
             await GetSurvivorBuildData();
 
             await GetItemData();
@@ -494,6 +506,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             KillerPerksTable.Clear();
             KillerPerksTable = await KillerPerkData();
+        } 
+        
+        private async Task GetKillerPerkCategoryData()
+        {
+            KillerCategoryPerksTable.Clear();
+            KillerCategoryPerksTable = await KillerPerkCategoryData();
         }
 
         private async Task GetKillerAddonData()
@@ -523,6 +541,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             SurvivorPerksTable.Clear();
             SurvivorPerksTable = await SurvivorPerkData();
+        } 
+        
+        private async Task GetSurvivorPerkCategoryData()
+        {
+            SurvivorCategoryPerksTable.Clear();
+            SurvivorCategoryPerksTable = await SurvivorPerkCategoryData();
         }
 
         private async Task GetSurvivorBuildData()
@@ -643,6 +667,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public async Task<List<KillerPerk>> KillerPerkData()
         {
             return await _dataService.GetAllDataInListAsync<KillerPerk>();
+        } 
+        
+        public async Task<List<KillerPerkCategory>> KillerPerkCategoryData()
+        {
+            return await _dataService.GetAllDataInListAsync<KillerPerkCategory>();
         }
 
         public async Task<List<KillerAddon>> KillerAddonData()
@@ -673,6 +702,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public async Task<List<SurvivorPerk>> SurvivorPerkData()
         {
             return await _dataService.GetAllDataInListAsync<SurvivorPerk>();
+        }
+        
+        public async Task<List<SurvivorPerkCategory>> SurvivorPerkCategoryData()
+        {
+            return await _dataService.GetAllDataInListAsync<SurvivorPerkCategory>();
         }
 
         public async Task<List<Item>> ItemData()

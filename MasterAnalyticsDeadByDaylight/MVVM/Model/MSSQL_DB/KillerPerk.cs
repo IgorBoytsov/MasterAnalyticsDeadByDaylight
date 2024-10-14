@@ -13,7 +13,11 @@ public partial class KillerPerk
 
     public byte[] PerkImage { get; set; }
 
+    public int? IdCategory { get; set; }
+
     public string PerkDescription { get; set; }
+
+    public virtual KillerPerkCategory IdCategoryNavigation { get; set; }
 
     public virtual Killer IdKillerNavigation { get; set; }
 

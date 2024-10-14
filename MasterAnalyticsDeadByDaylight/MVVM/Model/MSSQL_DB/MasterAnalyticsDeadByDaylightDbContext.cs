@@ -35,6 +35,8 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
 
     public virtual DbSet<KillerPerk> KillerPerks { get; set; }
 
+    public virtual DbSet<KillerPerkCategory> KillerPerkCategories { get; set; }
+
     public virtual DbSet<Map> Maps { get; set; }
 
     public virtual DbSet<Measurement> Measurements { get; set; }
@@ -60,6 +62,8 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
     public virtual DbSet<SurvivorInfo> SurvivorInfos { get; set; }
 
     public virtual DbSet<SurvivorPerk> SurvivorPerks { get; set; }
+
+    public virtual DbSet<SurvivorPerkCategory> SurvivorPerkCategories { get; set; }
 
     public virtual DbSet<TypeDeath> TypeDeaths { get; set; }
 
@@ -349,13 +353,30 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.ToTable("KillerPerk");
 
             entity.Property(e => e.IdKillerPerk).HasColumnName("id_KillerPerk");
+            entity.Property(e => e.IdCategory).HasColumnName("id_Category");
             entity.Property(e => e.IdKiller).HasColumnName("id_Killer");
             entity.Property(e => e.PerkName).IsRequired();
+
+            entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.KillerPerks)
+                .HasForeignKey(d => d.IdCategory)
+                .HasConstraintName("FK_KillerPerk_KillerPerkCategory");
 
             entity.HasOne(d => d.IdKillerNavigation).WithMany(p => p.KillerPerks)
                 .HasForeignKey(d => d.IdKiller)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_KillerPerk_Killer");
+        });
+
+        modelBuilder.Entity<KillerPerkCategory>(entity =>
+        {
+            entity.HasKey(e => e.IdKillerPerkCategory);
+
+            entity.ToTable("KillerPerkCategory");
+
+            entity.Property(e => e.IdKillerPerkCategory).HasColumnName("id_KillerPerkCategory");
+            entity.Property(e => e.CategoryName)
+                .IsRequired()
+                .HasMaxLength(50);
         });
 
         modelBuilder.Entity<Map>(entity =>
@@ -622,13 +643,30 @@ public partial class MasterAnalyticsDeadByDaylightDbContext : DbContext
             entity.ToTable("SurvivorPerk");
 
             entity.Property(e => e.IdSurvivorPerk).HasColumnName("id_SurvivorPerk");
+            entity.Property(e => e.IdCategory).HasColumnName("id_Category");
             entity.Property(e => e.IdSurvivor).HasColumnName("id_Survivor");
             entity.Property(e => e.PerkName).IsRequired();
+
+            entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.SurvivorPerks)
+                .HasForeignKey(d => d.IdCategory)
+                .HasConstraintName("FK_SurvivorPerk_SurvivorPerkCategory");
 
             entity.HasOne(d => d.IdSurvivorNavigation).WithMany(p => p.SurvivorPerks)
                 .HasForeignKey(d => d.IdSurvivor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SurvivorPerk_Survivor");
+        });
+
+        modelBuilder.Entity<SurvivorPerkCategory>(entity =>
+        {
+            entity.HasKey(e => e.IdSurvivorPerkCategory);
+
+            entity.ToTable("SurvivorPerkCategory");
+
+            entity.Property(e => e.IdSurvivorPerkCategory).HasColumnName("id_SurvivorPerkCategory");
+            entity.Property(e => e.CategoryName)
+                .IsRequired()
+                .HasMaxLength(50);
         });
 
         modelBuilder.Entity<TypeDeath>(entity =>

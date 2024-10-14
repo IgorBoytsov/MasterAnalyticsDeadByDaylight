@@ -190,11 +190,184 @@
 
                     </StackPanel>
 
-                    <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
 
                         <TextBox Text="{Binding PerkNameTextBox}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"
-                                 Width="230" Height="230" Margin="5,0,5,0"/>
+                                 Width="230" Height="100" Margin="5,0,5,0"/>
+                        
+                        <Border Width="230" Style="{StaticResource BorderHeading}" Margin="5,10,5,5">
+                            <TextBlock Text="Категория" Style="{StaticResource HeaderStyle}"/>
+                        </Border>
+                        
+                        <StackPanel>
 
+                            <Popup IsOpen="{Binding IsAddCategoryPopupOpen}" PlacementTarget="{Binding ElementName=BtnAddCategory}" Placement="Top" StaysOpen="False">
+                                <Border Background="#2A2A2A" BorderThickness="1" BorderBrush="Gray" Padding="10">
+                                    <Border.Resources>
+                                        
+                                        <!--#region ListViewStyle -->
+
+                                        <LinearGradientBrush x:Key="ListViewItemSelectedAndMousOver" EndPoint="1,0" StartPoint="1,0">
+                                            <GradientStop Color="#2A2A2A" Offset="1.0"/>
+                                            <GradientStop Color="#2A2A2A" Offset="0.0"/>
+                                        </LinearGradientBrush>
+
+                                        <!--#region Шаблон для заголовка GridViewColumnHeader-->
+
+                                        <Style TargetType="GridViewColumnHeader">
+                                            <Setter Property="Background" Value="LightGray"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="GridViewColumnHeader">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="5"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Border Background="{TemplateBinding Background}" 
+                                                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                                                    BorderThickness="0,0,1,0" 
+                                                                    Padding="5" 
+                                                                    Grid.Column="0">
+                                                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                                                            </Border>
+                                                            <Thumb Grid.Column="1" 
+                                                                   Width="5" 
+                                                                   Background="Transparent" 
+                                                                   Cursor="SizeWE"/>
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="LightGray"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="LightGray"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+
+                                        <!--#endregion-->
+
+                                        <Style TargetType="ListView">
+                                            <Setter Property="Foreground" Value="White" />
+                                            <Setter Property="Background" Value="#2A2A2A" />
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                        </Style>
+
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Background" Value="#2A2A2A"/>
+                                            <Setter Property="BorderBrush" Value="#2A2A2A"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedAndMousOver}"/>
+                                                    <Setter Property="BorderBrush" Value="#FF595958"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedAndMousOver}"/>
+                                                    <Setter Property="BorderBrush" Value="#FF595958"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+
+                                        <!--#endregion-->
+                                        
+                                    </Border.Resources>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <StackPanel>
+                                                <TextBlock Text="Название" Height="25" FontSize="17" Foreground="White" Margin="15,0,15,10"/>
+                                            </StackPanel>
+                                            <StackPanel>
+                                                <TextBox Text="{Binding CategoryName}" Height="25" FontSize="17" Width="250" Margin="15,0,15,10" Foreground="White" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <StackPanel>
+                                            <ListView Visibility="{Binding KillerPerkCategoryVisibility}" ItemsSource="{Binding KillerPerkCategoryList}" SelectedItem="{Binding SelectedKillerPerkCategoryListView}"
+                                                      Height="200" FontSize="18">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn Header="Название" Width="220" DisplayMemberBinding="{Binding CategoryName}" />
+                                                    </GridView>
+                                                </ListView.View>
+
+                                                <ListView.ContextMenu>
+                                                    <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                        <MenuItem Header="Удалить" 
+                                                                  Style="{StaticResource MainContextMenuItemStyle}"
+                                                                  Command="{Binding DeleteKillerCategoryPerkCommand}">
+                                                            <MenuItem.Icon>
+                                                                <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                            </MenuItem.Icon>
+                                                        </MenuItem>
+                                                    </ContextMenu>
+                                                </ListView.ContextMenu>
+
+                                            </ListView>
+
+                                            <ListView Visibility="{Binding SurvivorPerkCategoryVisibility}" ItemsSource="{Binding SurvivorPerkCategoryList}"  SelectedItem="{Binding SelectedSurvivorPerkCategoryListView}"
+                                                       Height="200" FontSize="18">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn Header="Название" Width="220" DisplayMemberBinding="{Binding CategoryName}" />
+                                                    </GridView>
+                                                </ListView.View>
+
+                                                <ListView.ContextMenu>
+                                                    <ContextMenu Style="{StaticResource MainContextMenuStyle}">
+                                                        <MenuItem Header="Удалить" 
+                                                                  Style="{StaticResource MainContextMenuItemStyle}"
+                                                                  Command="{Binding DeleteSurvivorCategoryPerkCommand}">
+                                                            <MenuItem.Icon>
+                                                                <fa:FontAwesome Style="{StaticResource DeleteIcon}"/>
+                                                            </MenuItem.Icon>
+                                                        </MenuItem>
+                                                    </ContextMenu>
+                                                </ListView.ContextMenu>
+
+                                            </ListView>
+                                        </StackPanel>
+                                        
+                                        <StackPanel>
+                                            <Button Content="Добавить" Command="{Binding AddCategoryPerkCommand}" Template="{StaticResource ControlButton}"/>
+                                            <Button Content="Обновить" Command="{Binding UpdateCategoryPerkCommand}" Template="{StaticResource ControlButton}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                            
+                            <ComboBox Visibility="{Binding KillerPerkCategoryVisibility}" 
+                                      ItemsSource="{Binding KillerPerkCategoryList}" SelectedItem="{Binding SelectedKillerPerkCategory}"
+                                      DisplayMemberPath="CategoryName"
+                                      Style="{StaticResource ComboBoxStyleApp}" 
+                                      Height="30" Margin="0,5,0,0" FontSize="16"/>
+
+                            <ComboBox Visibility="{Binding SurvivorPerkCategoryVisibility}" 
+                                      ItemsSource="{Binding SurvivorPerkCategoryList}" SelectedItem="{Binding SelectedSurvivorPerkCategory}"
+                                      DisplayMemberPath="CategoryName"
+                                      Style="{StaticResource ComboBoxStyleApp}"  
+                                      Height="30" Margin="0,5,0,0" FontSize="16"/>
+
+                            <Button Name="BtnAddCategory" 
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding OpenAddCategoryCommand}" 
+                                    Template="{StaticResource ManagementButton}"
+                                    Width="25" Height="25" Margin="0,5,0,0">
+                                <fa:ImageAwesome Icon="Regular_PlusSquare" Foreground="Green"/>
+                                <Button.ToolTip>
+                                    <ToolTip Content="Добавить"/>
+                                </Button.ToolTip>
+                            </Button>
+
+                        </StackPanel>
+                        
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -208,7 +381,7 @@
                     <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
 
                         <TextBox Text="{Binding PerkDescriptionTextBox}" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"
-                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                 ScrollViewer.VerticalScrollBarVisibility="Visible" TextWrapping="WrapWithOverflow"
                                  Width="230" Height="230" Margin="5,0,5,0"/>
 
                     </StackPanel>

@@ -1,11 +1,4 @@
-﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
+﻿namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 {
     public class Perk
     {
@@ -16,6 +9,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         public string PerkName { get; set; }
 
         public byte[] PerkImage { get; set; }
+
+        public int? IdCategory { get; set; }
 
         public string PerkDescription { get; set; }
     }

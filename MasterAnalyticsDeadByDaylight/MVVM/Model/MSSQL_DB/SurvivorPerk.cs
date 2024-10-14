@@ -13,7 +13,11 @@ public partial class SurvivorPerk
 
     public byte[] PerkImage { get; set; }
 
+    public int? IdCategory { get; set; }
+
     public string PerkDescription { get; set; }
+
+    public virtual SurvivorPerkCategory IdCategoryNavigation { get; set; }
 
     public virtual Survivor IdSurvivorNavigation { get; set; }
 
