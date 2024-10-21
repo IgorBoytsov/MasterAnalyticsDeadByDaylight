@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.IO;
-using System.Reflection;
+﻿using System.IO;
 using System.Text.Json;
 using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace MasterAnalyticsDeadByDaylight.Utils.Helper
 {
@@ -25,25 +21,6 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
                 }
             });
         }
-
-
-        //public static async Task CreateXmlBackupFileAsync<T>(List<T> Data, string filePath)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        if (Data == null || Data.Count == 0)
-        //        {
-        //            throw new ArgumentException("Список пуст");
-        //        }
-
-        //        XmlSerializer serializer = new XmlSerializer(typeof(T));
-
-        //        using (StreamWriter writer = new StreamWriter(filePath))
-        //        {
-        //            serializer.Serialize(writer, Data);
-        //        }
-        //    });
-        //}
 
         public static async Task CreateXmlBackupFileAsync<T>(List<T> Data, string filePath)
         {
@@ -93,14 +70,6 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
-            });
-        }
-
-        public static async Task CreateExcelBackupFileAsync<T>(List<T> Data, string filePath)
-        {
-            await Task.Run(() =>
-            {
-
             });
         }
     }

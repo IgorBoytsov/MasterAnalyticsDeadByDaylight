@@ -23,7 +23,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
             Bitmap bitmap = new(path);
             BitmapImage bitmapImage = new();
 
-            Bitmap result = new Bitmap(bitmap.Width / 2, bitmap.Height / 2);
+            Bitmap result = new(bitmap.Width / 2, bitmap.Height / 2);
             await Task.Run(async () =>
             {
                 try
@@ -61,13 +61,13 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
             {
                 try
                 {
-                    using (MemoryStream memory = new MemoryStream())
+                    using (MemoryStream memory = new())
                     {
                         bitmap.Save(memory, ImageFormat.Png);
 
                         memory.Seek(0, SeekOrigin.Begin); // Перемещаем указатель потока в начало
 
-                        BitmapImage bitmapImage = new BitmapImage();
+                        BitmapImage bitmapImage = new();
 
                         bitmapImage.BeginInit();
                         bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
@@ -98,11 +98,11 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
             Bitmap ResultMatchImage = new(ImagePath);
 
             Killer = CropImage(ResultMatch, 90, 920, 920, 125);
-            FirstSurvivor = CropImage(ResultMatch, 90, 420, 920, 125);
-            SecondSurvivor = CropImage(ResultMatch, 90, 545, 920, 125);
+            FirstSurvivor = CropImage(ResultMatch, 90, 530, 920, 125);
+            SecondSurvivor = CropImage(ResultMatch, 90, 660, 920, 125);
             ThirdSurvivor = CropImage(ResultMatch, 90, 665, 920, 125);
             FourthSurvivor = CropImage(ResultMatch, 90, 795, 920, 125);
-            ResultMatchImage = CropImage(ResultMatch, 0, 0, 1100, 1300);
+            ResultMatchImage = CropImage(ResultMatch, 90, 200, 980, 850);
 
             return await Task.Run(() =>
             {
@@ -152,7 +152,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
                 {
                     bitmap.Save(memory, ImageFormat.Png);
 
-                    // Перемещаем указатель потока в начало
+                    // Перемещает указатель потока в начало
                     memory.Seek(0, SeekOrigin.Begin);
 
                     BitmapImage bitmapImage = new();
@@ -162,7 +162,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
                     bitmapImage.StreamSource = memory;
                     bitmapImage.EndInit();
 
-                    // Обеспечиваем доступ к свойствам BitmapImage на основном UI потоке
+                    // Обеспечивает доступ к свойствам BitmapImage на основном UI потоке
                     bitmapImage.Freeze();
 
                     return bitmapImage;
