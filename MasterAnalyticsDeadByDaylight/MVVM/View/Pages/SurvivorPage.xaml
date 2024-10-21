@@ -17,7 +17,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="#2A2A2A">
+        <Border Grid.Row="0" Background="#2A2A2A" Style="{StaticResource KillerPageHeader}">
             <StackPanel HorizontalAlignment="Center">
                 <StackPanel Visibility="{Binding SortMenuVisibility}" Orientation="Horizontal" >
 
@@ -28,7 +28,7 @@
                     </Button>
 
                     <TextBlock Text="Поиск: " Height="25" FontSize="17" Foreground="White"/>
-                    <TextBox Text="{Binding SearchTextBox, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="170" FontSize="17" Margin="15,0,0,0" Style="{StaticResource SettingTextBoxStyle}" Template="{StaticResource SettingTextBoxTemplate}"/>
+                    <TextBox Text="{Binding SearchTextBox, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="170" FontSize="17" Margin="15,0,0,0" Style="{StaticResource BaseStyle}" Template="{StaticResource BaseTemplate}"/>
 
                     <TextBlock Text="Сортировка" Height="25" FontSize="17" Foreground="White" Margin="15,0,0,0"/>
                     <ComboBox ItemsSource="{Binding SortingList}" SelectedItem="{Binding SelectedSurvivorStatSortItem}" SelectedIndex="0" Height="25" FontSize="17" Width="250" Margin="15,0,0,0" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
@@ -47,135 +47,126 @@
         <ScrollViewer Grid.Row="1" VirtualizingPanel.ScrollUnit="Pixel" CanContentScroll="False" Margin="0,0,0,20" >
             <StackPanel>
                 <StackPanel>
-                    <ItemsControl Visibility="{Binding SurvivorListVisibility}" ItemsSource="{Binding SurvivorSortedStatList}" d:ItemsSource="{d:SampleData ItemCount=3}" 
+                    <ItemsControl Visibility="{Binding SurvivorListVisibility}" ItemsSource="{Binding SurvivorSortedStatList}" d:ItemsSource="{d:SampleData ItemCount=2}"
+                                  HorizontalAlignment="Center"
                                   Background="#121212" BorderThickness="0"
-                                  Margin="0,5,0,20"
+                                  Margin="0,10,0,10"
                                   ScrollViewer.CanContentScroll="False"
                                   VirtualizingPanel.ScrollUnit="Pixel"
                                   ScrollViewer.VerticalScrollBarVisibility="Visible">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Width="1400" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Margin="10,10,10,0">
+                                <Border Style="{StaticResource KillerCard}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="200"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <StackPanel Margin="10,10,10,10">
-                                            <Image Source="{Binding SurvivorImage}" Width="150"/>
-                                            <TextBlock Text="{Binding SurvivorName}" HorizontalAlignment="Center" Foreground="White" FontSize="17" TextDecorations="Underline" Cursor="Hand" Margin="0,5,0,0"/>
-                                        </StackPanel>
+                                        <Border Style="{StaticResource BorderAroundAddingImage}" >
+                                            <StackPanel>
+                                                <Image Source="{Binding SurvivorImage}" Margin="10,10,10,10"/>
+                                                <Separator Background="Gray" Cursor="Hand"/>
+                                                <TextBlock Text="{Binding SurvivorName}" Style="{StaticResource NameCharacter}">
+                                                    <TextBlock.InputBindings>
+                                                        <MouseBinding Command="{Binding DataContext.ShowDetailsSurvivorCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                                    </TextBlock.InputBindings>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
 
-                                        <Grid Grid.Column="1" Margin="0,0,10.5,0">
+                                        <Grid Grid.Column="1" Margin="10,0,10,0">
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="27"/>
-                                                <RowDefinition Height="27"/>
-                                                <RowDefinition Height="27"/>
-                                                <RowDefinition Height="27"/>
-                                                <RowDefinition Height="27"/>
-                                                <RowDefinition Height="27"/>
-                                                <RowDefinition Height="27"/>
-                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="30"/>
+                                                <RowDefinition Height="15"/>
+                                                <RowDefinition Height="30"/>
+                                                <RowDefinition Height="15"/>
+                                                <RowDefinition Height="30"/>
+                                                <RowDefinition Height="15"/>
+                                                <RowDefinition Height="30"/>
+                                                <RowDefinition Height="15"/>
                                             </Grid.RowDefinitions>
 
-                                            <!--#region Pick Rate -->
+                                            <!--#region PickRate -->
 
-                                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
-                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <Border Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding SurvivorPickRate}" Style="{StaticResource PickRateStyle}"/>
+                                            </Border>
 
-                                            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
-                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <TextBlock Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
 
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
-                                                <TextBlock Text="Pick Rate" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <TextBlock Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                            <ProgressBar Grid.Row="1" Value="{Binding SurvivorPickRate}" Height="20" Background="#2B2B2B" Foreground="#00748E" BorderThickness="0" VerticalAlignment="Top" Margin="5,0,5,0"/>
-
-                                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding SurvivorPickRate}" FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="Популярность персонажа - " Style="{StaticResource PercentageAndHeader}" />
+                                                <TextBlock Text="{Binding SurvivorPickRate}" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="% " Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="( Общее количество : " Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding SurvivorCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
                                             </StackPanel>
 
                                             <!--#endregion-->
 
                                             <!--#region Escape Rate -->
 
-                                            <StackPanel Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
-                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <Border Grid.Row="2" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding SurvivorEscapePercentage}" Style="{StaticResource WinStyle}"/>
+                                            </Border>
 
-                                            <StackPanel Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
-                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
 
-                                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
-                                                <TextBlock Text="Сбежало: " FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="{Binding SurvivorEscapeCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
-                                                <TextBlock Text="Из" FontSize="15" Foreground="White" Margin="5,0,5,0"/>
-                                                <TextBlock Text="{Binding SurvivorCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
-                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                            <ProgressBar Grid.Row="3" Value="{Binding SurvivorEscapePercentage}" Height="20" Background="#2B2B2B" Foreground="#096E00" BorderThickness="0" VerticalAlignment="Top" Margin="5,0,5,0"/>
-
-                                            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding SurvivorEscapePercentage}" FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="Сбежало - " Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="{Binding SurvivorEscapeCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding SurvivorEscapePercentage}" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
                                             </StackPanel>
 
                                             <!--#endregion-->
 
                                             <!--#region Anonymous Rate -->
 
-                                            <StackPanel Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
-                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <Border Grid.Row="4" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding SurvivorAnonymousModePercentage}" Style="{StaticResource WinStyle}"/>
+                                            </Border>
 
-                                            <StackPanel Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
-                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <TextBlock Grid.Row="4" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
 
-                                            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
-                                                <TextBlock Text="Анонимных: " FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="{Binding SurvivorAnonymousModeCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
-                                                <TextBlock Text="Из" FontSize="15" Foreground="White" Margin="5,0,5,0"/>
-                                                <TextBlock Text="{Binding SurvivorCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
-                                            </StackPanel>
+                                            <TextBlock Grid.Row="4" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                            <ProgressBar Grid.Row="5" Value="{Binding SurvivorAnonymousModePercentage}" Height="20" Background="#2B2B2B" Foreground="#A87709" BorderThickness="0" VerticalAlignment="Top" Margin="5,0,5,0"/>
-
-                                            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding SurvivorAnonymousModePercentage}" FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="Анонимных - " Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="{Binding SurvivorAnonymousModeCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding SurvivorAnonymousModePercentage}" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
                                             </StackPanel>
 
                                             <!--#endregion-->
 
                                             <!--#region Bot Rate -->
 
-                                            <StackPanel Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
-                                                <TextBlock Text="0%" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <Border Grid.Row="6" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding SurvivorBotPercentage}" Style="{StaticResource WinStyle}"/>
+                                            </Border>
 
-                                            <StackPanel Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
-                                                <TextBlock Text="100%" FontSize="15" Foreground="White"/>
-                                            </StackPanel>
+                                            <TextBlock Grid.Row="6" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
 
-                                            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
-                                                <TextBlock Text="Ливнуло: " FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="{Binding SurvivorBotCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
-                                                <TextBlock Text="Из" FontSize="15" Foreground="White" Margin="5,0,5,0"/>
-                                                <TextBlock Text="{Binding SurvivorCount}" HorizontalAlignment="Center" Foreground="White" FontSize="15"/>
-                                            </StackPanel>
+                                            <TextBlock Grid.Row="6" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                            <ProgressBar Grid.Row="7" Value="{Binding SurvivorBotPercentage}" Height="20" Background="#2B2B2B" Foreground="#AB0D0D" BorderThickness="0" VerticalAlignment="Top" Margin="5,0,5,0"/>
-
-                                            <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding SurvivorBotPercentage}" FontSize="15" Foreground="White"/>
-                                                <TextBlock Text="%" FontSize="15" Foreground="White"/>
+                                            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="Ливнуло - " Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="{Binding SurvivorBotCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding SurvivorBotPercentage}" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
                                             </StackPanel>
 
                                             <!--#endregion-->
