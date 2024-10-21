@@ -217,7 +217,7 @@
 
             <!--#region Боковое меню -->
 
-            <Border Grid.Row="2" Background="#2A2A2A" CornerRadius="20" Margin="10">
+            <Border Grid.Row="2" Background="#2A2A2A" CornerRadius="20" Margin="10,10,0,10">
                 <ScrollViewer>
                     <StackPanel Margin="0,10,0,0">
 
@@ -251,7 +251,21 @@
                             </DockPanel>
                         </Button>
 
-                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToMapPageCommand}">
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToOfferingPageCommand}">
+                            <DockPanel>
+                                <fa:ImageAwesome Icon="Solid_HandHolding" Foreground="White" Height="20" Width="20"/>
+                                <TextBlock Text="Подношение" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToPerkPageCommand}">
+                            <DockPanel>
+                                <fa:ImageAwesome Icon="Regular_ListAlt" Foreground="White" Height="20"/>
+                                <TextBlock Text="Перки" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding }">
                             <DockPanel>
                                 <fa:ImageAwesome Icon="Solid_Random" Foreground="White" Height="20"/>
                                 <TextBlock Text="Рандомайзер" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
