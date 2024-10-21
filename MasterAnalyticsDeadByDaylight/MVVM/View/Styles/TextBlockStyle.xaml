@@ -63,4 +63,41 @@
 
     <!--#endregion-->
 
+    <!-- Стили для страниц << KillerPage, MapPage, MatchPage, SurvivorPage >> -->
+
+    <!--#region Название персонажа -->
+
+    <Style x:Key="NameCharacter" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="TextDecorations" Value="None"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Margin" Value="0,5,0,5"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+
+        <Setter Property="Width" Value="250"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+    </Style>
+    
+    <!--#endregion-->
+
+    <!--#region Название карты \ измерение -->
+
+    <Style x:Key="NameMapAndMeasurement" TargetType="TextBlock" BasedOn="{StaticResource NameCharacter}">
+        <Setter Property="Cursor" Value="Arrow"/>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Проценты -->
+
+    <Style x:Key="PercentageAndHeader" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!--#endregion-->
 </ResourceDictionary>

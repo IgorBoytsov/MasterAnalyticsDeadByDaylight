@@ -17,4 +17,14 @@
         <Setter Property="Foreground" Value="Red"/>
     </Style>
 
+    <Style x:Key="BuildIcon" TargetType="fa:ImageAwesome">
+        <Setter Property="Icon" Value="Regular_ListAlt"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    
+    <Style x:Key="AddBuildIcon" TargetType="fa:ImageAwesome">
+        <Setter Property="Icon" Value="Solid_Plus"/>
+        <Setter Property="Foreground" Value="White"/>
+        <!--<Setter Property="Margin" Value="1.8"/>-->
+    </Style>
 </ResourceDictionary>

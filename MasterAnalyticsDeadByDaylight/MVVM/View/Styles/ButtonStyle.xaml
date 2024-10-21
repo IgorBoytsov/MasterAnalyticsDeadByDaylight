@@ -148,6 +148,18 @@
         <Setter Property="Margin" Value="0,10,0,0"/>
     </Style>
 
+    <!-- Стили для окна << AddMatchWindow >> -->
+
+    <!--#region Кнопка открытие popup с выбором билда -->
+
+    <Style x:Key="SelectBuildStyle" TargetType="Button">
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Margin" Value="0,0,0,0"/>
+    </Style>
+
+    <!--#endregion-->
+
     <!-- Стили для окна << AddAdditionalDataWindow >> -->
 
     <!--#region Кнопки -->

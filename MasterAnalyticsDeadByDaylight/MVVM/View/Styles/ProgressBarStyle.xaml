@@ -1,0 +1,81 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Стили для страниц << KillerPage, MapPage, MatchPage, SurvivorPage >> -->
+
+    <!--#region Базовый стиль -->
+
+    <Style x:Key="BaseStyle" TargetType="ProgressBar">
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="Background" Value="#FF18171C"/>
+        <!--<Setter Property="Background" Value="#FF1E1E1E"/>-->
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="1"/>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Прогресс бар для статистики киллеров -->
+    
+    <Style x:Key="PickRateStyle" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF00758F"/>
+    </Style>
+
+    <Style x:Key="WinStyle" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF1B5D18"/>
+    </Style>
+
+    <Style x:Key="KillerKillingZeroSurvivorStyle" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF004D40"/>
+    </Style>
+
+    <Style x:Key="KillerKillingOneSurvivorStyle" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF057764"/>
+    </Style>
+
+    <Style x:Key="KillerKillingTwoSurvivorStyle" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF815A1E"/>
+    </Style>
+
+    <Style x:Key="KillerKillingThreeSurvivorStyle" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF932828"/>
+    </Style>
+
+    <Style x:Key="KillerKillingFourSurvivorStyle" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF691A1A"/>
+    </Style>
+
+    <Style x:Key="KillerKillerKillRatePercentageStyle" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF531111"/>
+    </Style>
+    
+    <!--#endregion-->
+
+    <!--#region Прогресс бар для статистики карт-->
+
+    <Style x:Key="KillRateOnMap" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF932828"/>
+    </Style>
+
+    <Style x:Key="WinRateMap" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF1B5D18"/>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Прогресс бар для статистики подношений-->
+
+    <Style x:Key="SurvivorOffering" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FF32BEEB"/>
+    </Style>
+
+    <Style x:Key="KillerOffering" TargetType="ProgressBar" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Foreground" Value="#FFF95555"/>
+    </Style>
+
+    <!--#endregion-->
+
+
+</ResourceDictionary>
