@@ -3,9 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:fa="http://schemas.fontawesome.com/icons/"  
-      xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Pages" 
-      xmlns:liveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      xmlns:fa="http://schemas.fontawesome.com/icons/"
       xmlns:pagesviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels" 
       d:DataContext="{d:DesignInstance Type=pagesviewmodels:KillerPageViewModel}"
       mc:Ignorable="d" 
@@ -14,33 +12,76 @@
       Title="KillerPage">
     <!---->
     <Page.Resources>
-        <!--#region ListViewStyle -->
-        <!--<Style TargetType="ListViewItem">
+        
+        <LinearGradientBrush x:Key="ListViewItemSelectedAndMousOver" EndPoint="1,0" StartPoint="1,0">
+            <GradientStop Color="#2A2A2A" Offset="1.0"/>
+            <GradientStop Color="#2A2A2A" Offset="0.0"/>
+        </LinearGradientBrush>
+
+        <!--#region Шаблон для заголовка GridViewColumnHeader-->
+
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ListViewItem">
-                        <Border Name="border" Background="#121212" Padding="2" SnapsToDevicePixels="true">
-                            <ContentPresenter/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="border" Property="Background" Value="#121212"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                                <Setter Property="Foreground" Value="Black"/>
-                            </Trigger>
-
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="border" Property="Background" Value="#121212"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
-                                <Setter Property="Foreground" Value="Black"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
+                    <ControlTemplate TargetType="GridViewColumnHeader">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="5"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="0,0,1,0" 
+                                    Padding="5" 
+                                    Grid.Column="0">
+                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                            </Border>
+                            <Thumb Grid.Column="1" 
+                                   Width="5" 
+                                   Background="Transparent" 
+                                   Cursor="SizeWE" />
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>-->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <!--#endregion-->
+
+        <Style TargetType="ListView">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#2A2A2A" />
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="BorderBrush" Value="#2A2A2A"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedAndMousOver}"/>
+                    <Setter Property="BorderBrush" Value="#FF595958"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedAndMousOver}"/>
+                    <Setter Property="BorderBrush" Value="#FF595958"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
     </Page.Resources>
 
     <Grid>
@@ -539,79 +580,6 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <!--#endregion-->
-
-                    <!--#region Частота встречамости Выживших (Возможно перенести в профиль и сделать сортировку по киллерам) -->
-
-                    <StackPanel Margin="0,20,0,0">
-                        <StackPanel Margin="0,0,0,10">
-                            <Border Width="1000" Style="{StaticResource BorderHeading}">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="Частота встречамости персонажей ( Выжившие )" Style="{StaticResource HeaderStyle}"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel>
-                            <Border Background="#2A2A2A" Height="600">
-                                <ScrollViewer>
-                                    <ItemsControl ItemsSource="{Binding SurvivorDeaths}" d:ItemsSource="{d:SampleData ItemCount=3}"
-                                                  Background="#121212" BorderThickness="0"
-                                                  ScrollViewer.CanContentScroll="False"
-                                                  VirtualizingPanel.ScrollUnit="Pixel"
-                                                  ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,20">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Width="1400" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Center" Margin="10,10,10,0">
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="200"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <StackPanel>
-                                                            <Image Source="{Binding SurvivorImage}" Width="100" Height="90"/>
-                                                            <TextBlock Text="{Binding SurvivorName}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
-                                                        </StackPanel>
-
-                                                        <StackPanel Grid.Column="1">
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Общее: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
-                                                                <TextBlock Text="{Binding TotalDead}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
-                                                            </StackPanel>
-
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Крюк: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
-                                                                <TextBlock Text="{Binding CountDeathHook}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
-                                                            </StackPanel>
-
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Земля: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
-                                                                <TextBlock Text="{Binding CountDeathGround}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
-                                                            </StackPanel>
-
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Мементо: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
-                                                                <TextBlock Text="{Binding CountDeathMemento}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
-                                                            </StackPanel>
-
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Абилки: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
-                                                                <TextBlock Text="{Binding CountDeathKillersAbility}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
-                                                            </StackPanel>
-
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Сбежал: " Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="15,0,0,0"/>
-                                                                <TextBlock Text="{Binding CountEscaped}" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </Border>
-                        </StackPanel>
-                    </StackPanel>
                     <!--#endregion-->
 
                     <!--#region % Повесов (0-12) \ % Оставшихся генераторов (0-5) \ Как умер выживший (Круговые диограмы) -->

@@ -1,6 +1,4 @@
-﻿using LiveCharts.Wpf;
-using LiveCharts;
-using MasterAnalyticsDeadByDaylight.Command;
+﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
@@ -12,8 +10,7 @@ using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerService;
 using MasterAnalyticsDeadByDaylight.Services.CalculationService.MapService;
-using MasterAnalyticsDeadByDaylight.Services.DialogService;
-using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
@@ -232,8 +229,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 {
                     List<GameStatistic> GameStat = await _killerCalculationService.GetSelectedKillerMatch(killer.IdKiller, SelectedPlayerAssociationStatItem.IdPlayerAssociation);
                     double CountKill = await _killerCalculationService.CalculatingCountKill(GameStat);
-                    double KillRate = await _killerCalculationService.CalculatingKillRate(GameStat, CountKill);
-                    double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(KillRate);
+                    //double KillRate = await _killerCalculationService.CalculatingKillRate(GameStat, CountKill);
+                    //double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(KillRate); 
+                    double KillRate = await _killerCalculationService.CalculatingAVGKillRate(GameStat, CountKill);
+                    double KillRatePercentage = await _killerCalculationService.CalculatingAVGKillRatePercentage(KillRate);
                     double PickRate = await _killerCalculationService.CalculatingPickRate(GameStat.Count, CountMatch);
                     double MatchWin = await _killerCalculationService.CalculatingKillerCountMatchWin(GameStat);
                     double WinRate = await _killerCalculationService.CalculatingWinRate((int)MatchWin, GameStat.Count);
@@ -499,8 +498,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 CountPlayersBotAsync(),
                 CountPlayersAnonymousAsync(),
 
-                CountSurvivorsKilledAsync(),
-
                 CountHookPercentageAsync(),
                 CountNumberRecentGeneratorsPercentageAsync(),
                 CountTypeTypeDeathSurvivorAsync(),
@@ -732,172 +729,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #endregion
 
-        // TODO: Решить оставлять ли этот расчет на этой странички, либо перенести в профиль.
-        #region Частота встречамости Выживших
-
-        private List<SurvivorDeathTracker> _survivorDeathTracker { get; set; } = [];
-
-        public ObservableCollection<SurvivorDeathTracker> SurvivorDeaths { get; set; } = [];
-
-        private async Task CountSurvivorsKilledAsync()
-        {
-            SurvivorDeaths.Clear();
-            _survivorDeathTracker.Clear();
-
-            await Task.Run(() =>
-            {
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    var survivors = context.Survivors.Skip(1).ToList();
-
-                    foreach (var surv in survivors)
-                    {
-
-                        int OneSurvivorDeathHook = context.GameStatistics
-                         .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                         .Where(x => x.IdSurvivors1Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors1Navigation.IdTypeDeath == 1)
-                         .Count();
-
-                        int TwoSurvivorDeathHook = context.GameStatistics
-                         .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                         .Where(x => x.IdSurvivors2Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors2Navigation.IdTypeDeath == 1)
-                         .Count();
-
-                        int ThreeSurvivorDeathHook = context.GameStatistics
-                         .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                         .Where(x => x.IdSurvivors3Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors3Navigation.IdTypeDeath == 1)
-                         .Count();
-
-                        int FourSurvivorDeathHook = context.GameStatistics
-                         .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                         .Where(x => x.IdSurvivors4Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors4Navigation.IdTypeDeath == 1)
-                         .Count();
-
-                        int SurvivorDeathHook = OneSurvivorDeathHook + TwoSurvivorDeathHook + ThreeSurvivorDeathHook + FourSurvivorDeathHook;
-
-
-                        int OneSurvivorDeathGround = context.GameStatistics
-                       .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                       .Where(x => x.IdSurvivors1Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors1Navigation.IdTypeDeath == 2)
-                       .Count();
-
-                        int TwoSurvivorDeathGround = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors2Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors2Navigation.IdTypeDeath == 2)
-                        .Count();
-
-                        int ThreeSurvivorDeathGround = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors3Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors3Navigation.IdTypeDeath == 2)
-                        .Count();
-
-                        int FourSurvivorDeathGround = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors4Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors4Navigation.IdTypeDeath == 2)
-                        .Count();
-
-                        int SurvivorDeathGround = OneSurvivorDeathGround + TwoSurvivorDeathGround + ThreeSurvivorDeathGround + FourSurvivorDeathGround;
-
-
-                        int OneSurvivorDeathMemento = context.GameStatistics
-                       .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                       .Where(x => x.IdSurvivors1Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors1Navigation.IdTypeDeath == 3)
-                       .Count();
-
-                        int TwoSurvivorDeathMemento = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors2Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors2Navigation.IdTypeDeath == 3)
-                        .Count();
-
-                        int ThreeSurvivorDeathMemento = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors3Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors3Navigation.IdTypeDeath == 3)
-                        .Count();
-
-                        int FourSurvivorDeathMemento = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors4Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors4Navigation.IdTypeDeath == 3)
-                        .Count();
-
-                        int SurvivorDeathMemento = OneSurvivorDeathMemento + TwoSurvivorDeathMemento + ThreeSurvivorDeathMemento + FourSurvivorDeathMemento;
-
-
-                        int OneSurvivorDeathKillersAbility = context.GameStatistics
-                       .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                       .Where(x => x.IdSurvivors1Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors1Navigation.IdTypeDeath == 4)
-                       .Count();
-
-                        int TwoSurvivorDeathKillersAbility = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors2Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors2Navigation.IdTypeDeath == 4)
-                        .Count();
-
-                        int ThreeSurvivorDeathKillersAbility = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors3Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors3Navigation.IdTypeDeath == 4)
-                        .Count();
-
-                        int FourSurvivorDeathKillersAbility = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors4Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors4Navigation.IdTypeDeath == 4)
-                        .Count();
-
-                        int SurvivorDeathKillersAbility = OneSurvivorDeathKillersAbility + TwoSurvivorDeathKillersAbility + ThreeSurvivorDeathKillersAbility + FourSurvivorDeathKillersAbility;
-
-
-                        int OneSurvivorEscaped = context.GameStatistics
-                       .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                       .Where(x => x.IdSurvivors1Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors1Navigation.IdTypeDeath == 5)
-                       .Count();
-
-                        int TwoSurvivorEscaped = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors2Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors2Navigation.IdTypeDeath == 5)
-                        .Count();
-
-                        int ThreeSurvivorEscaped = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors3Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors3Navigation.IdTypeDeath == 5)
-                        .Count();
-
-                        int FourSurvivorEscaped = context.GameStatistics
-                        .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                        .Where(x => x.IdSurvivors4Navigation.IdSurvivor == surv.IdSurvivor && x.IdSurvivors4Navigation.IdTypeDeath == 5)
-                        .Count();
-
-                        int SurvivorEscaped = OneSurvivorEscaped + TwoSurvivorEscaped + ThreeSurvivorEscaped + FourSurvivorEscaped;
-
-                        int TotalDeath = SurvivorDeathHook + SurvivorDeathGround + SurvivorDeathMemento + SurvivorDeathKillersAbility;
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            var survivor = new SurvivorDeathTracker()
-                            {
-                                SurvivorImage = surv.SurvivorImage,
-                                SurvivorName = surv.SurvivorName,
-                                CountDeathHook = SurvivorDeathHook,
-                                CountDeathGround = SurvivorDeathGround,
-                                CountDeathMemento = SurvivorDeathMemento,
-                                CountDeathKillersAbility = SurvivorDeathKillersAbility,
-                                CountEscaped = SurvivorEscaped,
-                                TotalDead = TotalDeath
-                            };
-                            _survivorDeathTracker.Add(survivor);
-                        });
-                    }
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        foreach (var item in _survivorDeathTracker.OrderByDescending(x => x.TotalDead))
-                        {
-                            SurvivorDeaths.Add(item);
-                        }
-                    });
-                }
-            });
-        }
-
-        #endregion
-
         #region % Повесов (0-12)
 
         public ObservableCollection<KillerHooksTracker> KillerHooks { get; set; } = [];
@@ -957,7 +788,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         {
             MapStatList.Clear();
             List<MapStat> mapStats = await _mapCalculationService.CalculatingMapStatAsync(Matches);
-            
+
             foreach (var item in mapStats)
             {
                 MapStatList.Add(item);
