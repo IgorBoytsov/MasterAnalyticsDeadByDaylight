@@ -10,16 +10,16 @@
                 <ResourceDictionary Source="MVVM\View\Styles\ButtonStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\ComboBoxStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\DatePickerStyle.xaml"/>
+                <ResourceDictionary Source="MVVM\View\Styles\FontAwesomeStyle.xaml"/>
+                <ResourceDictionary Source="MVVM\View\Styles\GridStyle.xaml"/>
+                <ResourceDictionary Source="MVVM\View\Styles\ImageStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\MenuStyle.xaml"/>
+                <ResourceDictionary Source="MVVM\View\Styles\ProgressBarStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\ScrollViewerStyle.xaml"/>
-                <ResourceDictionary Source="MVVM\View\Styles\TabControlItemAdditionalDataWindow.xaml"/>
-                <ResourceDictionary Source="MVVM\View\Styles\TabControlItemStatPage.xaml"/>
-                <ResourceDictionary Source="MVVM\View\Styles\TabControlStatPage.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\TabControlStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\TextBlockStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="MVVM\View\Styles\WindowStyle.xaml"/>
-                <!--<ResourceDictionary Source="MVVM\View\Styles\ButtonStyle.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
