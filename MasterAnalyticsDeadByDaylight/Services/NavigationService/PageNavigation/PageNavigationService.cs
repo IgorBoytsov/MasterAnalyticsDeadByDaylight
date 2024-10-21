@@ -7,10 +7,12 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigatio
     {
         private readonly Frame _frame;
 
-        private static readonly Page Match = new MatchPage();
         private static readonly Page KillerStat = new KillerPage();
-        private static readonly Page Survivor = new SurvivorPage();
         private static readonly Page Map = new MapPage();
+        private static readonly Page Match = new MatchPage();
+        private static readonly Page Offering = new OfferingPage();
+        private static readonly Page Perk = new PerkPage();
+        private static readonly Page Survivor = new SurvivorPage();
 
         public PageNavigationService(Frame frame)
         {
@@ -35,6 +37,14 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigatio
 
                 case "MapPage":
                     _frame.Navigate(Map);
+                    break;
+
+                case "OfferingPage":
+                    _frame.Navigate(Offering);
+                    break;
+
+                case "PerkPage":
+                    _frame.Navigate(Perk);
                     break;
 
                 default:
