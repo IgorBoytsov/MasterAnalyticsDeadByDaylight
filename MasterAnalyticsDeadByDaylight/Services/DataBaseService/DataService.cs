@@ -291,6 +291,6 @@ namespace MasterAnalyticsDeadByDaylight.Services.DatabaseServices
             }
         }
 
-        #endregion 
+        #endregion
     }
 }
