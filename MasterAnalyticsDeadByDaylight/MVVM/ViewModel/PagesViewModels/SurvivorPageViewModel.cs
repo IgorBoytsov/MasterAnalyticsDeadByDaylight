@@ -32,6 +32,21 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #endregion
 
+        #region Pupup
+
+        private bool _isFilterPopupOpen;
+        public bool IsFilterPopupOpen
+        {
+            get => _isFilterPopupOpen;
+            set
+            {
+                _isFilterPopupOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
         private string _searchTextBox;
         public string SearchTextBox
         {
@@ -114,6 +129,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             SelectedAssociation = Association[0];
             SelectedSurvivorStatSortItem = SortingList[0];
             SetDefaultVisibility();
+
+            IsFilterPopupOpen = false;
         }
 
         #region Команды
@@ -131,6 +148,18 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         private RelayCommand _reloadDataCommand;
         public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { SortSurvivorStatList(); SearchTextBox = string.Empty; }); }
+
+        private RelayCommand _openFilterCommand;
+        public RelayCommand OpenFilterCommand { get => _openFilterCommand ??= new(obj => { IsFilterPopupOpen = true; }); }
+
+        private RelayCommand _closeFilterCommand;
+        public RelayCommand CloseFilterCommand
+        {
+            get => _closeFilterCommand ??= new(obj =>
+            {
+                IsFilterPopupOpen = false;
+            });
+        }
 
         #endregion
 
