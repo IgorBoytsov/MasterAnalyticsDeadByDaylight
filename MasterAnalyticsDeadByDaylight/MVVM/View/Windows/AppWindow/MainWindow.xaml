@@ -251,6 +251,20 @@
                             </DockPanel>
                         </Button>
 
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToOfferingPageCommand}">
+                            <DockPanel>
+                                <fa:ImageAwesome Icon="Solid_HandHolding" Foreground="White" Height="20" Width="20"/>
+                                <TextBlock Text="Подношение" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToPerkPageCommand}">
+                            <DockPanel>
+                                <fa:ImageAwesome Icon="Regular_ListAlt" Foreground="White" Height="20"/>
+                                <TextBlock Text="Перки" Foreground="White" FontSize="20" Margin="10,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+
                         <Button Style="{StaticResource ButtonSideMenuStyle}" Template="{StaticResource ButtonSideMenu}" Command="{Binding NavigateToMapPageCommand}">
                             <DockPanel>
                                 <fa:ImageAwesome Icon="Solid_Random" Foreground="White" Height="20"/>

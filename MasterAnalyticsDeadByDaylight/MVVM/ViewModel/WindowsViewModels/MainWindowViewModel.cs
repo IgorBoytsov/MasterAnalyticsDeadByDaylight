@@ -273,6 +273,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private RelayCommand _navigateToMapPageCommand;
         public RelayCommand NavigateToMapPageCommand { get => _navigateToMapPageCommand ??= new(obj => { NavigateToMapPage(); }); }
+
+        private RelayCommand _navigateToOfferingPageCommand;
+        public RelayCommand NavigateToOfferingPageCommand { get => _navigateToOfferingPageCommand ??= new(obj => { NavigateToOfferingPage(); }); }
+
+        private RelayCommand _navigateToPerkPageCommand;
+        public RelayCommand NavigateToPerkPageCommand { get => _navigateToPerkPageCommand ??= new(obj => { NavigateToPerkPage(); }); }
+
         #endregion
 
         #region Методы навигации по страницам
@@ -300,6 +307,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             _pageNavigationService.NavigateTo("MapPage");
             Title = "Аналитика статистики - Карты";
         }
+
+        private void NavigateToOfferingPage()
+        {
+            _pageNavigationService.NavigateTo("OfferingPage");
+            Title = "Аналитика статистики - Карты";
+        }
+
+        private void NavigateToPerkPage()
+        {
+            _pageNavigationService.NavigateTo("PerkPage");
+            Title = "Аналитика статистики - Карты";
+        }
+
         #endregion
     }
 
