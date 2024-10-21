@@ -1,26 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
+﻿namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 {
-    class PerkStat
+    public class PerkStat
     {
-        /// <summary>
-        /// Названия перка
-        /// </summary>
         public string PerkName { get; set; }
 
-        /// <summary>
-        /// Изображение навыка
-        /// </summary>
         public byte[] PerkImage { get; set; }
 
-        /// <summary>
-        /// Пикрейт перка, как часто встречается перк, в %
-        /// </summary>
-        public double PerkPickRate { get; set; }
+        public int PerkID { get; set; }
+
+        public int AllAmountPerkUsed { get; set; }
+
+        public double PickRate { get; set; }
+
+        public double PickRatePercent { get; set; }
+
+        public double WinRateAVG { get; set; }
+
+        public double WinRatePercent { get; set; }
+
+        public List<PerkCharacterUse> PerkCharacterUses { get; set; }
+    }
+
+    public class PerkCharacterUse
+    {
+        public string NameCharacter { get; set; }
+
+        public int AmountUsedPerk { get; set; }
     }
 }
