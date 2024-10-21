@@ -143,7 +143,7 @@
     </ControlTemplate>
 
     <Style TargetType="Button" x:Key="ButtonSideMenuStyle">
-        <Setter Property="Width" Value="150"/>
+        <Setter Property="Width" Value="160"/>
         <Setter Property="Height" Value="40"/>
         <Setter Property="Margin" Value="0,10,0,0"/>
     </Style>
