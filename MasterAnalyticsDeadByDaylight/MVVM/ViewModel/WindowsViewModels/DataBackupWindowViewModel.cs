@@ -365,42 +365,38 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private void UpdateStatusEmpty(Backup backup)
+        private static void UpdateStatusEmpty(Backup backup)
         {
-            var entityToUpdate = BackupsTable.FirstOrDefault(x => x.Name == backup.Name);
-            if (entityToUpdate != null)
+            if (backup != null)
             {
-                entityToUpdate.Status = string.Empty;
-                entityToUpdate.IsCheck = false;
+                backup.Status = string.Empty;
+                backup.IsCheck = false;
             }
         }
 
-        private void UpdateStatusSelected(Backup backup)
+        private static void UpdateStatusSelected(Backup backup)
         {
-            var entityToUpdate = BackupsTable.FirstOrDefault(x => x.Name == backup.Name);
-            if (entityToUpdate != null)
+            if (backup != null)
             {
-                entityToUpdate.Status = "Выбрано";
-                entityToUpdate.IsCheck = true;
+                backup.Status = "Выбрано";
+                backup.IsCheck = true;
             }
         }
 
-        private void UpdateStatusInProcess(Backup backup)
+        private static void UpdateStatusInProcess(Backup backup)
         {
-            var entityToUpdate = BackupsTable.FirstOrDefault(x => x.Name == backup.Name);
-            if (entityToUpdate != null)
+            if (backup != null)
             {
-                entityToUpdate.Status = "В процессе...";
+                backup.Status = "В процессе...";
             }
         }
 
-        private void UpdateStatusDone(Backup backup)
+        private static void UpdateStatusDone(Backup backup)
         {
-            var entityToUpdate = BackupsTable.FirstOrDefault(x => x.Name == backup.Name);
-            if (entityToUpdate != null)
+            if (backup != null)
             {
-                entityToUpdate.Status = "Выполнено";
-                entityToUpdate.IsCheck = true;
+                backup.Status = "Выполнено";
+                backup.IsCheck = true;
             }
         }
 
