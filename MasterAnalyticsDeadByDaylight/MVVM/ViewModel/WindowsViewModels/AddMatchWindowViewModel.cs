@@ -6,10 +6,8 @@ using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
@@ -18,71 +16,69 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
     {
         #region Блок "Коллекции данных из БД"
 
+        #region Общие коллекции 
+
+        /*-Коллекции : Общие-*/
+        private readonly List<Offering> _offering = [];
+        private readonly List<GameMode> _gameModes = [];
+        private readonly List<GameEvent> _gameEvents = [];
+        private readonly List<Map> _maps = [];
+        private readonly List<Patch> _patches = [];
+        private readonly List<Platform> _platforms = [];
+        private readonly List<PlayerAssociation> _playerAssociations = [];
+        private readonly List<Role> _roles = [];
+        private readonly List<WhoPlacedMap> _whoPlacedMaps = [];
+
+        public ObservableCollection<GameMode> GameModes { get; set; } = [];
+        public ObservableCollection<GameEvent> GameEvents { get; set; } = [];
+        public ObservableCollection<Map> Maps { get; set; } = [];
+        public ObservableCollection<Patch> Patches { get; set; } = [];
+        public ObservableCollection<Platform> Platforms { get; set; } = [];
+        public ObservableCollection<WhoPlacedMap> WhoPlacedMaps { get; set; } = [];
+
+        #endregion
+
         #region Коллекции для Убийц   
 
-        public ObservableCollection<Killer> KillerList { get; set; } = [];
+        /*-Коллекции : Киллеры-*/
+        private readonly List<Killer> _killers = [];
+        private readonly List<KillerAddon> _killerAddons = [];
+        private readonly List<KillerPerk> _killerPerks = [];
+        private readonly List<KillerBuild> _killerBuilds = [];
 
-        public ObservableCollection<KillerAddon> KillerAddonList { get; set; } = [];
-
-        public ObservableCollection<KillerPerk> KillerPerkList { get; set; } = [];
-
-        public ObservableCollection<KillerBuild> KillerBuildList { get; set; } = [];
-
-        public ObservableCollection<Offering> KillerOfferingList { get; set; } = [];
-
-        public ObservableCollection<Role> KillerRoleList { get; set; } = [];
-
-        public ObservableCollection<PlayerAssociation> KillerAssociationList { get; set; } = [];
+        public ObservableCollection<Killer> Killers { get; set; } = [];
+        public ObservableCollection<KillerAddon> KillerAddons { get; set; } = [];
+        public ObservableCollection<KillerPerk> KillerPerks { get; set; } = [];
+        public ObservableCollection<Offering> KillerOfferings { get; set; } = [];
+        public ObservableCollection<PlayerAssociation> KillerAssociations { get; set; } = [];
+        public ObservableCollection<Role> KillerRoles { get; set; } = [];
+        public ObservableCollection<KillerBuild> KillerBuilds { get; set; } = [];
 
         #endregion
 
         #region Коллекции для выживших      
 
-        public ObservableCollection<Survivor> SurvivorList { get; set; } = [];
+        /*-Коллекции : Выжившие-*/
+        private readonly List<Survivor> _survivors = [];
+        private readonly List<SurvivorPerk> _survivorPerks = [];
+        private readonly List<Item> _items = [];
+        private readonly List<ItemAddon> _itemAddons = [];
+        private readonly List<TypeDeath> _typeDeaths = [];
 
-        public ObservableCollection<SurvivorPerk> SurvivorPerkList { get; set; } = [];
-
-        public ObservableCollection<SurvivorBuild> SurvivorBuildList {  get; set; } = [];
-
-        public ObservableCollection<Item> ItemList { get; set; } = [];
-
-        public ObservableCollection<ItemAddon> FirstSurvivorItemAddonList { get; set; } = [];
-
-        public ObservableCollection<ItemAddon> SecondSurvivorItemAddonList { get; set; } = [];
-
-        public ObservableCollection<ItemAddon> ThirdSurvivorItemAddonList { get; set; } = [];
-
-        public ObservableCollection<ItemAddon> FourthSurvivorItemAddonList { get; set; } = [];
-
-        public ObservableCollection<Offering> FirstSurvivorOfferingList { get; set; } = [];
-
-        public ObservableCollection<Offering> SecondSurvivorOfferingList { get; set; } = [];
-
-        public ObservableCollection<Offering> ThirdSurvivorOfferingList { get; set; } = [];
-
-        public ObservableCollection<Offering> FourthSurvivorOfferingList { get; set; } = [];
-
-        public ObservableCollection<TypeDeath> TypeDeathList { get; set; } = [];
-
-        public ObservableCollection<Role> SurvivorRoleList { get; set; } = [];
-
-        public ObservableCollection<PlayerAssociation> SurvivorAssociationList { get; set; } = [];
-
-        #endregion
-
-        #region Общие коллекции 
-
-        public ObservableCollection<GameMode> GameModeList { get; set; } = [];
-
-        public ObservableCollection<GameEvent> GameEventList { get; set; } = [];
-
-        public ObservableCollection<Map> MapList { get; set; } = [];
-
-        public ObservableCollection<Patch> PatchList { get; set; } = [];
-
-        public ObservableCollection<Platform> PlatformList { get; set; } = [];
-
-        public ObservableCollection<WhoPlacedMap> WhoPlacedMapList { get; set; } = [];
+        public ObservableCollection<Survivor> Survivors { get; set; } = [];
+        public ObservableCollection<SurvivorPerk> SurvivorPerks { get; set; } = [];
+        public ObservableCollection<Item> Items { get; set; } = [];
+        public ObservableCollection<ItemAddon> FirstSurvivorItemAddons { get; set; } = [];
+        public ObservableCollection<ItemAddon> SecondSurvivorItemAddons { get; set; } = [];
+        public ObservableCollection<ItemAddon> ThirdSurvivorItemAddons { get; set; } = [];
+        public ObservableCollection<ItemAddon> FourthSurvivorItemAddons { get; set; } = [];
+        public ObservableCollection<Offering> FirstSurvivorOfferings { get; set; } = [];
+        public ObservableCollection<Offering> SecondSurvivorOfferings { get; set; } = [];
+        public ObservableCollection<Offering> ThirdSurvivorOfferings { get; set; } = [];
+        public ObservableCollection<Offering> FourthSurvivorOfferings { get; set; } = [];
+        public ObservableCollection<PlayerAssociation> SurvivorAssociations { get; set; } = [];
+        public ObservableCollection<Role> SurvivorRoles { get; set; } = [];
+        public ObservableCollection<TypeDeath> TypeDeaths { get; set; } = [];
 
         #endregion
 
@@ -105,7 +101,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             _dataService = dataService;
 
             IssOpenKillerBuildPopup = false;
-            GetData();
+            GetAllData();
+            LoadAllData();
         }
 
         #region Блок "Убийца"
@@ -124,7 +121,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedKiller = value;
-                GetKillerAddonListData();
+                //GetKillerAddonListData();
+                LoadKillerAddons();
                 OnPropertyChanged();
             }
         }
@@ -368,7 +366,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchKillerPerk = value;
-                SearchKillerPerkAsync();
+                SearchKillerPerks();
                 OnPropertyChanged();
             }
         }
@@ -527,7 +525,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchKillerAddon = value;
-                SearchKillerAddonAsync();
+                SearchKillerAddons();
                 OnPropertyChanged();
             }
         }
@@ -583,7 +581,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchKillerOffering = value;
-                SearchKillerOfferingAsync();
+                SearchKillerOfferings();
                 OnPropertyChanged();
             }
         }
@@ -612,7 +610,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedRoleKiller = value;
-                GetKillerOfferingListData();
+                //GetKillerOfferingListData();
+                LoadKillerOfferings();
                 OnPropertyChanged();
 
             }
@@ -703,10 +702,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         public RelayCommand OpenSelectKillerBuildPopupCommand { get => _openSelectKillerBuildPopupCommand ??= new(obj => { IssOpenKillerBuildPopup = true; }); }
 
         private RelayCommand _addKillerBuildCommand;
-        public RelayCommand AddKillerBuildCommand { get => _addKillerBuildCommand ??= new(obj => { AddKillerBuild(); }); } 
-        
+        public RelayCommand AddKillerBuildCommand { get => _addKillerBuildCommand ??= new(obj => { AddKillerBuild(); }); }
+
         private RelayCommand _deleteKillerBuildCommand;
-        public RelayCommand DeleteKillerBuildCommand { get => _deleteKillerBuildCommand ??= new( async obj => 
+        public RelayCommand DeleteKillerBuildCommand { get => _deleteKillerBuildCommand ??= new(async obj =>
         {
             if (SelectedKillerBuild == null)
             {
@@ -718,7 +717,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                 TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.Yes)
             {
                 await _dataService.RemoveAsync(SelectedKillerBuild);
-                GetKillerBuildListData();
+                LoadKillerBuilds();
             }
             else
             {
@@ -754,7 +753,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     context.KillerBuilds.Add(killerBuild);
                     context.SaveChanges();
                     NameBuild = string.Empty;
-                    GetKillerBuildListData();
+                    LoadKillerBuilds();
                 }
                 else
                 {
@@ -767,18 +766,18 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (value != null)
             {
-                SelectedKillerFirstPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk1);
-                SelectedKillerSecondPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk2);
-                SelectedKillerThirdPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk3);
-                SelectedKillerFourthPerk = KillerPerkList.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk4);
+                SelectedKillerFirstPerk = KillerPerks.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk1);
+                SelectedKillerSecondPerk = KillerPerks.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk2);
+                SelectedKillerThirdPerk = KillerPerks.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk3);
+                SelectedKillerFourthPerk = KillerPerks.FirstOrDefault(x => x.IdKillerPerk == value.IdPerk4);
 
                 if (ConsiderKiller == true)
                 {
-                    SelectedKiller = KillerList.FirstOrDefault(x => x.IdKiller == value.IdKiller);
+                    SelectedKiller = Killers.FirstOrDefault(x => x.IdKiller == value.IdKiller);
                 }
                 if (ConsiderAddon == true)
                 {
-                    SelectedKiller = KillerList.FirstOrDefault(x => x.IdKiller == value.IdKiller);
+                    SelectedKiller = Killers.FirstOrDefault(x => x.IdKiller == value.IdKiller);
                     SelectedKillerFirstAddon = _dataService.GetById<KillerAddon>(value.IdAddon1, "IdKillerAddon");
                     SelectedKillerSecondAddon = _dataService.GetById<KillerAddon>(value.IdAddon2, "IdKillerAddon"); ;
                 }
@@ -808,7 +807,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
                     OnPropertyChanged();
                 }
                 else { return; }
-                
+
             }
         }
 
@@ -822,7 +821,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchSurvivorPerk = value;
-                SearchSurvivorPerkAsync();
+                SearchSurvivorPerks();
                 OnPropertyChanged();
             }
         }
@@ -1134,7 +1133,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedFirstSurvivorItem = value;
                 SearchFirstSurvivorItemAddon = string.Empty;
-                GetFirstSurvivorItemAddonListData();
+                LoadFirstSurvivorItemAddons();
                 OnPropertyChanged();
             }
         }
@@ -1215,8 +1214,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchFirstSurvivorItemAddon = value;
-                FirstSurvivorItemAddonList.Clear();
-                SearchFirstSurvivorItemAddonAsync();
+                FirstSurvivorItemAddons.Clear();
+                SearchFirstSurvivorItemAddons();
                 OnPropertyChanged();
             }
         }
@@ -1286,7 +1285,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedRoleFirstSurvivor = value;
-                GetFirstSurvivorOfferingListData();
+                LoadFirstSurvivorOfferings();
                 OnPropertyChanged();
 
             }
@@ -1302,7 +1301,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchFirstSurvivorOffering = value;
-                SearchFirstSurvivorOfferingAsync();
+                SearchFirstSurvivorOfferings();
                 OnPropertyChanged();
             }
         }
@@ -1617,7 +1616,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedSecondSurvivorItem = value;
                 SearchSecondSurvivorItemAddon = string.Empty;
-                GetSecondSurvivorItemAddonListData();
+                LoadSecondSurvivorItemAddons();
                 OnPropertyChanged();
             }
         }
@@ -1698,8 +1697,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchSecondSurvivorItemAddon = value;
-                SecondSurvivorItemAddonList.Clear();
-                SearchSecondSurvivorItemAddonAsync();
+                SecondSurvivorItemAddons.Clear();
+                SearchSecondSurvivorItemAddons();
                 OnPropertyChanged();
             }
         }
@@ -1769,7 +1768,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedRoleSecondSurvivor = value;
-                GetSecondSurvivorOfferingListData();
+                LoadSecondSurvivorOfferings();
                 OnPropertyChanged();
 
             }
@@ -1785,7 +1784,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchSecondSSurvivorOffering = value;
-                SearchSecondSurvivorOfferingAsync();
+                SearchSecondSurvivorOfferings();
                 OnPropertyChanged();
             }
         }
@@ -2100,7 +2099,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedThirdSurvivorItem = value;
                 SearchThirdSurvivorItemAddon = string.Empty;
-                GetThirdSurvivorItemAddonListData();
+                LoadThirdSurvivorItemAddons();
                 OnPropertyChanged();
             }
         }
@@ -2181,8 +2180,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchThirdSurvivorItemAddon = value;
-                ThirdSurvivorItemAddonList.Clear();
-                SearchThirdSurvivorItemAddonAsync();
+                ThirdSurvivorItemAddons.Clear();
+                SearchThirdSurvivorItemAddons();
                 OnPropertyChanged();
             }
         }
@@ -2252,7 +2251,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedRoleThirdSurvivor = value;
-                GetThirdSurvivorOfferingListData();
+                LoadThirdSurvivorOfferings();
                 OnPropertyChanged();
 
             }
@@ -2268,7 +2267,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchThirdSurvivorOffering = value;
-                SearchThirdSurvivorOfferingAsync();
+                SearchThirdSurvivorOfferings();
                 OnPropertyChanged();
             }
         }
@@ -2583,7 +2582,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             {
                 _selectedFourthSurvivorItem = value;
                 SearchFourthSurvivorItemAddon = string.Empty;
-                GetFourthSurvivorItemAddonListData();
+                LoadFourthSurvivorItemAddons();
                 OnPropertyChanged();
             }
         }
@@ -2664,8 +2663,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchFourthSurvivorItemAddon = value;
-                FourthSurvivorItemAddonList.Clear();
-                SearchFourthSurvivorItemAddonAsync();
+                FourthSurvivorItemAddons.Clear();
+                SearchFourthSurvivorItemAddons();
                 OnPropertyChanged();
             }
         }
@@ -2736,7 +2735,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _selectedRoleFourthSurvivor = value;
-                GetFourthSurvivorOfferingListData();
+                LoadFourthSurvivorOfferings();
                 OnPropertyChanged();
 
             }
@@ -2752,7 +2751,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             set
             {
                 _searchFourthSurvivorOffering = value;
-                SearchFourthSurvivorOfferingAsync();
+                SearchFourthSurvivorOfferings();
                 OnPropertyChanged();
             }
         }
@@ -3028,7 +3027,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             else
             {
                 _dialogService.ShowMessage("Вы заполнили не все данные третьего выжившего. Если у Выжившего нету какого либо снаряжение, то нужно выбрать пункт - Отсутствует.", "Ошибка заполнения", TypeMessage.Warning);
-                MessageBox.Show("");
                 return;
             }
 
@@ -3060,7 +3058,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             if (FirstSurvivorAccount != 0 &&
                SecondSurvivorAccount != 0 &&
                ThirdSurvivorAccount != 0 &&
-               FourthSurvivorAccount != 0 ) { }
+               FourthSurvivorAccount != 0) { }
             else
             {
                 if (_dialogService.ShowMessageButtons("У какого то выжившего счет 0! Вы уверены?", "Ошибка заполнения", TypeMessage.Warning, MessageButtons.YesNo) == MessageButtons.No)
@@ -3278,177 +3276,165 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Методы для поиска по спискам
 
-        private async void SearchKillerPerkAsync()
+        private void SearchKillerPerks()
         {
-            var search = await _dataService.GetAllDataAsync<KillerPerk>(x => x
-            .Include(x => x.IdKillerNavigation)
-                .Where(x => x.PerkName.Contains(SearchKillerPerk) ||
-                    x.IdKillerNavigation.KillerName.Contains(SearchKillerPerk)));
+            var search = _killerPerks.Where(x => x.PerkName.ToLower().Contains(SearchKillerPerk.ToLower()) ||
+                            x.IdKillerNavigation.KillerName.ToLower().Contains(SearchKillerPerk.ToLower()));
 
-            KillerPerkList.Clear();
+            KillerPerks.Clear();
 
             foreach (var item in search)
             {
-                KillerPerkList.Add(item);
+                KillerPerks.Add(item);
             }
         }
 
-        private async void SearchKillerAddonAsync()
+        private void SearchKillerAddons()
         {
             if (SelectedKiller == null)
             {
                 _dialogService.ShowMessage("Вы не выбрали убийцу");
                 return;
             }
-            var search = await _dataService.GetAllDataAsync<KillerAddon>(x => x
-            .Where(ka => ka.IdKiller == SelectedKiller.IdKiller)
-                    .Where(ka => ka.AddonName.Contains(SearchKillerAddon)));
+            var search = _killerAddons.Where(ka => ka.IdKiller == SelectedKiller.IdKiller)
+                    .Where(ka => ka.AddonName.ToLower().Contains(SearchKillerAddon.ToLower()));
 
-            KillerAddonList.Clear();
+            KillerAddons.Clear();
 
             foreach (var item in search)
             {
-                KillerAddonList.Add(item);
+                KillerAddons.Add(item);
             }
         }
 
-        private async void SearchKillerOfferingAsync()
+        private void SearchKillerOfferings()
         {
-            var search = await _dataService.GetAllDataAsync<Offering>(x => x
-            .Where(off => off.IdRole == SelectedRoleKiller.IdRole)
-                    .Where(off => off.OfferingName.Contains(SearchKillerOffering)));
+            var search = _offering.Where(off => off.IdRole == SelectedRoleKiller.IdRole)
+                   .Where(off => off.OfferingName.ToLower().Contains(SearchKillerOffering.ToLower()));
 
-            KillerOfferingList.Clear();
+            KillerOfferings.Clear();
 
             foreach (var item in search)
             {
-                KillerOfferingList.Add(item);
-            }
-        } 
-
-        private async void SearchFirstSurvivorOfferingAsync()
-        {
-            var search = await _dataService.GetAllDataAsync<Offering>(x => x
-                .Where(off => off.IdRole == SelectedRoleFirstSurvivor.IdRole)
-                    .Where(off => off.OfferingName.Contains(SearchFirstSurvivorOffering)));
-
-            FirstSurvivorOfferingList.Clear();
-
-            foreach (var item in search)
-            {
-                FirstSurvivorOfferingList.Add(item);
+                KillerOfferings.Add(item);
             }
         }
 
-        private async void SearchSecondSurvivorOfferingAsync()
+        private void SearchFirstSurvivorOfferings()
         {
-            var search = await _dataService.GetAllDataAsync<Offering>(x => x
-                .Where(off => off.IdRole == SelectedRoleSecondSurvivor.IdRole)
-                    .Where(off => off.OfferingName.Contains(SearchSecondSurvivorOffering)));
+            var search = _offering.Where(off => off.IdRole == SelectedRoleFirstSurvivor.IdRole)
+                   .Where(off => off.OfferingName.ToLower().Contains(SearchFirstSurvivorOffering.ToLower()));
 
-            SecondSurvivorOfferingList.Clear();
+            FirstSurvivorOfferings.Clear();
 
             foreach (var item in search)
             {
-                SecondSurvivorOfferingList.Add(item);
+                FirstSurvivorOfferings.Add(item);
             }
         }
 
-        private async void SearchThirdSurvivorOfferingAsync()
+        private void SearchSecondSurvivorOfferings()
         {
-            var search = await _dataService.GetAllDataAsync<Offering>(x => x
-                .Where(off => off.IdRole == SelectedRoleThirdSurvivor.IdRole)
-                    .Where(off => off.OfferingName.Contains(SearchThirdSurvivorOffering)));
+            var search = _offering.Where(off => off.IdRole == SelectedRoleSecondSurvivor.IdRole)
+                    .Where(off => off.OfferingName.ToLower().Contains(SearchSecondSurvivorOffering.ToLower()));
 
-            ThirdSurvivorOfferingList.Clear();
+            SecondSurvivorOfferings.Clear();
 
             foreach (var item in search)
             {
-                ThirdSurvivorOfferingList.Add(item);
+                SecondSurvivorOfferings.Add(item);
             }
         }
 
-        private async void SearchFourthSurvivorOfferingAsync()
+        private void SearchThirdSurvivorOfferings()
         {
-            var search = await _dataService.GetAllDataAsync<Offering>(x => x
-                .Where(off => off.IdRole == SelectedRoleFourthSurvivor.IdRole)
-                     .Where(off => off.OfferingName.Contains(SearchFourthSurvivorOffering)));
+            var search = _offering.Where(off => off.IdRole == SelectedRoleThirdSurvivor.IdRole)
+                    .Where(off => off.OfferingName.ToLower().Contains(SearchThirdSurvivorOffering.ToLower()));
 
-            FourthSurvivorOfferingList.Clear();
+            ThirdSurvivorOfferings.Clear();
 
             foreach (var item in search)
             {
-                FourthSurvivorOfferingList.Add(item);
+                ThirdSurvivorOfferings.Add(item);
             }
         }
 
-        private async void SearchSurvivorPerkAsync()
+        private void SearchFourthSurvivorOfferings()
         {
-            var search = await _dataService.GetAllDataAsync<SurvivorPerk>(x => x
-                .Include(x => x.IdSurvivorNavigation)
-                    .Where(x => x.PerkName.Contains(SearchSurvivorPerk) || x.IdSurvivorNavigation.SurvivorName.Contains(SearchSurvivorPerk)));
+            var search = _offering.Where(off => off.IdRole == SelectedRoleFourthSurvivor.IdRole)
+                     .Where(off => off.OfferingName.ToLower().Contains(SearchFourthSurvivorOffering.ToLower()));
 
-            SurvivorPerkList.Clear();
+            FourthSurvivorOfferings.Clear();
 
             foreach (var item in search)
             {
-                SurvivorPerkList.Add(item);
+                FourthSurvivorOfferings.Add(item);
             }
         }
 
-        private async void SearchFirstSurvivorItemAddonAsync()
+        private void SearchSurvivorPerks()
         {
-            var search = await _dataService.GetAllDataAsync<ItemAddon>(x => x
-            .Where(x =>x.IdItem == SelectedFirstSurvivorItem.IdItem)
-                .Where(x => x.ItemAddonName.Contains(SearchFirstSurvivorItemAddon)));
+            var search = _survivorPerks.Where(x => x.PerkName.ToLower().Contains(SearchSurvivorPerk.ToLower()) ||
+                         x.IdSurvivorNavigation.SurvivorName.ToLower().Contains(SearchSurvivorPerk.ToLower()));
 
-            FirstSurvivorItemAddonList.Clear();
+            SurvivorPerks.Clear();
 
             foreach (var item in search)
             {
-                FirstSurvivorItemAddonList.Add(item);
+                SurvivorPerks.Add(item);
             }
         }
 
-        private async void SearchSecondSurvivorItemAddonAsync()
+        private void SearchFirstSurvivorItemAddons()
         {
-            var search = await _dataService.GetAllDataAsync<ItemAddon>(x => x
-            .Where(ia => ia.IdItem == SelectedSecondSurvivorItem.IdItem)
-                   .Where(ka => ka.ItemAddonName.Contains(SearchSecondSurvivorItemAddon)));
+            var search = _itemAddons.Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
+               .Where(x => x.ItemAddonName.ToLower().Contains(SearchFirstSurvivorItemAddon.ToLower()));
 
-            SecondSurvivorItemAddonList.Clear();
+            FirstSurvivorItemAddons.Clear();
 
             foreach (var item in search)
             {
-                SecondSurvivorItemAddonList.Add(item);
+                FirstSurvivorItemAddons.Add(item);
             }
         }
 
-        private async void SearchThirdSurvivorItemAddonAsync()
+        private void SearchSecondSurvivorItemAddons()
         {
-            var search = await _dataService.GetAllDataAsync<ItemAddon>(x => x
-                .Where(ia => ia.IdItem == SelectedThirdSurvivorItem.IdItem)
-                     .Where(ka => ka.ItemAddonName.Contains(SearchThirdSurvivorItemAddon)));
+            var search = _itemAddons.Where(ia => ia.IdItem == SelectedSecondSurvivorItem.IdItem)
+                   .Where(ka => ka.ItemAddonName.ToLower().Contains(SearchSecondSurvivorItemAddon.ToLower()));
 
-            ThirdSurvivorItemAddonList.Clear();
+
+            SecondSurvivorItemAddons.Clear();
 
             foreach (var item in search)
             {
-                ThirdSurvivorItemAddonList.Add(item);
+                SecondSurvivorItemAddons.Add(item);
             }
         }
 
-        private async void SearchFourthSurvivorItemAddonAsync()
+        private void SearchThirdSurvivorItemAddons()
         {
-            var search = await _dataService.GetAllDataAsync<ItemAddon>(x => x
-                .Where(ia => ia.IdItem == SelectedFourthSurvivorItem.IdItem)
-                    .Where(ka => ka.ItemAddonName.Contains(SearchFourthSurvivorItemAddon)));
+            var search = _itemAddons.Where(ia => ia.IdItem == SelectedThirdSurvivorItem.IdItem)
+                     .Where(ka => ka.ItemAddonName.ToLower().Contains(SearchThirdSurvivorItemAddon.ToLower()));
 
-            FourthSurvivorItemAddonList.Clear();
+            ThirdSurvivorItemAddons.Clear();
 
             foreach (var item in search)
             {
-                FourthSurvivorItemAddonList.Add(item);
+                ThirdSurvivorItemAddons.Add(item);
+            }
+        }
+
+        private void SearchFourthSurvivorItemAddons()
+        {
+            var search = _itemAddons.Where(ia => ia.IdItem == SelectedFourthSurvivorItem.IdItem)
+                    .Where(ka => ka.ItemAddonName.ToLower().Contains(SearchFourthSurvivorItemAddon.ToLower()));
+
+            FourthSurvivorItemAddons.Clear();
+
+            foreach (var item in search)
+            {
+                FourthSurvivorItemAddons.Add(item);
             }
         }
 
@@ -3456,414 +3442,529 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #region Методы получение данных
 
-        private void GetData()
+        private void GetAllData()
         {
-            GetKillerListData();
-            GetKillerPerkListData();
-            GetKillerBuildListData();
+            /*-Общие-*/
+            GetOfferings();
+            GetGameModes();
+            GetGameEvents();
+            GetMaps();
+            GetPatches();
+            GetPlatforms();
+            GetPlayerAssociations();
+            GetRoles();
+            GetWhoPlacedMaps();
 
-            GetSurvivorListData();
-            GetSurvivorPerkListData();
-            GetTypeDeathListData();
-            GetItemListData();
+            /*-Киллеры-*/
+            GetKillers();
+            GetKillerAddons();
+            GetKillerPerks();
+            GetKillerBuilds();
 
-            GetGameModeListData();
-            GetGameEventListData();
-            GetMapListData();
-            GetPatchListData();
-            GetPlatformListData();
-            GetPlayerAssociationListData();
-            GetRoleListData();
-            GetWhoPlacedMapListData();
+            /*-Выжившие-*/
+            GetSurvivors();
+            GetSurvivorPerks();
+            GetItems();
+            GetItemAddons();
+            GetTypeDeaths();
 
             SelectedDateTimeGameMatch = DateTime.Now;
         }
 
-        #region Общие данные для всего матча
-        
-        private async void GetGameModeListData()
+        private void LoadAllData()
         {
-            var entities = await _dataService.GetAllDataAsync<GameMode>();
+            /*-Общие-*/
+            LoadGameModes();
+            LoadGameEvents();
+            LoadMaps();
+            LoadPatches();
+            LoadPlatforms();
+            LoadPlayerAssociations();
+            LoadRoles();
+            LoadWhoPlacedMaps();
 
-            foreach (var item in entities) 
+            /*-Киллеры-*/
+            LoadKillers();
+            LoadKillerAddons();
+            LoadKillerPerks();
+            LoadKillerOfferings();
+            LoadKillerBuilds();
+
+            /*-Выжившие-*/
+            LoadSurvivors();
+            LoadItems();
+            LoadSurvivorPerks();
+            LoadFirstSurvivorItemAddons();
+            LoadSecondSurvivorItemAddons();
+            LoadThirdSurvivorItemAddons();
+            LoadFourthSurvivorItemAddons();
+            LoadFirstSurvivorOfferings();
+            LoadSecondSurvivorOfferings();
+            LoadThirdSurvivorOfferings();
+            LoadFourthSurvivorOfferings();
+            LoadTypeDeaths();
+        }
+
+        #region Общие данные
+
+        /*-Получение : Общие-*/
+        private void GetOfferings()
+        {
+            _offering.AddRange(_dataService.GetAllData<Offering>());
+        }
+
+        private void GetGameModes()
+        {
+            _gameModes.AddRange(_dataService.GetAllData<GameMode>());
+        }
+
+        private void GetGameEvents()
+        {
+            _gameEvents.AddRange(_dataService.GetAllData<GameEvent>());
+        }
+
+        private void GetMaps()
+        {
+            _maps.AddRange(_dataService.GetAllData<Map>());
+        }
+
+        private void GetPatches()
+        {
+            _patches.AddRange(_dataService.GetAllData<Patch>());
+        }
+
+        private void GetPlatforms()
+        {
+            _platforms.AddRange(_dataService.GetAllData<Platform>());
+        }
+
+        private void GetPlayerAssociations()
+        {
+            _playerAssociations.AddRange(_dataService.GetAllData<PlayerAssociation>());
+        }
+
+        private void GetRoles()
+        {
+            _roles.AddRange(_dataService.GetAllData<Role>());
+        }
+
+        private void GetWhoPlacedMaps()
+        {
+            _whoPlacedMaps.AddRange(_dataService.GetAllData<WhoPlacedMap>());
+        }
+
+        /*-Вывод : Общие-*/
+        private void LoadGameModes()
+        {
+            GameModes.Clear();
+
+            foreach (var item in _gameModes)
             {
-                GameModeList.Add(item);
+                GameModes.Add(item);
+            }
+
+            SelectedGameMode = GameModes.FirstOrDefault();
+        }
+
+        private void LoadGameEvents()
+        {
+            GameEvents.Clear();
+
+            foreach (var item in _gameEvents)
+            {
+                GameEvents.Add(item);
+            }
+
+            SelectedGameEvent = GameEvents.FirstOrDefault();
+        }
+
+        private void LoadMaps()
+        {
+            Maps.Clear();
+
+            foreach (var item in _maps)
+            {
+                Maps.Add(item);
             }
         }
 
-        private async void GetGameEventListData()
+        private void LoadPatches()
         {
-            var entities = await _dataService.GetAllDataAsync<GameEvent>();
+            Patches.Clear();
 
-            foreach (var item in entities)
+            foreach (var item in _patches)
             {
-                GameEventList.Add(item);
+                Patches.Add(item);
             }
+
+            SelectedPatch = Patches.LastOrDefault();
         }
 
-        private async void GetMapListData()
+        private void LoadPlatforms()
         {
-            var entities = await _dataService.GetAllDataAsync<Map>(x => x.OrderBy(x => x.IdMeasurement));
+            Platforms.Clear();
 
-            foreach (var item in entities)
+            foreach (var item in _platforms)
             {
-                MapList.Add(item);
+                Platforms.Add(item);
             }
+
+            SelectedKillerPlatform = Platforms.FirstOrDefault();
+
+            SelectedFirstSurvivorPlatform = Platforms.FirstOrDefault();
+            SelectedSecondSurvivorPlatform = Platforms.FirstOrDefault();
+            SelectedThirdSurvivorPlatform = Platforms.FirstOrDefault();
+            SelectedFourthSurvivorPlatform = Platforms.FirstOrDefault();
         }
 
-        private async void GetPatchListData()
+        private void LoadPlayerAssociations()
         {
-            var entities = await _dataService.GetAllDataAsync<Patch>();
+            KillerAssociations.Add(_dataService.GetById<PlayerAssociation>(1, "IdPlayerAssociation"));
+            KillerAssociations.Add(_dataService.GetById<PlayerAssociation>(3, "IdPlayerAssociation"));
 
-            foreach (var item in entities.Reverse())
+            foreach (var item in _playerAssociations)
             {
-                PatchList.Add(item);
+                SurvivorAssociations.Add(item);
             }
+
+            SelectedKillerPlayerAssociation = KillerAssociations.FirstOrDefault();
+
+            SelectedFirstSurvivorPlayerAssociation = SurvivorAssociations[2];
+            SelectedSecondSurvivorPlayerAssociation = SurvivorAssociations[2];
+            SelectedThirdSurvivorPlayerAssociation = SurvivorAssociations[2];
+            SelectedFourthSurvivorPlayerAssociation = SurvivorAssociations[2];
         }
 
-        private async void GetPlatformListData()
+        private void LoadRoles()
         {
-            var entities = await _dataService.GetAllDataAsync<Platform>();
+            KillerRoles.Add(_dataService.GetById<Role>(2, "IdRole"));
+            KillerRoles.Add(_dataService.GetById<Role>(5, "IdRole"));
 
-            foreach (var item in entities)
-            {
-                PlatformList.Add(item);
-            }
+            SurvivorRoles.Add(_dataService.GetById<Role>(3, "IdRole"));
+            SurvivorRoles.Add(_dataService.GetById<Role>(5, "IdRole"));
+
+            SelectedRoleKiller = KillerRoles.FirstOrDefault();
+
+            SelectedRoleFirstSurvivor = SurvivorRoles.FirstOrDefault();
+            SelectedRoleSecondSurvivor = SurvivorRoles.FirstOrDefault();
+            SelectedRoleThirdSurvivor = SurvivorRoles.FirstOrDefault();
+            SelectedRoleFourthSurvivor = SurvivorRoles.FirstOrDefault();
+
         }
 
-        private async void GetPlayerAssociationListData()
+        private void LoadWhoPlacedMaps()
         {
+            WhoPlacedMaps.Clear();
 
-            var entities = await _dataService.GetAllDataAsync<PlayerAssociation>();
-
-            KillerAssociationList.Add(await _dataService.GetByIdAsync<PlayerAssociation>(1, "IdPlayerAssociation"));
-            KillerAssociationList.Add(await _dataService.GetByIdAsync<PlayerAssociation>(3, "IdPlayerAssociation"));
-
-            foreach (var item in entities)
+            foreach (var item in _whoPlacedMaps)
             {
-                SurvivorAssociationList.Add(item);
+                WhoPlacedMaps.Add(item);
             }
-        }
 
-        private async void GetRoleListData()
-        {
-            KillerRoleList.Add(await _dataService.GetByIdAsync<Role>(2, "IdRole"));
-            KillerRoleList.Add(await _dataService.GetByIdAsync<Role>(5, "IdRole"));
-
-            SurvivorRoleList.Add(await _dataService.GetByIdAsync<Role>(3, "IdRole"));
-            SurvivorRoleList.Add(await _dataService.GetByIdAsync<Role>(5, "IdRole"));
-        }
-
-        private async void GetWhoPlacedMapListData()
-        {
-            var entities = await _dataService.GetAllDataAsync<WhoPlacedMap>();
-
-            foreach (var item in entities)
-            {
-                WhoPlacedMapList.Add(item);
-            }
+            SelectedWhoPlacedMap = WhoPlacedMaps.FirstOrDefault();
+            SelectedWhoPlacedMapWin = WhoPlacedMaps.FirstOrDefault();
         }
 
         #endregion
 
         #region Данные для киллера
 
-        private async void GetKillerListData()
+        /*-Получение : Киллеры-*/
+        private void GetKillers()
         {
-            var entities = await _dataService.GetAllDataAsync<Killer>();
-
-            foreach (var item in entities.Skip(1))
-            {
-                KillerList.Add(item);
-            }
-            SelectedKiller = KillerList.FirstOrDefault();
+            _killers.AddRange(_dataService.GetAllData<Killer>(x => x.Skip(1)));
         }
 
-        private async void GetKillerAddonListData()
+        private void GetKillerAddons()
         {
-            var entities = await _dataService.GetAllDataAsync<KillerAddon>(x => x
-                .Where(x => x.IdKiller == SelectedKiller.IdKiller)
-                .OrderBy(x => x.IdRarity));
+            _killerAddons.AddRange(_dataService.GetAllData<KillerAddon>());
+        }
 
-            KillerAddonList.Clear();
+        private void GetKillerPerks()
+        {
+            _killerPerks.AddRange(_dataService.GetAllData<KillerPerk>(x => x.Include(x => x.IdKillerNavigation)));
+        }
 
-            foreach (var item in entities)
+        private void GetKillerBuilds()
+        {
+            _killerBuilds.AddRange(_dataService.GetAllData<KillerBuild>());
+        }
+
+        /*-Вывод : Киллеры-*/
+        private void LoadKillers()
+        {
+            Killers.Clear();
+
+            foreach (var item in _killers)
             {
-                KillerAddonList.Add(item);
+                Killers.Add(item);
+            }
+
+            SelectedKiller = Killers.FirstOrDefault();
+        }
+
+        private void LoadKillerAddons()
+        {
+            KillerAddons.Clear();
+
+            foreach (var item in _killerAddons.Where(x => x.IdKiller == SelectedKiller.IdKiller).OrderBy(x => x.IdRarity))
+            {
+                KillerAddons.Add(item);
+            }
+
+            SelectedKillerFirstAddon = null;
+            SelectedKillerSecondAddon = null;
+        }
+
+        private void LoadKillerPerks()
+        {
+            KillerPerks.Clear();
+
+            foreach (var item in _killerPerks)
+            {
+                KillerPerks.Add(item);
             }
         }
 
-        private async void GetKillerPerkListData()
+        private void LoadKillerBuilds()
         {
-            var entities = await _dataService.GetAllDataAsync<KillerPerk>();
+            KillerBuilds.Clear();
 
-            KillerPerkList.Clear();
-
-            foreach (var item in entities)
+            foreach (var item in _killerBuilds)
             {
-                KillerPerkList.Add(item);
+                KillerBuilds.Add(item);
             }
         }
 
-        private async void GetKillerOfferingListData()
+        private void LoadKillerOfferings()
         {
-            if (SelectedRoleKiller == null) return;
+            KillerOfferings.Clear();
 
-            var entities = await _dataService.GetAllDataAsync<Offering>(x => x
-                .Where(x => x.IdRole == SelectedRoleKiller.IdRole)
-                    .OrderBy(x => x.IdRarity));
-
-            KillerOfferingList.Clear();
-
-            foreach (var item in entities)
+            foreach (var item in _offering.Where(x => x.IdRole == SelectedRoleKiller.IdRole).OrderBy(x => x.IdRarity))
             {
-                KillerOfferingList.Add(item);
+                KillerOfferings.Add(item);
             }
 
-            SelectedKillerOffering = KillerOfferingList.LastOrDefault();
-
-        }
-
-        private async void GetKillerBuildListData()
-        {
-            var entities = await _dataService.GetAllDataAsync<KillerBuild>(x => x
-                .Include(x => x.IdKillerNavigation)
-                    .Include(x => x.IdPerk1Navigation)
-                        .Include(x => x.IdPerk2Navigation)
-                            .Include(x => x.IdPerk3Navigation)
-                                .Include(x => x.IdPerk4Navigation)
-                .Include(x => x.IdAddon1Navigation)
-                    .Include(x =>x.IdAddon2Navigation));
-
-            KillerBuildList.Clear();
-
-            foreach (var item in entities)
-            {
-                KillerBuildList.Add(item);
-            }
+            SelectedKillerOffering = KillerOfferings.LastOrDefault();
         }
 
         #endregion
 
         #region Данные для выживших
 
-        private async void GetSurvivorListData()
+        /*-Получение : Выжившие-*/
+        private void GetSurvivors()
         {
-            var entities = await _dataService.GetAllDataAsync<Survivor>();
+            _survivors.AddRange(_dataService.GetAllData<Survivor>(x => x.Skip(1)));
+        }
 
-            foreach (var item in entities.Skip(1))
+        private void GetSurvivorPerks()
+        {
+            _survivorPerks.AddRange(_dataService.GetAllData<SurvivorPerk>(x => x.Include(x => x.IdSurvivorNavigation)));
+        }
+
+        private void GetItems()
+        {
+            _items.AddRange(_dataService.GetAllData<Item>());
+        }
+
+        private void GetItemAddons()
+        {
+            _itemAddons.AddRange(_dataService.GetAllData<ItemAddon>());
+        }
+
+        private void GetTypeDeaths()
+        {
+            _typeDeaths.AddRange(_dataService.GetAllData<TypeDeath>());
+        }
+
+        /*-Вывод : Выжившие-*/
+        private void LoadSurvivors()
+        {
+            Survivors.Clear();
+
+            foreach (var item in _survivors)
             {
-                SurvivorList.Add(item);
+                Survivors.Add(item);
+            }
+
+            SelectedFirstSurvivor = Survivors.FirstOrDefault();
+            SelectedSecondSurvivor = Survivors.FirstOrDefault();
+            SelectedThirdSurvivor = Survivors.FirstOrDefault();
+            SelectedFourthSurvivor = Survivors.FirstOrDefault();
+        }
+
+        private void LoadSurvivorPerks()
+        {
+            SurvivorPerks.Clear();
+
+            foreach (var item in _survivorPerks)
+            {
+                SurvivorPerks.Add(item);
             }
         }
 
-        private async void GetSurvivorPerkListData()
+        private void LoadItems()
         {
-            var entities = await _dataService.GetAllDataAsync<SurvivorPerk>();
+            Items.Clear();
 
-            SurvivorPerkList.Clear();
-
-            foreach (var item in entities)
+            foreach (var item in _items)
             {
-                SurvivorPerkList.Add(item);
-            }
-        }
-
-        private async void GetItemListData()
-        {
-            var entities = await _dataService.GetAllDataAsync<Item>();
-
-            foreach (var item in entities)
-            {
-                ItemList.Add(item);
+                Items.Add(item);
             }
 
-            Item emptyItem = ItemList.FirstOrDefault(x => x.ItemName == "Отсутствует");
-            SelectedFirstSurvivorItem = emptyItem;
-            SelectedSecondSurvivorItem = emptyItem;
-            SelectedThirdSurvivorItem = emptyItem;
-            SelectedFourthSurvivorItem = emptyItem;
+            SelectedFirstSurvivorItem = Items.LastOrDefault();
+            SelectedSecondSurvivorItem = Items.LastOrDefault();
+            SelectedThirdSurvivorItem = Items.LastOrDefault();
+            SelectedFourthSurvivorItem = Items.LastOrDefault();
         }
 
-        private async void GetFirstSurvivorItemAddonListData()
+        private void LoadTypeDeaths()
         {
-            var entities = await _dataService.GetAllDataAsync<ItemAddon>(x => x
-            .Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem)
-            .OrderBy(x => x.IdRarity));
+            TypeDeaths.Clear();
 
-            FirstSurvivorItemAddonList.Clear();
-            foreach (var item in entities)
+            foreach (var item in _typeDeaths)
             {
-                FirstSurvivorItemAddonList.Add(item);
+                TypeDeaths.Add(item);
+            }
+
+            SelectedFirstSurvivorTypeDeath = TypeDeaths.FirstOrDefault();
+            SelectedSecondSurvivorTypeDeath = TypeDeaths.FirstOrDefault();
+            SelectedThirdSurvivorTypeDeath = TypeDeaths.FirstOrDefault();
+            SelectedFourthSurvivorTypeDeath = TypeDeaths.FirstOrDefault();
+        }
+
+        private void LoadFirstSurvivorItemAddons()
+        {
+            FirstSurvivorItemAddons.Clear();
+
+            foreach (var item in _itemAddons.Where(x => x.IdItem == SelectedFirstSurvivorItem.IdItem))
+            {
+                FirstSurvivorItemAddons.Add(item);
             }
 
             if (SelectedFirstSurvivorItem.ItemName == "Отсутствует")
             {
-                SelectedFirstSurvivorFirstItemAddon = FirstSurvivorItemAddonList.FirstOrDefault();
-                SelectedFirstSurvivorSecondItemAddon = FirstSurvivorItemAddonList.FirstOrDefault();
+                SelectedFirstSurvivorFirstItemAddon = FirstSurvivorItemAddons.FirstOrDefault();
+                SelectedFirstSurvivorSecondItemAddon = FirstSurvivorItemAddons.FirstOrDefault();
             }
             else
             {
-                SelectedFirstSurvivorFirstItemAddon = FirstSurvivorItemAddonList.Reverse().FirstOrDefault();
-                SelectedFirstSurvivorSecondItemAddon = FirstSurvivorItemAddonList.Reverse().FirstOrDefault();
+                SelectedFirstSurvivorFirstItemAddon = FirstSurvivorItemAddons.Reverse().FirstOrDefault();
+                SelectedFirstSurvivorSecondItemAddon = FirstSurvivorItemAddons.Reverse().FirstOrDefault();
             }
+
         }
 
-        private async void GetSecondSurvivorItemAddonListData()
+        private void LoadSecondSurvivorItemAddons()
         {
-            var entities = await _dataService.GetAllDataAsync<ItemAddon>(x => x
-            .Where(x => x.IdItem == SelectedSecondSurvivorItem.IdItem)
-            .OrderBy(x => x.IdRarity));
+            SecondSurvivorItemAddons.Clear();
 
-            SecondSurvivorItemAddonList.Clear();
-            foreach (var item in entities)
+            foreach (var item in _itemAddons.Where(x => x.IdItem == SelectedSecondSurvivorItem.IdItem))
             {
-                SecondSurvivorItemAddonList.Add(item);
+                SecondSurvivorItemAddons.Add(item);
             }
 
             if (SelectedSecondSurvivorItem.ItemName == "Отсутствует")
             {
-                SelectedSecondSurvivorFirstItemAddon = SecondSurvivorItemAddonList.FirstOrDefault();
-                SelectedSecondSurvivorSecondItemAddon = SecondSurvivorItemAddonList.FirstOrDefault();
+                SelectedSecondSurvivorFirstItemAddon = SecondSurvivorItemAddons.FirstOrDefault();
+                SelectedSecondSurvivorSecondItemAddon = SecondSurvivorItemAddons.FirstOrDefault();
             }
             else
             {
-                SelectedSecondSurvivorFirstItemAddon = SecondSurvivorItemAddonList.Reverse().FirstOrDefault();
-                SelectedSecondSurvivorSecondItemAddon = SecondSurvivorItemAddonList.Reverse().FirstOrDefault();
+                SelectedSecondSurvivorFirstItemAddon = SecondSurvivorItemAddons.Reverse().FirstOrDefault();
+                SelectedSecondSurvivorSecondItemAddon = SecondSurvivorItemAddons.Reverse().FirstOrDefault();
             }
-
         }
 
-        private async void GetThirdSurvivorItemAddonListData()
+        private void LoadThirdSurvivorItemAddons()
         {
-            var entities = await _dataService.GetAllDataAsync<ItemAddon>(x => x
-            .Where(x => x.IdItem == SelectedThirdSurvivorItem.IdItem)
-            .OrderBy(x => x.IdRarity));
+            ThirdSurvivorItemAddons.Clear();
 
-            ThirdSurvivorItemAddonList.Clear();
-            foreach (var item in entities)
+            foreach (var item in _itemAddons.Where(x => x.IdItem == SelectedThirdSurvivorItem.IdItem))
             {
-                ThirdSurvivorItemAddonList.Add(item);
+                ThirdSurvivorItemAddons.Add(item);
             }
 
             if (SelectedThirdSurvivorItem.ItemName == "Отсутствует")
             {
-                SelectedThirdSurvivorFirstItemAddon = ThirdSurvivorItemAddonList.FirstOrDefault();
-                SelectedThirdSurvivorSecondItemAddon = ThirdSurvivorItemAddonList.FirstOrDefault();
+                SelectedThirdSurvivorFirstItemAddon = ThirdSurvivorItemAddons.FirstOrDefault();
+                SelectedThirdSurvivorSecondItemAddon = ThirdSurvivorItemAddons.FirstOrDefault();
             }
             else
             {
-                SelectedThirdSurvivorFirstItemAddon = ThirdSurvivorItemAddonList.Reverse().FirstOrDefault();
-                SelectedThirdSurvivorSecondItemAddon = ThirdSurvivorItemAddonList.Reverse().FirstOrDefault();
+                SelectedThirdSurvivorFirstItemAddon = ThirdSurvivorItemAddons.Reverse().FirstOrDefault();
+                SelectedThirdSurvivorSecondItemAddon = ThirdSurvivorItemAddons.Reverse().FirstOrDefault();
             }
         }
 
-        private async void GetFourthSurvivorItemAddonListData()
+        private void LoadFourthSurvivorItemAddons()
         {
-            var entities = await _dataService.GetAllDataAsync<ItemAddon>(x => x
-            .Where(x => x.IdItem == SelectedFourthSurvivorItem.IdItem)
-            .OrderBy(x => x.IdRarity));
+            FourthSurvivorItemAddons.Clear();
 
-            FourthSurvivorItemAddonList.Clear();
-            foreach (var item in entities)
+            foreach (var item in _itemAddons.Where(x => x.IdItem == SelectedFourthSurvivorItem.IdItem))
             {
-                FourthSurvivorItemAddonList.Add(item);
+                FourthSurvivorItemAddons.Add(item);
             }
 
             if (SelectedFourthSurvivorItem.ItemName == "Отсутствует")
             {
-                SelectedFourthSurvivorFirstItemAddon = FourthSurvivorItemAddonList.FirstOrDefault();
-                SelectedFourthSurvivorSecondItemAddon = FourthSurvivorItemAddonList.FirstOrDefault();
+                SelectedFourthSurvivorFirstItemAddon = FourthSurvivorItemAddons.FirstOrDefault();
+                SelectedFourthSurvivorSecondItemAddon = FourthSurvivorItemAddons.FirstOrDefault();
             }
             else
             {
-                SelectedFourthSurvivorFirstItemAddon = FourthSurvivorItemAddonList.Reverse().FirstOrDefault();
-                SelectedFourthSurvivorSecondItemAddon = FourthSurvivorItemAddonList.Reverse().FirstOrDefault();
+                SelectedFourthSurvivorFirstItemAddon = FourthSurvivorItemAddons.Reverse().FirstOrDefault();
+                SelectedFourthSurvivorSecondItemAddon = FourthSurvivorItemAddons.Reverse().FirstOrDefault();
             }
         }
 
-        private async void GetFirstSurvivorOfferingListData()
+        private void LoadFirstSurvivorOfferings()
         {
-            if (SelectedRoleFirstSurvivor == null) return;
+            FirstSurvivorOfferings.Clear();
 
-            var entities = await _dataService.GetAllDataAsync<Offering>(x => x
-               .Where(x => x.IdRole == SelectedRoleFirstSurvivor.IdRole)
-                   .OrderBy(x => x.IdRarity));
-
-            FirstSurvivorOfferingList.Clear();
-
-            foreach (var item in entities)
+            foreach (var item in _offering.Where(x => x.IdRole == SelectedRoleFirstSurvivor.IdRole).OrderBy(x => x.IdRarity))
             {
-                FirstSurvivorOfferingList.Add(item);
+                FirstSurvivorOfferings.Add(item);
             }
 
-            SelectedFirstSurvivorOffering = FirstSurvivorOfferingList.LastOrDefault();
+            SelectedFirstSurvivorOffering = FirstSurvivorOfferings.LastOrDefault();
         }
 
-        private async void GetSecondSurvivorOfferingListData()
+        private void LoadSecondSurvivorOfferings()
         {
-            if (SelectedRoleSecondSurvivor == null) return;
+            SecondSurvivorOfferings.Clear();
 
-            var entities = await _dataService.GetAllDataAsync<Offering>(x => x
-              .Where(x => x.IdRole == SelectedRoleSecondSurvivor.IdRole)
-                  .OrderBy(x => x.IdRarity));
-
-            SecondSurvivorOfferingList.Clear();
-
-            foreach (var item in entities)
+            foreach (var item in _offering.Where(x => x.IdRole == SelectedRoleSecondSurvivor.IdRole).OrderBy(x => x.IdRarity))
             {
-                SecondSurvivorOfferingList.Add(item);
+                SecondSurvivorOfferings.Add(item);
             }
 
-            SelectedSecondSurvivorOffering = SecondSurvivorOfferingList.LastOrDefault();
+            SelectedSecondSurvivorOffering = SecondSurvivorOfferings.LastOrDefault();
         }
 
-        private async void GetThirdSurvivorOfferingListData()
+        private void LoadThirdSurvivorOfferings()
         {
-            if (SelectedRoleThirdSurvivor == null) return;
+            ThirdSurvivorOfferings.Clear();
 
-            var entities = await _dataService.GetAllDataAsync<Offering>(x => x
-              .Where(x => x.IdRole == SelectedRoleThirdSurvivor.IdRole)
-                  .OrderBy(x => x.IdRarity));
-
-            ThirdSurvivorOfferingList.Clear();
-
-            foreach (var item in entities)
+            foreach (var item in _offering.Where(x => x.IdRole == SelectedRoleThirdSurvivor.IdRole).OrderBy(x => x.IdRarity))
             {
-                ThirdSurvivorOfferingList.Add(item);
+                ThirdSurvivorOfferings.Add(item);
             }
 
-            SelectedThirdSurvivorOffering = ThirdSurvivorOfferingList.LastOrDefault();
-
+            SelectedThirdSurvivorOffering = ThirdSurvivorOfferings.LastOrDefault();
         }
 
-        private async void GetFourthSurvivorOfferingListData()
+        private void LoadFourthSurvivorOfferings()
         {
-            if (SelectedRoleFourthSurvivor == null) return;
+            FourthSurvivorOfferings.Clear();
 
-            var entities = await _dataService.GetAllDataAsync<Offering>(x => x
-              .Where(x => x.IdRole == SelectedRoleFourthSurvivor.IdRole)
-                  .OrderBy(x => x.IdRarity));
-
-            FourthSurvivorOfferingList.Clear();
-
-            foreach (var item in entities)
+            foreach (var item in _offering.Where(x => x.IdRole == SelectedRoleFourthSurvivor.IdRole).OrderBy(x => x.IdRarity))
             {
-                FourthSurvivorOfferingList.Add(item);
+                FourthSurvivorOfferings.Add(item);
             }
 
-            SelectedFourthSurvivorOffering = FourthSurvivorOfferingList.LastOrDefault();
-
-        }
-
-        private async void GetTypeDeathListData()
-        {
-            var entities = await _dataService.GetAllDataAsync<TypeDeath>();
-
-            foreach (var item in entities)
-            {
-                TypeDeathList.Add(item);
-            }
+            SelectedFourthSurvivorOffering = FourthSurvivorOfferings.LastOrDefault();
         }
 
         #endregion
@@ -3872,10 +3973,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void SetNullKillerData()
         {
-            SelectedKillerPlatform = PlatformList.FirstOrDefault();
+            SelectedKillerPlatform = Platforms.FirstOrDefault();
 
-            SelectedRoleKiller = KillerRoleList.FirstOrDefault();
-            SelectedKillerOffering = KillerOfferingList.LastOrDefault();
+            SelectedRoleKiller = KillerRoles.FirstOrDefault();
 
             KillerAnonymousMode = false;
             KillerBot = false;
@@ -3889,14 +3989,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
             SelectedKillerFirstAddon = null;
             SelectedKillerSecondAddon = null;
-            SelectedKillerOffering = null;
         }
 
         private void SetNullSurvivorData()
         {
             /* Выбор платформы, на которой играют выжившие на Steam */
 
-            Platform steam = PlatformList.FirstOrDefault();
+            Platform steam = Platforms.FirstOrDefault();
 
             SelectedFirstSurvivorPlatform = steam;
             SelectedSecondSurvivorPlatform = steam;
@@ -3905,7 +4004,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
             /* Выбор типа смерти игрока в матче в "От крюка" */
 
-            TypeDeath onHock = TypeDeathList.FirstOrDefault();
+            TypeDeath onHock = TypeDeaths.FirstOrDefault();
 
             SelectedFirstSurvivorTypeDeath = onHock;
             SelectedSecondSurvivorTypeDeath = onHock;
@@ -3962,7 +4061,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
             /* Выбор предмета по умолчанию у выживших */
 
-            Item emptyItem = ItemList.FirstOrDefault(x => x.ItemName == "Отсутствует");
+            Item emptyItem = Items.FirstOrDefault(x => x.ItemName == "Отсутствует");
 
             SelectedFirstSurvivorItem = emptyItem;
             SelectedSecondSurvivorItem = emptyItem;
@@ -3971,7 +4070,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
             /* Сброс подношений игроков на выживших */
 
-            Role firstRole = SurvivorRoleList.FirstOrDefault();
+            Role firstRole = SurvivorRoles.FirstOrDefault();
 
             SelectedRoleFirstSurvivor = firstRole;
             SelectedRoleSecondSurvivor = firstRole;
@@ -3981,7 +4080,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void SetNullGameData()
         {
-            WhoPlacedMap whoPlacedMap = WhoPlacedMapList.FirstOrDefault();
+            WhoPlacedMap whoPlacedMap = WhoPlacedMaps.FirstOrDefault();
             CheckKills();
             CountHooks = 0;
             SelectedMap = null;
@@ -4270,8 +4369,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private async void DeleteSelectImage()
         {
-            if (_dialogService.ShowMessageButtons("Вы точно хотите удалить изображение с устройства?", 
-                                                  "Предупреждение!", 
+            if (_dialogService.ShowMessageButtons("Вы точно хотите удалить изображение с устройства?",
+                                                  "Предупреждение!",
                                                   TypeMessage.Warning,
                                                   MessageButtons.YesNoCancel) == MessageButtons.Yes)
             {
@@ -4308,7 +4407,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             if (SelectedFirstSurvivorTypeDeath != null || SelectedSecondSurvivorTypeDeath != null || SelectedThirdSurvivorTypeDeath != null || SelectedFourthSurvivorTypeDeath == null)
             {
-                TypeDeath Escaped = TypeDeathList.FirstOrDefault(x => x.IdTypeDeath == 5);
+                TypeDeath Escaped = TypeDeaths.FirstOrDefault(x => x.IdTypeDeath == 5);
 
                 var selectedTypes = new List<TypeDeath>()
             {
@@ -4322,7 +4421,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             else return;
         }
 
-        #endregion 
+        #endregion
 
         #endregion
     }

@@ -335,14 +335,14 @@
 
                                                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                              ItemsSource="{Binding KillerList}"
+                                                              ItemsSource="{Binding Killers}"
                                                               SelectedItem="{Binding SelectedKiller}"                         
                                                               DisplayMemberPath="KillerName" />
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding PlatformList}" 
+                                                              ItemsSource="{Binding Platforms}" 
                                                               SelectedItem="{Binding SelectedKillerPlatform}"                                                                
-                                                              SelectedIndex="0"
+                                                              
                                                               DisplayMemberPath="PlatformName"/>
 
                                                     <TextBox Width="150" Height="25"
@@ -370,7 +370,7 @@
                                                               VerticalContentAlignment="Center"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding KillerAssociationList}"
+                                                              ItemsSource="{Binding KillerAssociations}"
                                                               SelectedItem="{Binding SelectedKillerPlayerAssociation}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="PlayerAssociationName"/>
@@ -476,7 +476,7 @@
                                                              IsReadOnly="True"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"
-                                                              ItemsSource="{Binding KillerRoleList}"
+                                                              ItemsSource="{Binding KillerRoles}"
                                                               SelectedItem="{Binding SelectedRoleKiller}"
                                                               SelectedIndex="1"
                                                               DisplayMemberPath="RoleName"/>
@@ -505,7 +505,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding KillerPerkList}" SelectedItem="{Binding SelectedKillerPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding KillerPerks}" SelectedItem="{Binding SelectedKillerPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -579,7 +579,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding KillerAddonList}" SelectedItem="{Binding SelectedKillerAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding KillerAddons}" SelectedItem="{Binding SelectedKillerAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -641,7 +641,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding KillerOfferingList}" SelectedItem="{Binding SelectedKillerOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding KillerOfferings}" SelectedItem="{Binding SelectedKillerOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -740,19 +740,19 @@
 
                                                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                                  ItemsSource="{Binding SurvivorList}"
+                                                                  ItemsSource="{Binding Survivors}"
                                                                   SelectedItem="{Binding SelectedFirstSurvivor}"
                                                                   SelectedIndex="0"
                                                                   DisplayMemberPath="SurvivorName"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                                  ItemsSource="{Binding PlatformList}"                                                            
+                                                                  ItemsSource="{Binding Platforms}"                                                            
                                                                   SelectedItem="{Binding SelectedFirstSurvivorPlatform}"
                                                                   SelectedIndex="0"
                                                                   DisplayMemberPath="PlatformName"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                                  ItemsSource="{Binding TypeDeathList}"
+                                                                  ItemsSource="{Binding TypeDeaths}"
                                                                   SelectedItem="{Binding SelectedFirstSurvivorTypeDeath}"
                                                                   SelectedIndex="0"
                                                                   DisplayMemberPath="TypeDeathName"/>
@@ -780,7 +780,7 @@
                                                                   VerticalContentAlignment="Center"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                                  ItemsSource="{Binding SurvivorAssociationList}"
+                                                                  ItemsSource="{Binding SurvivorAssociations}"
                                                                   SelectedItem="{Binding SelectedFirstSurvivorPlayerAssociation}"
                                                                   SelectedIndex="2"
                                                                   DisplayMemberPath="PlayerAssociationName"/>
@@ -865,29 +865,29 @@
 
                                                 <StackPanel Grid.Column="1">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                                  ItemsSource="{Binding ItemList}"                                                            
-                                                                  SelectedItem="{Binding SelectedFirstSurvivorItem}"
-                                                                  DisplayMemberPath="ItemName"/>
+                                                              ItemsSource="{Binding Items}"                                                            
+                                                              SelectedItem="{Binding SelectedFirstSurvivorItem}"
+                                                              DisplayMemberPath="ItemName"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                                 Text="{Binding SelectedFirstSurvivorFirstItemAddonName}"
-                                                                 Template="{StaticResource BaseTemplate}"/>
+                                                             Text="{Binding SelectedFirstSurvivorFirstItemAddonName}"
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                                 Text="{Binding SelectedFirstSurvivorSecondItemAddonName}"
-                                                                 Template="{StaticResource BaseTemplate}"/>
+                                                             Text="{Binding SelectedFirstSurvivorSecondItemAddonName}"
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <TextBlock Text="" Style="{StaticResource TextBlockAddMatchInputData}"/>
 
                                                     <TextBox Style="{StaticResource TextBoxAddmatchInputData}" 
-                                                                 Text="{Binding SelectedFirstSurvivorOfferingName}"
-                                                                 Template="{StaticResource BaseTemplate}"/>
+                                                             Text="{Binding SelectedFirstSurvivorOfferingName}"
+                                                             Template="{StaticResource BaseTemplate}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                                  ItemsSource="{Binding SurvivorRoleList}"
-                                                                  SelectedItem="{Binding SelectedRoleFirstSurvivor}"
-                                                                  SelectedIndex="0"
-                                                                  DisplayMemberPath="RoleName"/>
+                                                              ItemsSource="{Binding SurvivorRoles}"
+                                                              SelectedItem="{Binding SelectedRoleFirstSurvivor}"
+                                                              SelectedIndex="0"
+                                                              DisplayMemberPath="RoleName"/>
                                                 </StackPanel>
                                             </Grid>
                                         </StackPanel>
@@ -908,18 +908,18 @@
 
                                     <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
-                                                       SelectedIndex="0"
-                                                       Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
-                                                       HorizontalContentAlignment="Center"
-                                                       VerticalContentAlignment="Center"
-                                                       ScrollViewer.CanContentScroll="True"
-                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                       VirtualizingPanel.IsVirtualizing="True"
-                                                       VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                                       VirtualizingPanel.CacheLength="15,15"
-                                                       VirtualizingPanel.CacheLengthUnit="Item"
-                                                       VirtualizingPanel.ScrollUnit="Pixel">
+                                        <ListView  ItemsSource="{Binding SurvivorPerks}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
                                             <ListView.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <WrapPanel/>
@@ -976,7 +976,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding FirstSurvivorItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding FirstSurvivorItemAddons}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                        SelectedIndex="0"
                                                        Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                        HorizontalContentAlignment="Center"
@@ -1038,17 +1038,17 @@
 
                                     <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding FirstSurvivorOfferingList}" SelectedItem="{Binding SelectedFirstSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
-                                                       SelectedIndex="0"
-                                                       Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
-                                                       HorizontalContentAlignment="Center"
-                                                       VerticalContentAlignment="Center"
-                                                       ScrollViewer.CanContentScroll="True"
-                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                       VirtualizingPanel.IsVirtualizing="True"
-                                                       VirtualizingPanel.CacheLength="15,15"
-                                                       VirtualizingPanel.CacheLengthUnit="Item"
-                                                       VirtualizingPanel.ScrollUnit="Pixel">
+                                        <ListView  ItemsSource="{Binding FirstSurvivorOfferings}" SelectedItem="{Binding SelectedFirstSurvivorOffering}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                                   SelectedIndex="0"
+                                                   Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   ScrollViewer.CanContentScroll="True"
+                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                   VirtualizingPanel.IsVirtualizing="True"
+                                                   VirtualizingPanel.CacheLength="15,15"
+                                                   VirtualizingPanel.CacheLengthUnit="Item"
+                                                   VirtualizingPanel.ScrollUnit="Pixel">
                                             <ListView.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <WrapPanel/>
@@ -1137,19 +1137,19 @@
 
                                                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                                  ItemsSource="{Binding SurvivorList}"
+                                                                  ItemsSource="{Binding Survivors}"
                                                                   SelectedItem="{Binding SelectedSecondSurvivor}"
                                                                   SelectedIndex="0"
                                                                   DisplayMemberPath="SurvivorName"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                                  ItemsSource="{Binding PlatformList}"                                                            
+                                                                  ItemsSource="{Binding Platforms}"                                                            
                                                                   SelectedItem="{Binding SelectedSecondSurvivorPlatform}"
                                                                   SelectedIndex="0"
                                                                   DisplayMemberPath="PlatformName"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                                  ItemsSource="{Binding TypeDeathList}"
+                                                                  ItemsSource="{Binding TypeDeaths}"
                                                                   SelectedItem="{Binding SelectedSecondSurvivorTypeDeath}"
                                                                   SelectedIndex="0"
                                                                   DisplayMemberPath="TypeDeathName"/>
@@ -1177,7 +1177,7 @@
                                                                   VerticalContentAlignment="Center"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                                  ItemsSource="{Binding SurvivorAssociationList}"
+                                                                  ItemsSource="{Binding SurvivorAssociations}"
                                                                   SelectedItem="{Binding SelectedSecondSurvivorPlayerAssociation}"
                                                                   SelectedIndex="2"
                                                                   DisplayMemberPath="PlayerAssociationName"/>
@@ -1262,7 +1262,7 @@
 
                                                 <StackPanel Grid.Column="1">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                                  ItemsSource="{Binding ItemList}"                                                            
+                                                                  ItemsSource="{Binding Items}"                                                            
                                                                   SelectedItem="{Binding SelectedSecondSurvivorItem}"
                                                                   DisplayMemberPath="ItemName"/>
 
@@ -1281,7 +1281,7 @@
                                                                  Template="{StaticResource BaseTemplate}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                                  ItemsSource="{Binding SurvivorRoleList}"
+                                                                  ItemsSource="{Binding SurvivorRoles}"
                                                                   SelectedItem="{Binding SelectedRoleSecondSurvivor}"
                                                                   SelectedIndex="0"
                                                                   DisplayMemberPath="RoleName"/>
@@ -1305,7 +1305,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding SurvivorPerks}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                        SelectedIndex="0"
                                                        Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                        HorizontalContentAlignment="Center"
@@ -1373,7 +1373,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding SecondSurvivorItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding SecondSurvivorItemAddons}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                        SelectedIndex="0"
                                                        Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                        HorizontalContentAlignment="Center"
@@ -1435,7 +1435,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding SecondSurvivorOfferingList}" SelectedItem="{Binding SelectedSecondSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding SecondSurvivorOfferings}" SelectedItem="{Binding SelectedSecondSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
                                                        SelectedIndex="0"
                                                        Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                        HorizontalContentAlignment="Center"
@@ -1534,19 +1534,19 @@
 
                                                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding SurvivorList}"
+                                                              ItemsSource="{Binding Survivors}"
                                                               SelectedItem="{Binding SelectedThirdSurvivor}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="SurvivorName"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding PlatformList}"                                                            
+                                                              ItemsSource="{Binding Platforms}"                                                            
                                                               SelectedItem="{Binding SelectedThirdSurvivorPlatform}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="PlatformName"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                              ItemsSource="{Binding TypeDeathList}"
+                                                              ItemsSource="{Binding TypeDeaths}"
                                                               SelectedItem="{Binding SelectedThirdSurvivorTypeDeath}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="TypeDeathName"/>
@@ -1574,7 +1574,7 @@
                                                               VerticalContentAlignment="Center"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding SurvivorAssociationList}"
+                                                              ItemsSource="{Binding SurvivorAssociations}"
                                                               SelectedItem="{Binding SelectedThirdSurvivorPlayerAssociation}"
                                                               SelectedIndex="2"
                                                               DisplayMemberPath="PlayerAssociationName"/>
@@ -1659,7 +1659,7 @@
 
                                                 <StackPanel Grid.Column="1">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding ItemList}"                                                            
+                                                              ItemsSource="{Binding Items}"                                                            
                                                               SelectedItem="{Binding SelectedThirdSurvivorItem}"
                                                               DisplayMemberPath="ItemName"/>
 
@@ -1678,7 +1678,7 @@
                                                              Template="{StaticResource BaseTemplate}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                              ItemsSource="{Binding SurvivorRoleList}"
+                                                              ItemsSource="{Binding SurvivorRoles}"
                                                               SelectedItem="{Binding SelectedRoleThirdSurvivor}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="RoleName"/>
@@ -1702,7 +1702,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding SurvivorPerks}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -1770,7 +1770,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding ThirdSurvivorItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding ThirdSurvivorItemAddons}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -1832,7 +1832,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding ThirdSurvivorOfferingList}" SelectedItem="{Binding SelectedThirdSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding ThirdSurvivorOfferings}" SelectedItem="{Binding SelectedThirdSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -1931,19 +1931,19 @@
 
                                                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding SurvivorList}"
+                                                              ItemsSource="{Binding Survivors}"
                                                               SelectedItem="{Binding SelectedFourthSurvivor}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="SurvivorName"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding PlatformList}"                                                            
+                                                              ItemsSource="{Binding Platforms}"                                                            
                                                               SelectedItem="{Binding SelectedFourthSurvivorPlatform}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="PlatformName"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                              ItemsSource="{Binding TypeDeathList}"
+                                                              ItemsSource="{Binding TypeDeaths}"
                                                               SelectedItem="{Binding SelectedFourthSurvivorTypeDeath}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="TypeDeathName"/>
@@ -1971,7 +1971,7 @@
                                                               VerticalContentAlignment="Center"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding SurvivorAssociationList}"
+                                                              ItemsSource="{Binding SurvivorAssociations}"
                                                               SelectedItem="{Binding SelectedFourthSurvivorPlayerAssociation}"
                                                               SelectedIndex="2"
                                                               DisplayMemberPath="PlayerAssociationName"/>
@@ -2056,7 +2056,7 @@
 
                                                 <StackPanel Grid.Column="1">
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding ItemList}"                                                            
+                                                              ItemsSource="{Binding Items}"                                                            
                                                               SelectedItem="{Binding SelectedFourthSurvivorItem}"
                                                               DisplayMemberPath="ItemName"/>
 
@@ -2075,7 +2075,7 @@
                                                              Template="{StaticResource BaseTemplate}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"  
-                                                              ItemsSource="{Binding SurvivorRoleList}"
+                                                              ItemsSource="{Binding SurvivorRoles}"
                                                               SelectedItem="{Binding SelectedRoleFourthSurvivor}"
                                                               SelectedIndex="0"
                                                               DisplayMemberPath="RoleName"/>
@@ -2099,7 +2099,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding SurvivorPerkList}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding SurvivorPerks}" SelectedItem="{Binding SelectedSurvivorPerk}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -2167,7 +2167,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding FourthSurvivorItemAddonList}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding FourthSurvivorItemAddons}" SelectedItem="{Binding SelectedItemAddon}" d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -2229,7 +2229,7 @@
 
                                     <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderCardAddMatch}" Margin="10,50,10,10">
 
-                                        <ListView  ItemsSource="{Binding FourthSurvivorOfferingList}" SelectedItem="{Binding SelectedFourthSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
+                                        <ListView  ItemsSource="{Binding FourthSurvivorOfferings}" SelectedItem="{Binding SelectedFourthSurvivorOffering}"  d:ItemsSource="{d:SampleData ItemCount=100}"
                                                    SelectedIndex="0"
                                                    Background="Transparent" BorderThickness="0" Margin="10,5,10,5"
                                                    HorizontalContentAlignment="Center"
@@ -2373,7 +2373,7 @@
                                                              Text="{Binding CountHooks}"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"
-                                                              ItemsSource="{Binding MapList}"
+                                                              ItemsSource="{Binding Maps}"
                                                               SelectedItem="{Binding SelectedMap}"
                                                               DisplayMemberPath="MapName"/>
 
@@ -2404,31 +2404,31 @@
                                                 <StackPanel Grid.Column="1" HorizontalAlignment="Center">
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}"
-                                                              ItemsSource="{Binding PatchList}"
+                                                              ItemsSource="{Binding Patches}"
                                                               SelectedItem="{Binding SelectedPatch}"
                                                               DisplayMemberPath="PatchNumber"
                                                               SelectedIndex="0"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding GameModeList}"
+                                                              ItemsSource="{Binding GameModes}"
                                                               SelectedItem="{Binding SelectedGameMode}"
                                                               DisplayMemberPath="GameModeName"
                                                               SelectedIndex="0"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding GameEventList}"
+                                                              ItemsSource="{Binding GameEvents}"
                                                               SelectedItem="{Binding SelectedGameEvent}"
                                                               DisplayMemberPath="GameEventName"
                                                               SelectedIndex="0"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding WhoPlacedMapList}"
+                                                              ItemsSource="{Binding WhoPlacedMaps}"
                                                               SelectedItem="{Binding SelectedWhoPlacedMap}" 
                                                               DisplayMemberPath="WhoPlacedMapName"
                                                               SelectedIndex="0"/>
 
                                                     <ComboBox Style="{DynamicResource ComboBoxAddMatchInputData}" 
-                                                              ItemsSource="{Binding WhoPlacedMapList}"
+                                                              ItemsSource="{Binding WhoPlacedMaps}"
                                                               SelectedItem="{Binding SelectedWhoPlacedMapWin}"
                                                               DisplayMemberPath="WhoPlacedMapName"
                                                               SelectedIndex="0"/>
