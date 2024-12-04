@@ -3,15 +3,16 @@ using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using Microsoft.EntityFrameworkCore;
 
-namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.PerkService
+namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
 {
-    public class PerkCalculationService(Func<MasterAnalyticsDeadByDaylightDbContext> contextFactory) : IPerkCalculationService
+    public static class CalculationPerk
     {
-        IDataService _dataService = new DataService(contextFactory);
+        static Func<MasterAnalyticsDeadByDaylightDbContext> _contextFactory = () => new MasterAnalyticsDeadByDaylightDbContext();
+        private static readonly DataService _dataService = new(_contextFactory);
 
-        public async Task<List<PerkStat>> CalculatingPerkStatAsync(Role role, PlayerAssociation typeAssociation, string sortingValue)
+        public static async Task<List<PerkStat>> CalculatingPerkStatAsync(Role role, PlayerAssociation typeAssociation, string sortingValue)
         {
-            return await Task.Run(() => 
+            return await Task.Run(() =>
             {
                 List<PerkStat> perkStats = [];
 
@@ -84,7 +85,8 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.PerkService
                             };
                             perkStats.Add(perkStat);
                         }
-                    },
+                    }
+                    ,
 
                     3 => () =>
                     {
@@ -133,8 +135,9 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.PerkService
                                 PerkCharacterUses = perkCharacterUseList.OrderByDescending(x => x.AmountUsedPerk).ToList(),
                             };
                             perkStats.Add(perkStat);
-                        } 
-                    },
+                        }
+                    }
+                    ,
 
                     _ => () =>
                     {
@@ -145,7 +148,7 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.PerkService
                 actionPerkStat.Invoke();
 
                 return perkStats;
-            }); 
+            });
         }
     }
 }

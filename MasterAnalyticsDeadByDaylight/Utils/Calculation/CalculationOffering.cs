@@ -3,19 +3,20 @@ using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using Microsoft.EntityFrameworkCore;
 
-namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.OfferingService
+namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
 {
-    public class OfferingCalculationService(Func<MasterAnalyticsDeadByDaylightDbContext> contextFactory) : IOfferingCalculationService
+    public static class CalculationOffering
     {
-        private readonly DataService _dataService = new(contextFactory);
+        static Func<MasterAnalyticsDeadByDaylightDbContext> _contextFactory = () => new MasterAnalyticsDeadByDaylightDbContext();
+        private static readonly DataService _dataService = new(_contextFactory);
 
-        public async Task<List<OfferingStat>> CalculatingOfferingStat(PlayerAssociation typeAssociation, OfferingCategory offeringCategory)
+        public static async Task<List<OfferingStat>> CalculatingOfferingStat(PlayerAssociation typeAssociation, OfferingCategory offeringCategory)
         {
             List<OfferingStat> offeringStat = [];
 
             int id_association = typeAssociation.IdPlayerAssociation;
             List<Offering> offerings = await _dataService.GetAllDataInListAsync<Offering>(x => x.Include(x => x.IdRoleNavigation).Where(x => x.IdCategory == offeringCategory.IdCategory));
-            List <Survivor> survivors = await _dataService.GetAllDataInListAsync<Survivor>(x => x.Skip(1));
+            List<Survivor> survivors = await _dataService.GetAllDataInListAsync<Survivor>(x => x.Skip(1));
             List<Killer> killers = await _dataService.GetAllDataInListAsync<Killer>(x => x.Skip(1));
 
             foreach (var offering in offerings.OrderBy(x => x.IdRarity))
@@ -33,7 +34,7 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.OfferingServ
                             .Where(x => x.IdAssociation == id_association)
                                 .Where(x => x.IdSurvivor == survivor.IdSurvivor)
                                     .Where(x => x.IdSurvivorOffering == offering.IdOffering));
-                   
+
                     allAmountSurvivorUsed += survivorInfos.Count;
 
                     var offeringCharacterUse = new OfferingCharacterUse()
@@ -52,7 +53,7 @@ namespace MasterAnalyticsDeadByDaylight.Services.CalculationService.OfferingServ
                             .Where(x => x.IdAssociation == id_association)
                                 .Where(x => x.IdKiller == killer.IdKiller)
                                     .Where(x => x.IdKillerOffering == offering.IdOffering));
-                   
+
                     allAmountKillerUsed += killerInfos.Count;
 
                     var offeringCharacterUse = new OfferingCharacterUse()
