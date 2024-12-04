@@ -361,7 +361,7 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{StaticResource KillerCard}">
+                            <Border Style="{StaticResource BaseBorderItemsCard}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="100"/>

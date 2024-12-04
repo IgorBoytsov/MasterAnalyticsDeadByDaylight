@@ -2,8 +2,8 @@
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
-using MasterAnalyticsDeadByDaylight.Services.CalculationService.PerkService;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Utils.Calculation;
 using System.Collections.ObjectModel;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
@@ -95,12 +95,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         #endregion
 
         private readonly IDataService _dataService;
-        private readonly IPerkCalculationService _perkCalculationService;
 
-        public PerkPageViewModel(IDataService dataService, IPerkCalculationService perkCalculationService)
+        public PerkPageViewModel(IDataService dataService)
         {
             _dataService = dataService;
-            _perkCalculationService = perkCalculationService;
             IsFilterPopupOpen = false;
 
             GetKillerPerkCategoryData();
@@ -137,7 +135,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async void GetPerkStat()
         {
             PerkStatList.Clear();
-            foreach (var item in await _perkCalculationService.CalculatingPerkStatAsync(SelectedRole, SelectedPlayerAssociation, SelectedSortValue))
+            foreach (var item in await CalculationPerk.CalculatingPerkStatAsync(SelectedRole, SelectedPlayerAssociation, SelectedSortValue))
             {
                 PerkStatList.Add(item);
             }

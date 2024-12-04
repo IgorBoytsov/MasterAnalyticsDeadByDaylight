@@ -2,8 +2,8 @@
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
-using MasterAnalyticsDeadByDaylight.Services.CalculationService.OfferingService;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Utils.Calculation;
 using System.Collections.ObjectModel;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
@@ -21,12 +21,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         #endregion
 
         private readonly IDataService _dataService;
-        private readonly IOfferingCalculationService _offeringCalculationService;
 
-        public OfferingPageViewModel(IDataService dataService, IOfferingCalculationService offeringCalculationService)
+        public OfferingPageViewModel(IDataService dataService)
         {
             _dataService = dataService;
-            _offeringCalculationService = offeringCalculationService;
 
             GetTypeAssociationData();
             GetOfferingCategoryData();
@@ -100,7 +98,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async void GetOfferingInfo()
         {
             OfferingStatList.Clear();
-            var offeringStat = await _offeringCalculationService.CalculatingOfferingStat(SelectedPlayerAssociation, SelectedOfferingCategory);
+            //var offeringStat = await _offeringCalculationService.CalculatingOfferingStat(SelectedPlayerAssociation, SelectedOfferingCategory);
+            var offeringStat = await CalculationOffering.CalculatingOfferingStat(SelectedPlayerAssociation, SelectedOfferingCategory);
             foreach (var item in offeringStat)
             {
                 OfferingStatList.Add(item);

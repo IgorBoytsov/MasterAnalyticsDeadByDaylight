@@ -34,11 +34,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         #region Команды взоимодейсвтие с данными
 
         private RelayCommand _updateMatchCommand;
-        public RelayCommand UpdateMatchCommand { get => _updateMatchCommand ??= new(obj =>
+        public RelayCommand UpdateMatchCommand
         {
-            GetGameStatisticData();
-            LoadGameStatistics();
-        }); }
+            get => _updateMatchCommand ??= new(obj =>
+            {
+                GetGameStatisticData();
+                LoadGameStatistics();
+            });
+        }
 
         private RelayCommand _showMatchCommand;
         public RelayCommand ShowMatchCommand => _showMatchCommand ??= new RelayCommand(ShowMatch);
@@ -57,10 +60,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         private const string _NOT_INCLUDE = "Не учитывать";
 
-        #region Коллекции фильтрации
+        #region Коллекции фильтрации     
 
         public ObservableCollection<Killer> Killers { get; set; } = [];
-      
+
         public ObservableCollection<Platform> KillerPlatforms { get; set; } = [];
 
         public ObservableCollection<KillerAddon> KillerAddons { get; set; } = [];
@@ -83,7 +86,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         public ObservableCollection<Patch> Patches { get; set; } = [];
 
-        public List<string> KillerWinOrLoss { get; set; } = [_NOT_INCLUDE,"Победа", "Ничья","Проигрыш"];
+        public List<string> KillerWinOrLoss { get; set; } = [_NOT_INCLUDE, "Победа", "Ничья", "Проигрыш"];
 
         public List<WhoPlacedMap> WhoPleaseMaps { get; set; } = [];
 
@@ -95,7 +98,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         public List<string> NumberRecentGenerators { get; set; } = [_NOT_INCLUDE, "0", "1", "2", "3", "4", "5"];
 
-        #endregion
+        #endregion  
 
         #region Коллекции сортировки
 
@@ -106,7 +109,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
               "Убыванию длинны матча", "Возрастанию длинны матча",
           ];
 
-        #endregion
+        #endregion 
 
         #region Свойства выбора 
 
@@ -414,7 +417,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         #endregion
 
-        #endregion
+        #endregion 
 
         #region Свойства Popup
 
@@ -429,28 +432,34 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             }
         }
 
-        #endregion
+        #endregion 
 
         #region Команды 
 
         private RelayCommand _openPopupFilter;
-        public RelayCommand OpenPopupFilter { get => _openPopupFilter ??= new(obj => { IsPopupFilterOpen = true; });}
+        public RelayCommand OpenPopupFilter { get => _openPopupFilter ??= new(obj => { IsPopupFilterOpen = true; }); }
 
         private RelayCommand _applyChangeCommand;
-        public RelayCommand ApplyChangeCommand { get => _applyChangeCommand ??= new(obj => 
+        public RelayCommand ApplyChangeCommand
         {
-            IsPopupFilterOpen = false;
-            CurrentPage = 1;
-            ApplySorting();
-            ApplyFilter();
-            LoadGameStatistics();
-        });}
+            get => _applyChangeCommand ??= new(obj =>
+            {
+                IsPopupFilterOpen = false;
+                CurrentPage = 1;
+                ApplySorting();
+                ApplyFilter();
+                LoadGameStatistics();
+            });
+        }
 
         private RelayCommand _resetFilterCommand;
-        public RelayCommand ResetFilterCommand { get => _resetFilterCommand ??= new(obj => 
+        public RelayCommand ResetFilterCommand
         {
-            ResetFilter();
-        });}
+            get => _resetFilterCommand ??= new(obj =>
+            {
+                ResetFilter();
+            });
+        }
 
         private void ResetFilter()
         {
@@ -505,7 +514,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void GetKillers()
         {
             var killers = _dataService.GetAllData<Killer>(x => x.Skip(1));
-            Killers.Add(new Killer(){ KillerName = _NOT_INCLUDE });
+            Killers.Add(new Killer() { KillerName = _NOT_INCLUDE });
             foreach (var killer in killers) { Killers.Add(killer); }
             SelectedKiller = Killers.FirstOrDefault();
         }
@@ -513,7 +522,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void GetKillerPlatforms()
         {
             var platforms = _dataService.GetAllData<Platform>();
-            KillerPlatforms.Add(new Platform(){ PlatformName = _NOT_INCLUDE });
+            KillerPlatforms.Add(new Platform() { PlatformName = _NOT_INCLUDE });
             foreach (var platform in platforms) { KillerPlatforms.Add(platform); }
             SelectedKillerPlatform = KillerPlatforms.FirstOrDefault();
         }
@@ -542,9 +551,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 _ => _dataService.GetAllData<KillerAddon>(x => x.Where(x => x.IdKiller == SelectedKiller.IdKiller).OrderBy(x => x.IdRarity))
             };
             KillerAddons.Add(new KillerAddon() { AddonName = _NOT_INCLUDE });
-            foreach (var killerAddon in killerAddons) 
-            { 
-                KillerAddons.Add(killerAddon); 
+            foreach (var killerAddon in killerAddons)
+            {
+                KillerAddons.Add(killerAddon);
             }
 
             SelectedFirstKillerAddon = KillerAddons.FirstOrDefault();
@@ -600,7 +609,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void GetPatches()
         {
             var patches = _dataService.GetAllData<Patch>();
-            Patches.Add(new Patch(){ PatchNumber = _NOT_INCLUDE });
+            Patches.Add(new Patch() { PatchNumber = _NOT_INCLUDE });
             foreach (var patch in patches) { Patches.Add(patch); }
             SelectedPatch = Patches.FirstOrDefault();
         }
@@ -608,8 +617,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private void GetWhoPlacedMap()
         {
             var whoPlaceMap = _dataService.GetAllData<WhoPlacedMap>();
-            WhoPleaseMaps.Add(new WhoPlacedMap(){ WhoPlacedMapName = _NOT_INCLUDE });
-            WhoPleaseMapWon.Add(new WhoPlacedMap(){ WhoPlacedMapName = _NOT_INCLUDE });
+            WhoPleaseMaps.Add(new WhoPlacedMap() { WhoPlacedMapName = _NOT_INCLUDE });
+            WhoPleaseMapWon.Add(new WhoPlacedMap() { WhoPlacedMapName = _NOT_INCLUDE });
 
             WhoPleaseMaps.AddRange(whoPlaceMap);
             WhoPleaseMapWon.AddRange(whoPlaceMap);
@@ -618,7 +627,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             SelectedWhoPleaseMapWin = WhoPleaseMapWon.FirstOrDefault();
         }
 
-        #endregion
+        #endregion 
 
         #endregion
 
@@ -759,7 +768,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 filters.Add(x => x.IdKillerNavigation.IdKillerNavigation.IdKiller == SelectedKiller.IdKiller);
 
             if (SelectedFirstKillerAddon.AddonName != _NOT_INCLUDE && SelectedSecondKillerAddon.AddonName != _NOT_INCLUDE)
-                filters.Add(x => 
+                filters.Add(x =>
                             x.IdKillerNavigation.IdAddon1 == SelectedFirstKillerAddon.IdKillerAddon && x.IdKillerNavigation.IdAddon2 == SelectedSecondKillerAddon.IdKillerAddon ||
                             x.IdKillerNavigation.IdAddon1 == SelectedSecondKillerAddon.IdKillerAddon && x.IdKillerNavigation.IdAddon2 == SelectedFirstKillerAddon.IdKillerAddon);
 
@@ -781,7 +790,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             if (SelectedKillerOffering.OfferingName != _NOT_INCLUDE)
                 filters.Add(x => x.IdKillerNavigation.IdKillerOfferingNavigation.OfferingName == SelectedKillerOffering.OfferingName);
             //filters.Add(x => x.IdKillerNavigation.IdKillerOfferingNavigation.OfferingName.Equals(SelectedKillerOffering.OfferingName));
-            
+
             if (SelectedKillerWinOrLoss != _NOT_INCLUDE)
             {
                 filters.Add(SelectedKillerWinOrLoss switch
@@ -813,7 +822,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
             if (ConsiderKillerPrestige != false)
                 filters.Add(x => x.IdKillerNavigation.Prestige >= FirstNumberKillerPrestige && x.IdKillerNavigation.Prestige <= SecondNumberKillerPrestige);
-            
+
             if (ConsiderKillerScore != false)
                 filters.Add(x => x.IdKillerNavigation.KillerAccount >= StartScoreKiller && x.IdKillerNavigation.KillerAccount <= EndScoreKiller);
 

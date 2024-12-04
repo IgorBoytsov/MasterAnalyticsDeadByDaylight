@@ -8,8 +8,7 @@ using MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
-using MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerService;
-using MasterAnalyticsDeadByDaylight.Services.CalculationService.MapService;
+using MasterAnalyticsDeadByDaylight.Utils.Calculation;
 using Microsoft.EntityFrameworkCore;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
@@ -152,18 +151,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private KillerPage _killerPage;
 
         private readonly IDataService _dataService;
-        private readonly IKillerCalculationService _killerCalculationService;
-        private readonly IMapCalculationService _mapCalculationService;
 
         public KillerPageViewModel(KillerPage KillerPage,
-                                   IDataService dataService, 
-                                   IKillerCalculationService killerCalculationService,
-                                   IMapCalculationService mapCalculationService)
+                                   IDataService dataService)
         {
             _killerPage = KillerPage;
             _dataService = dataService;
-            _killerCalculationService = killerCalculationService;
-            _mapCalculationService = mapCalculationService;
 
             GetPlayerAssociationData();
 
@@ -219,53 +212,52 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async void GetKillerStatisticData()
         {
             KillerStatList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
+            List<Killer> KillerList = await _dataService.GetAllDataInListAsync<Killer>(x => x.Skip(1));
+
+            int CountMatch = _dataService.Count<GameStatistic>(x => x.Where(x => x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation));
+
+            foreach (var killer in KillerList)
             {
-                List<Killer> KillerList = await _dataService.GetAllDataInListAsync<Killer>(x => x.Skip(1));
+                List<GameStatistic> matches = await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                               .Where(gs => gs.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
+                                                    .Where(gs => gs.IdKillerNavigation.IdKillerNavigation.IdKiller == killer.IdKiller));
+                double CountKill = await CalculationKiller.CountKillAsync(matches);
+                //double KillRate = await _killerCalculationService.CalculatingKillRate(GameStat, CountKill);
+                //double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(KillRate); 
+                double KillRate = await CalculationKiller.AVGKillRateAsync(matches);
+                double KillRatePercentage = await CalculationKiller.AVGKillRatePercentageAsync(matches);
+                double PickRate = await CalculationKiller.PickRateAsync(matches.Count, CountMatch);
+                double MatchWin = await CalculationKiller.CountMatchWinAsync(matches);
+                double WinRate = await CalculationKiller.WinRateAsync((int)MatchWin, matches.Count);
 
-                int CountMatch = await _killerCalculationService.GetAllKillerCountMatch(SelectedPlayerAssociationStatItem.IdPlayerAssociation);
+                var KillDistribution = await CalculationKiller.KillDistributionAsync(matches);
 
-                foreach (var killer in KillerList)
+                double KillingZero = KillDistribution.KillingZero;
+                double KillingOne = KillDistribution.KillingOne;
+                double KillingTwo = KillDistribution.KillingTwo;
+                double KillingThree = KillDistribution.KillingThree;
+                double KillingFour = KillDistribution.KillingFour;
+
+                var killerStat = new KillerStat()
                 {
-                    List<GameStatistic> GameStat = await _killerCalculationService.GetSelectedKillerMatch(killer.IdKiller, SelectedPlayerAssociationStatItem.IdPlayerAssociation);
-                    double CountKill = await _killerCalculationService.CalculatingCountKill(GameStat);
-                    //double KillRate = await _killerCalculationService.CalculatingKillRate(GameStat, CountKill);
-                    //double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(KillRate); 
-                    double KillRate = await _killerCalculationService.CalculatingAVGKillRate(GameStat, CountKill);
-                    double KillRatePercentage = await _killerCalculationService.CalculatingAVGKillRatePercentage(KillRate);
-                    double PickRate = await _killerCalculationService.CalculatingPickRate(GameStat.Count, CountMatch);
-                    double MatchWin = await _killerCalculationService.CalculatingKillerCountMatchWin(GameStat);
-                    double WinRate = await _killerCalculationService.CalculatingWinRate((int)MatchWin, GameStat.Count);
-
-                    var KillDistribution = await _killerCalculationService.CalculatingKillerKillDistribution(GameStat);
-
-                    double KillingZero = KillDistribution.KillingZero;
-                    double KillingOne = KillDistribution.KillingOne;
-                    double KillingTwo = KillDistribution.KillingTwo;
-                    double KillingThree = KillDistribution.KillingThree;
-                    double KillingFour = KillDistribution.KillingFour;
-
-                    var killerStat = new KillerStat()
-                    {
-                        KillerID = killer.IdKiller,
-                        KillerName = killer.KillerName,
-                        KillerImage = killer.KillerImage,
-                        KillerPickRate = PickRate,
-                        KillerCountGame = GameStat.Count,
-                        KillerKillRate = KillRate,
-                        KillerKillRatePercentage = KillRatePercentage,
-                        KillerWinRate = WinRate,
-                        KillerMatchWin = MatchWin,
-                        KillingZeroSurvivor = KillingZero,
-                        KillingOneSurvivors = KillingOne,
-                        KillingTwoSurvivors = KillingTwo,
-                        KillingThreeSurvivors = KillingThree,
-                        KillingFourSurvivors = KillingFour
-                    };
-                    KillerStatList.Add(killerStat);
-                }
-                SortKillerStatList();
+                    KillerID = killer.IdKiller,
+                    KillerName = killer.KillerName,
+                    KillerImage = killer.KillerImage,
+                    KillerPickRate = PickRate,
+                    KillerCountGame = matches.Count,
+                    KillerKillRate = KillRate,
+                    KillerKillRatePercentage = KillRatePercentage,
+                    KillerWinRate = WinRate,
+                    KillerMatchWin = MatchWin,
+                    KillingZeroSurvivor = KillingZero,
+                    KillingOneSurvivors = KillingOne,
+                    KillingTwoSurvivors = KillingTwo,
+                    KillingThreeSurvivors = KillingThree,
+                    KillingFourSurvivors = KillingFour
+                };
+                KillerStatList.Add(killerStat);
             }
+            SortKillerStatList();
         }
 
         private async void GetPlayerAssociationData()
@@ -517,7 +509,15 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task GetMatches()
         {
             Matches.Clear();
-            Matches.AddRange(await _killerCalculationService.GetMatchForKillerAsync(SelectedKiller.KillerID, SelectedPlayerAssociationStatItem.IdPlayerAssociation));
+            Matches.AddRange(await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                    .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                        .Include(x => x.IdKillerNavigation)
+                            .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdAssociationNavigation)
+                                .Include(x => x.IdSurvivors1Navigation)
+                                    .Include(x => x.IdSurvivors2Navigation)
+                                        .Include(x => x.IdSurvivors3Navigation)
+                                            .Include(x => x.IdSurvivors4Navigation)
+                    .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)));
         }
 
         #region Статистика в виде списка
@@ -555,37 +555,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             }
         }
 
-        // TODO: Убрать Using
         private async Task GetStatTimeMatchAsync()
         {
-            await Task.Run(async () =>
-            {
-                var matches = await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
-                       .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID &&
-                                   x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation));
-
-                if (matches.Count == 0)
-                    return;
-                using (MasterAnalyticsDeadByDaylightDbContext context = new())
-                {
-                    TimeSpan[] timeSpans = context.GameStatistics
-                               .Where(x => x.IdKillerNavigation.IdKiller == SelectedKiller.KillerID && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociationStatItem.IdPlayerAssociation)
-                                    .Select(s => TimeSpan.Parse(s.GameTimeMatch)).ToArray();
-
-                    ShortestMatch = timeSpans.Max().ToString();
-                    FastestMatch = timeSpans.Min().ToString();
-
-                    TimeSpan totalTime = TimeSpan.Zero;
-                    foreach (var timeSpan in timeSpans)
-                    {
-                        totalTime += timeSpan;
-                    }
-
-                    TimeSpan averageMatchTime = TimeSpan.FromTicks(totalTime.Ticks / timeSpans.Length);
-                    averageMatchTime = new TimeSpan(averageMatchTime.Hours, averageMatchTime.Minutes, averageMatchTime.Seconds);
-                    AVGMatchMatch = averageMatchTime.ToString();
-                } 
-            });
+            var (Shortest, Fastest, AVG) = await CalculationTime.StatTimeMatchAsync(Matches, SelectedKiller.KillerID, SelectedPlayerAssociationStatItem.IdPlayerAssociation);
+            ShortestMatch = Shortest;
+            FastestMatch = Fastest;
+            AVGMatchMatch = AVG;
         }
 
         #endregion
@@ -597,7 +572,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task AverageScoreAsync()
         {
             KillerAVGScore.Clear();
-            List<KillerAverageScoreTracker> avg = await _killerCalculationService.AverageKillerScoreAsync(Matches, TypeTime.Month);
+            List<KillerAverageScoreTracker> avg = await CalculationKiller.AverageScoreForPeriodTimeAsyncAsync(Matches, TypeTime.Month);
 
             foreach (var item in avg)
             {
@@ -614,7 +589,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task KillerCountMatchAsync()
         {
             KillerCountMatch.Clear();
-            List<CountMatchTracker> countMatch = await _killerCalculationService.CountMatchAsync(Matches, TypeTime.Month);
+            List<CountMatchTracker> countMatch = await CalculationGeneral.CountMatchForPeriodTimeAsync(Matches, TypeTime.Month);
 
             foreach (var item in countMatch)
             {
@@ -631,7 +606,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task KillerKillRateAsync()
         {
             KillerKillRate.Clear();
-            List<KillerKillRateTracker> killRate = await _killerCalculationService.KillRateAsync(Matches, TypeTime.Month);
+            List<KillerKillRateTracker> killRate = await CalculationKiller.KillRateForPeriodTimeAsync(Matches, TypeTime.Month);
 
             foreach (var item in killRate)
             {
@@ -648,7 +623,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task KillerWinRateAsync()
         {
             KillerWinRate.Clear();
-            List<KillerWinRateTracker> killRate = await _killerCalculationService.WinRateAsync(Matches, TypeTime.Month);
+            List<KillerWinRateTracker> killRate = await CalculationKiller.WinRateForPeriodTimeAsync(Matches, TypeTime.Month);
 
             foreach (var item in killRate)
             {
@@ -665,7 +640,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task KillerActivityByHours()
         {
             ActivityByHours.Clear();
-            List<ActivityByHoursTracker> activityByHours = await _killerCalculationService.ActivityByHourAsync(Matches);
+            List<ActivityByHoursTracker> activityByHours = await CalculationGeneral.CountMatchesPlayedInEachHourAsync(Matches);
 
             foreach (var item in activityByHours)
             {
@@ -684,7 +659,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             PlayerPlatformTrackers.Clear();
             using (MasterAnalyticsDeadByDaylightDbContext context = new())
             {
-                List<PlayerPlatformTracker> platformTrackers = await _killerCalculationService.CalculatingPlayersByPlatformsAsync(Matches);
+                List<PlayerPlatformTracker> platformTrackers = await CalculationSurvivor.PlayersByPlatformsAsync(Matches);
 
                 foreach (var item in platformTrackers)
                 {
@@ -702,7 +677,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountPlayersBotAsync()
         {
             SurvivorBotTracker.Clear();
-            List<SurvivorBotTracker> survivorBotTrackers = await _killerCalculationService.CalculatingPlayersBotAsync(Matches);
+            List<SurvivorBotTracker> survivorBotTrackers = await CalculationSurvivor.PlayersBotAsync(Matches);
 
             foreach (var item in survivorBotTrackers)
             {
@@ -719,7 +694,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountPlayersAnonymousAsync()
         {
             SurvivorAnonymousTracker.Clear();
-            List<SurvivorAnonymousTracker> survivorAnonymousTrackers = await _killerCalculationService.CalculatingAnonymousPlayerAsync(Matches);
+            List<SurvivorAnonymousTracker> survivorAnonymousTrackers = await CalculationSurvivor.AnonymousPlayersAsync(Matches);
 
             foreach (var item in survivorAnonymousTrackers)
             {
@@ -736,7 +711,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountHookPercentageAsync()
         {
             KillerHooks.Clear();
-            List<KillerHooksTracker> killerHooksTrackers = await _killerCalculationService.CalculatingCountHooksAsync(Matches);
+            List<KillerHooksTracker> killerHooksTrackers = await CalculationKiller.CountHooksAsync(Matches);
 
             foreach (var item in killerHooksTrackers)
             {
@@ -753,7 +728,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountNumberRecentGeneratorsPercentageAsync()
         {
             RecentGenerators.Clear();
-            List<RecentGeneratorsTracker> recentGeneratorsTrackers = await _killerCalculationService.CalculatingRecentGeneratorsAsync(Matches);
+            List<RecentGeneratorsTracker> recentGeneratorsTrackers = await CalculationGeneral.RecentGeneratorsAsync(Matches);
 
             foreach (var item in recentGeneratorsTrackers)
             {
@@ -770,7 +745,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private async Task CountTypeTypeDeathSurvivorAsync()
         {
             SurvivorTypeDeathTrackerList.Clear();
-            List<SurvivorTypeDeathTracker> survivorTypeDeathTrackers = await _killerCalculationService.CalculatingTypeDeathSurvivorAsync(Matches);
+            List<SurvivorTypeDeathTracker> survivorTypeDeathTrackers = await CalculationSurvivor.TypeDeathSurvivorsAsync(Matches);
 
             foreach (var item in survivorTypeDeathTrackers)
             {
@@ -786,13 +761,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         private async Task CountMatchPlayedOnMapAsync()
         {
-            MapStatList.Clear();
-            List<MapStat> mapStats = await _mapCalculationService.CalculatingMapStatAsync(Matches);
+            //MapStatList.Clear();
+            //List<MapStat> mapStats = await _mapCalculationService.CalculatingMapStatAsync(Matches);
 
-            foreach (var item in mapStats)
-            {
-                MapStatList.Add(item);
-            }
+            //foreach (var item in mapStats)
+            //{
+            //    MapStatList.Add(item);
+            //}
         }
 
         #endregion

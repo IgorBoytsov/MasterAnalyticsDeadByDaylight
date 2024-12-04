@@ -2,9 +2,8 @@
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
-using MasterAnalyticsDeadByDaylight.Services.CalculationService.KillerService;
-using MasterAnalyticsDeadByDaylight.Services.CalculationService.MapService;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Utils.Calculation;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
@@ -117,14 +116,10 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         #endregion
 
         private readonly IDataService _dataService;
-        private readonly IMapCalculationService _mapCalculationService;
-        private readonly IKillerCalculationService _killerCalculationService;
 
-        public MapPageViewModel(IDataService dataService, IMapCalculationService mapCalculationService, IKillerCalculationService killerCalculationService)
+        public MapPageViewModel(IDataService dataService)
         {
             _dataService = dataService;
-            _mapCalculationService = mapCalculationService;
-            _killerCalculationService = killerCalculationService;
             IsFilterPopupOpen = false;
 
             SelectedMapStatSortItem = SortingList[1];
@@ -171,8 +166,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             int CountMatch = SelectedTypeStat switch
             {
                 "Общая" => _dataService.Count<GameStatistic>(),
-                "Личная за Убийц" => _dataService.Count<GameStatistic>(x => x.Include(gs => gs.IdKillerNavigation).ThenInclude(killerInfo => killerInfo.IdAssociationNavigation).Where(gs => gs.IdKillerNavigation.IdAssociation == 1)),
-                "Личная за Выживших" => _dataService.Count<GameStatistic>(x => x.Include(gs => gs.IdKillerNavigation).ThenInclude(killerInfo => killerInfo.IdAssociationNavigation).Where(gs => gs.IdKillerNavigation.IdAssociation == 3)),
+                "Личная за Убийц" => _dataService.Count<GameStatistic>(x => x.Where(gs => gs.IdKillerNavigation.IdAssociation == 1)),
+                "Личная за Выживших" => _dataService.Count<GameStatistic>(x => x.Where(gs => gs.IdKillerNavigation.IdAssociation == 3)),
                 _ => throw new Exception("Такого типа статистик нету")
             };
 
@@ -180,21 +175,21 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
             foreach (var item in Maps)
             {
-                List<GameStatistic> GameStat = await _mapCalculationService.GetMatchForMapAsync(item.IdMap, SelectedTypeStat);
+               
+                List<GameStatistic> matches = await GetMatchForMapAsync(item.IdMap, SelectedTypeStat);
 
-                double PickRate = await _mapCalculationService.CalculatingPickRate(GameStat.Count, CountMatch);
-                int CountKills = (int)await _killerCalculationService.CalculatingCountKill(GameStat);
-                //double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(GameStat.Count, CountKills);
-                double AVGKillRate = await _killerCalculationService.CalculatingAVGKillRate(GameStat, CountKills);
-                double KillRatePercentage = await _killerCalculationService.CalculatingAVGKillRatePercentage(AVGKillRate);
-                int EscapeSurvivor = await _mapCalculationService.CalculatingEscapeSurvivor(GameStat.Count, CountKills);
-                double EscapeRate = await _mapCalculationService.CalculatingEscapeRate(EscapeSurvivor, GameStat.Count);
-                int WinMatch = GameStat.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
-                double WinRatePercent = await _mapCalculationService.CalculatingWinRateRate(WinMatch, GameStat.Count);
-                int MapRandom = await _mapCalculationService.CalculatingRandomMap(GameStat);
-                int MapOffering = await _mapCalculationService.CalculatingOfferingMap(GameStat);
-                double MapRandomPercent = await _mapCalculationService.CalculatingDropMapPercent(MapRandom, GameStat.Count);
-                double MapOfferingPercent = await _mapCalculationService.CalculatingDropMapPercent(MapOffering, GameStat.Count);
+                double PickRate = await CalculationMap.PickRateAsync(matches.Count, CountMatch);
+                int CountKills = (int)await CalculationKiller.CountKillAsync(matches);
+                double AVGKillRate = await CalculationKiller.AVGKillRateAsync(matches);
+                double KillRatePercentage = await CalculationKiller.AVGKillRatePercentageAsync(matches);
+                int EscapeSurvivor = await CalculationMap.EscapeSurvivorAsync(matches.Count, CountKills);
+                double EscapeRate = await CalculationMap.EscapeRateAsync(EscapeSurvivor, matches.Count);
+                int WinMatch = matches.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
+                double WinRatePercent = await CalculationMap.WinRateRateAsync(WinMatch, matches.Count);
+                int MapRandom = await CalculationMap.RandomMapAsync(matches);
+                int MapOffering = await CalculationMap.WithOfferingsAsync(matches);
+                double MapRandomPercent = await CalculationMap.DropMapPercentAsync(MapRandom, matches.Count);
+                double MapOfferingPercent = await CalculationMap.DropMapPercentAsync(MapOffering, matches.Count);
 
                 var mapStat = new MapStat()
                 {
@@ -203,7 +198,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     MapMeasurement = item.IdMeasurementNavigation.MeasurementName,
                     idMapMeasurement = item.IdMeasurementNavigation.IdMeasurement,
                     MapImage = item.MapImage,
-                    CountGame = GameStat.Count,
+                    CountGame = matches.Count,
                     PickRateMap = PickRate,
                     KillRateMap = AVGKillRate,
                     KillRateMapPercent = KillRatePercentage,
@@ -218,6 +213,37 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 MapStatList.Add(mapStat);
             }
             SortMapStatList();
+        }
+
+        private async Task<List<GameStatistic>> GetMatchForMapAsync(int idMap, string typeSortStatValue)
+        {
+
+            return typeSortStatValue switch
+            {
+                "Общая" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                 .Include(x => x.IdMapNavigation)
+                                     .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                             .Include(x => x.IdWhoPlacedMapNavigation)
+                                                 .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                     .Where(x => x.IdMapNavigation.IdMap == idMap)),
+                "Личная за Убийц" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                           .Include(x => x.IdMapNavigation)
+                                                .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                                    .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                                        .Include(x => x.IdWhoPlacedMapNavigation)
+                                                            .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 1)
+                                                                    .Where(x => x.IdMapNavigation.IdMap == idMap)),
+                "Личная за Выживших" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                              .Include(x => x.IdMapNavigation)
+                                                   .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                                            .Include(x => x.IdWhoPlacedMapNavigation).Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 3)
+                                                                    .Where(x => x.IdMapNavigation.IdMap == idMap)),
+                _ => throw new Exception("Такого типа статистик нету")
+            };
         }
 
         private async void GetMeasurementStat()
@@ -237,28 +263,27 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
             foreach (var item in Measurements)
             {
-                List<GameStatistic> GameStat = await _mapCalculationService.GetMatchForMeasurementAsync(item.IdMeasurement, SelectedTypeStat);
+                List<GameStatistic> matches = await GetMatchForMeasurementAsync(item.IdMeasurement, SelectedTypeStat);
 
-                double PickRate = await _mapCalculationService.CalculatingPickRate(GameStat.Count, CountMatch);
-                int CountKills = (int)await _killerCalculationService.CalculatingCountKill(GameStat);
-                //double KillRatePercentage = await _killerCalculationService.CalculatingKillRatePercentage(GameStat.Count, CountKills);
-                double AVGKillRate = await _killerCalculationService.CalculatingAVGKillRate(GameStat, CountKills);
-                double KillRatePercentage = await _killerCalculationService.CalculatingAVGKillRatePercentage(AVGKillRate);
-                int EscapeSurvivor = await _mapCalculationService.CalculatingEscapeSurvivor(GameStat.Count, CountKills);
-                double EscapeRate = await _mapCalculationService.CalculatingEscapeRate(EscapeSurvivor, GameStat.Count);
-                int WinMatch = GameStat.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
-                double WinRatePercent = await _mapCalculationService.CalculatingWinRateRate(WinMatch, GameStat.Count);
-                int MapRandom = await _mapCalculationService.CalculatingRandomMap(GameStat);
-                int MapOffering = await _mapCalculationService.CalculatingOfferingMap(GameStat);
-                double MapRandomPercent = await _mapCalculationService.CalculatingDropMapPercent(MapRandom, GameStat.Count);
-                double MapOfferingPercent = await _mapCalculationService.CalculatingDropMapPercent(MapOffering, GameStat.Count);
+                double PickRate = await CalculationMap.PickRateAsync(matches.Count, CountMatch);
+                int CountKills = (int)await CalculationKiller.CountKillAsync(matches);
+                double AVGKillRate = await CalculationKiller.AVGKillRateAsync(matches);
+                double KillRatePercentage = await CalculationKiller.AVGKillRatePercentageAsync(matches);
+                int EscapeSurvivor = await CalculationMap.EscapeSurvivorAsync(matches.Count, CountKills);
+                double EscapeRate = await CalculationMap.EscapeRateAsync(EscapeSurvivor, matches.Count);
+                int WinMatch = matches.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
+                double WinRatePercent = await CalculationMap.WinRateRateAsync(WinMatch, matches.Count);
+                int MapRandom = await CalculationMap.RandomMapAsync(matches);
+                int MapOffering = await CalculationMap.WithOfferingsAsync(matches);
+                double MapRandomPercent = await CalculationMap.DropMapPercentAsync(MapRandom, matches.Count);
+                double MapOfferingPercent = await CalculationMap.DropMapPercentAsync(MapOffering, matches.Count);
 
                 var mapStat = new MapStat()
                 {
                     MapName = item.MeasurementName,
                     idMapMeasurement = item.IdMeasurement,
                     MapImage = Maps.FirstOrDefault(x => x.IdMeasurement == item.IdMeasurement).MapImage,
-                    CountGame = GameStat.Count,
+                    CountGame = matches.Count,
                     PickRateMap = PickRate,
                     KillRateMap = AVGKillRate,
                     KillRateMapPercent = KillRatePercentage,
@@ -273,6 +298,37 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 MapStatList.Add(mapStat);
             }
             SortMapStatList();
+        }
+
+        public async Task<List<GameStatistic>> GetMatchForMeasurementAsync(int idMeasurement, string typeSortStatValue)
+        {
+            return typeSortStatValue switch
+            {
+                "Общая" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                 .Include(x => x.IdMapNavigation)
+                                    .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                            .Include(x => x.IdWhoPlacedMapNavigation)
+                                                .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                    .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
+                "Личная за Убийц" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                           .Include(x => x.IdMapNavigation)
+                                                .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                                    .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                                        .Include(x => x.IdWhoPlacedMapNavigation)
+                                                            .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 1)
+                                                                    .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
+                "Личная за Выживших" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
+                                              .Include(x => x.IdMapNavigation)
+                                                   .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
+                                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
+                                                            .Include(x => x.IdWhoPlacedMapNavigation)
+                                                                .Include(x => x.IdWhoPlacedMapWinNavigation)
+                                                                    .Where(x => x.IdKillerNavigation.IdAssociation == 3)
+                                                                        .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
+                _ => throw new Exception("Такого типа статистик нету")
+            };
         }
 
         #endregion
