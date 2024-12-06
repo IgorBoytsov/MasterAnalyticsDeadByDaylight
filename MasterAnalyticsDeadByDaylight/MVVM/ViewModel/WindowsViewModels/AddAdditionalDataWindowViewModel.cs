@@ -1,13 +1,15 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
-    class AddAdditionalDataWindowViewModel : BaseViewModel
+    class AddAdditionalDataWindowViewModel : BaseViewModel, IUpdatable
     {
         #region Свойства 
 
@@ -329,14 +331,24 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
+        private static IServiceProvider _serviceProvider;
+
         private static IDataService _dataService;
 
-        public AddAdditionalDataWindowViewModel(IDataService dataService)
+        public AddAdditionalDataWindowViewModel(IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
+            var dataService = _serviceProvider.GetService<IDataService>();
             _dataService = dataService;
+
             GetAndUpdateData();
             Title = "Добавление базовых данных";
             PatchDateRelease = DateTime.Now;
+        }
+
+        public void Update(object value)
+        {
+           
         }
 
         #region Команды

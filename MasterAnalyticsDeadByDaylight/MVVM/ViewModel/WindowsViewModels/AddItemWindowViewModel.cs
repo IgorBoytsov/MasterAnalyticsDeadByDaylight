@@ -1,16 +1,18 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
-    class AddItemWindowViewModel : BaseViewModel
+    class AddItemWindowViewModel : BaseViewModel, IUpdatable
     {
         #region Свойства
 
@@ -160,16 +162,28 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         }
 
         #endregion
+
+        private readonly IServiceProvider _serviceProvider;
+
         private readonly IDataService _dateService;
 
-        public AddItemWindowViewModel(IDataService dateService)
+        public AddItemWindowViewModel(IServiceProvider serviceProvider)
         {
-            _dateService = dateService;
+            _serviceProvider = serviceProvider;
+
+            _dateService = _serviceProvider.GetService<IDataService>();
+
+
             Title = "Добавление предмета";
 
             GetItemData();
             GetItemAddonData();
             GetRarityData();
+        }
+
+        public void Update(object value)
+        {
+
         }
 
         #region Команды

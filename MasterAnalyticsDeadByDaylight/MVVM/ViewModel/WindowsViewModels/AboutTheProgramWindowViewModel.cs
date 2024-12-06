@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
+﻿namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
     public class AboutTheProgramWindowViewModel : BaseViewModel
     {
+        public AboutTheProgramWindowViewModel(IServiceProvider serviceProvider)
+        {
+            
+        }
     }
 }

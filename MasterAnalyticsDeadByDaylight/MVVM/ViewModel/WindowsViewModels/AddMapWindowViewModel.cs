@@ -1,11 +1,12 @@
-﻿using LiveCharts.Wpf;
-using MasterAnalyticsDeadByDaylight.Command;
+﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -14,7 +15,7 @@ using System.Windows.Forms;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
-    public class AddMapWindowViewModel : BaseViewModel
+    public class AddMapWindowViewModel : BaseViewModel, IUpdatable
     {
         #region Свойства
 
@@ -107,16 +108,26 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
+        private readonly IServiceProvider _serviceProvider;
+
         private readonly ICustomDialogService _dialogService;
         private readonly IDataService _dataService;
 
-        public AddMapWindowViewModel(ICustomDialogService dialogService, IDataService dataService)
+        public AddMapWindowViewModel(IServiceProvider serviceProvider)
         {
-            _dialogService = dialogService;
-            _dataService = dataService;
+            _serviceProvider = serviceProvider;
+
+            _dialogService = _serviceProvider.GetService<ICustomDialogService>();
+            _dataService = _serviceProvider.GetService<IDataService>();
+
             Title = "Добавление карт";
             GetMapData();
             GetMeasurementData();
+        }
+
+        public void Update(object value)
+        {
+
         }
 
         #region Команды

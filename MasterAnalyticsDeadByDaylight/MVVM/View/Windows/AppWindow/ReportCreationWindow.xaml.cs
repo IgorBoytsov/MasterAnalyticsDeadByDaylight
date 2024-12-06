@@ -1,5 +1,4 @@
-﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
-using System.Windows;
+﻿using System.Windows;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
 {
@@ -11,7 +10,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
         public ReportCreationWindow()
         {
             InitializeComponent();
-            DataContext = new ReportCreationWindowViewModel();
         }
     }
 }

@@ -1,70 +1,210 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow;
+using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using System.Windows;
 
 namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation
 {
-    public class WindowNavigationService
+    public class WindowNavigationService : IWindowNavigationService
     {
-        private readonly Dictionary<string, Type> _registeredViews = new Dictionary<string, Type>();
-        private readonly Dictionary<string, object> _viewParameters = new Dictionary<string, object>();
+        private Dictionary<string, Window> _windows = new();
 
-        private Window _mainWindow;
+        private readonly IServiceProvider _serviceProvider;
 
-        public WindowNavigationService(Window mainWindow)
+        public WindowNavigationService(IServiceProvider serviceProvider)
         {
-            _mainWindow = mainWindow;
+            _serviceProvider = serviceProvider;
         }
 
-        // Регистрация окна для навигации
-        public void RegisterView(string viewName, Type viewType)
+        public void OpenWindow(string windowName, object parameter = null)
         {
-            _registeredViews.Add(viewName, viewType);
-        }
-
-        // Переход к окну
-        public void NavigateTo(string viewName, object parameters = null)
-        {
-            if (_registeredViews.ContainsKey(viewName))
+            if (_windows.TryGetValue(windowName, out var windowExist))
             {
-                Type viewType = _registeredViews[viewName];
-                Window window = (Window)Activator.CreateInstance(viewType);
-
-                if (parameters != null)
+                if (windowExist.DataContext is IUpdatable viewModel)
                 {
-                    _viewParameters[viewName] = parameters;
-                    window.DataContext = parameters;
+                    viewModel.Update(parameter);
+                    windowExist.Activate();
                 }
-
-                // Закрываем текущее окно (если оно есть)
-                //if (_mainWindow.Content is Window currentWindow)
-                //{
-                //    currentWindow.Close();
-                //}
-
-                // Отображаем новое окно
-                _mainWindow.Content = window;
-                window.Show();
+                return;
             }
-            else
-            {
-                // Обработка ошибки: окно не найдено
-                MessageBox.Show($"View '{viewName}' not registered.");
-            }
+            Open(windowName, parameter);
         }
 
-        // Получение параметров для окна
-        public object GetParameters(string viewName)
+        private void Open(string windowName, object parameter = null)
         {
-            if (_viewParameters.ContainsKey(viewName))
+            Action action = windowName switch
             {
-                return _viewParameters[viewName];
-            }
-            return null;
-        }
+                "AboutTheProgramWindow" => () =>
+                {
+                    var viewModel = new AboutTheProgramWindowViewModel(_serviceProvider);
+                    var window = new AboutTheProgramWindow()
+                    {
+                        DataContext = viewModel,
+                    };
 
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show ();
+                }
+                ,
+                "AddAdditionalDataWindow" => () =>
+                {
+                    var viewModel = new AddAdditionalDataWindowViewModel(_serviceProvider);
+                    var window = new AddAdditionalDataWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "AddItemWindow" => () =>
+                {
+                    var viewModel = new AddItemWindowViewModel(_serviceProvider);
+                    var window = new AddItemWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "AddKillerWindow" => () =>
+                {
+                    var viewModel = new AddKillerWindowViewModel(_serviceProvider);
+                    var window = new AddKillerWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "AddMapWindow" => () =>
+                {
+                    var viewModel = new AddMapWindowViewModel(_serviceProvider);
+                    var window = new AddMapWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "AddMatchWindow" => () =>
+                {
+                    var viewModel = new AddMatchWindowViewModel(_serviceProvider);
+                    var window = new AddMatchWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "AddOfferingWindow" => () =>
+                {
+                    var viewModel = new AddOfferingWindowViewModel(_serviceProvider);
+                    var window = new AddOfferingWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "AddPerkWindow" => () =>
+                {
+                    var viewModel = new AddPerkWindowViewModel(_serviceProvider);
+                    var window = new AddPerkWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "AddSurvivorWindow" => () =>
+                {
+                    var viewModel = new AddSurvivorWindowViewModel(_serviceProvider);
+                    var window = new AddSurvivorWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "DataBackupWindow" => () =>
+                {
+                    var viewModel = new DataBackupWindowViewModel(_serviceProvider);
+                    var window = new DataBackupWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "HowToUseWindow" => () =>
+                {
+                    var viewModel = new HowToUseWindowViewModel(_serviceProvider);
+                    var window = new HowToUseWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "ReportCreationWindow" => () =>
+                {
+                    var viewModel = new ReportCreationWindowViewModel(_serviceProvider);
+                    var window = new ReportCreationWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                "ShowDetailsMatchWindow" => () =>
+                {
+                    var viewModel = new ShowDetailsMatchWindowViewModel(_serviceProvider);
+                    var window = new ShowDetailsMatchWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
+                _ => () => throw new Exception("Окно отсутствует")
+            };
+            action?.Invoke();
+        }
     }
 }

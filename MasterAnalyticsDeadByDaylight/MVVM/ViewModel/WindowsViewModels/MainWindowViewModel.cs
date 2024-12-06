@@ -1,10 +1,7 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
-using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow;
-using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.ModalWindow;
-using MasterAnalyticsDeadByDaylight.Services;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
-using Microsoft.EntityFrameworkCore;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
@@ -156,8 +153,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         private RelayCommand _openDataBackupWindowCommand;
         public RelayCommand OpenDataBackupWindowCommand { get => _openDataBackupWindowCommand ??= new(obj => OpenDataBackupWindow()); }
 
-        private RelayCommand _openSettingsWindowCommand;
-        public RelayCommand OpenSettingsWindowCommand { get => _openSettingsWindowCommand ??= new(obj => OpenSettingsWindow()); }
+        //private RelayCommand _openSettingsWindowCommand;
+        //public RelayCommand OpenSettingsWindowCommand { get => _openSettingsWindowCommand ??= new(obj => OpenSettingsWindow()); }
 
         #endregion
 
@@ -165,80 +162,62 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private void OpenAddMatchWindow()
         {
-            AddMatchWindow addMatchWindow = new AddMatchWindow();
-            addMatchWindow.Show();
+            _windowNavigationService.OpenWindow("AddMatchWindow");
         }
 
-        private static void OpenAddKillerWindow()
+        private void OpenAddKillerWindow()
         {
-            AddKillerWindow addKillerWindow = new AddKillerWindow();
-            addKillerWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("AddKillerWindow");
         }
 
-        private static void OpenAddSurvivorWindow()
+        private void OpenAddSurvivorWindow()
         {
-            AddSurvivorWindow addSurvivorWindow = new AddSurvivorWindow();
-            addSurvivorWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("AddSurvivorWindow");
         }
 
-        private static void OpenAddPerkWindow()
+        private void OpenAddPerkWindow()
         {
-            AddPerkWindow addPerkWindow = new AddPerkWindow();
-            addPerkWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("AddPerkWindow");
         }
 
-        private static void OpenAddMapWindow()
+        private void OpenAddMapWindow()
         {
-            AddMapWindow addMapWindow = new AddMapWindow();
-            addMapWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("AddMapWindow");
         }
 
-        private static void OpenAddOfferingWindow()
+        private void OpenAddOfferingWindow()
         {
-            AddOfferingWindow addOfferingWindow = new AddOfferingWindow();
-            addOfferingWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("AddOfferingWindow");
         }
 
-        private static void OpenAboutTheProgramWindow()
+        private void OpenAboutTheProgramWindow()
         {
-            AboutTheProgramWindow aboutTheProgramWindow = new AboutTheProgramWindow();
-            aboutTheProgramWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("AboutTheProgramWindow");
         }
 
-        private static void OpenHowToUseWindow()
+        private void OpenHowToUseWindow()
         {
-            HowToUseWindow howToUseWindow = new HowToUseWindow();
-            howToUseWindow.Show();
+            _windowNavigationService.OpenWindow("HowToUseWindow");
         }
 
-        private static void OpenReportCreationWindow()
+        private void OpenReportCreationWindow()
         {
-            ReportCreationWindow reportCreationWindow = new ReportCreationWindow();
-            reportCreationWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("ReportCreationWindow");
         }
 
-        private static void OpenAddItemWindow()
+        private void OpenAddItemWindow()
         {
-            AddItemWindow addItemWindow = new AddItemWindow();
-            addItemWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("AddItemWindow");
         }
 
-        private static void OpenAddAdditionalDataWindow()
+        private void OpenAddAdditionalDataWindow()
         {
-            AddAdditionalDataWindow addAdditionalDataWindow = new AddAdditionalDataWindow();
-            addAdditionalDataWindow.ShowDialog();
+            _windowNavigationService.OpenWindow("AddAdditionalDataWindow");
         }
 
-        private static void OpenDataBackupWindow()
+        private void OpenDataBackupWindow()
         {
-            DataBackupWindow dataBackupWindow = new DataBackupWindow();
-            dataBackupWindow.ShowDialog();
-        }
-         
-        private static void OpenSettingsWindow()
-        {
-            SettingsWindow settingsWindow = new SettingsWindow();
-            settingsWindow.Show();
+            _windowNavigationService.OpenWindow("DataBackupWindow");
         }
 
         private void SetTitle()
@@ -248,14 +227,17 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion  
 
+        private readonly IServiceProvider _serviceProvider;
+
         private readonly IPageNavigationService _pageNavigationService;
+        private readonly IWindowNavigationService _windowNavigationService;
 
-        //private static MasterAnalyticsDeadByDaylightDbContext _context;
-
-        public MainWindowViewModel(IPageNavigationService pageNavigationService)
+        public MainWindowViewModel(IServiceProvider serviceProvider)
         {
-            //_context = context;
-            _pageNavigationService = pageNavigationService ?? throw new ArgumentNullException(nameof(pageNavigationService));
+            _serviceProvider = serviceProvider;
+
+            _pageNavigationService = _serviceProvider.GetService<IPageNavigationService>();
+            _windowNavigationService = _serviceProvider.GetService<IWindowNavigationService>();
 
             SetTitle();
         }

@@ -2,23 +2,17 @@
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
-    public class AddSurvivorWindowViewModel : BaseViewModel
+    public class AddSurvivorWindowViewModel : BaseViewModel, IUpdatable
     {
         #region Свойства
 
@@ -86,15 +80,25 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
+        private readonly IServiceProvider _serviceProvider;
+
         private readonly ICustomDialogService _dialogService;
         private readonly IDataService _dataService;
 
-        public AddSurvivorWindowViewModel(ICustomDialogService dialogService, IDataService dataService)
+        public AddSurvivorWindowViewModel(IServiceProvider serviceProvider)
         {
-            _dialogService = dialogService;
-            _dataService = dataService;
+            _serviceProvider = serviceProvider;
+
+            _dialogService = _serviceProvider.GetService<ICustomDialogService>();
+            _dataService = _serviceProvider.GetService<IDataService>();
+
             Title = "Список выживших";
             GetSurvivorData();
+        }
+
+        public void Update(object value)
+        {
+            
         }
 
         #region Команды
@@ -213,7 +217,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
             }
         }
- 
+
         #endregion
     }
 }

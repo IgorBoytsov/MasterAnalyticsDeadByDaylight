@@ -1,18 +1,19 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.MVVM.View.Pages;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
-    public class AddOfferingWindowViewModel : BaseViewModel
+    public class AddOfferingWindowViewModel : BaseViewModel, IUpdatable
     {
         #region Свойства
 
@@ -139,17 +140,27 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
-        ICustomDialogService _dialogService;
-        IDataService _dataService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public AddOfferingWindowViewModel(ICustomDialogService service, IDataService dataService)
+        private readonly ICustomDialogService _dialogService;
+        private readonly IDataService _dataService;
+
+        public AddOfferingWindowViewModel(IServiceProvider serviceProvider)
         {
-            _dialogService = service;
-            _dataService = dataService;
+            _serviceProvider = serviceProvider;
+
+            _dialogService = _serviceProvider.GetService<ICustomDialogService>();
+            _dataService = _serviceProvider.GetService<IDataService>();
+
             Title = "Добавление подношение";
             GetRarityData();
             GetRoleData();
             GetOfferingCategoryData();
+        }
+
+        public void Update(object value)
+        {
+
         }
 
         #region Команды

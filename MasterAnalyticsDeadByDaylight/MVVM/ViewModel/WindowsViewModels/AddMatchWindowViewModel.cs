@@ -3,16 +3,18 @@ using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 {
-    public class AddMatchWindowViewModel : BaseViewModel
+    public class AddMatchWindowViewModel : BaseViewModel, IUpdatable
     {
         #region Блок "Коллекции данных из БД"
 
@@ -92,17 +94,26 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         public static string Title { get; } = "Добавить запись";
 
+        private readonly IServiceProvider _serviceProvider;
+
         private readonly ICustomDialogService _dialogService;
         private readonly IDataService _dataService;
 
-        public AddMatchWindowViewModel(ICustomDialogService dialogService, IDataService dataService)
+        public AddMatchWindowViewModel(IServiceProvider serviceProvider)
         {
-            _dialogService = dialogService;
-            _dataService = dataService;
+            _serviceProvider = serviceProvider;
+
+            _dialogService = _serviceProvider.GetService<ICustomDialogService>();
+            _dataService = _serviceProvider.GetService<IDataService>();
 
             IssOpenKillerBuildPopup = false;
             GetAllData();
             LoadAllData();
+        }
+
+        public void Update(object value)
+        {
+
         }
 
         #region Блок "Убийца"
