@@ -42,7 +42,8 @@ namespace MasterAnalyticsDeadByDaylight
             services.AddSingleton<ICustomDialogService, CustomDialogService>();
 
             services.AddSingleton<IPageNavigationService, PageNavigationService>();
-            services.AddSingleton<IWindowNavigationService, WindowNavigationService>();
+            services.AddSingleton<IWindowNavigationService, WindowNavigationService>(); 
+
         }
     }
 
