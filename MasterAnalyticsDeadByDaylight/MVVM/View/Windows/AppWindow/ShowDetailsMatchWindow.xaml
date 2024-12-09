@@ -3,14 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow"
+        xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow" 
+        xmlns:windowsviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels" 
+        d:DataContext="{d:DesignInstance Type=windowsviewmodels:ShowDetailsMatchWindowViewModel}"
         mc:Ignorable="d"
         Style="{StaticResource WindowStyle}"
+        Background="#2A2A2A"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Height="450" Width="800"
+        Height="550" Width="1160"
         Title="ShowDetailsMatchWindow">
-    
+
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="40" />
     </WindowChrome.WindowChrome>
@@ -21,7 +24,7 @@
         <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Minimize" />
         <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Restore" />
     </Window.CommandBindings>
-    
+
     <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0" >
         <Grid>
             <Grid.ColumnDefinitions>
@@ -67,7 +70,147 @@
 
             </Grid>
             <Grid Grid.Row="1">
-                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+
+                <!--#region Выживший №1 -->
+
+                <TextBlock Grid.Column="0" Text="{Binding Match.IdSurvivors1Navigation.Prestige}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40" d:Text="100"/>
+                <Image Grid.Column="1" Source="{Binding Match.IdSurvivors1Navigation.IdSurvivorNavigation.SurvivorImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\1_Дуайт Фэйрфилд(Синий).png"/>
+
+                <WrapPanel Grid.Column="2">
+                    <Image Source="{Binding Match.IdSurvivors1Navigation.IdPerk1Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\20_Юи Кимура\3d31a1e4-a5d5-4c30-9728-483f2f61a77a.png"/>
+                    <Image Source="{Binding Match.IdSurvivors1Navigation.IdPerk2Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\20_Юи Кимура\85db40c3-1eee-4864-819d-ab50bef07d37.png"/>
+                    <Image Source="{Binding Match.IdSurvivors1Navigation.IdPerk3Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\24_Элоди Ракото\adc0c466-e894-4c3a-a47d-d27f7ad558fc.png"/>
+                    <Image Source="{Binding Match.IdSurvivors1Navigation.IdPerk4Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\7_Дэвид Кинг\01d5cdd8-4521-451e-b5bb-119471ad2fb4.png"/>
+                </WrapPanel>
+
+                <Image Grid.Column="3" Source="{Binding Match.IdSurvivors1Navigation.IdSurvivorOfferingNavigation.OfferingImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Подношение\Общее\iconsFavors_RPDBadge.png"/>
+
+                <Image Grid.Column="4" Source="{Binding Match.IdSurvivors1Navigation.IdItemNavigation.ItemImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png"/>
+
+                <WrapPanel Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{Binding Match.IdSurvivors1Navigation.IdAddon1Navigation.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png" Width="70"/>
+                    <Image Source="{Binding Match.IdSurvivors1Navigation.IdAddon2Navigation.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Аптечка) Кровоостанавливающий препарат.png" Width="70"/>
+                </WrapPanel>
+
+                <TextBlock Grid.Column="6" Text="{Binding Match.IdSurvivors1Navigation.SurvivorAccount}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" d:Text="16 789"/>
+
+                <!--#endregion-->
+
+                <!--#region Выживший №2 -->
+
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Match.IdSurvivors2Navigation.Prestige}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40" d:Text="100"/>
+                <Image Grid.Column="1" Grid.Row="1" Source="{Binding Match.IdSurvivors2Navigation.IdSurvivorNavigation.SurvivorImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\1_Дуайт Фэйрфилд(Синий).png"/>
+
+                <WrapPanel Grid.Column="2" Grid.Row="1">
+                    <Image Source="{Binding Match.IdSurvivors2Navigation.IdPerk1Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\20_Юи Кимура\3d31a1e4-a5d5-4c30-9728-483f2f61a77a.png"/>
+                    <Image Source="{Binding Match.IdSurvivors2Navigation.IdPerk2Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\20_Юи Кимура\85db40c3-1eee-4864-819d-ab50bef07d37.png"/>
+                    <Image Source="{Binding Match.IdSurvivors2Navigation.IdPerk3Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\24_Элоди Ракото\adc0c466-e894-4c3a-a47d-d27f7ad558fc.png"/>
+                    <Image Source="{Binding Match.IdSurvivors2Navigation.IdPerk4Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\7_Дэвид Кинг\01d5cdd8-4521-451e-b5bb-119471ad2fb4.png"/>
+                </WrapPanel>
+
+                <Image Grid.Column="3" Grid.Row="1" Source="{Binding Match.IdSurvivors2Navigation.IdSurvivorOfferingNavigation.OfferingImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Подношение\Общее\iconsFavors_RPDBadge.png"/>
+
+                <Image Grid.Column="4" Grid.Row="1" Source="{Binding Match.IdSurvivors2Navigation.IdItemNavigation.ItemImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png"/>
+
+                <WrapPanel Grid.Column="5" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{Binding Match.IdSurvivors2Navigation.IdAddon1Navigation.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png" Width="70"/>
+                    <Image Source="{Binding Match.IdSurvivors2Navigation.IdAddon2Navigation.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Аптечка) Кровоостанавливающий препарат.png" Width="70"/>
+                </WrapPanel>
+
+                <TextBlock Grid.Column="6" Grid.Row="1" Text="{Binding Match.IdSurvivors2Navigation.SurvivorAccount}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" d:Text="16 789"/>
+
+                <!--#endregion-->
+
+                <!--#region Выживший №3 -->
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding Match.IdSurvivors3Navigation.Prestige}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40" d:Text="100"/>
+                <Image Grid.Column="1" Grid.Row="2" Source="{Binding Match.IdSurvivors3Navigation.IdSurvivorNavigation.SurvivorImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\1_Дуайт Фэйрфилд(Синий).png"/>
+
+                <WrapPanel Grid.Column="2" Grid.Row="2">
+                    <Image Source="{Binding Match.IdSurvivors3Navigation.IdPerk1Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\20_Юи Кимура\3d31a1e4-a5d5-4c30-9728-483f2f61a77a.png"/>
+                    <Image Source="{Binding Match.IdSurvivors3Navigation.IdPerk2Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\20_Юи Кимура\85db40c3-1eee-4864-819d-ab50bef07d37.png"/>
+                    <Image Source="{Binding Match.IdSurvivors3Navigation.IdPerk3Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\24_Элоди Ракото\adc0c466-e894-4c3a-a47d-d27f7ad558fc.png"/>
+                    <Image Source="{Binding Match.IdSurvivors3Navigation.IdPerk4Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\7_Дэвид Кинг\01d5cdd8-4521-451e-b5bb-119471ad2fb4.png"/>
+                </WrapPanel>
+
+                <Image Grid.Column="3" Grid.Row="2" Source="{Binding Match.IdSurvivors3Navigation.IdSurvivorOfferingNavigation.OfferingImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Подношение\Общее\iconsFavors_RPDBadge.png"/>
+
+                <Image Grid.Column="4" Grid.Row="2" Source="{Binding Match.IdSurvivors3Navigation.IdItemNavigation.ItemImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png"/>
+
+                <WrapPanel Grid.Column="5" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{Binding Match.IdSurvivors3Navigation.IdAddon1Navigation.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png" Width="70"/>
+                    <Image Source="{Binding Match.IdSurvivors3Navigation.IdAddon2Navigation.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Аптечка) Кровоостанавливающий препарат.png" Width="70"/>
+                </WrapPanel>
+
+                <TextBlock Grid.Column="6" Grid.Row="2" Text="{Binding Match.IdSurvivors3Navigation.SurvivorAccount}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" d:Text="16 789"/>
+
+                <!--#endregion-->
+
+                <!--#region Выживший №4 -->
+
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding Match.IdSurvivors4Navigation.Prestige}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40" d:Text="100"/>
+                <Image Grid.Column="1" Grid.Row="3" Source="{Binding Match.IdSurvivors4Navigation.IdSurvivorNavigation.SurvivorImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\1_Дуайт Фэйрфилд(Синий).png"/>
+
+                <WrapPanel Grid.Column="2" Grid.Row="3">
+                    <Image Source="{Binding Match.IdSurvivors4Navigation.IdPerk1Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\20_Юи Кимура\3d31a1e4-a5d5-4c30-9728-483f2f61a77a.png"/>
+                    <Image Source="{Binding Match.IdSurvivors4Navigation.IdPerk2Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\20_Юи Кимура\85db40c3-1eee-4864-819d-ab50bef07d37.png"/>
+                    <Image Source="{Binding Match.IdSurvivors4Navigation.IdPerk3Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\24_Элоди Ракото\adc0c466-e894-4c3a-a47d-d27f7ad558fc.png"/>
+                    <Image Source="{Binding Match.IdSurvivors4Navigation.IdPerk4Navigation.PerkImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\7_Дэвид Кинг\01d5cdd8-4521-451e-b5bb-119471ad2fb4.png"/>
+                </WrapPanel>
+
+                <Image Grid.Column="3" Grid.Row="3" Source="{Binding Match.IdSurvivors4Navigation.IdSurvivorOfferingNavigation.OfferingImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Подношение\Общее\iconsFavors_RPDBadge.png"/>
+
+                <Image Grid.Column="4" Grid.Row="3" Source="{Binding Match.IdSurvivors4Navigation.IdItemNavigation.ItemImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png"/>
+
+                <WrapPanel Grid.Column="5" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{Binding Match.IdSurvivors4Navigation.IdAddon1Navigation.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png" Width="70"/>
+                    <Image Source="{Binding Match.IdSurvivors4Navigation.IdAddon2Navigation.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Аптечка) Кровоостанавливающий препарат.png" Width="70"/>
+                </WrapPanel>
+
+                <TextBlock Grid.Column="6" Grid.Row="3" Text="{Binding Match.IdSurvivors4Navigation.SurvivorAccount}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" d:Text="16 789"/>
+
+                <!--#endregion-->
+
+                <!--#region Киллер -->
+
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="{Binding Match.IdKillerNavigation.Prestige}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40" d:Text="100"/>
+                <Image Grid.Column="1" Grid.Row="4" Source="{Binding Match.IdKillerNavigation.IdKillerNavigation.KillerImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Портреты\36_Лич.png"/>
+
+                <WrapPanel Grid.Column="2" Grid.Row="4">
+                    <Image Source="{Binding Match.IdKillerNavigation.IdPerk1Navigation.PerkImage}" d:Source="D:\Изображение для программы по ДБД\Киллеры\Перки\36_Лич\bf95168a-f217-401d-83c4-63ab0e36db6f.png"/>
+                    <Image Source="{Binding Match.IdKillerNavigation.IdPerk2Navigation.PerkImage}" d:Source="D:\Изображение для программы по ДБД\Киллеры\Перки\36_Лич\df0dcb79-f852-4494-b32c-302d404f6bb0.png"/>
+                    <Image Source="{Binding Match.IdKillerNavigation.IdPerk3Navigation.PerkImage}" d:Source="D:\Изображение для программы по ДБД\Киллеры\Перки\36_Лич\ee2cc464-3839-4827-9ec9-1cbdbcbbb8f8.png"/>
+                    <Image Source="{Binding Match.IdKillerNavigation.IdPerk4Navigation.PerkImage}" d:Source="D:\Изображение для программы по ДБД\Киллеры\Перки\25_Синобит\ddfdb552-fe45-4eb0-83e3-ed0685be0538.png"/>
+                </WrapPanel>
+
+                <Image Grid.Column="3" Grid.Row="5" Source="{Binding Match.IdKillerNavigation.IdKillerOfferingNavigation.OfferingImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Подношение\Общее\iconsFavors_RPDBadge.png"/>
+
+                <Image Grid.Column="4" Grid.Row="4" Source="{Binding Match.IdKillerNavigation.IdKillerNavigation.KillerAbilityImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Аддоны\36_Лич\Радужная книга гнусной тьмы.png" Width="70"/>
+
+                <WrapPanel Grid.Column="5" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{Binding Match.IdKillerNavigation.IdAddon1Navigation.AddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Аддоны\36_Лич\Радужная книга гнусной тьмы.png" Width="70"/>
+                    <Image Source="{Binding Match.IdKillerNavigation.IdAddon2Navigation.AddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Аддоны\36_Лич\Меч каса.png" Width="70"/>
+                </WrapPanel>
+
+                <TextBlock Grid.Column="6" Grid.Row="4" Text="{Binding Match.IdKillerNavigation.KillerAccount}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" d:Text="16 789"/>
+
+                <!--#endregion-->
 
             </Grid>
         </Grid>

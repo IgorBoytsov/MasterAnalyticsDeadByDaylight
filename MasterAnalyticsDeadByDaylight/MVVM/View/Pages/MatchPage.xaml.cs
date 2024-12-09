@@ -1,6 +1,7 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation;
 using System.Windows.Controls;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Pages
@@ -15,7 +16,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Pages
             InitializeComponent();
             Func<MasterAnalyticsDeadByDaylightDbContext> _contextFactory = () => new MasterAnalyticsDeadByDaylightDbContext(); 
             IDataService dataService = new DataService(_contextFactory);
-            DataContext = new MatchPageViewModel(dataService);
+            IWindowNavigationService windowNavigationService = new WindowNavigationService(null);
+            DataContext = new MatchPageViewModel(dataService, windowNavigationService);
         }
     }
 }

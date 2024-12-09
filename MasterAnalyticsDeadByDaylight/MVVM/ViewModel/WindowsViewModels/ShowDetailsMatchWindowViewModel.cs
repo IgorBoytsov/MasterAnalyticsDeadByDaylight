@@ -6,7 +6,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
     internal class ShowDetailsMatchWindowViewModel : BaseViewModel, IUpdatable
     {
         private GameStatistic _match;
-        public GameStatistic Math
+        public GameStatistic Match
         {
             get => _match;
             set
@@ -16,16 +16,29 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
-        private readonly IServiceProvider _serviceProvider;
-
-        public ShowDetailsMatchWindowViewModel(IServiceProvider serviceProvider)
+        private string _title;
+        public string Title
         {
-            _serviceProvider = serviceProvider;
+            get => _title;
+            set
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ShowDetailsMatchWindowViewModel()
+        {
+            
         }
 
         public void Update(object value)
         {
-            throw new NotImplementedException();
+            if (value is GameStatistic match)
+            {
+                Match = match;
+                Title = $"Матч за {Match.DateTimeMatch.Value:D}, Режим : {Match.IdGameModeNavigation.GameModeName}, Ивент : {Match.IdGameEventNavigation.GameEventName}";
+            }
         }
     }
 }
