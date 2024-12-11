@@ -4,6 +4,7 @@ using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
@@ -98,6 +99,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private readonly ICustomDialogService _dialogService;
         private readonly IDataService _dataService;
+        private readonly IPageNavigationService _pageNavigationService;
 
         public AddMatchWindowViewModel(IServiceProvider serviceProvider)
         {
@@ -105,6 +107,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
             _dialogService = _serviceProvider.GetService<ICustomDialogService>();
             _dataService = _serviceProvider.GetService<IDataService>();
+            _pageNavigationService = _serviceProvider.GetService<IPageNavigationService>();
 
             IssOpenKillerBuildPopup = false;
             GetAllData();
@@ -3162,6 +3165,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             SetNullGameData();
             SetNullImage();
             SetNullBuild();
+            _pageNavigationService.NavigateTo("MatchPage",true, true);
             _dialogService.ShowMessage("Данные успешно добавлены", "Успешно!", TypeMessage.Notification);
         }
 

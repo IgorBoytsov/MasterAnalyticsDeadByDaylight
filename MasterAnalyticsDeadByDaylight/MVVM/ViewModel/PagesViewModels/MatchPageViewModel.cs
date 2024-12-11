@@ -1,16 +1,17 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
-using MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation;
+using MasterAnalyticsDeadByDaylight.Utils.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
-using System.Windows.Forms;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
-    internal class MatchPageViewModel : BaseViewModel
+    internal class MatchPageViewModel : BaseViewModel, IUpdatable
     {
         private List<GameStatistic> _allGameMatch { get; set; } = [];
 
@@ -18,13 +19,20 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         public ObservableCollection<GameStatistic> GameMatchList { get; set; } = [];
 
+        private readonly IServiceProvider _serviceProvider;
+
         private readonly IDataService _dataService;
         private readonly IWindowNavigationService _windowNavigationService;
+        private readonly LastRecordHelper _lastRecordHelper;
 
-        public MatchPageViewModel(IDataService dataService, IWindowNavigationService windowNavigationService)
+        public MatchPageViewModel(IServiceProvider serviceProvider)
         {
-            _dataService = dataService;
-            _windowNavigationService = windowNavigationService;
+            _serviceProvider = serviceProvider;
+
+            _dataService = _serviceProvider.GetService<IDataService>();
+            _windowNavigationService = _serviceProvider.GetService<IWindowNavigationService>();
+            _lastRecordHelper = serviceProvider.GetRequiredService<LastRecordHelper>();
+
             ConsiderKillerPrestige = false;
             ConsiderKillerScore = false;
             ConsiderDateMatch = false;
@@ -33,6 +41,21 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
             GetFilterData();
             GetGameStatisticData();
+        }
+
+        public void Update(object value)
+        {
+            //Условие приходит из сервиса навигации. Если приходит свойство bool, то происходит обновление записи без открытие страницы (Если страница не открыта, то она и не будет открыта).
+            if (value is bool trueUpdateList)
+            {
+                var newMatch = _lastRecordHelper.GameStatisticLastRecord();                                                                              
+
+                _allGameMatch.Insert(0, newMatch);
+                CalculateTotalPages(_allGameMatch.Count);
+                ApplySorting();
+                ApplyFilter();
+                LoadGameStatistics();
+            }
         }
 
         #region Команды взоимодейсвтие с данными
@@ -50,6 +73,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         private RelayCommand _showMatchCommand;
         public RelayCommand ShowMatchCommand => _showMatchCommand ??= new RelayCommand(ShowMatch);
 
+        private RelayCommand _showDetailedStatisticsCommand;
+        public RelayCommand ShowDetailedStatisticsCommand { get => _showDetailedStatisticsCommand ??= new(obj => { ShowDetailedStatistics(); }); }
+
         #endregion
 
         private void ShowMatch(object parameter)
@@ -57,6 +83,14 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             if (parameter is GameStatistic selectedGameMatch)
             {
                 _windowNavigationService.OpenWindow("ShowDetailsMatchWindow", selectedGameMatch);
+            }
+        }
+
+        private void ShowDetailedStatistics()
+        {
+            if (GameMatchList.Count != 0)
+            {
+                _windowNavigationService.OpenWindow("DetailedMatchStatisticsWindow", GameMatchList);
             }
         }
 
@@ -489,7 +523,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             SelectedCountHook = CountHooks.FirstOrDefault();
             SelectedRecentGenerators = NumberRecentGenerators.FirstOrDefault();
             ConsiderDateMatch = false;
-            StartDate = DateTime.MinValue;
+            StartDate = _allGameMatch.LastOrDefault().DateTimeMatch;
             EndDate = DateTime.Now;
         }
 
@@ -699,18 +733,19 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 
         private void GetGameStatisticData()
         {
-            var match = _dataService.GetAllData<GameStatistic>(x => x
-            
+            new Thread(obj =>
+            {
+                var match = _dataService.GetAllData<GameStatistic>(x => x
              .Include(map => map.IdMapNavigation.IdMeasurementNavigation)  //Карта
              .Include(placedMap => placedMap.IdWhoPlacedMapNavigation) //Кто поставил карту | Чья карта выпала
              .Include(patch => patch.IdPatchNavigation) //Номер патча
              .Include(gameMode => gameMode.IdGameModeNavigation) //Игровой режим
              .Include(gameEvent => gameEvent.IdGameEventNavigation) //Игровой ивент
-  
+
              .Include(killerInfo => killerInfo.IdKillerNavigation.IdKillerNavigation) //Личные киллера (Изображение, имя и тд)
-            
+
              .Include(killerOffering => killerOffering.IdKillerNavigation.IdKillerOfferingNavigation) //Подношение киллера
-                                                                                                      
+
              .Include(killerInfo => killerInfo.IdKillerNavigation.IdPerk1Navigation) //Первый перк киллера
              .Include(killerInfo => killerInfo.IdKillerNavigation.IdPerk2Navigation) //Второй перк киллера
              .Include(killerInfo => killerInfo.IdKillerNavigation.IdPerk3Navigation)//Третий перк киллера
@@ -720,7 +755,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
              .Include(killerInfo => killerInfo.IdKillerNavigation.IdAddon2Navigation)
 
              .Include(killerInfo => killerInfo.IdKillerNavigation.IdAssociationNavigation) //С кем ассоциируется киллер : Я, противник
-             
+
              .Include(killerInfo => killerInfo.IdKillerNavigation.IdPlatformNavigation) //Платформа с которой играл киллер
 
              .Include(firstSurvivor => firstSurvivor.IdSurvivors1Navigation.IdSurvivorNavigation) // Первый выживший 
@@ -771,17 +806,21 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
              .Include(fourthSurvivor => fourthSurvivor.IdSurvivors4Navigation.IdTypeDeathNavigation) // Тип смерти выжившего ( Как его убили : Крюк, От земли, Мементо и тд )
              .Include(fourthSurvivor => fourthSurvivor.IdSurvivors4Navigation.IdPlatformNavigation) // Платформа с которой играл выживший
 
-
                 .Where(x => x.IdKillerNavigation.IdAssociation == 1)
                 .OrderByDescending(x => x.DateTimeMatch));
 
-            _allGameMatch.Clear();
-            _allGameMatch.AddRange(match);
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    _allGameMatch.Clear();
+                    _allGameMatch.AddRange(match);
 
-            CalculateTotalPages(match.Count());
-            ApplySorting();
-            ApplyFilter();
-            LoadGameStatistics();
+                    CalculateTotalPages(match.Count());
+                    ApplySorting();
+                    ApplyFilter();
+                    LoadGameStatistics();
+                });
+
+            }).Start();
         }
 
         private void LoadGameStatistics()
