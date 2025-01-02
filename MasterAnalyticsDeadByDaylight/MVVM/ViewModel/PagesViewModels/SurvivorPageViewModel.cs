@@ -1,409 +1,460 @@
 ﻿using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
+using MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
+using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
+using MasterAnalyticsDeadByDaylight.Utils.Calculation;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
-    class SurvivorPageViewModel : BaseViewModel
+    class SurvivorPageViewModel : BaseViewModel, IUpdatable
     {
+        private readonly IServiceProvider _serviceProvider;
 
-        #region Колекции
+        private readonly IDataService _dataService;
+        private readonly IPageNavigationService _pageNavigationService;
 
-        public ObservableCollection<SurvivorStat> SurvivorStatList { get; set; } = [];
-
-        public ObservableCollection<SurvivorStat> SurvivorSortedStatList { get; set; } = [];
-
-        public ObservableCollection<string> SortingList { get; set; } =
-            [
-            "Дате выхода (Убыв.)", "Дате выхода (Возр.)",
-            "Алфавит (Я-А)", "Алфавит (А-Я)",
-            "Пикрейт (%)",
-            "Побегам (%)","Побегам (Кол-во)",
-            "Анонимному моду (%)","Анонимному моду (Кол-во)",
-            "Количеству игроков",
-            "Количеству вышедших из игры (%)", "Количеству вышедших из игры (Кол-во)",
-            ];
-
-        public ObservableCollection<string> Association { get; set; } = ["Общая", "Личная по убийствам за киллера", "Личная за Выжившего"];
-
-        #endregion
-
-        #region Pupup
-
-        private bool _isFilterPopupOpen;
-        public bool IsFilterPopupOpen
+        public SurvivorPageViewModel(IServiceProvider serviceProvider)
         {
-            get => _isFilterPopupOpen;
-            set
+            _serviceProvider = serviceProvider;
+            _dataService = _serviceProvider.GetService<IDataService>();
+            _pageNavigationService = _serviceProvider.GetService<IPageNavigationService>();
+
+            IsPopupFilterOpen = false;
+
+            // Получение нужных данных при запуске страницы
+            GetSurvivors();
+            GetPlayerAssociations();
+        }
+
+        public void Update(object value)
+        {
+            //Обновление расчетов, если был добавлен матч с участие данного выжившего
+            if (value is Survivor survivor)
             {
-                _isFilterPopupOpen = value;
-                OnPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        private string _searchTextBox;
-        public string SearchTextBox
-        {
-            get => _searchTextBox;
-            set
-            {
-                _searchTextBox = value;
-                SearchSurvivorName();
-                OnPropertyChanged();
-            }
-        }
-
-        #region Свойства Visibility
-
-        private Visibility _survivorListVisibility;
-        public Visibility SurvivorListVisibility
-        {
-            get => _survivorListVisibility;
-            set
-            {
-                _survivorListVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility _sortMenuVisibility;
-        public Visibility SortMenuVisibility
-        {
-            get => _sortMenuVisibility;
-            set
-            {
-                _sortMenuVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Visibility _detailedInformationVisibility;
-        public Visibility DetailedInformationVisibility
-        {
-            get => _detailedInformationVisibility;
-            set
-            {
-                _detailedInformationVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        #region Свойства Selected
-
-        private string _selectedSurvivorStatSortItem;
-        public string SelectedSurvivorStatSortItem
-        {
-            get => _selectedSurvivorStatSortItem;
-            set
-            {
-                _selectedSurvivorStatSortItem = value;
-                SortSurvivorStatList();
-                OnPropertyChanged();
-            }
-        }
-
-        private string _selectedAssociation;
-        public string SelectedAssociation
-        {
-            get => _selectedAssociation;
-            set
-            {
-                _selectedAssociation = value;
-                SortSurvivorStatList(); 
-                OnPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        public SurvivorPageViewModel() 
-        {
-            SelectedAssociation = Association[0];
-            SelectedSurvivorStatSortItem = SortingList[0];
-            SetDefaultVisibility();
-
-            IsFilterPopupOpen = false;
-        }
-
-        #region Команды
-
-        private RelayCommand _backToListViewCommand;
-        public RelayCommand BackToListViewCommand
-        {
-            get => _backToListViewCommand ??= new(obj =>
-            {
-                SurvivorListVisibility = Visibility.Visible;
-                SortMenuVisibility = Visibility.Visible;
-                DetailedInformationVisibility = Visibility.Collapsed;
-            });
-        }
-
-        private RelayCommand _reloadDataCommand;
-        public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { SortSurvivorStatList(); SearchTextBox = string.Empty; }); }
-
-        private RelayCommand _openFilterCommand;
-        public RelayCommand OpenFilterCommand { get => _openFilterCommand ??= new(obj => { IsFilterPopupOpen = true; }); }
-
-        private RelayCommand _closeFilterCommand;
-        public RelayCommand CloseFilterCommand
-        {
-            get => _closeFilterCommand ??= new(obj =>
-            {
-                IsFilterPopupOpen = false;
-            });
-        }
-
-        #endregion
-
-        #region Методы
-
-        private void SetDefaultVisibility()
-        {
-            SortMenuVisibility = Visibility.Visible;
-            DetailedInformationVisibility = Visibility.Collapsed;
-        }
-
-        #endregion
-
-        #region Методы получение данных
-
-        private void GetSurvivorStatisticData()
-        {
-            SurvivorStatList.Clear();
-            using (MasterAnalyticsDeadByDaylightDbContext context = new())
-            {
-                List<Survivor> SurvivorList = context.Survivors.Skip(1).ToList();
-
-                List<SurvivorInfo> SurvivorInfoList = null;
-
-                if (SelectedAssociation == "Общая")
+                if (SelectedSurvivor.IdSurvivor == survivor.IdSurvivor)
                 {
-                    SurvivorInfoList = context.SurvivorInfos.ToList();
-                }
-                if (SelectedAssociation == "Личная за Выжившего")
-                {
-                    SurvivorInfoList = context.SurvivorInfos.Where(x => x.IdAssociation == 1).ToList();
-                }
-                if (SelectedAssociation == "Личная по убийствам за киллера")
-                {
-                    SurvivorInfoList = context.SurvivorInfos.Where(x => x.IdAssociation == 3).ToList();
-                }
-                if (SelectedAssociation == null)
-                {
-                    return;
-                }
-
-                foreach (var survivor in SurvivorList)
-                {
-                    int survivorCount = SurvivorInfoList.Where(x => x.IdSurvivor == survivor.IdSurvivor).Count();
-                    double survivorPickRate = Math.Round((double)survivorCount / SurvivorInfoList.Count * 100, 2);
-                    int survivorEscapeCount = SurvivorInfoList.Where(x => x.IdSurvivor == survivor.IdSurvivor).Where(x => x.IdTypeDeath == 5).Count();
-                    double survivorEscapePercentage = Math.Round((double)survivorEscapeCount / SurvivorInfoList.Where(x => x.IdSurvivor == survivor.IdSurvivor).Count() * 100, 2);
-                    int survivorAnonymousModeCount = SurvivorInfoList.Where(x => x.IdSurvivor == survivor.IdSurvivor).Where(x => x.AnonymousMode == true).Count();
-                    double survivorAnonymousModePercentage = Math.Round((double)survivorAnonymousModeCount / SurvivorInfoList.Where(x => x.IdSurvivor == survivor.IdSurvivor).Count() * 100, 2);
-                    double avgPrestige = AVGPrestige(SurvivorInfoList);
-                    int survivorBotCount = SurvivorInfoList.Where(x => x.IdSurvivor == survivor.IdSurvivor).Where(x => x.Bot == true).Count();
-                    double survivorBotPercentage = Math.Round((double)survivorBotCount / SurvivorInfoList.Where(x => x.IdSurvivor == survivor.IdSurvivor).Count() * 100, 2);
-
-                    var survivorStat = new SurvivorStat
-                    {
-                        SurvivorName = survivor.SurvivorName,
-                        SurvivorImage = survivor.SurvivorImage,
-                        SurvivorCount = survivorCount,
-                        SurvivorPickRate = survivorPickRate,
-                        SurvivorEscapeCount = survivorEscapeCount,
-                        SurvivorEscapePercentage = survivorEscapePercentage,
-                        SurvivorAnonymousModeCount = survivorAnonymousModeCount,
-                        SurvivorAnonymousModePercentage = survivorAnonymousModePercentage,
-                        SurvivorAVGPrestige = avgPrestige,
-                        SurvivorBotCount = survivorBotCount,
-                        SurvivorBotPercentage = survivorBotPercentage
-                    };
-                    SurvivorStatList.Add(survivorStat);
+                    _matches.Clear();
+                    _matches.AddRange(GetSurvivorInfo(SelectedSurvivor));
+                    CalculateHeaderStats();
+                    CalculateExtendedStats();
                 }
             }
         }
 
-        private static double AVGPrestige(List<SurvivorInfo> survivorInfos)
+        /*--Общие Свойства \ Коллекции--------------------------------------------------------------------*/
+
+        #region Коллекции : Общие
+
+        public ObservableCollection<Survivor> Survivors { get; set; } = [];
+
+        public ObservableCollection<PlayerAssociation> PlayerAssociations { get; set; } = [];
+
+        public ObservableCollection<SurvivorStat> SurvivorStats { get; set; } = [];
+
+        #endregion
+
+        #region Коллекции : Расширеная статистика
+
+        public ObservableCollection<SurvivorTypeDeathTracker> SurvivorTypeDeaths { get; set; } = [];
+
+        #endregion
+
+        #region Коллекция : Информация выбранного выжившего
+
+        private List<SurvivorInfo> _matches = [];
+
+        #endregion
+
+        #region Свойства : Выбор выжившего \ выбор индекса
+
+        private Survivor _selectedSurvivor;
+        public Survivor SelectedSurvivor
         {
-            int CountPrestige = 0;
-            foreach (var item in survivorInfos)
+            get => _selectedSurvivor;
+            set
             {
-                CountPrestige += item.Prestige;
+                if (_selectedSurvivor != value)
+                {
+                    _selectedSurvivor = value;
+                    _matches.Clear();
+                    _matches.AddRange(GetSurvivorInfo(value));
+                    CalculateHeaderStats();
+                    CalculateExtendedStats();
+                    OnPropertyChanged();
+                }
             }
-            return CountPrestige;
+        }
+
+        private int _selectedSurvivorIndex;
+        public int SelectedSurvivorIndex
+        {
+            get => _selectedSurvivorIndex;
+            set
+            {
+                if (value >= 0 && value < Survivors.Count)
+                {
+                    _selectedSurvivorIndex = value;
+                    SelectedSurvivor = Survivors[value];
+                    OnPropertyChanged();
+                }
+                OnPropertyChanged();
+            }
         }
 
         #endregion
 
-        #region Методы сортировки
+        #region Свойства : Выбор игровой ассоциации
 
-        private void SortSurvivorStatList()
+        private PlayerAssociation _selectedPlayerAssociation;
+        public PlayerAssociation SelectedPlayerAssociation
         {
-            GetSurvivorStatisticData(); 
-            switch (SelectedSurvivorStatSortItem)
+            get => _selectedPlayerAssociation;
+            set
             {
-                case "Дате выхода (Убыв.)":
-                    SortSurvivorStatsByDescendingOrder();
-                    break;
-                case "Дате выхода (Возр.)":
-                    SortSurvivorStatsByAscendingOrder();
-                    break;
-                case "Алфавит (Я-А)":
-                    SortSurvivorStatsBySurvivorNameAscendingOrder();
-                    break;
-                case "Алфавит (А-Я)":
-                    SortSurvivorStatsBySurvivorNameDescendingOrder();
-                    break;
-                case "Пикрейт (%)":
-                    SortSurvivorStatsBySurvivorPickRatePercentageOrder();
-                    break;
-                case "Побегам (%)":
-                    SortSurvivorStatsBySurvivorEscapeRatePercentageOrder();
-                    break;
-                case "Побегам (Кол-во)":
-                    SortSurvivorStatsBySurvivorEscapeRateCountOrder();
-                    break;
-                case "Анонимному моду (%)":
-                    SortSurvivorStatsBySurvivorSurvivorAnonymousModePercentageOrder();
-                    break;
-                case "Анонимному моду (Кол-во)":
-                    SortSurvivorStatsBySurvivorSurvivorAnonymousModeCountOrder();
-                    break;
-                case "Количеству игроков":
-                    SortSurvivorStatsBySurvivorCountOrder();
-                    break;
-                case "Количеству вышедших из игры (%)":
-                    SortSurvivorStatsBySurvivorBotPercentageOrder();
-                    break;
-                case "Количеству вышедших из игры (Кол-во)":
-                    SortSurvivorStatsBySurvivorBotCountOrder();
-                    break;
+                if (_selectedPlayerAssociation != value)
+                {
+                    _selectedPlayerAssociation = value;
+                    SurvivorStats.Clear();
+                    OnPropertyChanged();
+                }
             }
         }
 
-        private void SearchSurvivorName()
-        {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.Where(ks => ks.SurvivorName.ToLower().Contains(SearchTextBox.ToLower())))
-            {
-                SurvivorSortedStatList.Add(item);
-            }
-        }
+        #endregion
 
-        private void SortSurvivorStatsByDescendingOrder()
-        {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList)
-            {
-                SurvivorSortedStatList.Add(item);
-            }
-        }
+        #region Свойства : CountMatches,E\C, E\R, P\R, AnonymousCount, AnonymousModeRate, BotCount, BotRate
 
-        private void SortSurvivorStatsByAscendingOrder()
+        private int _countMatches;
+        public int CountMatches
         {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.Reverse())
+            get => _countMatches;
+            set
             {
-                SurvivorSortedStatList.Add(item);
-            }
-        }
-
-        private void SortSurvivorStatsBySurvivorNameDescendingOrder()
-        {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorName))
-            {
-                SurvivorSortedStatList.Add(item);
-            }
-        }
-
-        private void SortSurvivorStatsBySurvivorNameAscendingOrder()
-        {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderBy(x => x.SurvivorName))
-            {
-                SurvivorSortedStatList.Add(item);
-            }
-        }
-
-        private void SortSurvivorStatsBySurvivorPickRatePercentageOrder()
-        {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorPickRate))
-            {
-                SurvivorSortedStatList.Add(item);
+                _countMatches = value;
+                OnPropertyChanged();
             }
         } 
 
-        private void SortSurvivorStatsBySurvivorEscapeRatePercentageOrder()
+        private int _escapeCount;
+        public int EscapeCount
         {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorEscapePercentage))
+            get => _escapeCount;
+            set
             {
-                SurvivorSortedStatList.Add(item);
+                _escapeCount = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortSurvivorStatsBySurvivorEscapeRateCountOrder()
+        private double _escapeRate;
+        public double EscapeRate
         {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorEscapeCount))
+            get => _escapeRate;
+            set
             {
-                SurvivorSortedStatList.Add(item);
+                _escapeRate = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortSurvivorStatsBySurvivorSurvivorAnonymousModePercentageOrder()
+        private double _pickRate;
+        public double PickRate
         {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorAnonymousModePercentage))
+            get => _pickRate;
+            set
             {
-                SurvivorSortedStatList.Add(item);
+                _pickRate = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortSurvivorStatsBySurvivorSurvivorAnonymousModeCountOrder()
+        private int _anonymousModeCount;
+        public int AnonymousModeCount
         {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorAnonymousModeCount))
+            get => _anonymousModeCount;
+            set
             {
-                SurvivorSortedStatList.Add(item);
+                _anonymousModeCount = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortSurvivorStatsBySurvivorCountOrder()
+        private double _anonymousModeRate;
+        public double AnonymousModeRate
         {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorCount))
+            get => _anonymousModeRate;
+            set
             {
-                SurvivorSortedStatList.Add(item);
+                _anonymousModeRate = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortSurvivorStatsBySurvivorBotPercentageOrder()
+        private int _botCount;
+        public int BotCount
         {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorBotPercentage))
+            get => _botCount;
+            set
             {
-                SurvivorSortedStatList.Add(item);
+                _botCount = value;
+                OnPropertyChanged();
+            }
+        } 
+        
+        private double _botRate;
+        public double BotRate
+        {
+            get => _botRate;
+            set
+            {
+                _botRate = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortSurvivorStatsBySurvivorBotCountOrder()
+        #endregion
+
+        #region Свойство : Максимальная ширина элементов
+
+        public int MaxWidth { get; set; } = 1200;
+
+        #endregion
+
+        #region Свойство : Popup - Список выживших для сравнения
+
+        private bool _isPopupFilterOpen;
+        public bool IsPopupFilterOpen
         {
-            SurvivorSortedStatList.Clear();
-            foreach (var item in SurvivorStatList.OrderByDescending(x => x.SurvivorBotCount))
+            get => _isPopupFilterOpen;
+            set
             {
-                SurvivorSortedStatList.Add(item);
+                _isPopupFilterOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        /*--Команды---------------------------------------------------------------------------------------*/
+
+        // Команды переключение индексов
+        private RelayCommand _nextSurvivorCommand;
+        public RelayCommand NextSurvivorCommand { get => _nextSurvivorCommand ??= new(obj => { NextSurvivor(); }); }
+
+        private RelayCommand _previousSurvivorCommand;
+        public RelayCommand PreviousSurvivorCommand { get => _previousSurvivorCommand ??= new(obj => { PreviousSurvivor(); }); }
+
+        //Команды добавление киллеров в список сравнения
+        private RelayCommand _addSingleToComparisonCommand;
+        public RelayCommand AddSingleToComparisonCommand { get => _addSingleToComparisonCommand ??= new(obj => { AddToComparison(); }); }
+
+        private RelayCommand _addAllToComparisonCommand;
+        public RelayCommand AddAllToComparisonCommand { get => _addAllToComparisonCommand ??= new(obj => { AddAllToComparison(); }); }
+
+        //Очистка списка статистики киллеров
+        private RelayCommand _clearComparisonListCommand;
+        public RelayCommand ClearComparisonListCommand { get => _clearComparisonListCommand ??= new(obj => { SurvivorStats.Clear(); }); }
+
+        //Команд открытие страницы сравнений
+        private RelayCommand _openComparisonPageCommand;
+        public RelayCommand OpenComparisonPageCommand { get => _openComparisonPageCommand ??= new(obj => { OpenComparisonPage(); }); }
+
+        //Команда обновление данных
+        private RelayCommand _reloadDataCommand;
+        public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { ReloadData(); }); }
+
+        //Открытие Popup
+        private RelayCommand _openPopupListSurvivorsCommand;
+        public RelayCommand OpenPopupListSurvivorsCommand { get => _openPopupListSurvivorsCommand ??= new(obj => { IsPopupFilterOpen = true; }); }
+
+        /*--Получение первоначальных данных---------------------------------------------------------------*/
+
+        #region Метод : Получение списка "Выживших"
+
+        private void GetSurvivors()
+        {
+            foreach (var item in _dataService.GetAllDataInList<Survivor>(x => x.Skip(1)))
+            {
+                Survivors.Add(item);
+            }
+        }
+
+        #endregion
+
+        #region Метод : Получение списка "Игровой ассоциации" \ Присваивание по умолчанию SelectedPlayerAssociation первый элемент из PlayerAssociations
+
+        private void GetPlayerAssociations()
+        {
+            foreach (var item in _dataService.GetAllDataInList<PlayerAssociation>())
+            {
+                PlayerAssociations.Add(item);
+            }
+            SelectedPlayerAssociation = PlayerAssociations.FirstOrDefault();
+        }
+
+        #endregion 
+
+        #region Метод : Получение списка информации о выживших
+
+        private List<SurvivorInfo> GetSurvivorInfo(Survivor survivor)
+        {
+            return _dataService.GetAllDataInList<SurvivorInfo>(
+                x => x.Where(x => x.IdSurvivor == survivor.IdSurvivor && x.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation));
+        }
+
+        #endregion
+
+        #region Метод : Обновление данных
+
+        private void ReloadData()
+        {
+            _matches.Clear();
+            _matches.AddRange(GetSurvivorInfo(SelectedSurvivor));
+            CalculateHeaderStats();
+            CalculateExtendedStats();
+        }
+
+        #endregion 
+
+        /*--Взаимодействие с списком----------------------------------------------------------------------*/
+
+        #region Методы : Переключение элементов списка выживщих (По индексу)
+
+        private void PreviousSurvivor()
+        {
+            SelectedSurvivorIndex--;
+        }
+
+        private void NextSurvivor()
+        {
+            SelectedSurvivorIndex++;
+        }
+
+        #endregion
+
+        /*--Расчеты---------------------------------------------------------------------------------------*/
+
+        #region Метод : Открытие страницы сравнений
+
+        private void OpenComparisonPage()
+        {
+            _pageNavigationService.NavigateTo("ComparisonPage", SurvivorStats);
+        }
+
+        #endregion
+
+        #region Метод : Основная статистика
+
+        private void CalculateHeaderStats()
+        {
+            if (_matches.Count != 0)
+            {
+                var allSurvivorsCount = _dataService.Count<SurvivorInfo>(x => x.Where(x => x.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation));
+                CountMatches = _matches.Count;
+
+                EscapeCount = CalculationSurvivor.EscapeCount(_matches, SelectedSurvivor.IdSurvivor);
+                EscapeRate = CalculationSurvivor.EscapeRate(EscapeCount, CountMatches);
+
+                PickRate = CalculationSurvivor.PickRate(CountMatches, allSurvivorsCount);
+
+                AnonymousModeCount = CalculationSurvivor.AnonymousModeCount(_matches);
+                AnonymousModeRate = CalculationSurvivor.AnonymousModeRate(AnonymousModeCount, CountMatches);
+
+                BotCount = CalculationSurvivor.BotCount(_matches);
+                BotRate = CalculationSurvivor.BotRate(BotCount, CountMatches);
+            }
+            else
+            {
+                CountMatches = 0;
+                EscapeCount = 0; 
+                EscapeRate = 0; 
+                PickRate = 0;
+                AnonymousModeCount = 0;
+                AnonymousModeRate = 0;
+                BotCount = 0;
+                BotRate = 0;
+            }
+        }
+
+        #endregion
+
+        #region Методы : Расширение статистика
+
+        private async void CalculateExtendedStats()
+        {
+            if (_matches.Count != 0)
+            {
+                SurvivorTypeDeaths.Clear();
+
+                foreach (var item in await CalculationSurvivor.TypeDeathSurvivorsAsync(_matches, _dataService))
+                    SurvivorTypeDeaths.Add(item);
+            }
+            else
+            {
+                SurvivorTypeDeaths.Clear();
+                SurvivorTypeDeaths.Add(new SurvivorTypeDeathTracker { TypeDeathName = "Нету данных", CountGame = 0, TypeDeathPercentages = 0 });
+            }
+        }
+
+        #endregion
+
+        #region Методы : Создание SurvivorStat - добавлени его в список сравнения
+
+        private void AddToComparison()
+        {
+            if (SurvivorStats.Contains(SurvivorStats.FirstOrDefault(x => x.IdSurvivor == SelectedSurvivor.IdSurvivor)))
+                return;
+
+            var survivorStat = new SurvivorStat
+            {
+                IdSurvivor = SelectedSurvivor.IdSurvivor,
+                SurvivorName = SelectedSurvivor.SurvivorName,
+                SurvivorImage = SelectedSurvivor.SurvivorImage,
+                SurvivorCount = CountMatches,
+                SurvivorPickRate = PickRate,
+                SurvivorEscapeCount = EscapeCount,
+                SurvivorEscapePercentage = EscapeRate,
+                SurvivorAnonymousModeCount = AnonymousModeCount,
+                SurvivorAnonymousModePercentage = AnonymousModeRate,
+                SurvivorBotCount = BotCount,
+                SurvivorBotPercentage = BotRate
+            };
+
+            SurvivorStats.Add(survivorStat);
+        }
+
+        private void AddAllToComparison()
+        {
+            var allSurvivorsCount = _dataService.Count<SurvivorInfo>(x => x.Where(x => x.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation));
+
+            foreach (var survivor in Survivors)
+            {
+                if (SurvivorStats.Contains(SurvivorStats.FirstOrDefault(x => x.IdSurvivor == survivor.IdSurvivor)))
+                    continue;
+
+                var matches = GetSurvivorInfo(survivor);
+
+                var survivorStat = new SurvivorStat
+                {
+                    IdSurvivor = survivor.IdSurvivor,
+                    SurvivorName = survivor.SurvivorName,
+                    SurvivorImage = survivor.SurvivorImage,
+                    SurvivorCount = matches.Count,
+                    SurvivorPickRate = CalculationSurvivor.PickRate(matches.Count, allSurvivorsCount),
+                    SurvivorEscapeCount = CalculationSurvivor.EscapeCount(matches, survivor.IdSurvivor),
+                    SurvivorEscapePercentage = CalculationSurvivor.EscapeRate(CalculationSurvivor.EscapeCount(matches, survivor.IdSurvivor), matches.Count),
+                    SurvivorAnonymousModeCount = CalculationSurvivor.AnonymousModeCount(matches),
+                    SurvivorAnonymousModePercentage = CalculationSurvivor.AnonymousModeRate(CalculationSurvivor.AnonymousModeCount(matches), matches.Count),
+                    SurvivorBotCount = CalculationSurvivor.BotCount(matches),
+                    SurvivorBotPercentage = CalculationSurvivor.BotRate(CalculationSurvivor.BotCount(matches), matches.Count)
+                };
+                SurvivorStats.Add(survivorStat);
             }
         }
 

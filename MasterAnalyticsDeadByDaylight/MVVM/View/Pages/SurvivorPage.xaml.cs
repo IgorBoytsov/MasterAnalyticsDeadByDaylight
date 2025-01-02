@@ -1,5 +1,4 @@
-﻿using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Pages
 {
@@ -11,7 +10,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Pages
         public SurvivorPage()
         {
             InitializeComponent();
-            DataContext = new SurvivorPageViewModel();
         }
     }
 }
