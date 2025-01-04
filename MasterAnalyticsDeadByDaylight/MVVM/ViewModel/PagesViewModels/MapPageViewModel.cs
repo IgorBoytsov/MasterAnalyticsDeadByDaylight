@@ -3,55 +3,63 @@ using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService;
+using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
 using MasterAnalyticsDeadByDaylight.Utils.Calculation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
-    class MapPageViewModel : BaseViewModel
+    class MapPageViewModel : BaseViewModel, IUpdatable
     {
+        private readonly IServiceProvider _serviceProvider;
 
-        #region Колекции 
+        private readonly IDataService _dataService;
+        private readonly IPageNavigationService _pageNavigationService;
 
-        public ObservableCollection<MapStat> MapStatList { get; set; } = [];
+        public MapPageViewModel(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            _dataService = _serviceProvider.GetService<IDataService>();
+            _pageNavigationService = _serviceProvider.GetService<IPageNavigationService>();
 
-        public ObservableCollection<MapStat> MapStatSortedList { get; set; } = [];
+            GetPlayerAssociations();
+            SelectedTypeMap = TypeMap.FirstOrDefault();
+        }
 
-        public ObservableCollection<PlayerAssociation> PlayerAssociationList { get; set; } = [];
+        public void Update(object value)
+        {
+            if (value is Map map)
+            {
+                if (SelectedMap.IdMap == map.IdMap || SelectedMap.IdMap == map.IdMeasurement)
+                {
+                    _matches.Clear();
+                    _matches.AddRange(GetMapInfo(map));
+                    CalculateHeaderStats();
+                    CalculateExtendedStats();
+                }
+            }
+        }
 
-        public ObservableCollection<string> SortingList { get; set; } = 
-            [
-            "Измерению (Убыв.)", "Измерению (Возр.)",
-            "Дате выхода (Убыв.)", "Дате выхода (Возр.)",
-            "Алфавит (Я-А)", "Алфавит (А-Я)",
-            "Пикрейт (Убыв.)", "Пикрейт (Возр.)",
-            "Винрейт (Убыв.)","Винрейт (Возр.)",
-            "Киллрейт (Убыв.)","Киллрейт (Возр.)",
-            "Количеству сыгранных игр (Убыв.)", "Количеству сыгранных игр (Возр.)",
-            "Количеству игр с подношениями (Убыв.)", "Количеству игр с подношениями (Возр.)",
-            "Количеству игр без подношений (Убыв.)", "Количеству игр без подношений (Возр.)"
-            ];
+        /*--Общие Свойства \ Коллекции--------------------------------------------------------------------*/
 
-        public ObservableCollection<string> TypeMapList { get; set; } = ["Карты", "Измерение"];
+        #region Коллекции : Общие
 
-        public ObservableCollection<string> TypeStatsList { get; set; } = [ "Общая", "Личная за Убийц", "Личная за Выживших"];
+        public List<string> TypeMap { get; set; } = ["Карты", "Измерение"];
+
+        public ObservableCollection<Map> MapList { get; set; } = [];
+
+        public List<GameStatistic> _matches { get; set; } = [];
+
+        public ObservableCollection<PlayerAssociation> PlayerAssociations { get; set; } = [];
+
+        public ObservableCollection<MapStat> MapStats { get; set; } = [];
 
         #endregion
 
-        #region Свойства
-
-        private string _selectedMapStatSortItem;
-        public string SelectedMapStatSortItem
-        {
-            get => _selectedMapStatSortItem;
-            set
-            {
-                _selectedMapStatSortItem = value;
-                SortMapStatList();
-                OnPropertyChanged();
-            }
-        }
+        #region Свойство : Выбор типа карт - Карты | Измерение
 
         private string _selectedTypeMap;
         public string SelectedTypeMap
@@ -60,533 +68,535 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             set
             {
                 _selectedTypeMap = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _selectedTypeStat;
-        public string SelectedTypeStat
-        {
-            get => _selectedTypeStat;
-            set
-            {
-                _selectedTypeStat = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private PlayerAssociation _selectedTypePlayerItem;
-        public PlayerAssociation SelectedTypePlayerItem
-        {
-            get => _selectedTypePlayerItem;
-            set
-            {
-                _selectedTypePlayerItem = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _searchTextBox;
-        public string SearchTextBox
-        {
-            get => _searchTextBox;
-            set
-            {
-                _searchTextBox = value;
-                SearchMapName();
+                DefineAndGetMapData();
+                MapStats.Clear();
                 OnPropertyChanged();
             }
         }
 
         #endregion
 
-        #region Pupup
+        #region Свойство : Выбор Карты | Индекса
 
-        private bool _isFilterPopupOpen;
-        public bool IsFilterPopupOpen
+        private Map _selectedMap;
+        public Map SelectedMap
         {
-            get => _isFilterPopupOpen;
+            get => _selectedMap;
             set
             {
-                _isFilterPopupOpen = value;
-                OnPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        private readonly IDataService _dataService;
-
-        public MapPageViewModel(IDataService dataService)
-        {
-            _dataService = dataService;
-            IsFilterPopupOpen = false;
-
-            SelectedMapStatSortItem = SortingList[1];
-            SelectedTypeMap = TypeMapList.First();
-            SelectedTypeStat = TypeStatsList[1];
-
-            GetMapInfo(SelectedTypeMap);
-        }
-
-        #region Команды
-
-        private RelayCommand _reloadDataCommand;
-        public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { GetMapInfo(SelectedTypeMap); }); }
-
-        private RelayCommand _openFilterCommand;
-        public RelayCommand OpenFilterCommand { get => _openFilterCommand ??= new(obj => { IsFilterPopupOpen = true; }); }
-
-        private RelayCommand _applyCommand;
-        public RelayCommand ApplyCommand { get => _applyCommand ??= new(obj => 
-        {
-            GetMapInfo(SelectedTypeMap);
-            IsFilterPopupOpen = false;
-        }); }
-
-        #endregion
-
-        #region Методы
-
-        private void GetMapInfo(string typeMapName)
-        {
-            Action action = typeMapName switch
-            {
-                "Карты" => GetMapStat,
-                "Измерение" => GetMeasurementStat,
-                _ => throw new Exception("Такого типа статистики нету!")
-            };
-            action.Invoke();
-        }
-
-        private async void GetMapStat()
-        {
-            MapStatList.Clear();
-
-            int CountMatch = SelectedTypeStat switch
-            {
-                "Общая" => _dataService.Count<GameStatistic>(),
-                "Личная за Убийц" => _dataService.Count<GameStatistic>(x => x.Where(gs => gs.IdKillerNavigation.IdAssociation == 1)),
-                "Личная за Выживших" => _dataService.Count<GameStatistic>(x => x.Where(gs => gs.IdKillerNavigation.IdAssociation == 3)),
-                _ => throw new Exception("Такого типа статистик нету")
-            };
-
-            List<Map> Maps = await _dataService.GetAllDataInListAsync<Map>(x => x.Include(x => x.IdMeasurementNavigation));
-
-            foreach (var item in Maps)
-            {
-               
-                List<GameStatistic> matches = await GetMatchForMapAsync(item.IdMap, SelectedTypeStat);
-
-                double PickRate = await CalculationMap.PickRateAsync(matches.Count, CountMatch);
-                int CountKills = (int)await CalculationKiller.CountKillAsync(matches);
-                double AVGKillRate = await CalculationKiller.AVGKillRateAsync(matches);
-                double KillRatePercentage = await CalculationKiller.AVGKillRatePercentageAsync(matches);
-                int EscapeSurvivor = await CalculationMap.EscapeSurvivorAsync(matches.Count, CountKills);
-                double EscapeRate = await CalculationMap.EscapeRateAsync(EscapeSurvivor, matches.Count);
-                int WinMatch = matches.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
-                double WinRatePercent = await CalculationMap.WinRateRateAsync(WinMatch, matches.Count);
-                int MapRandom = await CalculationMap.RandomMapAsync(matches);
-                int MapOffering = await CalculationMap.WithOfferingsAsync(matches);
-                double MapRandomPercent = await CalculationMap.DropMapPercentAsync(MapRandom, matches.Count);
-                double MapOfferingPercent = await CalculationMap.DropMapPercentAsync(MapOffering, matches.Count);
-
-                var mapStat = new MapStat()
+                _selectedMap = value;
+                if (value != null)
                 {
-                    idMap = item.IdMap,
-                    MapName = item.MapName,
-                    MapMeasurement = item.IdMeasurementNavigation.MeasurementName,
-                    idMapMeasurement = item.IdMeasurementNavigation.IdMeasurement,
-                    MapImage = item.MapImage,
-                    CountGame = matches.Count,
-                    PickRateMap = PickRate,
-                    KillRateMap = AVGKillRate,
-                    KillRateMapPercent = KillRatePercentage,
-                    EscapeRateMap = EscapeRate,
-                    WinRateMap = WinMatch,
-                    WinRateMapPercent = WinRatePercent,
-                    FalloutMapRandom = MapRandom,
-                    FalloutMapRandomPercent = MapRandomPercent,
-                    FalloutMapOffering = MapOffering,
-                    FalloutMapOfferingPercent = MapOfferingPercent,
-                };
-                MapStatList.Add(mapStat);
+                    _matches.Clear();
+                    _matches.AddRange(GetMapInfo(value));
+                    CalculateHeaderStats();
+                    CalculateExtendedStats();
+                    OnPropertyChanged();
+                }
             }
-            SortMapStatList();
         }
 
-        private async Task<List<GameStatistic>> GetMatchForMapAsync(int idMap, string typeSortStatValue)
+        private int _selectedMapIndex;
+        public int SelectedMapIndex
         {
-
-            return typeSortStatValue switch
+            get => _selectedMapIndex;
+            set
             {
-                "Общая" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
-                                 .Include(x => x.IdMapNavigation)
-                                     .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
-                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
-                                             .Include(x => x.IdWhoPlacedMapNavigation)
-                                                 .Include(x => x.IdWhoPlacedMapWinNavigation)
-                                                     .Where(x => x.IdMapNavigation.IdMap == idMap)),
-                "Личная за Убийц" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
-                                           .Include(x => x.IdMapNavigation)
-                                                .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
-                                                    .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
-                                                        .Include(x => x.IdWhoPlacedMapNavigation)
-                                                            .Include(x => x.IdWhoPlacedMapWinNavigation)
-                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 1)
-                                                                    .Where(x => x.IdMapNavigation.IdMap == idMap)),
-                "Личная за Выживших" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
-                                              .Include(x => x.IdMapNavigation)
-                                                   .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
-                                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
-                                                            .Include(x => x.IdWhoPlacedMapNavigation).Include(x => x.IdWhoPlacedMapWinNavigation)
-                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 3)
-                                                                    .Where(x => x.IdMapNavigation.IdMap == idMap)),
-                _ => throw new Exception("Такого типа статистик нету")
-            };
-        }
-
-        private async void GetMeasurementStat()
-        {
-            MapStatList.Clear();
-
-            int CountMatch = SelectedTypeStat switch
-            {
-                "Общая" => _dataService.Count<GameStatistic>(),
-                "Личная за Убийц" => _dataService.Count<GameStatistic>(x => x.Include(gs => gs.IdKillerNavigation).ThenInclude(killerInfo => killerInfo.IdAssociationNavigation).Where(gs => gs.IdKillerNavigation.IdAssociation == 1)),
-                "Личная за Выживших" => _dataService.Count<GameStatistic>(x => x.Include(gs => gs.IdKillerNavigation).ThenInclude(killerInfo => killerInfo.IdAssociationNavigation).Where(gs => gs.IdKillerNavigation.IdAssociation == 3)),
-                _ => throw new Exception("Такого типа статистик нету")
-            };
-
-            List<Measurement> Measurements = await _dataService.GetAllDataInListAsync<Measurement>();
-            List<Map> Maps = await _dataService.GetAllDataInListAsync<Map>(x => x.Include(x => x.IdMeasurementNavigation));
-
-            foreach (var item in Measurements)
-            {
-                List<GameStatistic> matches = await GetMatchForMeasurementAsync(item.IdMeasurement, SelectedTypeStat);
-
-                double PickRate = await CalculationMap.PickRateAsync(matches.Count, CountMatch);
-                int CountKills = (int)await CalculationKiller.CountKillAsync(matches);
-                double AVGKillRate = await CalculationKiller.AVGKillRateAsync(matches);
-                double KillRatePercentage = await CalculationKiller.AVGKillRatePercentageAsync(matches);
-                int EscapeSurvivor = await CalculationMap.EscapeSurvivorAsync(matches.Count, CountKills);
-                double EscapeRate = await CalculationMap.EscapeRateAsync(EscapeSurvivor, matches.Count);
-                int WinMatch = matches.Where(x => x.CountKills == 3 | x.CountKills == 4).Count();
-                double WinRatePercent = await CalculationMap.WinRateRateAsync(WinMatch, matches.Count);
-                int MapRandom = await CalculationMap.RandomMapAsync(matches);
-                int MapOffering = await CalculationMap.WithOfferingsAsync(matches);
-                double MapRandomPercent = await CalculationMap.DropMapPercentAsync(MapRandom, matches.Count);
-                double MapOfferingPercent = await CalculationMap.DropMapPercentAsync(MapOffering, matches.Count);
-
-                var mapStat = new MapStat()
+                if (value >= 0 && value < MapList.Count)
                 {
-                    MapName = item.MeasurementName,
-                    idMapMeasurement = item.IdMeasurement,
-                    MapImage = Maps.FirstOrDefault(x => x.IdMeasurement == item.IdMeasurement).MapImage,
-                    CountGame = matches.Count,
-                    PickRateMap = PickRate,
-                    KillRateMap = AVGKillRate,
-                    KillRateMapPercent = KillRatePercentage,
-                    EscapeRateMap = EscapeRate,
-                    WinRateMap = WinMatch,
-                    WinRateMapPercent = WinRatePercent,
-                    FalloutMapRandom = MapRandom,
-                    FalloutMapRandomPercent = MapRandomPercent,
-                    FalloutMapOffering = MapOffering,
-                    FalloutMapOfferingPercent = MapOfferingPercent,
-                };
-                MapStatList.Add(mapStat);
+                    _selectedMapIndex = value;
+                    OnPropertyChanged();
+                }
             }
-            SortMapStatList();
-        }
-
-        public async Task<List<GameStatistic>> GetMatchForMeasurementAsync(int idMeasurement, string typeSortStatValue)
-        {
-            return typeSortStatValue switch
-            {
-                "Общая" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
-                                 .Include(x => x.IdMapNavigation)
-                                    .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
-                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
-                                            .Include(x => x.IdWhoPlacedMapNavigation)
-                                                .Include(x => x.IdWhoPlacedMapWinNavigation)
-                                                    .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
-                "Личная за Убийц" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
-                                           .Include(x => x.IdMapNavigation)
-                                                .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
-                                                    .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
-                                                        .Include(x => x.IdWhoPlacedMapNavigation)
-                                                            .Include(x => x.IdWhoPlacedMapWinNavigation)
-                                                                .Where(x => x.IdKillerNavigation.IdAssociation == 1)
-                                                                    .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
-                "Личная за Выживших" => await _dataService.GetAllDataInListAsync<GameStatistic>(x => x
-                                              .Include(x => x.IdMapNavigation)
-                                                   .Include(x => x.IdKillerNavigation).ThenInclude(x => x.IdKillerNavigation)
-                                                        .Include(x => x.IdMapNavigation).ThenInclude(x => x.IdMeasurementNavigation)
-                                                            .Include(x => x.IdWhoPlacedMapNavigation)
-                                                                .Include(x => x.IdWhoPlacedMapWinNavigation)
-                                                                    .Where(x => x.IdKillerNavigation.IdAssociation == 3)
-                                                                        .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == idMeasurement)),
-                _ => throw new Exception("Такого типа статистик нету")
-            };
         }
 
         #endregion
 
-        #region Методы сортировки
+        #region Свойства : Выбор игровой ассоциации
 
-        private void SortMapStatList()
+        private PlayerAssociation _selectedPlayerAssociation;
+        public PlayerAssociation SelectedPlayerAssociation
         {
-            switch (SelectedMapStatSortItem)
+            get => _selectedPlayerAssociation;
+            set
             {
-                case "Измерению (Убыв.)":
-                    SortMapStatsByMeasurementByDescendingOrder();
-                    break;
-
-                case "Измерению (Возр.)":
-                    SortMapStatsByMeasurementByAscendingOrder();
-                    break;
-
-                case "Дате выхода (Убыв.)":
-                    SortMapStatsByDescendingOrder();
-                    break;
-
-                case "Дате выхода (Возр.)":
-                    SortMapStatsByAscendingOrder();
-                    break;
-
-                case "Алфавит (Я-А)":
-                    SortMapStatsByMapNameDescendingOrder();
-                    break;
-
-                case "Алфавит (А-Я)":
-                    SortMapStatsByMapNameAscendingOrder();
-                    break;
-
-                case "Пикрейт (Убыв.)":
-                    SortMapStatsByPickRateDescendingOrder();
-                    break;
-
-                case "Пикрейт (Возр.)":
-                    SortMapStatsByPickRateAscendingOrder();
-                    break;
-
-                case "Винрейт (Убыв.)":
-                    SortMapStatsByWinRateDescendingOrder();
-                    break;
-
-                case "Винрейт (Возр.)":
-                    SortMapStatsByWinRateAscendingOrder();
-                    break;
-
-                case "Киллрейт (Убыв.)":
-                    SortMapStatsByKillRateDescendingOrder();
-                    break;
-
-                case "Киллрейт (Возр.)":
-                    SortMapStatsByKillRateAscendingOrder();
-                    break;
-
-                case "Количеству сыгранных игр (Убыв.)":
-                    SortMapStatsByCountGameDescendingOrder();
-                    break;
-
-                case "Количеству сыгранных игр (Возр.)":
-                    SortMapStatsByCountGameAscendingOrder();
-                    break;
-                
-                case "Количеству игр с подношениями (Убыв.)":
-                    SortMapStatsByCountGameWithOfferingDescendingOrder();
-                    break;
-
-                case "Количеству игр с подношениями (Возр.)":
-                    SortMapStatsByCountGameWithOfferingAscendingOrder();
-                    break;
-
-                case "Количеству игр без подношений (Убыв.)":
-                    SortMapStatsByCountGameWithoutOfferingDescendingOrder();
-                    break;
-
-                case "Количеству игр без подношений (Возр.)":
-                    SortMapStatsByCountGameWithoutOfferingAscendingOrder();
-                    break;
-                case null:
-                    SortMapStatsByMeasurementByAscendingOrder();
-                    break;
+                if (_selectedPlayerAssociation != value)
+                {
+                    _selectedPlayerAssociation = value;
+                    MapStats.Clear();
+                    OnPropertyChanged();
+                }
             }
         }
 
-        private void SortMapStatsByMeasurementByDescendingOrder()
+        #endregion
+
+        #region Свойства : Статистика в шапке
+
+        private int _countMatches;
+        public int CountMatches
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(Map =>Map.idMapMeasurement))
+            get => _countMatches;
+            set
             {
-                MapStatSortedList.Add(item);
+                _countMatches = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortMapStatsByMeasurementByAscendingOrder()
+        private int _pickRateCount;
+        public int PickRateCount
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(Map =>Map.idMapMeasurement))
+            get => _pickRateCount;
+            set
             {
-                MapStatSortedList.Add(item);
+                _pickRateCount = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortMapStatsByDescendingOrder()
+        private double _pickRate;
+        public double PickRate
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList)
+            get => _pickRate;
+            set
             {
-                MapStatSortedList.Add(item);
+                _pickRate = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortMapStatsByAscendingOrder()
+        private int _pickRateNoOfferingCount;
+        public int PickRateNoOfferingCount
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.Reverse())
+            get => _pickRateNoOfferingCount;
+            set
             {
-                MapStatSortedList.Add(item);
+                _pickRateNoOfferingCount = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private double _pickRateNoOffering;
+        public double PickRateNoOffering
+        {
+            get => _pickRateNoOffering;
+            set
+            {
+                _pickRateNoOffering = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortMapStatsByMapNameDescendingOrder()
+        private int _pickRateWithOfferingCount;
+        public int PickRateWithOfferingCount
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(Map => Map.MapName))
+            get => _pickRateWithOfferingCount;
+            set
             {
-                MapStatSortedList.Add(item);
-            }
-        }
-
-        private void SortMapStatsByMapNameAscendingOrder()
-        {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(Map => Map.MapName))
-            {
-                MapStatSortedList.Add(item);
-            }
-        }
-
-        private void SortMapStatsByPickRateDescendingOrder()
-        {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(Map => Map.PickRateMap))
-            {
-                MapStatSortedList.Add(item);
-            }
-        }
-
-        private void SortMapStatsByPickRateAscendingOrder()
-        {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(Map => Map.PickRateMap))
-            {
-                MapStatSortedList.Add(item);
+                _pickRateWithOfferingCount = value;
+                OnPropertyChanged();
             }
         } 
         
-        private void SortMapStatsByWinRateDescendingOrder()
+        private double _pickRateWithOffering;
+        public double PickRateWithOffering
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(Map => Map.WinRateMapPercent))
+            get => _pickRateWithOffering;
+            set
             {
-                MapStatSortedList.Add(item);
-            }
-        }
-
-        private void SortMapStatsByWinRateAscendingOrder()
-        {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(Map => Map.WinRateMapPercent))
-            {
-                MapStatSortedList.Add(item);
-            }
-        }
-
-        private void SortMapStatsByKillRateDescendingOrder()
-        {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(Map => Map.KillRateMapPercent))
-            {
-                MapStatSortedList.Add(item);
-            }
-        }
-
-        private void SortMapStatsByKillRateAscendingOrder()
-        {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(Map => Map.KillRateMapPercent))
-            {
-                MapStatSortedList.Add(item);
-            }
-        }
-
-        private void SortMapStatsByCountGameDescendingOrder()
-        {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(ks => ks.CountGame))
-            {
-                MapStatSortedList.Add(item);
+                _pickRateWithOffering = value;
+                OnPropertyChanged();
             }
         } 
         
-        private void SortMapStatsByCountGameAscendingOrder()
+        private int _escapeCount;
+        public int EscapeCount
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(ks => ks.CountGame))
+            get => _escapeCount;
+            set
             {
-                MapStatSortedList.Add(item);
-            }
-        }   
-
-        private void SortMapStatsByCountGameWithOfferingDescendingOrder()
-        {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(ks => ks.FalloutMapOffering))
-            {
-                MapStatSortedList.Add(item);
+                _escapeCount = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortMapStatsByCountGameWithOfferingAscendingOrder()
+        private double _escapeRate;
+        public double EscapeRate
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(ks => ks.FalloutMapOffering))
+            get => _escapeRate;
+            set
             {
-                MapStatSortedList.Add(item);
+                _escapeRate = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortMapStatsByCountGameWithoutOfferingDescendingOrder()
+        private double _killRate;
+        public double KillRate
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderByDescending(ks => ks.FalloutMapRandom))
+            get => _killRate;
+            set
             {
-                MapStatSortedList.Add(item);
+                _killRate = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SortMapStatsByCountGameWithoutOfferingAscendingOrder()
+        private double _killRatePercent;
+        public double KillRatePercent
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.OrderBy(ks => ks.FalloutMapRandom))
+            get => _killRatePercent;
+            set
             {
-                MapStatSortedList.Add(item);
+                _killRatePercent = value;
+                OnPropertyChanged();
             }
         }
 
-        private void SearchMapName()
+        private int _winRateKillerCount;
+        public int WinRateKillerCount
         {
-            MapStatSortedList.Clear();
-            foreach (var item in MapStatList.Where(ms => ms.MapName.ToLower().Contains(SearchTextBox.ToLower())))
+            get => _winRateKillerCount;
+            set
             {
-                MapStatSortedList.Add(item);
+                _winRateKillerCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _winRateKiller;
+        public double WinRateKiller
+        {
+            get => _winRateKiller;
+            set
+            {
+                _winRateKiller = value;
+                OnPropertyChanged();
             }
         }  
-   
+
+        #endregion 
+
+        #region Свойство : Максимальная ширина элементов
+
+        public int MaxWidth { get; set; } = 1200;
+
+        #endregion
+
+        #region Свойство : Popup - Список выживших для сравнения
+
+        private bool _isPopupFilterOpen;
+        public bool IsPopupFilterOpen
+        {
+            get => _isPopupFilterOpen;
+            set
+            {
+                _isPopupFilterOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        /*--Команды---------------------------------------------------------------------------------------*/
+
+        // Команды переключение индексов
+        private RelayCommand _nextSurvivorCommand;
+        public RelayCommand NextSurvivorCommand { get => _nextSurvivorCommand ??= new(obj => { NextMap(); }); }
+
+        private RelayCommand _previousSurvivorCommand;
+        public RelayCommand PreviousSurvivorCommand { get => _previousSurvivorCommand ??= new(obj => { PreviousMao(); }); }
+
+        //Команды добавление киллеров в список сравнения
+        private RelayCommand _addSingleToComparisonCommand;
+        public RelayCommand AddSingleToComparisonCommand { get => _addSingleToComparisonCommand ??= new(obj => { AddToComparison(); }); }
+
+        private RelayCommand _addAllToComparisonCommand;
+        public RelayCommand AddAllToComparisonCommand { get => _addAllToComparisonCommand ??= new(obj => { AddAllToComparison(); }); }
+
+        //Очистка списка статистики киллеров
+        private RelayCommand _clearComparisonListCommand;
+        public RelayCommand ClearComparisonListCommand { get => _clearComparisonListCommand ??= new(obj => { MapStats.Clear(); }); }
+
+        //Команд открытие страницы сравнений
+        private RelayCommand _openComparisonPageCommand;
+        public RelayCommand OpenComparisonPageCommand { get => _openComparisonPageCommand ??= new(obj => { OpenComparisonPage(); }); }
+
+        //Команда обновление данных
+        private RelayCommand _reloadDataCommand;
+        public RelayCommand ReloadDataCommand { get => _reloadDataCommand ??= new(obj => { ReloadData(); }); }
+
+        //Открытие Popup
+        private RelayCommand _openPopupListSurvivorsCommand;
+        public RelayCommand OpenPopupListSurvivorsCommand { get => _openPopupListSurvivorsCommand ??= new(obj => { IsPopupFilterOpen = true; }); }
+
+        /*--Получение первоначальных данных---------------------------------------------------------------*/
+
+        #region Метод : Определение и получение нужных данных в список Maps "Карт" 
+
+        private void DefineAndGetMapData()
+        {
+            Action action = SelectedTypeMap switch
+            {
+                "Карты"     => GetMaps,
+                "Измерение" => GetMeasurements,
+                _ => throw new Exception("Такого типа карт нету.")
+            };
+            action?.Invoke();
+        }
+
+        #endregion
+
+        #region Метод : Получение списка "Карт"
+
+        private void GetMaps()
+        {
+            MapList.Clear();
+            foreach (var item in _dataService.GetAllDataInList<Map>(x => x.Include(x => x.IdMeasurementNavigation)))
+                MapList.Add(item);
+
+            SelectedMap = MapList.FirstOrDefault();
+        }
+
+        #endregion
+
+        #region Метод : Получение списка "Измерений"
+
+        private void GetMeasurements()
+        {
+            MapList.Clear();
+
+            var maps = _dataService.GetAllDataInList<Map>();
+
+            foreach (var item in _dataService.GetAllDataInList<Measurement>())
+            {
+                var newMapInMeasurement = new Map()
+                {
+                    IdMap = item.IdMeasurement,
+                    IdMeasurement = item.IdMeasurement,
+                    MapName = item.MeasurementName,
+                    MapImage = maps.FirstOrDefault(x => x.IdMeasurement == item.IdMeasurement).MapImage,
+                };
+                MapList.Add(newMapInMeasurement);
+            }
+
+            SelectedMap = MapList.FirstOrDefault();
+        }
+
+        #endregion
+
+        #region Метод : Получение списка "Игровой ассоциации"
+
+        private void GetPlayerAssociations()
+        {
+            foreach (var item in _dataService.GetAllDataInList<PlayerAssociation>(x => x.Where(x => x.IdPlayerAssociation == 1 || x.IdPlayerAssociation == 3)))
+            {
+                PlayerAssociations.Add(item);
+            }
+            SelectedPlayerAssociation = PlayerAssociations.FirstOrDefault();
+        }
+
+        #endregion
+
+        #region Метод : Получение матчей на выбранной карте | измерение
+
+        private List<GameStatistic> GetMapInfo(Map map)
+        {
+            if (SelectedTypeMap == "Карты")
+            {
+                return _dataService.GetAllDataInList<GameStatistic>(x => 
+                        x.Include(x => x.IdMapNavigation.IdMeasurementNavigation)
+                            .Include(x => x.IdKillerNavigation)
+                                .Where(x => x.IdMapNavigation.IdMap == map.IdMap && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation));
+            }
+            if (SelectedTypeMap == "Измерение")
+            {
+                return _dataService.GetAllDataInList<GameStatistic>(x => 
+                        x.Include(x => x.IdMapNavigation.IdMeasurementNavigation)
+                            .Include(x => x.IdKillerNavigation)
+                                .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == map.IdMap && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation));
+            }
+
+            return null;
+        }
+
+        private List<GameStatistic> GetMeasurementInfo(Measurement measurement)
+        {
+            return _dataService.GetAllDataInList<GameStatistic>(x =>
+                        x.Include(x => x.IdMapNavigation.IdMeasurementNavigation)
+                            .Include(x => x.IdKillerNavigation)
+                                .Where(x => x.IdMapNavigation.IdMeasurementNavigation.IdMeasurement == measurement.IdMeasurement && x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation));
+        }
+
+        #endregion
+
+        #region Метод : Обновление данных
+
+        private void ReloadData()
+        {
+            _matches.Clear();
+            _matches.AddRange(GetMapInfo(SelectedMap));
+            CalculateHeaderStats();
+            CalculateExtendedStats();
+        }
+
+        #endregion 
+
+        /*--Взаимодействие с списком----------------------------------------------------------------------*/
+
+        #region Методы : Переключение элементов списка выживщих (По индексу)
+
+        private void PreviousMao()
+        {
+            SelectedMapIndex--;
+        }
+
+        private void NextMap()
+        {
+            SelectedMapIndex++;
+        }
+
+        #endregion
+
+        /*--Расчеты---------------------------------------------------------------------------------------*/
+
+        #region Метод : Открытие страницы сравнений
+
+        private void OpenComparisonPage()
+        {
+            _pageNavigationService.NavigateTo("ComparisonPage", MapStats);
+        }
+
+        #endregion
+
+        #region Метод : Основная статистика
+
+        private async void CalculateHeaderStats()
+        {
+            CountMatches = _matches.Count;
+
+            EscapeCount = await CalculationMap.EscapeSurvivorAsync(CountMatches,(int)await CalculationKiller.CountKillAsync(_matches));
+            EscapeRate = await CalculationMap.EscapeRateAsync(EscapeCount, CountMatches);
+
+            PickRate = await CalculationMap.PickRateAsync(CountMatches, _dataService.Count<GameStatistic>(x => x.Where(x => x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation)));
+            
+            PickRateNoOfferingCount = await CalculationMap.RandomMapAsync(_matches);
+            PickRateNoOffering = await CalculationMap.PickRateAsync(PickRateNoOfferingCount, CountMatches);
+
+            PickRateWithOfferingCount = await CalculationMap.WithOfferingsAsync(_matches);
+            PickRateWithOffering = await CalculationMap.PickRateAsync(PickRateWithOfferingCount, CountMatches);
+
+            KillRatePercent = await CalculationKiller.AVGKillRatePercentageAsync(_matches);
+            KillRate = await CalculationKiller.AVGKillRateAsync(_matches);
+
+            WinRateKillerCount = await CalculationKiller.CountMatchWinAsync(_matches);
+            WinRateKiller = await CalculationKiller.WinRateAsync(WinRateKillerCount, CountMatches);
+        }
+
+        #endregion
+
+        #region Методы : Расширение статистика
+
+        private void CalculateExtendedStats()
+        {
+           
+        }
+
+        #endregion
+
+        #region Методы : Создание SurvivorStat - добавлени его в список сравнения
+
+        private void AddToComparison()
+        {
+            if (MapStats.Contains(MapStats.FirstOrDefault(x => x.idMap == SelectedMap.IdMap)))
+                return;
+
+            var mapStat = new MapStat
+            {
+                idMap = SelectedMap.IdMap,
+                MapName = SelectedMap.MapName,
+                MapImage = SelectedMap.MapImage,
+                CountGame = CountMatches,
+                PickRateMap = PickRate,
+                FalloutMapRandom = PickRateNoOfferingCount,
+                FalloutMapRandomPercent = PickRateNoOffering,
+                FalloutMapOffering = PickRateNoOfferingCount,
+                FalloutMapOfferingPercent = PickRateWithOffering,
+                KillRateMap = KillRate,
+                KillRateMapPercent = KillRatePercent,
+                WinRateMap = WinRateKillerCount,
+                WinRateMapPercent = WinRateKiller,
+                EscapeRateMap = EscapeRate,
+            };
+
+            MapStats.Add(mapStat);
+        }
+
+        private async void AddAllToComparison()
+        {
+            if (SelectedTypeMap == "Карты")
+            {
+                foreach (var map in _dataService.GetAllDataInList<Map>())
+                {
+                    if (MapStats.Contains(MapStats.FirstOrDefault(x => x.idMap == map.IdMap)))
+                        continue;
+
+                    var matches = GetMapInfo(map);
+
+                    var mapStat = new MapStat
+                    {
+                        idMap = map.IdMap,
+                        MapName = map.MapName,
+                        MapImage = map.MapImage,
+                        CountGame = matches.Count,
+                        PickRateMap = await CalculationMap.PickRateAsync(CountMatches, _dataService.Count<GameStatistic>(x => x.Where(x => x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation))),
+                        FalloutMapRandom = await CalculationMap.RandomMapAsync(matches),
+                        FalloutMapRandomPercent = await CalculationMap.PickRateAsync(await CalculationMap.RandomMapAsync(matches), matches.Count),
+                        FalloutMapOffering = await CalculationMap.WithOfferingsAsync(matches),
+                        FalloutMapOfferingPercent = await CalculationMap.PickRateAsync(await CalculationMap.WithOfferingsAsync(matches), matches.Count),
+                        KillRateMap = await CalculationKiller.AVGKillRateAsync(matches),
+                        KillRateMapPercent = await CalculationKiller.AVGKillRatePercentageAsync(matches),
+                        WinRateMap = await CalculationKiller.CountMatchWinAsync(matches),
+                        WinRateMapPercent = await CalculationKiller.WinRateAsync(await CalculationKiller.CountMatchWinAsync(matches), matches.Count),
+                        EscapeRateMap = await CalculationMap.EscapeRateAsync(await CalculationMap.EscapeSurvivorAsync(matches.Count, (int)await CalculationKiller.CountKillAsync(matches)), matches.Count),
+                    };
+
+                    MapStats.Add(mapStat);
+                }
+            }
+            if (SelectedTypeMap == "Измерение")
+            {
+                foreach (var measurement in _dataService.GetAllDataInList<Measurement>())
+                {
+                    if (MapStats.Contains(MapStats.FirstOrDefault(x => x.idMap == measurement.IdMeasurement)))
+                        continue;
+
+                    var matches = GetMeasurementInfo(measurement);
+
+                    var mapStat = new MapStat
+                    {
+                        idMap = measurement.IdMeasurement,
+                        MapName = measurement.MeasurementName,
+                        MapImage = MapList.FirstOrDefault(x => x.IdMap == measurement.IdMeasurement).MapImage,
+                        CountGame = matches.Count,
+                        PickRateMap = await CalculationMap.PickRateAsync(CountMatches, _dataService.Count<GameStatistic>(x => x.Where(x => x.IdKillerNavigation.IdAssociation == SelectedPlayerAssociation.IdPlayerAssociation))),
+                        FalloutMapRandom = await CalculationMap.RandomMapAsync(matches),
+                        FalloutMapRandomPercent = await CalculationMap.PickRateAsync(await CalculationMap.RandomMapAsync(matches), matches.Count),
+                        FalloutMapOffering = await CalculationMap.WithOfferingsAsync(matches),
+                        FalloutMapOfferingPercent = await CalculationMap.PickRateAsync(await CalculationMap.WithOfferingsAsync(matches), matches.Count),
+                        KillRateMap = await CalculationKiller.AVGKillRateAsync(matches),
+                        KillRateMapPercent = await CalculationKiller.AVGKillRatePercentageAsync(matches),
+                        WinRateMap = await CalculationKiller.CountMatchWinAsync(matches),
+                        WinRateMapPercent = await CalculationKiller.WinRateAsync(await CalculationKiller.CountMatchWinAsync(matches), matches.Count),
+                        EscapeRateMap = await CalculationMap.EscapeRateAsync(await CalculationMap.EscapeSurvivorAsync(matches.Count, (int)await CalculationKiller.CountKillAsync(matches)), matches.Count),
+                    };
+
+                    MapStats.Add(mapStat);
+                }
+            }
+        }
+
         #endregion
     }
 }
