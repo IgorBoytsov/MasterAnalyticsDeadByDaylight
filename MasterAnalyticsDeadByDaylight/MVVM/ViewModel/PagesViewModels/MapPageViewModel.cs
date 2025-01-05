@@ -521,7 +521,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 PickRateMap = PickRate,
                 FalloutMapRandom = PickRateNoOfferingCount,
                 FalloutMapRandomPercent = PickRateNoOffering,
-                FalloutMapOffering = PickRateNoOfferingCount,
+                FalloutMapOffering = PickRateWithOfferingCount,
                 FalloutMapOfferingPercent = PickRateWithOffering,
                 KillRateMap = KillRate,
                 KillRateMapPercent = KillRatePercent,
