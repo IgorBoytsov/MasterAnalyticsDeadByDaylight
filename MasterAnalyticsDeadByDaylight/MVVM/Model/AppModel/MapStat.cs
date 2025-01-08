@@ -8,6 +8,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 {
     public class MapStat
     {
+
+        public int Index { get; set; }
+
         /// <summary>
         /// Название карты
         /// </summary>

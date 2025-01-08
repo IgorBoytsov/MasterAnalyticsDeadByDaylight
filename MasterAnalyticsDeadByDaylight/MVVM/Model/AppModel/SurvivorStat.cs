@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
+﻿namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 {
     class SurvivorStat
     {
+        /// <summary>
+        /// Имя выжившего
+        /// </summary>
+        public int Index { get; set; }
+
+        /// <summary>
+        /// Имя выжившего
+        /// </summary>
+        public int IdSurvivor { get; set; }
+
         /// <summary>
         /// Имя выжившего
         /// </summary>

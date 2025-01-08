@@ -5,6 +5,11 @@
         /// <summary>
         /// ID киллера
         /// </summary>
+        public int Index { get; set; }
+
+        /// <summary>
+        /// ID киллера
+        /// </summary>
         public int KillerID { get; set; }
 
         /// <summary>
