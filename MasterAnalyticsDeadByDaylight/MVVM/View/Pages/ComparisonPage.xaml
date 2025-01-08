@@ -1,0 +1,630 @@
+﻿<Page x:Class="MasterAnalyticsDeadByDaylight.MVVM.View.Pages.ComparisonPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Pages" 
+      xmlns:fa="http://schemas.fontawesome.com/icons/"
+      xmlns:pagesviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels" 
+      xmlns:converter="clr-namespace:MasterAnalyticsDeadByDaylight.Utils.ValueConverters"
+      d:DataContext="{d:DesignInstance Type=pagesviewmodels:ComparisonPageViewModel}"
+      mc:Ignorable="d" 
+      d:Height="auto" d:Width="auto"
+      Background="#121212"
+      Title="ComparisonPage">
+    <Page.Resources>
+        <converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
+        <converter:IndexToNameConverter x:Key="IndexToNameConverter"/>
+
+        <Style x:Key="ProfileStat" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!--#region Perk ListViewStyle -->
+
+        <SolidColorBrush x:Key="ListViewItemSelectedAndMousOver" Color="#2A2A2A"/>
+        <!--#region Шаблон для заголовка GridViewColumnHeader-->
+
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewColumnHeader">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="5"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="{TemplateBinding Background}" 
+                             BorderBrush="{TemplateBinding BorderBrush}" 
+                             BorderThickness="0,0,1,0" 
+                             Padding="5" 
+                             Grid.Column="0">
+                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                            </Border>
+                            <Thumb Grid.Column="1" 
+                            Width="5" 
+                            Background="Transparent" 
+                            Cursor="SizeWE"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--#endregion-->
+
+        <Style TargetType="ListView">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#2A2A2A" />
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="BorderBrush" Value="#2A2A2A"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedAndMousOver}"/>
+                    <Setter Property="BorderBrush" Value="#FF595958"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedAndMousOver}"/>
+                    <Setter Property="BorderBrush" Value="#FF595958"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--#endregion-->
+
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource KillerPageHeader}">
+            <WrapPanel HorizontalAlignment="Left" Margin="5,5,0,5">
+                <TextBlock Text="Сортировка: " Style="{StaticResource ProfileStat}" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding SortingList}" SelectedItem="{Binding SelectedSortItem}" Style="{StaticResource ComboBoxStyleApp}"
+                          VerticalAlignment="Center"
+                          FontSize="17" Width="250" Foreground="White" />
+            </WrapPanel>
+        </Border>
+
+        <ScrollViewer x:Name="MainScrollViewer" Grid.Row="1" VirtualizingPanel.ScrollUnit="Pixel" CanContentScroll="False">
+            <StackPanel>
+
+                <!--#region Статистика : Киллеры -->
+
+                <ItemsControl ItemsSource="{Binding KillerStats}" d:ItemsSource="{d:SampleData ItemCount=2}"
+                              Visibility="{Binding CurrentDisplayStat, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=KillerStat}"
+                              HorizontalAlignment="Center"
+                              Background="#121212" BorderThickness="0"
+                              Margin="0,10,0,10"
+                              ScrollViewer.CanContentScroll="True"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="5,5"
+                              VirtualizingPanel.CacheLengthUnit="Item"
+                              VirtualizingPanel.ScrollUnit="Pixel">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource BaseBorderItemsCard}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Style="{StaticResource BorderAroundAddingImage}" >
+                                        <StackPanel>
+                                            <Image Source="{Binding KillerImage}" Margin="10,10,10,10"/>
+                                            <Separator Background="Gray" Cursor="Hand"/>
+                                            <TextBlock d:Text="№1 - Охотник"  Style="{StaticResource NameCharacter}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource IndexToNameConverter}">
+                                                        <Binding Path="Index"/>
+                                                        <Binding Path="KillerName"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Grid Grid.Column="1" Margin="10,0,10,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--#region PickRate -->
+
+                                        <Border Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding KillerPickRate}" Style="{StaticResource PickRateStyle}"/>
+                                        </Border>
+
+                                        <TextBlock Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <TextBlock Text="{Binding KillerPickRate, StringFormat=Популярность - {0} %}" 
+                                                   Style="{StaticResource PercentageAndHeader}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Win Rate -->
+
+                                        <Border Grid.Row="2" Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding KillerWinRate}" Style="{StaticResource WinStyle}"/>
+                                        </Border>
+
+                                        <TextBlock Grid.Row="2" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Grid.Row="2" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding KillerMatchWin, StringFormat=Выигранно - {0}}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding KillerCountGame, StringFormat=Из {0}}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding KillerWinRate, StringFormat= ({0} %)}" Style="{StaticResource PercentageAndHeader}"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Подробно по килам -->
+
+                                        <Grid Grid.Row="4">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="15"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--#region 0 килов -->
+
+                                            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding KillingZeroSurvivor}" Style="{StaticResource KillerKillingZeroSurvivorStyle}"/>
+                                            </Border>
+
+                                            <TextBlock Text="{Binding KillingZeroSurvivor, StringFormat= 0 Убийств - {0} %}" 
+                                                       Style="{StaticResource PercentageAndHeader}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                            <!--#endregion-->
+
+                                            <!--#region 1 килл -->
+
+                                            <Border Grid.Row="2" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding KillingOneSurvivors}" Style="{StaticResource KillerKillingOneSurvivorStyle}"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Row="2" 
+                                                       Text="{Binding KillingOneSurvivors, StringFormat=1 Убийство - {0} %}" 
+                                                       Style="{StaticResource PercentageAndHeader}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                            <!--#endregion-->
+
+                                            <!--#region 2 килла -->
+
+                                            <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding KillingTwoSurvivors}" Style="{StaticResource KillerKillingTwoSurvivorStyle}"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="2" 
+                                                       Text="{Binding KillingTwoSurvivors, StringFormat= 2 Убийства - {0} %}" 
+                                                       Style="{StaticResource PercentageAndHeader}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                            <!--#endregion-->
+
+                                            <!--#region 3 килла -->
+
+                                            <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding KillingThreeSurvivors}" Style="{StaticResource KillerKillingThreeSurvivorStyle}"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Row="2" Grid.Column="2"
+                                                       Text="{Binding KillingThreeSurvivors, StringFormat=3 Убийства - {0} %}" 
+                                                       Style="{StaticResource PercentageAndHeader}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                            <!--#endregion-->
+
+                                            <!--#region 4 килла -->
+
+                                            <Border Grid.Row="0" Grid.Column="4" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding KillingFourSurvivors}" Style="{StaticResource KillerKillingFourSurvivorStyle}"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="4" 
+                                                       Text="{Binding KillingFourSurvivors, StringFormat= 4 Убийства - {0} %}" 
+                                                       Style="{StaticResource PercentageAndHeader}" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                            <!--#endregion-->
+
+                                            <!--#region Киллрейт -->
+
+                                            <Border Grid.Row="2" Grid.Column="4" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding KillerKillRatePercentage}" Style="{StaticResource KillerKillerKillRatePercentageStyle}"/>
+                                            </Border>
+
+                                            <StackPanel Grid.Row="2" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding KillerKillRatePercentage, StringFormat= K\R {0} %}" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="{Binding KillerKillRate, StringFormat=Усредненое -  {0}}" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
+                                            </StackPanel>
+
+                                            <!--#endregion-->
+
+                                        </Grid>
+
+                                        <!--#endregion-->
+
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!--#endregion-->
+
+                <!--#region Статистика : Выжившие -->
+
+                <ItemsControl ItemsSource="{Binding SurvivorStats}" d:ItemsSource="{d:SampleData ItemCount=2}"
+                              Visibility="{Binding CurrentDisplayStat, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=SurvivorStat}"
+                              HorizontalAlignment="Center"
+                              Background="#121212" BorderThickness="0"
+                              Margin="0,10,0,10"
+                              ScrollViewer.CanContentScroll="True"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="15,15"
+                              VirtualizingPanel.CacheLengthUnit="Item"
+                              VirtualizingPanel.ScrollUnit="Pixel">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource BaseBorderItemsCard}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Style="{StaticResource BorderAroundAddingImage}" >
+                                        <StackPanel>
+                                            <Image Source="{Binding SurvivorImage}" Margin="10,10,10,10"/>
+                                            <Separator Background="Gray" Cursor="Hand"/>
+                                            <TextBlock d:Text="№1 : Мэг"  Style="{StaticResource NameCharacter}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource IndexToNameConverter}">
+                                                        <Binding Path="Index"/>
+                                                        <Binding Path="SurvivorName"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Grid Grid.Column="1" Margin="10,0,10,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--#region PickRate -->
+
+                                        <Border Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding SurvivorPickRate}" Style="{StaticResource PickRateStyle}"/>
+                                        </Border>
+
+                                        <TextBlock Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="Популярность персонажа - " Style="{StaticResource PercentageAndHeader}" />
+                                            <TextBlock Text="{Binding SurvivorPickRate}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Escape Rate -->
+
+                                        <Border Grid.Row="2" Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding SurvivorEscapePercentage}" Style="{StaticResource WinStyle}"/>
+                                        </Border>
+
+                                        <TextBlock Grid.Row="2" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Grid.Row="2" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="Сбежало: " Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="{Binding SurvivorEscapeCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Из" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding SurvivorCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding SurvivorEscapePercentage}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Anonymous Rate  -->
+
+                                        <Border Grid.Row="4" Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding SurvivorAnonymousModePercentage}" Style="{StaticResource AnonymousRateStyle}"/>
+                                        </Border>
+
+                                        <TextBlock Grid.Row="4" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Grid.Row="4" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="Анонимных: " Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="{Binding SurvivorAnonymousModeCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Из" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding SurvivorCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding SurvivorAnonymousModePercentage}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Bot Rate  -->
+
+                                        <Border Grid.Row="6" Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding SurvivorBotPercentage}" Style="{StaticResource BotRateStyle}"/>
+                                        </Border>
+
+                                        <TextBlock Grid.Row="6" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Grid.Row="6" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="Ливнуло: " Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="{Binding SurvivorBotCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Из" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding SurvivorCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            <TextBlock Text="{Binding SurvivorBotPercentage}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+
+                <!--#endregion-->
+
+                <!--#region Статистика : Карты -->
+
+                <ItemsControl ItemsSource="{Binding MapStats}" d:ItemsSource="{d:SampleData ItemCount=2}"
+                              Visibility="{Binding CurrentDisplayStat, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=MapStat}"
+                              HorizontalAlignment="Center"
+                              Background="#121212" BorderThickness="0"
+                              Margin="0,10,0,10"
+                              ScrollViewer.CanContentScroll="True"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="15,15"
+                              VirtualizingPanel.CacheLengthUnit="Item"
+                              VirtualizingPanel.ScrollUnit="Pixel">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource BaseBorderItemsCard}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="300"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Style="{StaticResource BorderAroundAddingImage}" >
+                                        <StackPanel>
+                                            <Image Source="{Binding MapImage}" Margin="10,10,10,10"/>
+                                            <Separator Background="Gray" Cursor="Hand"/>
+                                            <TextBlock d:Text="№1 : Завод страданий"  Style="{StaticResource NameCharacter}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource IndexToNameConverter}">
+                                                        <Binding Path="Index"/>
+                                                        <Binding Path="MapName"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Grid Grid.Column="1" Margin="10,0,10,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="15"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--#region PickRate -->
+
+                                        <Border Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding PickRateMap}" Style="{StaticResource PickRateStyle}"/>
+                                        </Border>
+
+                                        <TextBlock Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="Общее кол-во матчей - " Style="{StaticResource PercentageAndHeader}" />
+                                            <TextBlock Text="{Binding CountGame}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="10,0,0,0"/>
+                                            <TextBlock Text="{Binding PickRateMap}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region С подношениями и без -->
+
+                                        <Grid Grid.Row="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Grid.Column="0" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding FalloutMapRandomPercent}" Foreground="#206020" Style="{StaticResource WinStyle}"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="Без подношений: " Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="{Binding FalloutMapRandom}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding FalloutMapRandomPercent}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            </StackPanel>
+
+
+                                            <Border Grid.Column="2" Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Foreground="#208723"  Value="{Binding FalloutMapOfferingPercent}" Style="{StaticResource WinStyle}"/>
+                                            </Border>
+
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="С подношениями: " Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text="{Binding FalloutMapOffering}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding FalloutMapOfferingPercent}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                                <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
+                                            </StackPanel>
+
+                                        </Grid>
+
+                                        <!--#endregion-->
+
+                                        <!--#region KillRate -->
+
+                                        <Border Grid.Row="4" Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding KillRateMapPercent}" Style="{StaticResource KillRateOnMap}"/>
+                                        </Border>
+
+                                        <TextBlock Grid.Row="4" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Grid.Row="4" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="КилРейт - " Style="{StaticResource PercentageAndHeader}" />
+                                            <TextBlock Text="{Binding KillRateMapPercent}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text=" (AVG " Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="{Binding KillRateMap}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text=" )" Style="{StaticResource PercentageAndHeader}"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region WinRate -->
+
+                                        <Border Grid.Row="8" Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding WinRateMapPercent}" Style="{StaticResource WinRateMap}"/>
+                                        </Border>
+
+                                        <TextBlock Grid.Row="8" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Grid.Row="8" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="ВинРейт - " Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="{Binding WinRateMapPercent}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text=" ( " Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="{Binding WinRateMap}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text=" Матчей )" Style="{StaticResource PercentageAndHeader}"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region EscapeRate -->
+
+                                        <Border Grid.Row="6" Style="{StaticResource BorderAdoundProgressBar}">
+                                            <ProgressBar Value="{Binding EscapeRateMap}" Style="{StaticResource PickRateStyle}"/>
+                                        </Border>
+
+                                        <TextBlock Grid.Row="6" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                                        <TextBlock Grid.Row="6" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                                        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="ЕскейпРейт - " Style="{StaticResource PercentageAndHeader}" />
+                                            <TextBlock Text="{Binding EscapeRateMap}" Style="{StaticResource PercentageAndHeader}"/>
+                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!--#endregion-->
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
