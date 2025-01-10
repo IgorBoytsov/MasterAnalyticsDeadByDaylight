@@ -20,6 +20,7 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigatio
         public void SetFrame(Frame frame)
         {
             _frame = frame ?? throw new ArgumentNullException(nameof(frame));
+            NavigateTo("MatchPage");
         }
 
         public void NavigateTo(string pageName, object parameter = null, bool onlyUpdate = false)
@@ -44,6 +45,18 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigatio
         {
             Action action = pageName switch
             {
+                "ComparisonPage" => () =>
+                {
+                    var viewModel = new ComparisonPageViewModel(_serviceProvider);
+                    var page = new ComparisonPage()
+                    {
+                        DataContext = viewModel,
+                    };
+                    _pages.TryAdd(pageName, page);
+                    viewModel.Update(parameter);
+                    _frame.Navigate(page);
+                }
+                ,
                 "KillerPage" => () =>
                 {
                     var viewModel = new KillerPageViewModel(_serviceProvider);
