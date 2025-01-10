@@ -15,6 +15,15 @@
     <Page.Resources>
         <converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
         <converter:IndexToNameConverter x:Key="IndexToNameConverter"/>
+        <converter:EscapeCountWithEscapePercentageToStringConverter x:Key="EscapeCountWithEscapePercentageToStringConverter"/>
+        <converter:AnonymousCountWithAnonymousPercentageToStringConverter x:Key="AnonymousCountWithAnonymousPercentageToStringConverter"/>
+        <converter:BotCountWithBotPercentageToStringConverter x:Key="BotCountWithBotPercentageToStringConverter"/>
+
+        <converter:CountMatchWithPickRateMapToStringConverter x:Key="CountMatchWithPickRateMapToStringConverter"/>
+        <converter:FalloutMapOfferingWithFalloutMapOfferingPercentage x:Key="FalloutMapOfferingWithFalloutMapOfferingPercentage"/>
+        <converter:FalloutMapRandomWithFalloutMapRandomPercentage x:Key="FalloutMapRandomWithFalloutMapRandomPercentage"/>
+        <converter:KillRateWithPercentageToStringConverter x:Key="KillRateWithPercentageToStringConverter"/>
+        <converter:WinRateWithPercentageToStringConverter x:Key="WinRateWithPercentageToStringConverter"/>
 
         <Style x:Key="ProfileStat" TargetType="TextBlock">
             <Setter Property="FontSize" Value="20"/>
@@ -356,11 +365,8 @@
 
                                         <TextBlock Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="Популярность персонажа - " Style="{StaticResource PercentageAndHeader}" />
-                                            <TextBlock Text="{Binding SurvivorPickRate}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                        </StackPanel>
+                                        <TextBlock Text="{Binding SurvivorPickRate, StringFormat=Популярность персонажа - {0} %}" Style="{StaticResource PercentageAndHeader}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                                         <!--#endregion-->
 
@@ -374,16 +380,16 @@
 
                                         <TextBlock Grid.Row="2" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="Сбежало: " Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="{Binding SurvivorEscapeCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="Из" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="{Binding SurvivorCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="{Binding SurvivorEscapePercentage}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Row="2" d:Text="Сбежало: 23 из 156 ( 14% )" Style="{StaticResource PercentageAndHeader}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource EscapeCountWithEscapePercentageToStringConverter}">
+                                                    <Binding Path="SurvivorEscapeCount"/>
+                                                    <Binding Path="SurvivorCount"/>
+                                                    <Binding Path="SurvivorEscapePercentage"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
 
                                         <!--#endregion-->
 
@@ -397,16 +403,16 @@
 
                                         <TextBlock Grid.Row="4" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="Анонимных: " Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="{Binding SurvivorAnonymousModeCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="Из" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="{Binding SurvivorCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="{Binding SurvivorAnonymousModePercentage}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Row="4" d:Text="Анонимных: 23 из 156 ( 14% )" Style="{StaticResource PercentageAndHeader}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource AnonymousCountWithAnonymousPercentageToStringConverter}">
+                                                    <Binding Path="SurvivorAnonymousModeCount"/>
+                                                    <Binding Path="SurvivorCount"/>
+                                                    <Binding Path="SurvivorAnonymousModePercentage"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
 
                                         <!--#endregion-->
 
@@ -420,16 +426,16 @@
 
                                         <TextBlock Grid.Row="6" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="Ливнуло: " Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="{Binding SurvivorBotCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="Из" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="{Binding SurvivorCount}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            <TextBlock Text="{Binding SurvivorBotPercentage}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="5,0,0,0"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Row="6" d:Text="Ливнуло: 23 из 156 ( 14% )" Style="{StaticResource PercentageAndHeader}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource BotCountWithBotPercentageToStringConverter}">
+                                                    <Binding Path="SurvivorBotCount"/>
+                                                    <Binding Path="SurvivorCount"/>
+                                                    <Binding Path="SurvivorBotPercentage"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
 
                                         <!--#endregion-->
 
@@ -505,14 +511,15 @@
 
                                         <TextBlock Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="Общее кол-во матчей - " Style="{StaticResource PercentageAndHeader}" />
-                                            <TextBlock Text="{Binding CountGame}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="10,0,0,0"/>
-                                            <TextBlock Text="{Binding PickRateMap}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}"/>
-                                        </StackPanel>
+                                        <TextBlock d:Text="Общее кол-во матчей: 23 ( 14% )" Style="{StaticResource PercentageAndHeader}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource CountMatchWithPickRateMapToStringConverter}">
+                                                    <Binding Path="CountGame"/>
+                                                    <Binding Path="PickRateMap"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
 
                                         <!--#endregion-->
 
@@ -528,28 +535,30 @@
                                             <Border Grid.Column="0" Style="{StaticResource BorderAdoundProgressBar}">
                                                 <ProgressBar Value="{Binding FalloutMapRandomPercent}" Foreground="#206020" Style="{StaticResource WinStyle}"/>
                                             </Border>
-                                            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <TextBlock Text="Без подношений: " Style="{StaticResource PercentageAndHeader}"/>
-                                                <TextBlock Text="{Binding FalloutMapRandom}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                                <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                                <TextBlock Text="{Binding FalloutMapRandomPercent}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                                <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                                <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            </StackPanel>
 
+                                            <TextBlock d:Text="Без подношений: 23 ( 14% )" Style="{StaticResource PercentageAndHeader}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource FalloutMapRandomWithFalloutMapRandomPercentage}">
+                                                        <Binding Path="FalloutMapRandom"/>
+                                                        <Binding Path="FalloutMapRandomPercent"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
 
                                             <Border Grid.Column="2" Style="{StaticResource BorderAdoundProgressBar}">
                                                 <ProgressBar Foreground="#208723"  Value="{Binding FalloutMapOfferingPercent}" Style="{StaticResource WinStyle}"/>
                                             </Border>
 
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <TextBlock Text="С подношениями: " Style="{StaticResource PercentageAndHeader}"/>
-                                                <TextBlock Text="{Binding FalloutMapOffering}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                                <TextBlock Text="(" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                                <TextBlock Text="{Binding FalloutMapOfferingPercent}" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                                <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                                <TextBlock Text=")" Style="{StaticResource PercentageAndHeader}" Margin="0,0,5,0"/>
-                                            </StackPanel>
+                                            <TextBlock Grid.Column="2" d:Text="С подношениями: 23 ( 14% )" Style="{StaticResource PercentageAndHeader}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource FalloutMapOfferingWithFalloutMapOfferingPercentage}">
+                                                        <Binding Path="FalloutMapOffering"/>
+                                                        <Binding Path="FalloutMapOfferingPercent"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
 
                                         </Grid>
 
@@ -565,14 +574,15 @@
 
                                         <TextBlock Grid.Row="4" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="КилРейт - " Style="{StaticResource PercentageAndHeader}" />
-                                            <TextBlock Text="{Binding KillRateMapPercent}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text=" (AVG " Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="{Binding KillRateMap}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text=" )" Style="{StaticResource PercentageAndHeader}"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Row="4" d:Text="Киллрейт: 23 ( 14% )" Style="{StaticResource PercentageAndHeader}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource KillRateWithPercentageToStringConverter}">
+                                                    <Binding Path="KillRateMapPercent"/>
+                                                    <Binding Path="KillRateMap"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
 
                                         <!--#endregion-->
 
@@ -586,14 +596,15 @@
 
                                         <TextBlock Grid.Row="8" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="ВинРейт - " Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="{Binding WinRateMapPercent}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text=" ( " Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="{Binding WinRateMap}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text=" Матчей )" Style="{StaticResource PercentageAndHeader}"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Row="8" d:Text=" Винрейт: 156 (55%)" Style="{StaticResource PercentageAndHeader}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource WinRateWithPercentageToStringConverter}">
+                                                    <Binding Path="WinRateMapPercent"/>
+                                                    <Binding Path="WinRateMap"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
 
                                         <!--#endregion-->
 
@@ -607,11 +618,8 @@
 
                                         <TextBlock Grid.Row="6" Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
 
-                                        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="ЕскейпРейт - " Style="{StaticResource PercentageAndHeader}" />
-                                            <TextBlock Text="{Binding EscapeRateMap}" Style="{StaticResource PercentageAndHeader}"/>
-                                            <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Row="6" Text="{Binding EscapeRateMap, StringFormat=Сбежало: {0} %}" d:Text=" Сбежало: 156 (55%)" Style="{StaticResource PercentageAndHeader}" 
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                                         <!--#endregion-->
 
