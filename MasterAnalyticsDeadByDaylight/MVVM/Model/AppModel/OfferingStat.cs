@@ -1,4 +1,6 @@
-﻿namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
+﻿using System.Drawing;
+
+namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 {
     public class OfferingStat
     {
@@ -8,15 +10,11 @@
 
         public int OfferingID {  get; set; }
 
-        public string OfferingRole {  get; set; }
+        public int OfferingRole {  get; set; }
 
-        public int AllAmountSurvivorUsed { get; set; }
+        public int AllAmountCharacterUsed { get; set; }
 
-        public int AllAmountKillerUsed { get; set; }
-
-        public double PickRateSurvivorPercent { get; set; }
-
-        public double NumberPickSurvivorOffering { get; set; }
+        public double PickRateCharacterPercent { get; set; }
 
         public double NumberMatchSurvivor { get; set; }
 

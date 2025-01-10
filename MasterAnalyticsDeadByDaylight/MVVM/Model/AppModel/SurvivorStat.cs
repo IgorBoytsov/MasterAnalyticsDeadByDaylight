@@ -35,7 +35,7 @@
         /// <summary>
         /// Количество побега с карт выжившего, в %
         /// </summary>
-        public double SurvivorEscapeCount { get; set; }
+        public int SurvivorEscapeCount { get; set; }
 
         /// <summary>
         /// % побега с карт выжившего, в %
@@ -45,7 +45,7 @@
         /// <summary>
         /// % Анонимных игроков на выжавшем 
         /// </summary>
-        public double SurvivorAnonymousModeCount { get; set; }
+        public int SurvivorAnonymousModeCount { get; set; }
 
         /// <summary>
         /// % Анонимных игроков на выжавшем 
@@ -60,7 +60,7 @@
         /// <summary>
         /// Количество левеющих игроков на выжившем
         /// </summary>
-        public double SurvivorBotCount { get; set; }
+        public int SurvivorBotCount { get; set; }
 
         /// <summary>
         /// % Левеющих игроков на выжившем

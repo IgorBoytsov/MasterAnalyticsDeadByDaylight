@@ -39,7 +39,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         /// <summary>
         /// Количество сыгранных игр на карте
         /// </summary>
-        public double CountGame { get; set; }
+        public int CountGame { get; set; }
 
         /// <summary>
         /// Количество сыгранных игр на карте
@@ -49,12 +49,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         /// <summary>
         /// Выпадение карт без использования подношения
         /// </summary>
-        public double FalloutMapRandom { get; set; }
+        public int FalloutMapRandom { get; set; }
 
         /// <summary>
         /// Выпадение карт с использованием подношений
         /// </summary>
-        public double FalloutMapOffering { get; set; }
+        public int FalloutMapOffering { get; set; }
 
         /// <summary>
         /// % выпадение карт без использования подношения
@@ -89,6 +89,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
         /// <summary>
         /// Количество победных игр на карте
         /// </summary>
-        public double WinRateMap { get; set; }
+        public int WinRateMap { get; set; }
     }
 }
