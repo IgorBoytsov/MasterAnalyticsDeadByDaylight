@@ -90,7 +90,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
         {
             if (GameMatchList.Count != 0)
             {
-                _windowNavigationService.OpenWindow("DetailedMatchStatisticsWindow", GameMatchList);
+                _windowNavigationService.OpenWindow("DetailedMatchStatisticsWindow", _filteredMatch);
             }
         }
 

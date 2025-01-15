@@ -13,11 +13,11 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Pages
         public OfferingPage()
         {
             InitializeComponent();
-            Func<MasterAnalyticsDeadByDaylightDbContext> _contextFactory = () => new MasterAnalyticsDeadByDaylightDbContext();
+            //Func<MasterAnalyticsDeadByDaylightDbContext> _contextFactory = () => new MasterAnalyticsDeadByDaylightDbContext();
             
-            IDataService dataService = new DataService(_contextFactory);
+            //IDataService dataService = new DataService(_contextFactory);
 
-            DataContext = new OfferingPageViewModel(dataService);
+            //DataContext = new OfferingPageViewModel(dataService);
         }
     }
 }
