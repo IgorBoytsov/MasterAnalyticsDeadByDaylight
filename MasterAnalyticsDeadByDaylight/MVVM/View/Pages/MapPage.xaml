@@ -313,7 +313,7 @@
                                 </TextBlock.Text>
                             </TextBlock>
 
-                            <!--#endregion-->  
+                            <!--#endregion-->   
  
                             <!--#region KillRate -->
 
@@ -391,7 +391,7 @@
 
                             <!--#region Без подношениями -->
 
-                            <ProgressBar Grid.Row="2" Value="{Binding PickRateWithOfferingCount, Mode=TwoWay}" d:Value="55" Style="{StaticResource PickRateStyle}" Maximum="100"/>
+                            <ProgressBar Grid.Row="2" Value="{Binding PickRateWithOffering, Mode=TwoWay}" d:Value="55" Style="{StaticResource PickRateStyle}" Maximum="100"/>
 
                             <TextBlock Grid.Row="2" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
 
