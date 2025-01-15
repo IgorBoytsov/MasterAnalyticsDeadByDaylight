@@ -2,6 +2,7 @@
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
@@ -58,6 +59,20 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     MapStats.Add(item);
 
                 foreach (var item in SortingMapList)
+                    SortingList.Add(item);
+
+                SelectedSortItem = SortingList.FirstOrDefault();
+            }
+
+            if (value is IEnumerable<OfferingStat> offeringStats)
+            {
+                CurrentDisplayStat = TypeStats.OfferingStat;
+                _offeringStats.AddRange(offeringStats);
+
+                foreach (var item in _offeringStats)
+                    OfferingStats.Add(item);
+
+                foreach (var item in SortingOfferingList)
                     SortingList.Add(item);
 
                 SelectedSortItem = SortingList.FirstOrDefault();
@@ -155,6 +170,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             "Количеству сыгранных игр",
             "Количеству игр с подношениями",
             "Количеству игр без подношений",
+         ]; 
+        
+        public List<string> SortingOfferingList { get; set; } =
+        [
+            "По умолчанию",
+            "Алфавит",
          ];
 
         #endregion
@@ -199,6 +220,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 TypeStats.KillerStat => SortKillerStatList,
                 TypeStats.SurvivorStat => SortSurvivorStatList,
                 TypeStats.MapStat => SortMapStatList,
+                TypeStats.OfferingStat => SortOfferingStatList,
                 _ => null
             };
             action.Invoke();
@@ -484,6 +506,41 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             {
                 MapStats.Add(item);
                 item.Index = MapStats.IndexOf(item) + 1;
+            }
+        }
+
+        #endregion
+
+        #region Методы : Сортировка подношений : OfferingStats
+
+        private void SortOfferingStatList()
+        {
+            Action action = SelectedSortItem switch
+            {
+                "По умолчанию" => DefaultSortOffering,
+                "Алфавит" => SortMapStats_ByOfferingName,
+                _ => null
+            };
+            action.Invoke();
+        }
+
+        private void DefaultSortOffering()
+        {
+            OfferingStats.Clear();
+            foreach (var item in _offeringStats)
+            {
+                OfferingStats.Add(item);
+                item.Index = OfferingStats.IndexOf(item) + 1;
+            }
+        }
+
+        private void SortMapStats_ByOfferingName()
+        {
+            OfferingStats.Clear();
+            foreach (var item in _offeringStats.OrderBy(ks => ks.OfferingName))
+            {
+                OfferingStats.Add(item);
+                item.Index = OfferingStats.IndexOf(item) + 1;
             }
         }
 
