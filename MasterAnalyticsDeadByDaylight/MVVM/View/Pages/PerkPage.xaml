@@ -4,16 +4,79 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Pages" 
-      xmlns:fa="http://schemas.fontawesome.com/icons/" xmlns:pagesviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels" d:DataContext="{d:DesignInstance Type=pagesviewmodels:PerkPageViewModel}"
+      xmlns:fa="http://schemas.fontawesome.com/icons/" 
+      xmlns:pagesviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels" 
+      d:DataContext="{d:DesignInstance Type=pagesviewmodels:PerkPageViewModel}"
+      xmlns:converter="clr-namespace:MasterAnalyticsDeadByDaylight.Utils.ValueConverters"
+      xmlns:data="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB" 
+      xmlns:templateSelectors="clr-namespace:MasterAnalyticsDeadByDaylight.Utils.DataTemplateSelectors"
       mc:Ignorable="d" 
       d:Height="auto" d:Width="auto"
       Title="PerkPage">
     <Page.Resources>
 
-        <!--#region ListViewStyle -->
+        <converter:CharacterUseOfferingVisibilityConverter x:Key="CharacterUseOfferingVisibilityConverter"/>
 
-        <SolidColorBrush x:Key="ListViewItemSelectedAndMousOver" Color="#2A2A2A"/>
+        <!--#region DataTemplate : Список категорий перков у выживших и киллеров -->
+
+        <DataTemplate x:Key="KillerPerkCategoryTemplate" DataType="data:KillerPerkCategory">
+            <TextBlock Text="{Binding CategoryName}" Foreground="White" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="SurvivorPerkCategoryTemplate" DataType="data:SurvivorPerkCategory">
+            <TextBlock Text="{Binding CategoryName}" Foreground="White" />
+        </DataTemplate>
+        
+        <!--#endregion-->
+
+        <!--#region DataTemplate : Список перков у выживших и киллеров -->
+
+        <DataTemplate x:Key="KillerPerkTemplate" DataType="data:KillerPerk">
+            <TextBlock Text="{Binding PerkName}" Foreground="White" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="SurvivorPerkTemplate" DataType="data:SurvivorPerk">
+            <TextBlock Text="{Binding PerkName}" Foreground="White" />
+        </DataTemplate>
+
+        <!--#endregion-->
+        
+        <templateSelectors:PerkCategoryTemplateSelector x:Key="PerkCategorySelector"
+                                                        KillerPerkCategoryTemplate="{StaticResource KillerPerkCategoryTemplate}"
+                                                        SurvivorPerkCategoryTemplate="{StaticResource SurvivorPerkCategoryTemplate}" />
+        
+        <templateSelectors:PerkTemplateSelector x:Key="PerkSelector"
+                                                KillerPerkTemplate="{StaticResource KillerPerkTemplate}"
+                                                SurvivorPerkTemplate="{StaticResource SurvivorPerkTemplate}" />
+
+        <!--#region Border -->
+
+        <Style x:Key="KillerBorder" TargetType="Border">
+            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <!--#endregion-->
+
+        <!--#region TextBlock -->
+
+        <Style x:Key="ProfileStat" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!--#endregion-->
+
+        <!--#region ListView -->
+
         <!--#region Шаблон для заголовка GridViewColumnHeader-->
+
+        <LinearGradientBrush x:Key="ListViewItemSelectedAndMousOver" EndPoint="1,0" StartPoint="1,0">
+            <GradientStop Color="#2A2A2A" Offset="1.0"/>
+            <GradientStop Color="#2A2A2A" Offset="0.0"/>
+        </LinearGradientBrush>
 
         <Style TargetType="GridViewColumnHeader">
             <Setter Property="Background" Value="LightGray"/>
@@ -29,16 +92,16 @@
                                 <ColumnDefinition Width="5"/>
                             </Grid.ColumnDefinitions>
                             <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="0,0,1,0" 
-                                Padding="5" 
-                                Grid.Column="0">
+                                 BorderBrush="{TemplateBinding BorderBrush}" 
+                                 BorderThickness="0,0,1,0" 
+                                 Padding="5" 
+                                 Grid.Column="0">
                                 <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" RecognizesAccessKey="True" />
                             </Border>
                             <Thumb Grid.Column="1" 
-                               Width="5" 
-                               Background="Transparent" 
-                               Cursor="SizeWE"/>
+                                Width="5" 
+                                Background="Transparent" 
+                                Cursor="SizeWE" />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -87,167 +150,256 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="#2A2A2A" Style="{StaticResource KillerPageHeader}">
-            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="5,5,0,5">
+        <Border Grid.Row="0" Style="{StaticResource KillerBorder}" MaxWidth="{Binding MaxWidth}" d:Width="1200" Margin="10,5,10,5">
+            <StackPanel>
 
-                <Button Command="{Binding ReloadDataCommand}" Height="35" Width="35" Template="{StaticResource ControlButton}" Margin="5,0,5,0">
-                    <Button.Content>
-                        <fa:ImageAwesome Icon="Solid_Retweet"/>
-                    </Button.Content>
-                </Button>
+                <!--#region Элементы управление  -->
 
-                <Button Name="OpenFilterButton" Command="{Binding OpenFilterCommand}" Height="35" Width="35" Template="{StaticResource ControlButton}" Margin="5,0,5,0">
-                    <Button.Content>
-                        <fa:ImageAwesome Icon="Solid_Filter" Foreground="White"/>
-                    </Button.Content>
-                </Button>
+                <DockPanel VerticalAlignment="Center" Margin="0,10,0,0">
+                    <StackPanel HorizontalAlignment="Left" Margin="5,0,0,0">
 
-                <!-- Popup -->
-                <Popup IsOpen="{Binding IsFilterPopupOpen}" PlacementTarget="{Binding ElementName=OpenFilterButton}" Placement="Bottom" StaysOpen="False">
-                    <Border Background="#2A2A2A" BorderThickness="1" BorderBrush="Gray" Padding="10">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <StackPanel>
-                                    <TextBlock Text="Тип перков" Height="25" FontSize="17" Foreground="White" Margin="15,0,15,10"/>
-                                    <TextBlock Text="Роль" Height="25" FontSize="17" Foreground="White" Margin="15,0,15,10"/>
-                                    <TextBlock Text="Ассоциация" Height="25" FontSize="17" Foreground="White" Margin="15,0,15,10"/>
-                                </StackPanel>
-                                <StackPanel>
-                                    <ComboBox ItemsSource="{Binding SortCategories}" SelectedItem="{Binding SelectedSortValue}" Height="25" FontSize="17" Width="250" Margin="15,0,15,10" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
-                                    <ComboBox ItemsSource="{Binding RoleList}" SelectedItem="{Binding SelectedRole}" DisplayMemberPath="RoleName" Height="25" FontSize="17" Width="250" Margin="15,0,15,10" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
-                                    <ComboBox ItemsSource="{Binding PlayerAssociationList}" SelectedItem="{Binding SelectedPlayerAssociation}" DisplayMemberPath="PlayerAssociationName" Height="25" FontSize="17" Width="250" Margin="15,0,15,10" Foreground="White" Style="{StaticResource ComboBoxStyleApp}"/>
-                                </StackPanel>
-                            </StackPanel>
+                        <WrapPanel>
                             <StackPanel>
-                                <Button Content="Применить" ToolTip="Применяет выбор типа статистики. Подробная по картам или по измерениям." Command="{Binding ApplyCommand}" Template="{StaticResource ControlButton}"/>
+                                <TextBlock Text="Роль: " 
+                                           Style="{StaticResource ProfileStat}"
+                                           VerticalAlignment="Center" 
+                                           Margin="0,0,0,3"/>
+                                
+                                <TextBlock Text="Ассоциация: " 
+                                           Style="{StaticResource ProfileStat}"
+                                           VerticalAlignment="Center" 
+                                           Margin="0,0,0,3"/>
+                                
+                                <TextBlock Text="Категория: " 
+                                           Style="{StaticResource ProfileStat}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,0,3"/>
+
+                                <TextBlock Text="Перки: " 
+                                           Style="{StaticResource ProfileStat}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,0,3"/>
                             </StackPanel>
-                        </StackPanel>
-                    </Border>
-                </Popup>
+
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding Roles}" 
+                                          SelectedItem="{Binding SelectedRole}"
+                                          Style="{StaticResource ComboBoxStyleApp}"
+                                          Template="{StaticResource ComboBoxTemplate}"
+                                          DisplayMemberPath="RoleName"
+                                          Width="200" Height="30" FontSize="17"
+                                          Margin="0,0,0,3"/>
+                                
+                                <ComboBox ItemsSource="{Binding PlayerAssociations}" 
+                                          SelectedItem="{Binding SelectedAssociation}"
+                                          Style="{StaticResource ComboBoxStyleApp}"
+                                          Template="{StaticResource ComboBoxTemplate}"
+                                          Width="200" Height="30" FontSize="17"
+                                          Margin="0,0,0,3"/>
+
+                                <ComboBox ItemsSource="{Binding PerkCategories}" 
+                                          SelectedItem="{Binding SelectedPerkCategory}"
+                                          Style="{StaticResource ComboBoxStyleApp}"
+                                          Template="{StaticResource ComboBoxTemplate}"
+                                          Width="200" Height="30" FontSize="17"
+                                          Margin="0,0,0,3">
+                                    <ComboBox.ItemTemplateSelector>
+                                        <StaticResource ResourceKey="PerkCategorySelector" />
+                                    </ComboBox.ItemTemplateSelector>
+                                </ComboBox>
+
+                                <ComboBox ItemsSource="{Binding Perks}" 
+                                          SelectedItem="{Binding SelectedPerk}"
+                                          SelectedIndex="{Binding SelectedPerkIndex}"
+                                          Style="{StaticResource ComboBoxStyleApp}"
+                                          Template="{StaticResource ComboBoxTemplate}"
+                                          Width="200" Height="30" FontSize="17"
+                                          Margin="0,0,0,3">
+                                    <ComboBox.ItemTemplateSelector>
+                                        <StaticResource ResourceKey="PerkSelector" />
+                                    </ComboBox.ItemTemplateSelector>
+                                </ComboBox>
+
+                            </StackPanel>
+                        </WrapPanel>
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Center">
+                        <Button Content="В сравнение" 
+                                Template="{StaticResource ControlButton}"
+                                Command="{Binding AddSingleToComparisonCommand}"
+                                Height="40" Margin="10,0,0,0"/>
+                        <Button Content="Добавить все" 
+                                Template="{StaticResource ControlButton}"
+                                Command="{Binding AddAllToComparisonCommand}"
+                                Height="40" Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Right">
+
+                        <!--#region Popup список перков для сравнения -->
+
+                        <Popup IsOpen="{Binding IsPopupFilterOpen}" PlacementTarget="{Binding ElementName=btnListPerks}" Placement="Bottom" StaysOpen="False" MaxWidth="1400" MaxHeight="500">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="25"/>
+                                </Grid.RowDefinitions>
+
+                                <ScrollViewer Grid.Row="0">
+                                    <StackPanel MaxWidth="400">
+                                        <ListView ItemsSource="{Binding PerkStats}">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding PerkName}" FontSize="20" Foreground="White"/>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </StackPanel>
+                                </ScrollViewer>
+
+                                <WrapPanel Grid.Row="1">
+                                    <Button Content="Сравнить" Template="{StaticResource ControlButton}" Command="{Binding OpenComparisonPageCommand}"/>
+                                    <Button Content="Очистить" Template="{StaticResource ControlButton}" Command="{Binding ClearComparisonListCommand}"/>
+                                </WrapPanel>
+
+                            </Grid>
+                        </Popup>
+
+                        <!--#endregion-->
+
+                        <!--#region Кнопки управление -->
+
+                        <Button Name="btnListPerks" 
+                                Template="{StaticResource ControlButtonTransparent}"
+                                Command="{Binding OpenPopupListPerksCommand}"
+                                ToolTipService.InitialShowDelay="100"
+                                Height="40" Margin="0,0,10,0">
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="Solid_List" Foreground="White"/>
+                            </Button.Content>
+                            <Button.ToolTip>
+                                <TextBlock Text="Список киллеров для сравнения"/>
+                            </Button.ToolTip>
+                        </Button>
+
+                        <Button Template="{StaticResource ControlButtonTransparent}"
+                                Command="{Binding ReloadDataCommand}"
+                                ToolTipService.InitialShowDelay="100"
+                                Height="40" Margin="0,0,10,0">
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="Solid_Retweet" Foreground="White"/>
+                            </Button.Content>
+                            <Button.ToolTip>
+                                <TextBlock Text="Обновить"/>
+                            </Button.ToolTip>
+                        </Button>
+
+                        <Button Template="{StaticResource ControlButtonTransparent}"
+                                Command="{Binding PreviousPerkCommand}"
+                                Width="60">
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="Solid_ArrowLeft" Width="30" Foreground="White"/>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Template="{StaticResource ControlButtonTransparent}"
+                                Command="{Binding NextPerkCommand}"
+                                Width="60">
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="Solid_ArrowRight" Width="30" Foreground="White"/>
+                            </Button.Content>
+                        </Button>
+
+                        <!--#endregion-->
+
+                    </WrapPanel>
+                </DockPanel>
+
+                <!--#endregion-->
+
+                <Separator Margin="0,10,0,2"/>
+
+                <!--#region Краткая статистика -->
+
+                <WrapPanel VerticalAlignment="Center" Margin="0,10,0,0">
+
+                    <StackPanel>
+                        <Image Source="{Binding ImagePerk}" Width="150" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\15_Чума\Вмешательство скверны.png"/>
+                        <TextBlock Text="{Binding TakeIntoMatchCount, StringFormat=Взято: {0}}" d:Text="Взято: 144" 
+                                   Style="{StaticResource PercentageAndHeader}"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="5,0,0,0"  Width="400">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="5"/>
+                            </Grid.RowDefinitions>
+
+                            <!--#region PickRateKiller -->
+
+                            <ProgressBar Grid.Row="0"  Value="{Binding PickRatePerk, Mode=TwoWay}" d:Value="55" Style="{StaticResource PickRateStyle}" Maximum="100"/>
+
+                            <TextBlock Grid.Row="0"  Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,0" />
+
+                            <TextBlock Grid.Row="0"  Text="100%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0"/>
+
+                            <TextBlock Grid.Row="0" 
+                                       Text="{Binding PickRatePerk, StringFormat=Популярность: {0} %}" d:Text="Популярность: 45%" Style="{StaticResource PercentageAndHeader}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                            <!--#endregion-->
+
+                        </Grid>
+
+                    </StackPanel>
+
+                </WrapPanel>
+
+                <!--#endregion-->
 
             </StackPanel>
+
         </Border>
 
-        <ScrollViewer Grid.Row="1" VirtualizingPanel.ScrollUnit="Pixel" CanContentScroll="False">
-            <StackPanel>
-                <StackPanel>
-                    <ItemsControl ItemsSource="{Binding PerkStatList}" d:ItemsSource="{d:SampleData ItemCount=2}"
-                              HorizontalAlignment="Center"
-                              Background="#121212" BorderThickness="0"
-                              Margin="0,10,0,10"
-                              ScrollViewer.CanContentScroll="False"
-                              VirtualizingPanel.ScrollUnit="Pixel"
-                              ScrollViewer.VerticalScrollBarVisibility="Visible">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Style="{StaticResource BaseBorderItemsCard}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="300"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+        <!--#region Подробная статистика -->
 
-                                        <Border Style="{StaticResource BorderAroundAddingImage}" >
-                                            <StackPanel>
-                                                <Image Source="{Binding PerkImage}" Margin="10,10,10,10"/>
-                                                <Separator Background="Gray" Cursor="Hand"/>
-                                                <TextBlock Text="{Binding PerkName}" Style="{StaticResource NameCharacter}"/>
-                                            </StackPanel>
-                                        </Border>
+        <ScrollViewer Grid.Row="1">
 
-                                        <Grid Grid.Column="1" Margin="10,0,10,0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="320"/>
-                                            </Grid.RowDefinitions>
+            <StackPanel MaxWidth="{Binding MaxWidth}">
 
-                                            <!--#region Сколько раз выбра подношение выживший -->
+                <!--#region Использования перков персонажами -->
 
-                                            <Border Grid.Row="2" Grid.Column="0" Margin="5,0,10,0" Style="{StaticResource SurvivorAndKillerOfferingStaStyle}">
-                                                <ListView ItemsSource="{Binding PerkCharacterUses}" Margin="7" FontSize="18">
-                                                    <ListView.View>
-                                                        <GridView>
-                                                            <GridViewColumn Header="Имя">
-                                                                <GridViewColumn.CellTemplate>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding NameCharacter}" Foreground="#FF32BEEB"/>
-                                                                    </DataTemplate>
-                                                                </GridViewColumn.CellTemplate>
-                                                            </GridViewColumn>
-                                                            <GridViewColumn Header="Количество">
-                                                                <GridViewColumn.CellTemplate>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding AmountUsedPerk}"/>
-                                                                    </DataTemplate>
-                                                                </GridViewColumn.CellTemplate>
-                                                            </GridViewColumn>
-                                                        </GridView>
-                                                    </ListView.View>
-                                                </ListView>
-                                            </Border>
+                <ListView ItemsSource="{Binding PerkCharactersUse}" d:ItemsSource="{d:SampleData ItemCount=20}" Height="Auto" Margin="7" FontSize="18">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Имя" Width="200">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding NameCharacter}" d:Text="Ада Вонг" Foreground="#FF32BEEB"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Количество">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding AmountUsedPerk}" d:Text="15"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
 
-                                            <!--#endregion-->
-
-                                            <Grid Grid.Row="2" Grid.Column="1">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="30"/>
-                                                    <RowDefinition Height="15"/>
-                                                    <RowDefinition Height="30"/>
-                                                    <RowDefinition Height="15"/> 
-                                                </Grid.RowDefinitions>
-
-                                                <!--#region Пикрейт -->
-
-                                                <Border  Style="{StaticResource BorderAdoundProgressBar}">
-                                                    <ProgressBar Value="{Binding PickRatePercent}" Style="{StaticResource PickRateStyle}"/>
-                                                </Border>
-
-                                                <TextBlock Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
-
-                                                <TextBlock Text="100%" Grid.Column="1" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
-
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="10,0,0,0">
-                                                    <TextBlock Text="Пикрейт - " Style="{StaticResource PercentageAndHeader}" />
-                                                    <TextBlock Text="{Binding PickRatePercent}" Style="{StaticResource PercentageAndHeader}"/>
-                                                    <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                                </StackPanel>
-
-                                                <!--#endregion-->
-
-                                                <!--#region Винрейт -->
-
-                                                <Border Grid.Row="2" Style="{StaticResource BorderAdoundProgressBar}">
-                                                    <ProgressBar Value="{Binding WinRatePercent}" Style="{StaticResource WinStyle}"/>
-                                                </Border>
-
-                                                <TextBlock Grid.Row="2" Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
-
-                                                <TextBlock Grid.Row="2" Text="100%" Grid.Column="1" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
-
-                                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="10,0,0,0">
-                                                    <TextBlock Text="ВинРейт - " Style="{StaticResource PercentageAndHeader}" />
-                                                    <TextBlock Text="{Binding WinRatePercent}" Style="{StaticResource PercentageAndHeader}"/>
-                                                    <TextBlock Text="%" Style="{StaticResource PercentageAndHeader}"/>
-                                                </StackPanel>
-
-                                                <!--#endregion-->
-                                                
-                                            </Grid>
-
-                                        </Grid>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                </StackPanel>
+                <!--#endregion-->
 
             </StackPanel>
+
         </ScrollViewer>
+
+        <!--#endregion-->
 
     </Grid>
 </Page>
