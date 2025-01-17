@@ -2,7 +2,6 @@
 using MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
@@ -73,6 +72,20 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                     OfferingStats.Add(item);
 
                 foreach (var item in SortingOfferingList)
+                    SortingList.Add(item);
+
+                SelectedSortItem = SortingList.FirstOrDefault();
+            }
+
+            if (value is IEnumerable<PerkStat> perkStats)
+            {
+                CurrentDisplayStat = TypeStats.PerkStat;
+                _perkStats.AddRange(perkStats);
+
+                foreach (var item in _perkStats)
+                    PerkStats.Add(item);
+
+                foreach (var item in SortingPerkList)
                     SortingList.Add(item);
 
                 SelectedSortItem = SortingList.FirstOrDefault();
@@ -178,6 +191,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             "Алфавит",
          ];
 
+        public List<string> SortingPerkList { get; set; } =
+       [
+           "По умолчанию",
+            "Алфавит",
+            "Пикрейт",
+         ];
+
         #endregion
 
         #region Свойство : CurrentDisplayStat - Хранит информацию о текущей отображаемой статистики
@@ -221,6 +241,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
                 TypeStats.SurvivorStat => SortSurvivorStatList,
                 TypeStats.MapStat => SortMapStatList,
                 TypeStats.OfferingStat => SortOfferingStatList,
+                TypeStats.PerkStat => SortPerkStatList,
                 _ => null
             };
             action.Invoke();
@@ -518,7 +539,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             Action action = SelectedSortItem switch
             {
                 "По умолчанию" => DefaultSortOffering,
-                "Алфавит" => SortMapStats_ByOfferingName,
+                "Алфавит" => SortPerkStats_ByOfferingName,
                 _ => null
             };
             action.Invoke();
@@ -534,13 +555,59 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             }
         }
 
-        private void SortMapStats_ByOfferingName()
+        private void SortPerkStats_ByOfferingName()
         {
             OfferingStats.Clear();
             foreach (var item in _offeringStats.OrderBy(ks => ks.OfferingName))
             {
                 OfferingStats.Add(item);
                 item.Index = OfferingStats.IndexOf(item) + 1;
+            }
+        }
+
+        #endregion
+
+        #region Методы : Сортировка подношений : PerkStats
+
+        private void SortPerkStatList()
+        {
+            Action action = SelectedSortItem switch
+            {
+                "По умолчанию" => DefaultSortPerk,
+                "Алфавит" => SortPerkStats_ByPerkName,
+                "Пикрейт" => SortPerkStats_ByPickRate,
+                _ => null
+            };
+            action.Invoke();
+        }
+
+        private void DefaultSortPerk()
+        {
+            PerkStats.Clear();
+            foreach (var item in _perkStats)
+            {
+                PerkStats.Add(item);
+                item.Index = PerkStats.IndexOf(item) + 1;
+            }
+        }
+
+        private void SortPerkStats_ByPerkName()
+        {
+            PerkStats.Clear();
+            foreach (var item in _perkStats.OrderBy(ks => ks.PerkName))
+            {
+                PerkStats.Add(item);
+                item.Index = PerkStats.IndexOf(item) + 1;
+            }
+        }
+
+        private void SortPerkStats_ByPickRate()
+        {
+            PerkStats.Clear();
+            foreach (var item in _perkStats.OrderByDescending(ks => ks.PickRate))
+            {
+                PerkStats.Add(item);
+                item.Index = PerkStats.IndexOf(item) + 1;
             }
         }
 

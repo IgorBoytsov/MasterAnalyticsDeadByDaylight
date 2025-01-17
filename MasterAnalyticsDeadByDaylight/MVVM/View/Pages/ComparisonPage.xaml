@@ -632,7 +632,7 @@
 
                 <!--#endregion-->
 
-                <!--#region NewRegion -->
+                <!--#region Статистика : Подношение -->
 
                 <ItemsControl ItemsSource="{Binding OfferingStats}" d:ItemsSource="{d:SampleData ItemCount=2}"
                               Visibility="{Binding CurrentDisplayStat, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=OfferingStat}"
@@ -659,8 +659,14 @@
                                         <StackPanel>
                                             <Image Source="{Binding OfferingImage}" Margin="10,10,10,10"/>
                                             <Separator Background="Gray" Cursor="Hand"/>
-                                            <TextBlock Text="{Binding OfferingName}" Style="{StaticResource NameCharacter}"/>
-                                            <TextBlock Text="{Binding OfferingRole}" Style="{StaticResource NameCharacter}"/>
+                                            <TextBlock d:Text="№1 : Герлянда" Style="{StaticResource NameCharacter}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource IndexToNameConverter}">
+                                                        <Binding Path="Index"/>
+                                                        <Binding Path="OfferingName"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
                                         </StackPanel>
                                     </Border>
 
@@ -761,6 +767,113 @@
                                         </Border>
 
                                         <!--#endregion-->
+
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+
+                <!--#endregion-->
+
+                <!--#region Статистика : Перки -->
+
+                <ItemsControl ItemsSource="{Binding PerkStats}" d:ItemsSource="{d:SampleData ItemCount=2}"
+                              Visibility="{Binding CurrentDisplayStat, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=PerkStat}"
+                              HorizontalAlignment="Center"
+                              Background="#121212" BorderThickness="0"
+                              Margin="0,10,0,10"
+                              ScrollViewer.CanContentScroll="True"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="15,15"
+                              VirtualizingPanel.CacheLengthUnit="Item"
+                              VirtualizingPanel.ScrollUnit="Pixel">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource BaseBorderItemsCard}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="300"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Style="{StaticResource BorderAroundAddingImage}" >
+                                        <StackPanel>
+                                            <Image Source="{Binding PerkImage}" Margin="10,10,10,10"/>
+                                            <Separator Background="Gray" Cursor="Hand"/>
+                                            <TextBlock d:Text="№1 : Дежавю" Style="{StaticResource NameCharacter}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource IndexToNameConverter}">
+                                                        <Binding Path="Index"/>
+                                                        <Binding Path="PerkName"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Grid Grid.Column="1" Margin="10,0,10,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="320"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--#region Сколько раз выбра подношение выживший -->
+
+                                        <Border Grid.Row="2" Grid.Column="0" Margin="5,0,10,0" Style="{StaticResource SurvivorAndKillerOfferingStaStyle}">
+                                            <ListView ItemsSource="{Binding PerkCharacterUses}" Margin="7" FontSize="18">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn Header="Имя">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding NameCharacter}" Foreground="#FF32BEEB"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn Header="Количество">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding AmountUsedPerk}"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </Border>
+
+                                        <!--#endregion-->
+
+                                        <Grid Grid.Row="2" Grid.Column="1">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30"/>
+                                                <RowDefinition Height="15"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!--#region Пикрейт -->
+
+                                            <Border  Style="{StaticResource BorderAdoundProgressBar}">
+                                                <ProgressBar Value="{Binding PickRate}" Style="{StaticResource PickRateStyle}"/>
+                                            </Border>
+
+                                            <TextBlock Text="0%" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+
+                                            <TextBlock Text="100%" Grid.Column="1" Style="{StaticResource PercentageAndHeader}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                                            <TextBlock Text="{Binding PickRate, StringFormat= Пикрейт: {0} %}" Style="{StaticResource PercentageAndHeader}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                           
+                                            <!--#endregion-->
+
+                                        </Grid>
 
                                     </Grid>
                                 </Grid>
