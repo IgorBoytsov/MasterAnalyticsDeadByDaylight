@@ -63,7 +63,7 @@
 
     <!--#endregion-->
 
-    <!-- Стили для страниц << KillerPage, MapPage, MatchPage, SurvivorPage >> -->
+    <!-- Стили для страниц << KillerPage, MapPage, MatchPage, SurvivorPage, MatchPage>> -->
 
     <!--#region Название персонажа -->
 
@@ -100,4 +100,16 @@
     </Style>
 
     <!--#endregion-->
+
+    <!--#region Popup -->
+
+    <Style x:Key="PopupText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Margin" Value="0,0,0,7"/>
+    </Style>
+
+    <!--#endregion-->
+
 </ResourceDictionary>

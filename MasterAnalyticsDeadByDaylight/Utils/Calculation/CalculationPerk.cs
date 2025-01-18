@@ -77,8 +77,6 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
                                 PerkName = perk.PerkName,
                                 PerkImage = perk.PerkImage,
                                 PerkID = perk.IdKillerPerk,
-                                AllAmountPerkUsed = amountMatchWithCurrentPerk.Count,
-                                PickRatePercent = pickRate,
                                 WinRateAVG = 0,
                                 WinRatePercent = winRate,
                                 PerkCharacterUses = perkCharacterUseList.OrderByDescending(x => x.AmountUsedPerk).ToList(),
@@ -128,8 +126,6 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
                                 PerkName = perk.PerkName,
                                 PerkImage = perk.PerkImage,
                                 PerkID = perk.IdSurvivorPerk,
-                                AllAmountPerkUsed = amountMatchWithCurrentPerk.Count,
-                                PickRatePercent = pickRate,
                                 WinRateAVG = 0,
                                 WinRatePercent = winRate,
                                 PerkCharacterUses = perkCharacterUseList.OrderByDescending(x => x.AmountUsedPerk).ToList(),
@@ -150,5 +146,37 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
                 return perkStats;
             });
         }
+
+        public static double PickRate(int countMatchWithPerk, int countAllMatch)
+        {
+            return Math.Round((double)countMatchWithPerk / countAllMatch * 100, 2);
+        }
+
+        public static PerkCharacterUse PerkCharactersUse(IEnumerable<KillerInfo> killerInfos, Killer selectedKiller, KillerPerk selectedPerk)
+        {
+            return new PerkCharacterUse()
+            {
+                NameCharacter = selectedKiller.KillerName,
+                AmountUsedPerk = killerInfos.Where(x => x.IdKiller == selectedKiller.IdKiller).Where(x =>
+                                                x.IdPerk1 == selectedPerk.IdKillerPerk ||
+                                                x.IdPerk2 == selectedPerk.IdKillerPerk ||
+                                                x.IdPerk3 == selectedPerk.IdKillerPerk ||
+                                                x.IdPerk4 == selectedPerk.IdKillerPerk).Count()
+            };
+        }
+
+        public static PerkCharacterUse PerkCharactersUse(IEnumerable<SurvivorInfo> survivorInfos, Survivor selectedSurvivor, SurvivorPerk selectedPerk)
+        {
+            return new PerkCharacterUse()
+            {
+                NameCharacter = selectedSurvivor.SurvivorName,
+                AmountUsedPerk = survivorInfos.Where(x => x.IdSurvivor == selectedSurvivor.IdSurvivor).Where(x =>
+                                                x.IdPerk1 == selectedPerk.IdSurvivorPerk ||
+                                                x.IdPerk2 == selectedPerk.IdSurvivorPerk ||
+                                                x.IdPerk3 == selectedPerk.IdSurvivorPerk ||
+                                                x.IdPerk4 == selectedPerk.IdSurvivorPerk).Count()
+            };
+        }
+
     }
 }

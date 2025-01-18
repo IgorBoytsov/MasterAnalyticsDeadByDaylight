@@ -98,8 +98,8 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Helper
             Bitmap ResultMatchImage = new(ImagePath);
 
             Killer = CropImage(ResultMatch, 90, 920, 920, 125);
-            FirstSurvivor = CropImage(ResultMatch, 90, 530, 920, 125);
-            SecondSurvivor = CropImage(ResultMatch, 90, 660, 920, 125);
+            FirstSurvivor = CropImage(ResultMatch, 90, 410, 920, 125);
+            SecondSurvivor = CropImage(ResultMatch, 90, 530, 920, 125);
             ThirdSurvivor = CropImage(ResultMatch, 90, 665, 920, 125);
             FourthSurvivor = CropImage(ResultMatch, 90, 795, 920, 125);
             ResultMatchImage = CropImage(ResultMatch, 90, 200, 980, 850);

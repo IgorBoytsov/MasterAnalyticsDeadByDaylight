@@ -71,6 +71,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             List<CountMatchTracker> countMatchTracker = [];
 
             (DateTime First, DateTime Last) = await CalculationTime.FirstAndLastDateMatchAsync(matches);
+            DateTime LastDate = DateTime.Now;
 
             Func<DateTime, DateTime> Increment = typeTime switch
             {
@@ -90,7 +91,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
 
             return await Task.Run(async () =>
             {
-                for (DateTime date = First; date <= Last; date = Increment(date))
+                for (DateTime date = First; date <= LastDate; date = Increment(date))
                 {
                     var matchByDate = await CalculationTime.MatchForPeriodTimeAsync(matches, typeTime, date);
 
@@ -117,5 +118,83 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
 
         #endregion
 
+        #region Престижи
+
+        public static async Task<List<PrestigeTracker>> PrestigeCounter(IEnumerable<GameStatistic> matches, TypeStats typeStats)
+        {
+            if (typeStats == TypeStats.KillerStat)
+            {
+                return await Task.Run(() =>
+                {
+                    var prestigeCounter = new List<PrestigeTracker>();
+
+                    for (int i = 0; i <= 100; i++)
+                    {
+                        prestigeCounter.Add(new PrestigeTracker()
+                        {
+                            Prestige = i.ToString(),
+                            Count = matches.Count(x => x.IdKillerNavigation.Prestige == i),
+                        });
+                    }
+                    return prestigeCounter;
+                });
+            }
+            if (typeStats == TypeStats.SurvivorStat)
+            {
+                return await Task.Run(() =>
+                {
+                    var prestigeCounter = new List<PrestigeTracker>();
+
+                    for (int i = 0; i <= 100; i++)
+                    {
+                        prestigeCounter.Add(new PrestigeTracker()
+                        {
+                            Prestige = i.ToString(),
+                            Count = matches.Count(x => x.IdSurvivors1Navigation.Prestige == i) + matches.Count(x => x.IdSurvivors2Navigation.Prestige == i) + matches.Count(x => x.IdSurvivors3Navigation.Prestige == i) + matches.Count(x => x.IdSurvivors4Navigation.Prestige == i),
+                        });
+                    }
+                    return prestigeCounter;
+                });
+            }
+            return null;
+        }
+
+        public static async Task<List<PrestigeTracker>> PrestigeCounter(IEnumerable<SurvivorInfo> survivorInfos)
+        {
+            return await Task.Run(() =>
+            {
+                var prestigeCounter = new List<PrestigeTracker>();
+
+                for (int i = 0; i <= 100; i++)
+                {
+                    prestigeCounter.Add(new PrestigeTracker()
+                    {
+                        Prestige = i.ToString(),
+                        Count = survivorInfos.Count(x => x.Prestige == i),
+                    });
+                }
+                return prestigeCounter;
+            });
+        }
+
+        public static async Task<List<PrestigeTracker>> PrestigeCounter(IEnumerable<KillerInfo> killerInfos)
+        {
+            return await Task.Run(() =>
+            {
+                var prestigeCounter = new List<PrestigeTracker>();
+
+                for (int i = 0; i <= 100; i++)
+                {
+                    prestigeCounter.Add(new PrestigeTracker()
+                    {
+                        Prestige = i.ToString(),
+                        Count = killerInfos.Count(x => x.Prestige == i),
+                    });
+                }
+                return prestigeCounter;
+            });
+        }
+
+        #endregion
     }
 }

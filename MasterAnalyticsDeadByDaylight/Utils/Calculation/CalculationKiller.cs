@@ -61,7 +61,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             });
         }
 
-        public static async Task<double> CountMatchWinAsync(List<GameStatistic> Matches)
+        public static async Task<int> CountMatchWinAsync(List<GameStatistic> Matches)
         {
             return await Task.Run(() =>
             {
@@ -69,7 +69,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             });
         }
 
-        public static async Task<double> WinRateAsync(int selectedCharacterMatchesWin, int countAllMatch)
+        public static async Task<double> WinRateAsync(double selectedCharacterMatchesWin, int countAllMatch)
         {
             return await Task.Run(() =>
             {
@@ -97,9 +97,9 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
 
         #region Средний счет за промежуток времени
 
-        public static async Task<List<KillerAverageScoreTracker>> AverageScoreForPeriodTimeAsyncAsync(List<GameStatistic> matches, TypeTime typeTime)
+        public static async Task<List<AverageScoreTracker>> AverageScoreForPeriodTimeAsyncAsync(List<GameStatistic> matches, TypeTime typeTime)
         {
-            List<KillerAverageScoreTracker> averageScoreTrackers = new();
+            List<AverageScoreTracker> averageScoreTrackers = new();
 
             (DateTime FirstDate, DateTime LastDate) = await CalculationTime.FirstAndLastDateMatchAsync(matches);
 
@@ -133,7 +133,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
 
                     if (matchByDate.Count == 0)
                     {
-                        averageScoreTrackers.Add(new KillerAverageScoreTracker
+                        averageScoreTrackers.Add(new AverageScoreTracker
                         {
                             AvgScore = 0,
                             DateTime = date.ToString(dateFormat)
@@ -144,7 +144,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
                         int account = matchByDate.Sum(x => x.IdKillerNavigation.KillerAccount);
                         double avg = matchByDate.Count > 0 ? Math.Round(account / (double)matchByDate.Count, 0) : 0;
 
-                        averageScoreTrackers.Add(new KillerAverageScoreTracker
+                        averageScoreTrackers.Add(new AverageScoreTracker
                         {
                             AvgScore = avg,
                             DateTime = date.ToString(dateFormat)
@@ -252,7 +252,7 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
                     {
                         winRateTracker.Add(new KillerWinRateTracker
                         {
-                            WinRate = await WinRateAsync((int)await CountMatchWinAsync(matches), matchByDate.Count),
+                            WinRate = await WinRateAsync(await CountMatchWinAsync(matches), matchByDate.Count),
                             DateTime = date.ToString(dateFormat),
                         });
                     }

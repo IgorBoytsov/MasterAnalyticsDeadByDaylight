@@ -8,14 +8,11 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
     {
         #region Статистика по типам смертей выижвших
 
-        public static async Task<List<SurvivorTypeDeathTracker>> TypeDeathSurvivorsAsync(List<GameStatistic> matches)
+        public static async Task<List<SurvivorTypeDeathTracker>> TypeDeathSurvivorsAsync(List<GameStatistic> matches, IDataService dataService)
         {
             List<SurvivorTypeDeathTracker> survivorTypeDeathTrackers = [];
 
-            //TODO: Убрать вызов DataService, передавать его сюда из вне.
-            Func<MasterAnalyticsDeadByDaylightDbContext> _contextFactory = () => new MasterAnalyticsDeadByDaylightDbContext();
-            var _dataService = new DataService(_contextFactory);
-            List<TypeDeath> typeDeath = await _dataService.GetAllDataInListAsync<TypeDeath>();
+            List<TypeDeath> typeDeath = await dataService.GetAllDataInListAsync<TypeDeath>();
 
             return await Task.Run(() =>
             {
@@ -29,6 +26,32 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
                     int countSurvivorDeath = first + second + third + fourth;
 
                     double countSurvivorTypeDeathPercentages = Math.Round((double)countSurvivorDeath / (matches.Count * 4) * 100, 2);
+
+                    var SurvivorTypeDeath = new SurvivorTypeDeathTracker
+                    {
+                        TypeDeathName = item.TypeDeathName,
+                        TypeDeathPercentages = countSurvivorTypeDeathPercentages,
+                        CountGame = countSurvivorDeath
+                    };
+                    survivorTypeDeathTrackers.Add(SurvivorTypeDeath);
+                }
+                return survivorTypeDeathTrackers;
+            });
+        }
+
+        public static async Task<List<SurvivorTypeDeathTracker>> TypeDeathSurvivorsAsync(List<SurvivorInfo> survivorInfos, IDataService dataService)
+        {
+            List<SurvivorTypeDeathTracker> survivorTypeDeathTrackers = [];
+
+            List<TypeDeath> typeDeath = await dataService.GetAllDataInListAsync<TypeDeath>();
+
+            return await Task.Run(() =>
+            {
+                foreach (var item in typeDeath)
+                {
+                    int countSurvivorDeath = survivorInfos.Count(x => x.IdTypeDeath == item.IdTypeDeath);
+
+                    double countSurvivorTypeDeathPercentages = Math.Round((double)countSurvivorDeath / survivorInfos.Count * 100, 2);
 
                     var SurvivorTypeDeath = new SurvivorTypeDeathTracker
                     {
@@ -146,6 +169,56 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             });
         }
 
+        #endregion
+
+        #region Колличество и % сбежавших
+
+        public static int EscapeCount(List<SurvivorInfo> survivorInfos, int idSurvivor)
+        {
+            return survivorInfos.Where(x => x.IdSurvivor == idSurvivor).Where(x => x.IdTypeDeath == 5).Count();
+        }
+
+        public static double EscapeRate(int CountEscapedSurvivors, int countAllSelectedSurvivorInfo)
+        {
+            return Math.Round((double)CountEscapedSurvivors / countAllSelectedSurvivorInfo * 100, 2);
+        }
+
+        #endregion
+
+        #region Популярность
+
+        public static double PickRate(int CountSurvivorInfos, int countAllSelectedSurvivorInfo)
+        {
+            return Math.Round((double)CountSurvivorInfos / countAllSelectedSurvivorInfo * 100, 2);
+        }
+
+        #endregion 
+        
+        #region Анонимные
+
+        public static int AnonymousModeCount(List<SurvivorInfo> survivorInfos)
+        {
+            return survivorInfos.Where(x => x.AnonymousMode == true).Count();
+        }
+
+        public static double AnonymousModeRate(int AnonymousModeCount, int CountSurvivorMatch)
+        {
+            return Math.Round((double)AnonymousModeCount / CountSurvivorMatch * 100, 2);
+        }
+
+        #endregion
+
+        #region Выходы из игры во время матча
+
+        public static int BotCount(List<SurvivorInfo> survivorInfos)
+        {
+            return survivorInfos.Where(x => x.Bot == true).Count();
+        }
+
+        public static double BotRate(int botCount, int CountSurvivorMatch)
+        {
+            return Math.Round((double)botCount / CountSurvivorMatch * 100, 2);
+        }
         #endregion
     }
 }

@@ -1,6 +1,5 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
-using System.Text.RegularExpressions;
 
 namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
 {
@@ -48,29 +47,57 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             });
         }
 
-        public static async Task<(string Shortest, string Fastest, string AVG)> StatTimeMatchAsync(List<GameStatistic> Matches, int idKiller, int IdPlayerAssociation)
+        public static async Task<(string Longest, string Fastest, string AVG)> StatTimeMatchAsync(List<GameStatistic> Matches, int idKiller, int IdPlayerAssociation)
         {
             return await Task.Run(() =>
             {
-                
-                if (Matches.Count == 0)
+                try
+                {
+                    if (Matches.Count == 0)
+                        return ("0", "0", "0");
+
+                    TimeSpan[] timeSpans = Matches
+                                   .Where(x => x.IdKillerNavigation.IdKiller == idKiller && x.IdKillerNavigation.IdAssociation == IdPlayerAssociation)
+                                        .Select(s => TimeSpan.Parse(s.GameTimeMatch)).ToArray();
+
+
+                    TimeSpan totalTime = TimeSpan.Zero;
+                    foreach (var timeSpan in timeSpans)
+                    {
+                        totalTime += timeSpan;
+                    }
+
+                    TimeSpan averageMatchTime = TimeSpan.FromTicks(totalTime.Ticks / timeSpans.Length);
+                    averageMatchTime = new TimeSpan(averageMatchTime.Hours, averageMatchTime.Minutes, averageMatchTime.Seconds);
+
+                    return (timeSpans.Max().ToString(), timeSpans.Min().ToString(), averageMatchTime.ToString());
+                }
+                catch (Exception)
+                {
                     return ("0", "0", "0");
+                }
+                
+            });
+        }
 
-                TimeSpan[] timeSpans = Matches
-                               .Where(x => x.IdKillerNavigation.IdKiller == idKiller && x.IdKillerNavigation.IdAssociation == IdPlayerAssociation)
-                                    .Select(s => TimeSpan.Parse(s.GameTimeMatch)).ToArray();
+        public static async Task<TimeSpan> TotalTime(List<GameStatistic> Matches)
+        {
+            return await Task.Run(() => 
+            {
+                if (Matches.Count == 0)
+                    return TimeSpan.Zero;
 
+                TimeSpan[] timeSpans = Matches.Select(s => TimeSpan.Parse(s.GameTimeMatch)).ToArray();
 
                 TimeSpan totalTime = TimeSpan.Zero;
+
                 foreach (var timeSpan in timeSpans)
                 {
                     totalTime += timeSpan;
                 }
 
-                TimeSpan averageMatchTime = TimeSpan.FromTicks(totalTime.Ticks / timeSpans.Length);
-                averageMatchTime = new TimeSpan(averageMatchTime.Hours, averageMatchTime.Minutes, averageMatchTime.Seconds);
+                return totalTime;
 
-                return (timeSpans.Max().ToString(), timeSpans.Min().ToString(), averageMatchTime.ToString());
             });
         }
     }

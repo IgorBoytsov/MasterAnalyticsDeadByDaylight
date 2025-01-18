@@ -2,6 +2,6 @@
 {
     public interface IWindowNavigationService
     {
-        void OpenWindow(string windowName, object parameter = null);
+        void OpenWindow(string windowName, object parameter = null, bool onlyUpdate = false);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace MasterAnalyticsDeadByDaylight.Utils.Enum
 {
-    enum TypeStats
+    public enum TypeStats
     {
         KillerStat,
         SurvivorStat,

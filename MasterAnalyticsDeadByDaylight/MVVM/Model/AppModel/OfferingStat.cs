@@ -4,6 +4,8 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 {
     public class OfferingStat
     {
+        public int Index { get; set; }
+
         public string OfferingName { get; set; }
 
         public byte[] OfferingImage { get; set; }
@@ -12,17 +14,13 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel
 
         public int OfferingRole {  get; set; }
 
-        public int AllAmountCharacterUsed { get; set; }
+        public double PickRateSurvivorOffering { get; set; }
 
-        public double PickRateCharacterPercent { get; set; }
+        public int PickSurvivorOfferingCount { get; set; }
 
-        public double NumberMatchSurvivor { get; set; }
+        public double PickRateKillerOffering { get; set; }
 
-        public double PickRateKillerPercent { get; set; }
-
-        public double NumberPickKillerOffering { get; set; }
-
-        public double NumberMatchKiller { get; set; }
+        public int PickKillerOfferingCount { get; set; }
 
         public List<OfferingCharacterUse> OfferingSurvivorUses { get; set; }
 

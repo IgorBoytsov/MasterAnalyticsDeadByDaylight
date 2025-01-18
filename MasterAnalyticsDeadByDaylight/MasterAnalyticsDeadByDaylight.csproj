@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <Folder Include="MVVM\Model\MSSQL_DB\" />
-    <Folder Include="MVVM\View\UserControls\" />
+    <Folder Include="MVVM\View\UserControls\PieChart\" />
   </ItemGroup>
 
   <ItemGroup>

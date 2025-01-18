@@ -2,17 +2,19 @@
 {
     public class PerkStat
     {
+        public int Index { get; set; }
+
         public string PerkName { get; set; }
 
         public byte[] PerkImage { get; set; }
 
         public int PerkID { get; set; }
 
-        public int AllAmountPerkUsed { get; set; }
+        //public int AllAmountPerkUsed { get; set; }
 
         public double PickRate { get; set; }
 
-        public double PickRatePercent { get; set; }
+        //public double PickRatePercent { get; set; }
 
         public double WinRateAVG { get; set; }
 

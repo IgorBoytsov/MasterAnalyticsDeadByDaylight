@@ -4,6 +4,8 @@ using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.DialogService;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigation;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigation;
+using MasterAnalyticsDeadByDaylight.Utils.Helper;
+using MasterAnalyticsDeadByDaylight.Utils.Managers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
@@ -38,6 +40,9 @@ namespace MasterAnalyticsDeadByDaylight
             services.AddSingleton<Func<MasterAnalyticsDeadByDaylightDbContext>>(provider => () => provider.GetRequiredService<MasterAnalyticsDeadByDaylightDbContext>());
             services.AddTransient<MasterAnalyticsDeadByDaylightDbContext>();
             services.AddSingleton<IDataService, DataService>();
+
+            services.AddSingleton<LastRecordHelper>();
+            services.AddSingleton<DataManager>();
 
             services.AddSingleton<ICustomDialogService, CustomDialogService>();
 

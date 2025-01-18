@@ -15,7 +15,7 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigat
             _serviceProvider = serviceProvider;
         }
 
-        public void OpenWindow(string windowName, object parameter = null)
+        public void OpenWindow(string windowName, object parameter = null, bool onlyUpdate = false)
         {
             if (_windows.TryGetValue(windowName, out var windowExist))
             {
@@ -26,7 +26,10 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigat
                 }
                 return;
             }
-            Open(windowName, parameter);
+            if (!onlyUpdate)
+            {
+                Open(windowName, parameter);
+            }
         }
 
         private void Open(string windowName, object parameter = null)
@@ -163,6 +166,20 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigat
                     window.Show();
                 }
                 ,
+                "DetailedMatchStatisticsWindow" => () =>
+                {
+                    var viewModel = new DetailedMatchStatisticsWindowViewModel(_serviceProvider);
+                    var window = new DetailedMatchStatisticsWindow()
+                    {
+                        DataContext = viewModel,
+                    };
+
+                    _windows[windowName] = window;
+                    viewModel.Update(parameter);
+                    window.Closed += (s, e) => _windows.Remove(windowName);
+                    window.Show();
+                }
+                ,
                 "HowToUseWindow" => () =>
                 {
                     var viewModel = new HowToUseWindowViewModel(_serviceProvider);
@@ -191,13 +208,14 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.WindowNavigat
                 ,
                 "ShowDetailsMatchWindow" => () =>
                 {
-                    var viewModel = new ShowDetailsMatchWindowViewModel(_serviceProvider);
+                    var viewModel = new ShowDetailsMatchWindowViewModel();
                     var window = new ShowDetailsMatchWindow()
                     {
                         DataContext = viewModel,
                     };
 
                     _windows[windowName] = window;
+                    viewModel.Update(parameter);
                     window.Closed += (s, e) => _windows.Remove(windowName);
                     window.Show();
                 }

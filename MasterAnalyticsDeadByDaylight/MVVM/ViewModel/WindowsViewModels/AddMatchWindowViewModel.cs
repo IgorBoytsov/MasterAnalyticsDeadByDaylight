@@ -3166,6 +3166,7 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             SetNullImage();
             SetNullBuild();
             _pageNavigationService.NavigateTo("MatchPage",true, true);
+            _pageNavigationService.NavigateTo("KillerPage", SelectedKiller, true);
             _dialogService.ShowMessage("Данные успешно добавлены", "Успешно!", TypeMessage.Notification);
         }
 
