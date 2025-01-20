@@ -261,6 +261,9 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         private RelayCommand _navigateToPerkPageCommand;
         public RelayCommand NavigateToPerkPageCommand { get => _navigateToPerkPageCommand ??= new(obj => { NavigateToPerkPage(); }); }
+        
+        private RelayCommand _navigateToRandomizerPageCommand;
+        public RelayCommand NavigateToRandomizerPageCommand { get => _navigateToRandomizerPageCommand ??= new(obj => { NavigateToRandomizerPage(); }); }
 
         #endregion
 
@@ -300,6 +303,12 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
         {
             _pageNavigationService.NavigateTo("PerkPage");
             Title = "Аналитика статистики - Карты";
+        } 
+        
+        private void NavigateToRandomizerPage()
+        {
+            _pageNavigationService.NavigateTo("RandomizerPage");
+            Title = "Рандомайзер";
         }
 
         #endregion

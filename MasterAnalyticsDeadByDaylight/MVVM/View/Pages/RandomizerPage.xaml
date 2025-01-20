@@ -1,0 +1,99 @@
+﻿<Page x:Class="MasterAnalyticsDeadByDaylight.MVVM.View.Pages.RandomizerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.View.Pages" 
+      xmlns:fa="http://schemas.fontawesome.com/icons/"
+      xmlns:pagesviewmodels="clr-namespace:MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels" 
+      d:DataContext="{d:DesignInstance Type=pagesviewmodels:RandomizerPageViewModel}"
+      mc:Ignorable="d" 
+      Width="Auto" Height="Auto"
+      Title="RandomizerPage">
+    
+    <Page.Resources>
+        
+        <!--#region Border -->
+
+        <Style x:Key="KillerBorder" TargetType="Border">
+            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <!--#endregion-->
+
+        <!--#region TextBlock -->
+
+        <Style x:Key="ProfileStat" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!--#endregion-->
+        
+    </Page.Resources>
+
+    <Border Grid.Row="0" Style="{StaticResource KillerBorder}" MaxWidth="{Binding MaxWidth}" d:Width="1200" Margin="10,5,10,5">
+        <TabControl Background="Black">
+
+            <!--#region Рандомайзер Киллера -->
+
+            <TabItem Header="Убийца">
+                <ScrollViewer>
+                    <StackPanel>
+
+                        <Button Content="Крутить" Command="{Binding RandomizeKillerCommand}"/>
+
+                        <WrapPanel>
+                            <Image Source="{Binding RandomKiller.KillerImage}"            d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Портреты\26_Художница(Красный).png" Height="200"/>
+                            <Image Source="{Binding FirstRandomKillerAddon.AddonImage}"   d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Аддоны\26_Художница\Бархатная ткань.png" Height="200"/>
+                            <Image Source="{Binding SecondRandomKillerAddon.AddonImage}"  d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Аддоны\26_Художница\Чернильное яйцо.png" Height="200"/>
+                            <Image Source="{Binding RandomKillerOffering.OfferingImage}"  d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Аддоны\26_Художница\Чернильное яйцо.png" Height="200"/>
+                        </WrapPanel>
+
+                        <WrapPanel>
+                            <Image Source="{Binding FirstRandomKillerPerk.PerkImage}"     d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\12_Клоун\Клоунофобия.png" Height="200"/>
+                            <Image Source="{Binding SecondRandomKillerPerk.PerkImage}"    d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\22_Близнецы\Добивание.png" Height="200"/>
+                            <Image Source="{Binding ThirdRandomKillerPerk.PerkImage}"     d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\27_Онреё\Соленое море.png" Height="200"/>
+                            <Image Source="{Binding FourthRandomKillerPerk.PerkImage}"    d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\36_Лич\KillerRarity (1).png" Height="200"/>
+                        </WrapPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!--#endregion-->
+
+            <!--#region Рандомайзер Выжившего -->
+
+            <TabItem Header="Выживший">
+                <ScrollViewer>
+                    <StackPanel>
+
+                        <Button Content="Крутить" Command="{Binding RandomizeSurvivorCommand}"/>
+
+                        <WrapPanel>
+                            <Image Source="{Binding RandomSurvivor.SurvivorImage}"         d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\38_Николас Кейдж(Синий).png" Height="200"/>
+                            <Image Source="{Binding RandomSurvivorItem.ItemImage}"         d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png" Height="200"/>
+                            <Image Source="{Binding FirstRandomItemAddon.ItemAddonImage}"  d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png" Height="200"/>
+                            <Image Source="{Binding SecondRandomItemAddon.ItemAddonImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка) Повязки.png" Height="200"/>
+                        </WrapPanel>
+
+                        <WrapPanel>
+                            <Image Source="{Binding FirstRandomSurvivorPerk.PerkImage}"    d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\15_Джефф Йохансен\da4af39b-1404-4da1-b851-2e42a496c1e7.png" Height="200"/>
+                            <Image Source="{Binding SecondRandomSurvivorPerk.PerkImage}"   d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\18_Стив Харрингтон\47f77d92-ead5-4245-9fc9-55c6a4d2e80a.png" Height="200"/>
+                            <Image Source="{Binding ThirdRandomSurvivorPerk.PerkImage}"    d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\25_Ли Юнчин\6a1a9177-8148-49be-b2f2-9d3e7681019a.png" Height="200"/>
+                            <Image Source="{Binding FourthRandomSurvivorPerk.PerkImage}"   d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\32_Ада Вонг\b6e8993a-1b28-46c3-911e-df68792af185.png" Height="200"/>
+                        </WrapPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!--#endregion-->
+
+        </TabControl>
+    </Border>
+</Page>

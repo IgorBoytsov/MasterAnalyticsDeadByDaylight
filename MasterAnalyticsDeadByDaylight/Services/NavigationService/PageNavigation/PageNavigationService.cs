@@ -112,6 +112,17 @@ namespace MasterAnalyticsDeadByDaylight.Services.NavigationService.PageNavigatio
                     _pages.TryAdd(pageName, page);
                 }
                 ,
+                "RandomizerPage" => () =>
+                {
+                    var viewModel = new RandomizerPageViewModel(_serviceProvider);
+                    var page = new RandomizerPage()
+                    {
+                        DataContext = viewModel,
+                    };
+                    _frame.Navigate(page);
+                    _pages.TryAdd(pageName, page);
+                }
+                ,
                 "SurvivorPage" => () =>
                 {
                     var viewModel = new SurvivorPageViewModel(_serviceProvider);
