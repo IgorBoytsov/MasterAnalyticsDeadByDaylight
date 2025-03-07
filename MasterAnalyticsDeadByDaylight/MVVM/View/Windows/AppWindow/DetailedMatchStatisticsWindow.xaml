@@ -138,7 +138,7 @@
             
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="350"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
@@ -147,15 +147,76 @@
                 <ListView Grid.Column="0" ItemsSource="{Binding KillerList}" SelectedItem="{Binding SelectedKiller}" d:ItemsSource="{d:SampleData ItemCount=10}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
+                            <WrapPanel>
                                 <TextBlock Text="{Binding KillerName}" FontSize="20"/>
-                            </StackPanel>
+                                <TextBlock Text="{Binding CountMatch, StringFormat=[{0}]}" FontSize="20"/>
+                            </WrapPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
                 
                 <!--#endregion-->
 
+                <ScrollViewer Grid.Column="1">
+                    <StackPanel>
+                        
+                        <ListView ItemsSource="{Binding PrestigeSurvivorTrackers}" d:ItemsSource="{d:SampleData ItemCount=10}" FontSize="20" Margin="15,10,15,10">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Престиж" Width="220" DisplayMemberBinding="{Binding Prestige}" />
+                                    <GridViewColumn Header="Кол-во" Width="220" DisplayMemberBinding="{Binding Count}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        
+                        <ListView ItemsSource="{Binding PrestigeKillerTrackers}" d:ItemsSource="{d:SampleData ItemCount=10}" FontSize="20" Margin="15,10,15,10">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Престиж" Width="220" DisplayMemberBinding="{Binding Prestige}" />
+                                    <GridViewColumn Header="Кол-во" Width="220" DisplayMemberBinding="{Binding Count}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                        <Button x:Name="killerBTN" Click="killerBTN_Click" Content="Скрин перков"/>
+
+                        <ListView x:Name="killerList" ItemsSource="{Binding FrequencyKillerUsingPerkTracker}" d:ItemsSource="{d:SampleData ItemCount=10}" FontSize="20" Margin="15,10,15,10">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <StackPanel Margin="0,5,0,5">
+                                            <Image Source="{Binding Image}" Width="75"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,5,0,5">
+                                            <TextBlock Text="{Binding Name}" FontSize="30"/>
+                                            <TextBlock Text="{Binding Count}" FontSize="30"/>
+                                        </StackPanel>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        
+                        <Button x:Name="survBTN" Click="survBTN_Click" Content="Скрин перков"/>
+
+                        <ListView x:Name="survList" ItemsSource="{Binding FrequencySurvivorUsingPerkTracker}" d:ItemsSource="{d:SampleData ItemCount=10}" FontSize="20" Margin="15,10,15,10">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <StackPanel Margin="0,5,0,5">
+                                            <Image Source="{Binding Image}" Width="75"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,5,0,5">
+                                            <TextBlock Text="{Binding Name}" FontSize="30"/>
+                                            <TextBlock Text="{Binding Count}" FontSize="30"/>
+                                        </StackPanel>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                    </StackPanel>
+                </ScrollViewer>
+                
             </Grid>
 
         </Grid>

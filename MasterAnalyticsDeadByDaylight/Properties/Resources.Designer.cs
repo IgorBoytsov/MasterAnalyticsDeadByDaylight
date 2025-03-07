@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MasterAnalyticsDeadByDaylight.Properties {
+namespace MasterAnalyticsDeadByDaylight.Legacy.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace MasterAnalyticsDeadByDaylight.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MasterAnalyticsDeadByDaylight.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MasterAnalyticsDeadByDaylight.Legacy.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

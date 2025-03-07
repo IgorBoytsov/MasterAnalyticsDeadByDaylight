@@ -220,5 +220,55 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             return Math.Round((double)botCount / CountSurvivorMatch * 100, 2);
         }
         #endregion
+
+        public static List<PerkPickTracker> PerksTakenInMatches(List<GameStatistic> matches, IEnumerable<SurvivorPerk> survivorPerks)
+        {
+            List<PerkPickTracker> perkPickTracker = [];
+
+            foreach (var item in survivorPerks)
+            {
+                perkPickTracker.Add(new PerkPickTracker
+                {
+                    IdPerk = item.IdSurvivorPerk,
+                    PerkName = item.PerkName,
+                    PerkImage = item.PerkImage,
+                    //Count = matches.Count(x => x.IdSurvivors1Navigation.IdPerk1 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors1Navigation.IdPerk2 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors1Navigation.IdPerk3 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors1Navigation.IdPerk4 == item.IdSurvivorPerk) +
+
+                    //        matches.Count(x => x.IdSurvivors2Navigation.IdPerk1 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors2Navigation.IdPerk2 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors2Navigation.IdPerk3 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors2Navigation.IdPerk4 == item.IdSurvivorPerk) +
+
+                    //        matches.Count(x => x.IdSurvivors3Navigation.IdPerk1 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors3Navigation.IdPerk2 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors3Navigation.IdPerk3 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors3Navigation.IdPerk4 == item.IdSurvivorPerk) +
+
+                    //        matches.Count(x => x.IdSurvivors4Navigation.IdPerk1 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors4Navigation.IdPerk2 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors4Navigation.IdPerk3 == item.IdSurvivorPerk ||
+                    //                           x.IdSurvivors4Navigation.IdPerk4 == item.IdSurvivorPerk)
+                    Count = matches.Sum(match =>
+                                        new[]
+                                        {
+                                            match.IdSurvivors1Navigation,
+                                            match.IdSurvivors2Navigation,
+                                            match.IdSurvivors3Navigation,
+                                            match.IdSurvivors4Navigation
+                                        }.Sum(survivor => new[]
+                                        {
+                                            survivor.IdPerk1,
+                                            survivor.IdPerk2,
+                                            survivor.IdPerk3,
+                                            survivor.IdPerk4
+                                        }.Count(perkId => perkId == item.IdSurvivorPerk)))
+                });
+            }
+
+            return perkPickTracker;
+        }
     }
 }

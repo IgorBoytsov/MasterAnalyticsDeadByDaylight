@@ -1,4 +1,6 @@
-﻿using MasterAnalyticsDeadByDaylight.Command;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using MasterAnalyticsDeadByDaylight.Command;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
@@ -11,6 +13,8 @@ using MasterAnalyticsDeadByDaylight.Utils.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Windows.Media;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
 {
@@ -450,19 +454,77 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.PagesViewModels
             }
         }
 
+        #region Активность по часам
+
+        public SeriesCollection ActivityByHoursSeriesCollection { get; set; } = [];
+        public List<string> ActivityByHoursLabels { get; set; } = [];
+
         private async Task ActivityByHoursAsync()
         {
-            ActivityByHours.Clear();
-            foreach (var item in await CalculationGeneral.CountMatchesPlayedInEachHourAsync(_matches))
-                ActivityByHours.Add(item);
+            var values = new Dictionary<DateTime, double>();
+            var activityByHours = await CalculationGeneral.CountMatchesPlayedInEachHourAsync(_matches);
+
+            foreach (var item in activityByHours)
+            {
+                values.Add(item.Hours, Math.Round(item.CountMatch, 0));
+            }
+
+            ActivityByHoursLabels = values.Keys.Select(dt => dt.ToString("HH", CultureInfo.InvariantCulture) + "ч").ToList();
+
+            ActivityByHoursSeriesCollection = new SeriesCollection
+            {
+                new ColumnSeries
+                {
+                    Title = "Количество",
+                    Values = new ChartValues<double>(values.Values), // Значения столбцов
+                    DataLabels = true, // Показывать значения на столбцах
+                    Fill = new SolidColorBrush(Color.FromRgb(100, 149, 237)),  // Цвет столбцов
+                    Stroke = Brushes.Black,          // Цвет обводки столбцов
+                    StrokeThickness = 2,
+                    LabelPoint = point => Math.Round(point.Y).ToString(),
+                }
+            };
+            OnPropertyChanged(nameof(ActivityByHoursSeriesCollection));
+            OnPropertyChanged(nameof(ActivityByHoursLabels));
         }
+
+        #endregion
+
+        #region Счет за периуд времени
+
+        public SeriesCollection KillerAverageScoreSeriesCollection { get; set; } = [];
+        public List<string> KillerAverageScoreHoursLabels { get; set; } = [];
 
         private async Task KillerAverageScoreAsync()
         {
-            KillerAverageScore.Clear();
-            foreach (var item in await CalculationKiller.AverageScoreForPeriodTimeAsyncAsync(_matches, TypeTime.Month))
-                KillerAverageScore.Add(item);
+            var values = new Dictionary<string, double>();
+            var avgScore = await CalculationKiller.AverageScoreForPeriodTimeAsyncAsync(_matches, TypeTime.Month);
+
+            foreach (var item in avgScore)
+            {
+                values.Add(item.DateTime, item.AvgScore);
+            }
+
+            KillerAverageScoreHoursLabels = [.. values.Keys];
+
+            KillerAverageScoreSeriesCollection = new SeriesCollection
+            {
+                new ColumnSeries
+                {
+                    Title = "Счет",
+                    Values = new ChartValues<double>(values.Values),
+                    DataLabels = true,
+                    Fill = new SolidColorBrush(Color.FromRgb(100, 149, 237)),
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 2,
+                    LabelPoint = point => Math.Round(point.Y).ToString(),
+                }
+            };
+            OnPropertyChanged(nameof(KillerAverageScoreSeriesCollection));
+            OnPropertyChanged(nameof(KillerAverageScoreHoursLabels));
         }
+
+        #endregion
 
         private async Task CountMatchAsync()
         {

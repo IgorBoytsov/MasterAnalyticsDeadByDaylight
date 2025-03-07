@@ -1,14 +1,13 @@
 ﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Utils.Enum;
+using System.Collections.Generic;
 
 namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
 {
     public static class CalculationKiller
     {
        
-        #region Расчеты для отображение списка статистики по киллерам, на странице KillerPage
-
         public static async Task<double> CountKillAsync(List<GameStatistic> Matches)
         {
             return await Task.Run(() =>
@@ -91,11 +90,6 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             });
         }
 
-        #endregion
-
-        #region Расширение расчеты ( При выборе конкретного киллера на странице KillerPage )
-
-        #region Средний счет за промежуток времени
 
         public static async Task<List<AverageScoreTracker>> AverageScoreForPeriodTimeAsyncAsync(List<GameStatistic> matches, TypeTime typeTime)
         {
@@ -155,10 +149,6 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             });
         }
 
-        #endregion
-       
-        #region Киллрейт за промежуток времени 
-
         public static async Task<List<KillerKillRateTracker>> KillRateForPeriodTimeAsync(List<GameStatistic> matches, TypeTime typeTime)
         {
             List<KillerKillRateTracker> killRateTracker = [];
@@ -207,10 +197,6 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
                 return killRateTracker;
             });
         }
-
-        #endregion
-
-        #region Винрейт за промежуток времени
 
         public static async Task<List<KillerWinRateTracker>> WinRateForPeriodTimeAsync(List<GameStatistic> matches, TypeTime typeTime)
         {
@@ -261,10 +247,6 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             });
         }
 
-        #endregion
-
-        #region Статистика по повесам ( 0 повесов - 12 повесов )
-
         public static async Task<List<KillerHooksTracker>> CountHooksAsync(List<GameStatistic> matches)
         {
             List<KillerHooksTracker> killerHooksTrackers = [];
@@ -289,8 +271,26 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
             });
         }
 
-        #endregion
+        public static List<PerkPickTracker> PerksTakenInMatches(List<GameStatistic> matches, IEnumerable<KillerPerk> killerPerks)
+        {
+            List<PerkPickTracker> perkPickTracker = [];
 
-        #endregion
+            foreach (var item in killerPerks)
+            {
+                perkPickTracker.Add(new PerkPickTracker
+                {
+                    IdPerk = item.IdKillerPerk,
+                    PerkName = item.PerkName,
+                    PerkImage = item.PerkImage,
+                    Count = matches.Count(x => x.IdKillerNavigation.IdPerk1 == item.IdKillerPerk || 
+                                               x.IdKillerNavigation.IdPerk2 == item.IdKillerPerk || 
+                                               x.IdKillerNavigation.IdPerk3 == item.IdKillerPerk || 
+                                               x.IdKillerNavigation.IdPerk4 == item.IdKillerPerk)
+                });
+            }
+
+            return perkPickTracker;
+        }
+
     }
 }

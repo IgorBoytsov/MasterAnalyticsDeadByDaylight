@@ -196,5 +196,56 @@ namespace MasterAnalyticsDeadByDaylight.Utils.Calculation
         }
 
         #endregion
+
+        #region Частота использования перков
+
+        public static async Task<List<FrequencyUsingPerkTracker>> FrequencyUsingKillerPerks(IEnumerable<GameStatistic> matches, IEnumerable<KillerPerk> killerPerks)
+        {
+            List<FrequencyUsingPerkTracker> FrequencyUsingPerkTracker = [];
+
+            await Task.Run(() => 
+            {
+                foreach (var item in killerPerks)
+                {
+                    var usePerks = new FrequencyUsingPerkTracker
+                    {
+                        Name = item.PerkName,
+                        Image = item.PerkImage,
+                        Count = matches.Count(x => x.IdKillerNavigation.IdPerk1 == item.IdKillerPerk || x.IdKillerNavigation.IdPerk2 == item.IdKillerPerk || x.IdKillerNavigation.IdPerk3 == item.IdKillerPerk || x.IdKillerNavigation.IdPerk4 == item.IdKillerPerk)
+                    };
+
+                    FrequencyUsingPerkTracker.Add(usePerks);
+                }    
+            });
+
+            return FrequencyUsingPerkTracker;
+        }
+
+        public static async Task<List<FrequencyUsingPerkTracker>> FrequencyUsingSurvivorPerks(IEnumerable<GameStatistic> matches, IEnumerable<SurvivorPerk> survivorPerks)
+        {
+            List<FrequencyUsingPerkTracker> FrequencyUsingPerkTracker = [];
+
+            await Task.Run(() =>
+            {
+                foreach (var item in survivorPerks)
+                {
+                    var usePerks = new FrequencyUsingPerkTracker
+                    {
+                        Name = item.PerkName,
+                        Image = item.PerkImage,
+                        Count = matches.Count(x => x.IdSurvivors1Navigation.IdPerk1 == item.IdSurvivorPerk || x.IdSurvivors1Navigation.IdPerk2 == item.IdSurvivorPerk || x.IdSurvivors1Navigation.IdPerk3 == item.IdSurvivorPerk || x.IdSurvivors1Navigation.IdPerk4 == item.IdSurvivorPerk) +
+                                matches.Count(x => x.IdSurvivors2Navigation.IdPerk1 == item.IdSurvivorPerk || x.IdSurvivors2Navigation.IdPerk2 == item.IdSurvivorPerk || x.IdSurvivors2Navigation.IdPerk3 == item.IdSurvivorPerk || x.IdSurvivors2Navigation.IdPerk4 == item.IdSurvivorPerk) +
+                                matches.Count(x => x.IdSurvivors3Navigation.IdPerk1 == item.IdSurvivorPerk || x.IdSurvivors3Navigation.IdPerk2 == item.IdSurvivorPerk || x.IdSurvivors3Navigation.IdPerk3 == item.IdSurvivorPerk || x.IdSurvivors3Navigation.IdPerk4 == item.IdSurvivorPerk) +
+                                matches.Count(x => x.IdSurvivors4Navigation.IdPerk1 == item.IdSurvivorPerk || x.IdSurvivors4Navigation.IdPerk2 == item.IdSurvivorPerk || x.IdSurvivors4Navigation.IdPerk3 == item.IdSurvivorPerk || x.IdSurvivors4Navigation.IdPerk4 == item.IdSurvivorPerk)
+                    };
+
+                    FrequencyUsingPerkTracker.Add(usePerks);
+                }
+            });
+
+            return FrequencyUsingPerkTracker;
+        }
+
+        #endregion
     }
 }

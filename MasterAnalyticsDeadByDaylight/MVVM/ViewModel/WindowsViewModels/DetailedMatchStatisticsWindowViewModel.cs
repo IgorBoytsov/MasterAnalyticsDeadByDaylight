@@ -1,4 +1,5 @@
-﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel;
+﻿using MasterAnalyticsDeadByDaylight.MVVM.Model.AppModel;
+using MasterAnalyticsDeadByDaylight.MVVM.Model.ChartModel;
 using MasterAnalyticsDeadByDaylight.MVVM.Model.MSSQL_DB;
 using MasterAnalyticsDeadByDaylight.Services.DatabaseServices;
 using MasterAnalyticsDeadByDaylight.Services.NavigationService;
@@ -57,26 +58,25 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             }
         }
 
+        /*--Свойства \ Коллекции--------------------------------------------------------------------------*/
+       
         #region Колекция : Список передоваемых матчей
 
         private List<GameStatistic> _matches;
 
-        public ObservableCollection<Killer> KillerList { get; set; } = [];
+        public ObservableCollection<KillerCollection> KillerList { get; set; } = [];
 
         #endregion
 
-        #region Свойство : Выбор киллера, по которому будет произведен расчет статистики
+        #region Коллекции : Подрабная статистика
 
-        private Killer _selectedKiller;
-        public Killer SelectedKiller
-        {
-            get => _selectedKiller;
-            set
-            {
-                _selectedKiller = value;
-                OnPropertyChanged();
-            }
-        }
+        public ObservableCollection<PrestigeTracker> PrestigeKillerTrackers { get; set; } = [];
+
+        public ObservableCollection<PrestigeTracker> PrestigeSurvivorTrackers { get; set; } = [];
+
+        public ObservableCollection<FrequencyUsingPerkTracker> FrequencyKillerUsingPerkTracker { get; set; } = [];
+
+        public ObservableCollection<FrequencyUsingPerkTracker> FrequencySurvivorUsingPerkTracker { get; set; } = [];
 
         #endregion
 
@@ -95,9 +95,49 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
 
         #endregion
 
+        #region Свойство : Выбор киллера, по которому будет произведен расчет статистики
+
+        private KillerCollection _selectedKiller;
+        public KillerCollection SelectedKiller
+        {
+            get => _selectedKiller;
+            set
+            {
+                _selectedKiller = value;
+                OnPropertyChanged();
+
+                SurvivorPrestigeStats();
+                KillerPrestigeStats();
+
+                KillerFrequencyUsingPerkStats();
+                SurvivorFrequencyUsingPerkStats();
+            }
+        }
+
+        #endregion
+
+        #region Свойство : Считать по выбранному персонажу, или по всем матчам.
+
+        private bool _allOrSelect;
+        public bool AllOrSelect
+        {
+            get => _allOrSelect;
+            set
+            {
+                _allOrSelect = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        /*--Команды---------------------------------------------------------------------------------------*/
+
         #region Команды
 
         #endregion
+
+        /*--Методы----------------------------------------------------------------------------------------*/
 
         #region Метод : Определение киллеров, которые находятся в списке матчей
 
@@ -118,11 +158,74 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.ViewModel.WindowsViewModels
             // Добавляем отфильтрованных убийц в KillerList
             foreach (var killer in matchedKillers)
             {
-                KillerList.Add(new Killer
+                KillerList.Add(new KillerCollection
                 {
                     IdKiller = killer.IdKiller,
                     KillerName = killer.KillerName,
+                    KillerImage = killer.KillerImage,
+                    CountMatch = matches.Count(x => x.IdKillerNavigation.IdKiller == killer.IdKiller)
                 });
+            }
+        }
+
+        #endregion
+
+        /*--Методы расчета подробной статистики-----------------------------------------------------------*/
+
+        #region Статистика престижей
+        
+        private void KillerPrestigeStats()
+        {
+            PrestigeKillerTrackers.Clear();
+            for (int i = 0; i <= 100; i++)
+            {
+                PrestigeKillerTrackers.Add(new PrestigeTracker
+                {
+                    Prestige = i.ToString(),
+                    Count = _matches.Count(x => x.IdKillerNavigation.Prestige == i)
+                });
+            }
+        }
+
+        private void SurvivorPrestigeStats()
+        {
+            PrestigeSurvivorTrackers.Clear();
+            for (int i = 0; i <= 100; i++)
+            {
+                PrestigeSurvivorTrackers.Add(new PrestigeTracker
+                {
+                    Prestige = i.ToString(),
+                    Count = _matches.Count(x => x.IdSurvivors1Navigation.Prestige == i) +
+                            _matches.Count(x => x.IdSurvivors2Navigation.Prestige == i) + 
+                            _matches.Count(x => x.IdSurvivors3Navigation.Prestige == i) +
+                            _matches.Count(x => x.IdSurvivors4Navigation.Prestige == i),
+                });
+            }
+        }
+
+        #endregion
+
+        #region Статистика используемых пекрво
+
+        private async void KillerFrequencyUsingPerkStats()
+        {
+            FrequencyKillerUsingPerkTracker.Clear();
+            var stats = await CalculationGeneral.FrequencyUsingKillerPerks(_matches, _dataManager.KillerPerks);
+
+            foreach (var item in stats.OrderByDescending(x => x.Count))
+            {
+                FrequencyKillerUsingPerkTracker.Add(item);
+            }
+        }
+
+        private async void SurvivorFrequencyUsingPerkStats()
+        {
+            FrequencySurvivorUsingPerkTracker.Clear();
+            var stats = await CalculationGeneral.FrequencyUsingSurvivorPerks(_matches, _dataManager.SurvivorPerks);
+
+            foreach (var item in stats.OrderByDescending(x => x.Count))
+            {
+                FrequencySurvivorUsingPerkTracker.Add(item);
             }
         }
 

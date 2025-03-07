@@ -1,5 +1,9 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
 {
@@ -12,6 +16,53 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
         {
             InitializeComponent();
             StateChanged += MainWindowStateChangeRaised;
+        }
+
+        private void survBTN_Click(object sender, RoutedEventArgs e)
+        {
+            SaveListViewToImage(survList, "E:\\survPerk.png");
+        }
+
+        private void killerBTN_Click(object sender, RoutedEventArgs e)
+        {
+            SaveListViewToImage(survList, "E:\\killerPerk.png");
+        }
+
+        public static void SaveListViewToImage(ListView listView, string filePath)
+        {
+            // Сохраняем исходные размеры ListView
+            double originalWidth = listView.Width;
+            double originalHeight = listView.Height;
+
+            // Измеряем и изменяем размер ListView, чтобы вместить все элементы
+            listView.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            listView.Arrange(new Rect(listView.DesiredSize));
+
+            // Устанавливаем новые размеры ListView
+            listView.Width = listView.DesiredSize.Width;
+            listView.Height = listView.DesiredSize.Height;
+
+            // Рендерим ListView в изображение
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
+                (int)listView.ActualWidth,
+                (int)listView.ActualHeight,
+                96, 96, PixelFormats.Pbgra32);
+
+            renderTargetBitmap.Render(listView);
+
+            // Кодируем изображение в PNG
+            PngBitmapEncoder pngImage = new PngBitmapEncoder();
+            pngImage.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+            // Сохраняем изображение в файл
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                pngImage.Save(fileStream);
+            }
+
+            // Восстанавливаем исходные размеры ListView
+            listView.Width = originalWidth;
+            listView.Height = originalHeight;
         }
 
         // Can execute
@@ -61,5 +112,6 @@ namespace MasterAnalyticsDeadByDaylight.MVVM.View.Windows.AppWindow
             }
         }
 
+       
     }
 }
