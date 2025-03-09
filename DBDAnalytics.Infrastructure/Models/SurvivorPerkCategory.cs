@@ -9,5 +9,7 @@ public partial class SurvivorPerkCategory
 
     public string CategoryName { get; set; } = null!;
 
+    public string? Description { get; set; }
+
     public virtual ICollection<SurvivorPerk> SurvivorPerks { get; set; } = new List<SurvivorPerk>();
 }

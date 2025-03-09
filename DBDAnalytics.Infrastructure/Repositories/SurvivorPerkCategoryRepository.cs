@@ -11,13 +11,14 @@ namespace DBDAnalytics.Infrastructure.Repositories
     {
         private readonly Func<DBDContext> _contextFactory = context;
 
-        public async Task<int> CreateAsync(string survivorPerkCategoryName)
+        public async Task<int> CreateAsync(string survivorPerkCategoryName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
                 var survivorPerkCategoryEntity = new SurvivorPerkCategory
                 {
-                    CategoryName = survivorPerkCategoryName
+                    CategoryName = survivorPerkCategoryName,
+                    Description = description
                 };
 
                 await _dbContext.SurvivorPerkCategories.AddAsync(survivorPerkCategoryEntity);
@@ -32,7 +33,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> UpdateAsync(int idSurvivorPerkCategory, string survivorPerkCategoryName)
+        public async Task<int> UpdateAsync(int idSurvivorPerkCategory, string survivorPerkCategoryName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
@@ -41,6 +42,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 if (entity != null)
                 {
                     entity.CategoryName = survivorPerkCategoryName;
+                    entity.Description = description;
 
                     _dbContext.SurvivorPerkCategories.Update(entity);
                     await _dbContext.SaveChangesAsync();
@@ -82,7 +84,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
                     return null;
                 }
 
-                var (CreatedSurvivorPerkCategory, Message) = SurvivorPerkCategoryDomain.Create(survivorPerkCategoryEntity.IdSurvivorPerkCategory, survivorPerkCategoryEntity.CategoryName);
+                var (CreatedSurvivorPerkCategory, Message) = SurvivorPerkCategoryDomain.Create(
+                    survivorPerkCategoryEntity.IdSurvivorPerkCategory, 
+                    survivorPerkCategoryEntity.CategoryName,
+                    survivorPerkCategoryEntity.Description);
 
                 if (CreatedSurvivorPerkCategory == null)
                 {
@@ -112,7 +117,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                     var id = survivorPerkCategoryEntity.IdSurvivorPerkCategory;
 
-                    var (CreatedSurvivorPerkCategory, Message) = SurvivorPerkCategoryDomain.Create(survivorPerkCategoryEntity.IdSurvivorPerkCategory, survivorPerkCategoryEntity.CategoryName);
+                    var (CreatedSurvivorPerkCategory, Message) = SurvivorPerkCategoryDomain.Create(
+                        survivorPerkCategoryEntity.IdSurvivorPerkCategory, 
+                        survivorPerkCategoryEntity.CategoryName,
+                        survivorPerkCategoryEntity.Description);
                    
                     if (CreatedSurvivorPerkCategory == null)
                     {

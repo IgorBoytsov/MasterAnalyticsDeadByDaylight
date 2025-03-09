@@ -4,6 +4,6 @@ namespace DBDAnalytics.Application.UseCases.Abstraction.SurvivorPerkCategoryCase
 {
     public interface ICreateSurvivorPerkCategoryUseCase
     {
-        Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> CreateAsync(string survivorPerkCategoryName);
+        Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> CreateAsync(string survivorPerkCategoryName, string? description);
     }
 }

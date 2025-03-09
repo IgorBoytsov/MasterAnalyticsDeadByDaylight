@@ -14,9 +14,9 @@ namespace DBDAnalytics.Application.Services.Realization
         private readonly IGetSurvivorPerkCategoryUseCase _getSurvivorPerkCategoryUseCase = getSurvivorPerkCategoryUseCase;
         private readonly IUpdateSurvivorPerkCategoryUseCase _updateSurvivorPerkCategoryUseCase = updateSurvivorPerkCategoryUseCase;
 
-        public async Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string Message)> CreateAsync(string survivorPerkCategoryName)
+        public async Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> CreateAsync(string survivorPerkCategoryName, string? description)
         {
-            return await _createSurvivorPerkCategoryUseCase.CreateAsync(survivorPerkCategoryName);
+            return await _createSurvivorPerkCategoryUseCase.CreateAsync(survivorPerkCategoryName, description);
         }
 
         public async Task<(bool IsDeleted, string Message)> DeleteAsync(int idSurvivorPerkCategory)
@@ -39,9 +39,9 @@ namespace DBDAnalytics.Application.Services.Realization
             return await _getSurvivorPerkCategoryUseCase.GetAsync(idSurvivorPerkCategory);
         }
 
-        public async Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> UpdateAsync(int idSurvivorPerkCategory, string survivorPerkCategoryName)
+        public async Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> UpdateAsync(int idSurvivorPerkCategory, string survivorPerkCategoryName, string? description)
         {
-            return await _updateSurvivorPerkCategoryUseCase.UpdateAsync(idSurvivorPerkCategory, survivorPerkCategoryName);
+            return await _updateSurvivorPerkCategoryUseCase.UpdateAsync(idSurvivorPerkCategory, survivorPerkCategoryName, description);
         }
     }
 }

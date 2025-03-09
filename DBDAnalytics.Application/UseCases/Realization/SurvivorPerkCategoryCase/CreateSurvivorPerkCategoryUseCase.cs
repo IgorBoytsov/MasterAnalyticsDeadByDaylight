@@ -10,11 +10,11 @@ namespace DBDAnalytics.Application.UseCases.Realization.SurvivorPerkCategoryCase
     {
         private readonly ISurvivorPerkCategoryRepository _survivorPerkCategoryRepository = survivorPerkCategoryRepository;
 
-        public async Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> CreateAsync(string survivorPerkCategoryName)
+        public async Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> CreateAsync(string survivorPerkCategoryName, string? description)
         {
             string message = string.Empty;
 
-            var (CreationCategory, Message) = SurvivorPerkCategoryDomain.Create(0, survivorPerkCategoryName);
+            var (CreationCategory, Message) = SurvivorPerkCategoryDomain.Create(0, survivorPerkCategoryName, description);
 
             if (CreationCategory is null)
             {
@@ -26,7 +26,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.SurvivorPerkCategoryCase
             if (exist)
                 return (null, "Запись с таким названием уже существует.");
 
-            var id = await _survivorPerkCategoryRepository.CreateAsync(survivorPerkCategoryName);
+            var id = await _survivorPerkCategoryRepository.CreateAsync(survivorPerkCategoryName, description);
 
             var domainEntity = await _survivorPerkCategoryRepository.GetAsync(id);
 

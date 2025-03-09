@@ -41,7 +41,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         #endregion
 
-        #region Свойства : Selected | CategoryName
+        #region Свойства : Selected | CategoryName| CategoryDescription
 
         private SurvivorPerkCategoryDTO _selectedSurvivorPerkCategory;
         public SurvivorPerkCategoryDTO SelectedSurvivorPerkCategory
@@ -67,6 +67,17 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             set
             {
                 _category = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _categoryDescription;
+        public string CategoryDescription
+        {
+            get => _categoryDescription;
+            set
+            {
+                _categoryDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -103,7 +114,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddSurvivorPerkCategory()
         {
-            var newSurvivorPerkCategoryDTO = await _survivorPerkCategoryService.CreateAsync(Category);
+            var newSurvivorPerkCategoryDTO = await _survivorPerkCategoryService.CreateAsync(Category, CategoryDescription);
 
             if (newSurvivorPerkCategoryDTO.Message != string.Empty)
             {
@@ -123,7 +134,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (SelectedSurvivorPerkCategory == null)
                 return;
 
-            var (SurvivorPerkCategoryDTO, Message) = await _survivorPerkCategoryService.UpdateAsync(SelectedSurvivorPerkCategory.IdSurvivorPerkCategory, Category);
+            var (SurvivorPerkCategoryDTO, Message) = await _survivorPerkCategoryService.UpdateAsync(SelectedSurvivorPerkCategory.IdSurvivorPerkCategory, Category, CategoryDescription);
 
             if (Message == string.Empty)
             {

@@ -11,6 +11,7 @@ namespace DBDAnalytics.Application.Mappers
             {
                 IdSurvivorPerkCategory = survivorPerkCategory.IdSurvivorPerkCategory,
                 CategoryName = survivorPerkCategory.CategoryName,
+                Description = survivorPerkCategory.Description,
             };
         }
 

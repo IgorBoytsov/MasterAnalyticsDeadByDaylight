@@ -9,7 +9,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.SurvivorPerkCategoryCase
     {
         private readonly ISurvivorPerkCategoryRepository _survivorCategoryRepository = survivorPerkCategoryRepository;
 
-        public async Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> UpdateAsync(int idSurvivorPerkCategory, string survivorPerkCategoryName)
+        public async Task<(SurvivorPerkCategoryDTO? SurvivorPerkCategoryDTO, string? Message)> UpdateAsync(int idSurvivorPerkCategory, string survivorPerkCategoryName, string? description)
         {
             string message = string.Empty;
 
@@ -21,7 +21,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.SurvivorPerkCategoryCase
             if (exist)
                 return (null, "Название на которое вы хотите поменять - уже существует.");
 
-            int id = await _survivorCategoryRepository.UpdateAsync(idSurvivorPerkCategory, survivorPerkCategoryName);
+            int id = await _survivorCategoryRepository.UpdateAsync(idSurvivorPerkCategory, survivorPerkCategoryName, description);
 
             var domainEntity = await _survivorCategoryRepository.GetAsync(id);
 
