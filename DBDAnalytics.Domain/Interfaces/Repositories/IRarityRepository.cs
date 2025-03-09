@@ -4,7 +4,7 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
 {
     public interface IRarityRepository
     {
-        Task<int> CreateAsync(string rarityName);
+        Task<int> CreateAsync(string rarityName, string? description);
         Task<int> DeleteAsync(int idRarity);
         bool Exist(int idRarity);
         bool Exist(string rarityName);
@@ -13,6 +13,6 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
         IEnumerable<RarityDomain> GetAll();
         Task<IEnumerable<RarityDomain>> GetAllAsync();
         Task<RarityDomain?> GetAsync(int idRarity);
-        Task<int> UpdateAsync(int idRarity, string rarityName);
+        Task<int> UpdateAsync(int idRarity, string rarityName, string? description);
     }
 }

@@ -9,6 +9,8 @@ public partial class Rarity
 
     public string RarityName { get; set; } = null!;
 
+    public string? RarityDescription { get; set; }
+
     public virtual ICollection<ItemAddon> ItemAddons { get; set; } = new List<ItemAddon>();
 
     public virtual ICollection<KillerAddon> KillerAddons { get; set; } = new List<KillerAddon>();

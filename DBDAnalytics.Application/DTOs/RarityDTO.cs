@@ -7,5 +7,7 @@ namespace DBDAnalytics.Application.DTOs
         public int IdRarity { get; set; }
 
         public string RarityName { get; set; } = null!;
+
+        public string? Description { get; set; }
     }
 }

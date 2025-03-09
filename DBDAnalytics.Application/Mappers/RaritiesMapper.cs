@@ -11,6 +11,7 @@ namespace DBDAnalytics.Application.Mappers
             {
                 IdRarity = rarity.IdRarity,
                 RarityName = rarity.RarityName,
+                Description = rarity.Description,
             };
         }
 

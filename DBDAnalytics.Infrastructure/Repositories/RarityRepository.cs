@@ -13,13 +13,14 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
         /*--CRUD------------------------------------------------------------------------------------------*/
 
-        public async Task<int> CreateAsync(string rarityName)
+        public async Task<int> CreateAsync(string rarityName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
                 var rarityEntity = new Rarity
                 {
                     RarityName = rarityName,
+                    RarityDescription = description
                 };
 
                 await _dbContext.Rarities.AddAsync(rarityEntity);
@@ -34,7 +35,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> UpdateAsync(int idRarity, string rarityName)
+        public async Task<int> UpdateAsync(int idRarity, string rarityName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
@@ -43,6 +44,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 if (entity != null)
                 {
                     entity.RarityName = rarityName;
+                    entity.RarityDescription = description;
 
                     _dbContext.Rarities.Update(entity);
                     await _dbContext.SaveChangesAsync();
@@ -69,6 +71,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
             }
         }
 
+        /*--Get-------------------------------------------------------------------------------------------*/
+
         public async Task<RarityDomain?> GetAsync(int idRarity)
         {
             using (var _dbContext = _contextFactory())
@@ -82,7 +86,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
                     return null;
                 }
 
-                var (CreatedRarity, Message) = RarityDomain.Create(rarityEntity.IdRarity, rarityEntity.RarityName);
+                var (CreatedRarity, Message) = RarityDomain.Create(
+                    rarityEntity.IdRarity, 
+                    rarityEntity.RarityName,
+                    rarityEntity.RarityDescription);
 
                 if (CreatedRarity == null)
                 {
@@ -110,7 +117,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
                         continue;
                     }
 
-                    var (CreatedRarity, Message) = RarityDomain.Create(rarityEntity.IdRarity, rarityEntity.RarityName);
+                    var (CreatedRarity, Message) = RarityDomain.Create(
+                        rarityEntity.IdRarity, 
+                        rarityEntity.RarityName,
+                        rarityEntity.RarityDescription);
 
                     if (CreatedRarity == null)
                     {
@@ -130,7 +140,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
             return Task.Run(() => GetAllAsync()).Result;
         }
 
-        /*--Exist-----------------------------------------------------------------------------------------*/
+        /*--Exist-----------------------------------------------------------------------------------------*/ 
 
         public async Task<bool> ExistAsync(string rarityName)
         {

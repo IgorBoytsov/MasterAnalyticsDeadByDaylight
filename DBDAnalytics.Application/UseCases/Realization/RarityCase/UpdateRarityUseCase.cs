@@ -9,7 +9,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.RarityCase
     {
         private readonly IRarityRepository _rarityRepository = rarityRepository;
 
-        public async Task<(RarityDTO? RarityDTO, string? Message)> UpdateAsync(int idRarity, string rarityName)
+        public async Task<(RarityDTO? RarityDTO, string? Message)> UpdateAsync(int idRarity, string rarityName, string? description)
         {
             string message = string.Empty;
 
@@ -21,7 +21,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.RarityCase
             if (exist)
                 return (null, "Название на которое вы хотите поменять - уже существует.");
 
-            int id = await _rarityRepository.UpdateAsync(idRarity, rarityName);
+            int id = await _rarityRepository.UpdateAsync(idRarity, rarityName, description);
 
             var domainEntity = await _rarityRepository.GetAsync(id);
 

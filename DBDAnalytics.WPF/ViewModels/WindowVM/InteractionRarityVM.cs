@@ -41,7 +41,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         #endregion
 
-        #region Свойства : Selected | RarityName
+        #region Свойства : Selected | RarityName| RarityDescription
 
         private RarityDTO _selectedPlayerRarity;
         public RarityDTO SelectedRarity
@@ -67,6 +67,17 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             set
             {
                 _rarityName = value;
+                OnPropertyChanged();
+            }
+        }        
+        
+        private string _rarityDescription;
+        public string RarityDescription
+        {
+            get => _rarityDescription;
+            set
+            {
+                _rarityDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -103,7 +114,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddRarity()
         {
-            var newRarityDTO = await _rarityService.CreateAsync(RarityName);
+            var newRarityDTO = await _rarityService.CreateAsync(RarityName, RarityDescription);
 
             if (newRarityDTO.Message != string.Empty)
             {
@@ -125,7 +136,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (SelectedRarity == null)
                 return;
 
-            var (RarityDTO, Message) = await _rarityService.UpdateAsync(SelectedRarity.IdRarity, RarityName);
+            var (RarityDTO, Message) = await _rarityService.UpdateAsync(SelectedRarity.IdRarity, RarityName, RarityDescription);
 
             if (Message == string.Empty)
             {

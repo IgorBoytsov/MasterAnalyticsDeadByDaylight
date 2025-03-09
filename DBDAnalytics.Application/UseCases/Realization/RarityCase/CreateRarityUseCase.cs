@@ -10,11 +10,11 @@ namespace DBDAnalytics.Application.UseCases.Realization.RarityCase
     {
         private readonly IRarityRepository _rarityRepository = rarityRepository;
 
-        public async Task<(RarityDTO? RarityDTO, string? Message)> CreateAsync(string rarityName)
+        public async Task<(RarityDTO? RarityDTO, string? Message)> CreateAsync(string rarityName, string? description)
         {
             string message = string.Empty;
 
-            var (CreatedRarity, Message) = RarityDomain.Create(0, rarityName);
+            var (CreatedRarity, Message) = RarityDomain.Create(0, rarityName, description);
 
             if (CreatedRarity is null)
             {
@@ -26,7 +26,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.RarityCase
             if (exist)
                 return (null, "Запись с таким названием уже существует.");
 
-            var id = await _rarityRepository.CreateAsync(rarityName);
+            var id = await _rarityRepository.CreateAsync(rarityName, description);
 
             var domainEntity = await _rarityRepository.GetAsync(id);
 

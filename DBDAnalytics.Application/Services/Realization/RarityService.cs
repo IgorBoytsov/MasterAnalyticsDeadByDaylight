@@ -14,9 +14,9 @@ namespace DBDAnalytics.Application.Services.Realization
         private readonly IGetRarityUseCase _getRarityUseCase = getRarityUseCase;
         private readonly IUpdateRarityUseCase _updateRarityUseCase = updateRarityUseCase;
 
-        public async Task<(RarityDTO? RarityDTO, string Message)> CreateAsync(string rarityName)
+        public async Task<(RarityDTO? RarityDTO, string? Message)> CreateAsync(string rarityName, string? description)
         {
-            return await _createRarityUseCase.CreateAsync(rarityName);
+            return await _createRarityUseCase.CreateAsync(rarityName, description);
         }
 
         public async Task<(bool IsDeleted, string Message)> DeleteAsync(int idRarity)
@@ -39,9 +39,9 @@ namespace DBDAnalytics.Application.Services.Realization
             return await _getRarityUseCase.GetAsync(idRarity);
         }
 
-        public async Task<(RarityDTO? RarityDTO, string? Message)> UpdateAsync(int idRarity, string rarityName)
+        public async Task<(RarityDTO? RarityDTO, string? Message)> UpdateAsync(int idRarity, string rarityName, string? description)
         {
-            return await _updateRarityUseCase.UpdateAsync(idRarity, rarityName);
+            return await _updateRarityUseCase.UpdateAsync(idRarity, rarityName, description);
         }
     }
 }
