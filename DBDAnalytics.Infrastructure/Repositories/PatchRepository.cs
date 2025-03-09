@@ -18,7 +18,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 var patchEntity = new Patch
                 {
                     PatchNumber = patchNumber,
-                    PatchDateRelease = patchDateRelease
+                    PatchDateRelease = patchDateRelease,
+                    Description = description
                 };
 
                 await _dbContext.Patches.AddAsync(patchEntity);

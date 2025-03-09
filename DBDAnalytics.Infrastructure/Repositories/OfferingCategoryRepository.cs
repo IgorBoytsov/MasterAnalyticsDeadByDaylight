@@ -20,7 +20,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
             {
                 var offeringCategoryEntity = new OfferingCategory
                 {
-                    CategoryName = offeringCategoryName
+                    CategoryName = offeringCategoryName,
+                    Description = description
                 };
 
                 await _dbContext.OfferingCategories.AddAsync(offeringCategoryEntity);
