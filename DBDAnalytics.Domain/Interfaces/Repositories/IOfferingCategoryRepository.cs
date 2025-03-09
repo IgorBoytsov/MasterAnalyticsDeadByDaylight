@@ -4,7 +4,7 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
 {
     public interface IOfferingCategoryRepository
     {
-        Task<int> CreateAsync(string offeringCategoryName);
+        Task<int> CreateAsync(string offeringCategoryName, string? description);
         Task<int> DeleteAsync(int idOfferingCategory);
         bool Exist(int idOfferingCategory);
         bool Exist(string offeringCategoryName);
@@ -13,6 +13,6 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
         IEnumerable<OfferingCategoryDomain> GetAll();
         Task<IEnumerable<OfferingCategoryDomain>> GetAllAsync();
         Task<OfferingCategoryDomain?> GetAsync(int idOfferingCategory);
-        Task<int> UpdateAsync(int idOfferingCategory, string offeringCategoryName);
+        Task<int> UpdateAsync(int idOfferingCategory, string offeringCategoryName, string? description);
     }
 }

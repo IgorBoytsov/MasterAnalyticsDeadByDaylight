@@ -42,7 +42,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         #endregion
 
-        #region Свойства : Selected | OfferingCategoryName
+        #region Свойства : Selected | OfferingCategoryName |  OfferingCategoryDescription 
 
         private OfferingCategoryDTO _selectedOfferingCategory;
         public OfferingCategoryDTO SelectedOfferingCategory
@@ -68,6 +68,17 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             set
             {
                 _offeringCategoryName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _offeringCategoryDescription;
+        public string OfferingCategoryDescription
+        {
+            get => _offeringCategoryDescription;
+            set
+            {
+                _offeringCategoryDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -104,7 +115,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         // TODO : Изменить MessageBox на кастомное окно
         private async void CreateOfferingCategory()
         {
-            var newOfferingCategoryDTO = await _offeringCategoryService.CreateAsync(OfferingCategoryName);
+            var newOfferingCategoryDTO = await _offeringCategoryService.CreateAsync(OfferingCategoryName, OfferingCategoryDescription);
 
             if (newOfferingCategoryDTO.Message != string.Empty)
             {
@@ -124,7 +135,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (SelectedOfferingCategory == null)
                 return;
 
-            var (offeringCategoryDTO, Message) = await _offeringCategoryService.UpdateAsync(SelectedOfferingCategory.IdCategory, OfferingCategoryName);
+            var (offeringCategoryDTO, Message) = await _offeringCategoryService.UpdateAsync(SelectedOfferingCategory.IdCategory, OfferingCategoryName, OfferingCategoryDescription);
 
             if (Message == string.Empty)
             {

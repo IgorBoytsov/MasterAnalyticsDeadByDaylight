@@ -11,6 +11,7 @@ namespace DBDAnalytics.Application.Mappers
             {
                 IdCategory = offeringCategory.IdCategory,
                 CategoryName = offeringCategory.CategoryName,
+                Description = offeringCategory.Description,
             };
         }
 

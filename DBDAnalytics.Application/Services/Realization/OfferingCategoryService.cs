@@ -14,9 +14,9 @@ namespace DBDAnalytics.Application.Services.Realization
         private readonly IGetOfferingCategoryUseCase _getOfferingCategoryUseCase = getOfferingCategoryUseCase;
         private readonly IUpdateOfferingCategoryUseCase _updateOfferingCategoryUseCase = updateOfferingCategoryUseCase;
 
-        public async Task<(OfferingCategoryDTO? OfferingCategoryDTO, string? Message)> CreateAsync(string offeringCategoryName)
+        public async Task<(OfferingCategoryDTO? OfferingCategoryDTO, string? Message)> CreateAsync(string offeringCategoryName, string? description)
         {
-            return await _createOfferingCategoryUseCase.CreateAsync(offeringCategoryName);
+            return await _createOfferingCategoryUseCase.CreateAsync(offeringCategoryName, description);
         }
 
         public async Task<(bool IsDeleted, string Message)> DeleteAsync(int idOfferingCategory)
@@ -39,9 +39,9 @@ namespace DBDAnalytics.Application.Services.Realization
             return await _getOfferingCategoryUseCase.GetAsync(idOfferingCategory);
         }
 
-        public async Task<(OfferingCategoryDTO? KillerPerkCategoryDTO, string? Message)> UpdateAsync(int idOfferingCategory, string offeringCategoryName)
+        public async Task<(OfferingCategoryDTO? KillerPerkCategoryDTO, string? Message)> UpdateAsync(int idOfferingCategory, string offeringCategoryName, string? description)
         {
-            return await _updateOfferingCategoryUseCase.UpdateAsync(idOfferingCategory, offeringCategoryName);
+            return await _updateOfferingCategoryUseCase.UpdateAsync(idOfferingCategory, offeringCategoryName, description);
         }
     }
 }

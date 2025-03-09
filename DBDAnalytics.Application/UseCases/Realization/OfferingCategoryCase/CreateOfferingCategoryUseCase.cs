@@ -10,11 +10,11 @@ namespace DBDAnalytics.Application.UseCases.Realization.OfferingCategoryCase
     {
         private readonly IOfferingCategoryRepository _offeringCategoryRepository = offeringCategoryRepository;
 
-        public async Task<(OfferingCategoryDTO? OfferingCategoryDTO, string? Message)> CreateAsync(string offeringCategoryName)
+        public async Task<(OfferingCategoryDTO? OfferingCategoryDTO, string? Message)> CreateAsync(string offeringCategoryName, string? description)
         {
             string message = string.Empty;
 
-            var (CreatedOfferingCategory, Message) = OfferingCategoryDomain.Create(0, offeringCategoryName);
+            var (CreatedOfferingCategory, Message) = OfferingCategoryDomain.Create(0, offeringCategoryName, description);
 
             if (CreatedOfferingCategory is null)
             {
@@ -26,7 +26,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.OfferingCategoryCase
             if (exist)
                 return (null, "Запись с таким названием уже существует.");
 
-            var id = await _offeringCategoryRepository.CreateAsync(offeringCategoryName);
+            var id = await _offeringCategoryRepository.CreateAsync(offeringCategoryName, description);
 
             var domainEntity = await _offeringCategoryRepository.GetAsync(id);
 

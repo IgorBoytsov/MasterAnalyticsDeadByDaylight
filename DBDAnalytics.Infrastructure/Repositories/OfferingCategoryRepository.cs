@@ -14,7 +14,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
         /*--CRUD------------------------------------------------------------------------------------------*/
 
-        public async Task<int> CreateAsync(string offeringCategoryName)
+        public async Task<int> CreateAsync(string offeringCategoryName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
@@ -35,7 +35,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> UpdateAsync(int idOfferingCategory, string offeringCategoryName)
+        public async Task<int> UpdateAsync(int idOfferingCategory, string offeringCategoryName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
@@ -44,6 +44,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 if (entity != null)
                 {
                     entity.CategoryName = offeringCategoryName;
+                    entity.Description = description;
 
                     _dbContext.OfferingCategories.Update(entity);
                     _dbContext.SaveChanges();
@@ -88,7 +89,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                 var (CreatedOfferingCategory, Message) = OfferingCategoryDomain.Create(
                     offeringCategoryEntity.IdCategory, 
-                    offeringCategoryEntity.CategoryName);
+                    offeringCategoryEntity.CategoryName,
+                    offeringCategoryEntity.Description);
 
                 return CreatedOfferingCategory ??= null;
             }
@@ -114,7 +116,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                     var (CreatedOfferingCategory, Message) = OfferingCategoryDomain.Create(
                         offeringCategoryEntity.IdCategory, 
-                        offeringCategoryEntity.CategoryName);
+                        offeringCategoryEntity.CategoryName,
+                        offeringCategoryEntity.Description);
 
                     if (CreatedOfferingCategory == null)
                     {

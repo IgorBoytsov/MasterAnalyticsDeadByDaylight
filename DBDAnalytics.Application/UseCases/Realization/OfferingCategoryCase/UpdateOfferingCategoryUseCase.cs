@@ -9,7 +9,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.OfferingCategoryCase
     {
         private readonly IOfferingCategoryRepository _offeringCategoryRepository = offeringCategoryRepository;
 
-        public async Task<(OfferingCategoryDTO? OfferingCategoryDTO, string? Message)> UpdateAsync(int idOfferingCategory, string offeringCategoryName)
+        public async Task<(OfferingCategoryDTO? OfferingCategoryDTO, string? Message)> UpdateAsync(int idOfferingCategory, string offeringCategoryName, string? description)
         {
             string message = string.Empty;
 
@@ -21,7 +21,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.OfferingCategoryCase
             if (exist)
                 return (null, "Название на которое вы хотите поменять - уже существует.");
 
-            int id = await _offeringCategoryRepository.UpdateAsync(idOfferingCategory, offeringCategoryName);
+            int id = await _offeringCategoryRepository.UpdateAsync(idOfferingCategory, offeringCategoryName, description);
 
             var domainEntity = await _offeringCategoryRepository.GetAsync(id);
 
