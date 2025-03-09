@@ -9,7 +9,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.PatchCase
     {
         private readonly IPatchRepository _patchRepository = patchRepository;
 
-        public async Task<(PatchDTO? PatchDTO, string? Message)> UpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease)
+        public async Task<(PatchDTO? PatchDTO, string? Message)> UpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease, string? description)
         {
             string message = string.Empty;
 
@@ -21,7 +21,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.PatchCase
             if (exist)
                 return (null, "Номер на который вы хотите поменять - уже существует.");
 
-            int id = await _patchRepository.UpdateAsync(idPatch, patchNumber, patchDateRelease);
+            int id = await _patchRepository.UpdateAsync(idPatch, patchNumber, patchDateRelease, description);
 
             var domainEntity = await _patchRepository.GetAsync(id);
 
@@ -35,9 +35,9 @@ namespace DBDAnalytics.Application.UseCases.Realization.PatchCase
             return (dtoEntity, message);
         }
 
-        public async Task<PatchDTO?> ForcedUpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease)
+        public async Task<PatchDTO?> ForcedUpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease, string? description)
         {
-            int id = await _patchRepository.UpdateAsync(idPatch, patchNumber, patchDateRelease);
+            int id = await _patchRepository.UpdateAsync(idPatch, patchNumber, patchDateRelease, description);
 
             var domainEntity = await _patchRepository.GetAsync(id);
 

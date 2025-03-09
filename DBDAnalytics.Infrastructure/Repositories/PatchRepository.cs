@@ -11,7 +11,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
     {
         private readonly Func<DBDContext> _contextFactory = context;
 
-        public async Task<int> CreateAsync(string patchNumber, DateOnly patchDateRelease)
+        public async Task<int> CreateAsync(string patchNumber, DateOnly patchDateRelease, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
@@ -33,7 +33,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> UpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease)
+        public async Task<int> UpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
@@ -43,6 +43,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 {
                     entity.PatchNumber = patchNumber;
                     entity.PatchDateRelease = patchDateRelease;
+                    entity.Description = description;
 
                     _dbContext.Patches.Update(entity);
                     await _dbContext.SaveChangesAsync();
@@ -88,7 +89,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 var (CreatedPath, Message) = PatchDomain.Create(
                     patchEntity.IdPatch, 
                     patchEntity.PatchNumber, 
-                    patchEntity.PatchDateRelease);
+                    patchEntity.PatchDateRelease,
+                    patchEntity.Description);
 
                 if (CreatedPath == null)
                 {
@@ -121,7 +123,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
                     var (CreatedPath, Message) = PatchDomain.Create(
                         patchEntity.IdPatch, 
                         patchEntity.PatchNumber, 
-                        patchEntity.PatchDateRelease);
+                        patchEntity.PatchDateRelease,
+                        patchEntity.Description);
 
                     if (CreatedPath == null)
                     {

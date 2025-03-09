@@ -11,5 +11,7 @@ public partial class Patch
 
     public DateOnly PatchDateRelease { get; set; }
 
+    public string? Description { get; set; }
+
     public virtual ICollection<GameStatistic> GameStatistics { get; set; } = new List<GameStatistic>();
 }

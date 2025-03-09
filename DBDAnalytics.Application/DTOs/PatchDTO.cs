@@ -9,5 +9,7 @@ namespace DBDAnalytics.Application.DTOs
         public string PatchNumber { get; set; } = null!;
 
         public DateOnly PatchDateRelease { get; set; }
+
+        public string? Description { get; set; }
     }
 }

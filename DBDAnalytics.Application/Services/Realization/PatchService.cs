@@ -14,9 +14,9 @@ namespace DBDAnalytics.Application.Services.Realization
         private readonly IGetPatchUseCase _getPatchUseCase = getPatchUseCase;
         private readonly IUpdatePatchUseCase _updatePatchUseCase = updatePatchUseCase;
 
-        public async Task<(PatchDTO? PatchDTO, string Message)> CreateAsync(string patchNumber, DateOnly patchDateRelease)
+        public async Task<(PatchDTO? PatchDTO, string? Message)> CreateAsync(string patchNumber, DateOnly patchDateRelease, string? description)
         {
-            return await _createPatchUseCase.CreateAsync(patchNumber, patchDateRelease);
+            return await _createPatchUseCase.CreateAsync(patchNumber, patchDateRelease, description);
         }
 
         public async Task<(bool IsDeleted, string Message)> DeleteAsync(int idPatch)
@@ -39,14 +39,14 @@ namespace DBDAnalytics.Application.Services.Realization
             return await _getPatchUseCase.GetAsync(idPatch);
         }
 
-        public async Task<(PatchDTO? PatchDTO, string? Message)> UpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease)
+        public async Task<(PatchDTO? PatchDTO, string? Message)> UpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease, string? description)
         {
-            return await _updatePatchUseCase.UpdateAsync(idPatch, patchNumber, patchDateRelease);
+            return await _updatePatchUseCase.UpdateAsync(idPatch, patchNumber, patchDateRelease, description);
         }
 
-        public async Task<PatchDTO> ForcedUpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease)
+        public async Task<PatchDTO> ForcedUpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease, string? description)
         {
-            return await _updatePatchUseCase.ForcedUpdateAsync(idPatch, patchNumber, patchDateRelease);
+            return await _updatePatchUseCase.ForcedUpdateAsync(idPatch, patchNumber, patchDateRelease, description);
         }
     }
 }

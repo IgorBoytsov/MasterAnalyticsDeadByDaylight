@@ -14,13 +14,21 @@
 
         public DateOnly PatchDateRelease { get; private set; }
 
-        public static (PatchDomain? PatchDomain, string? Message) Create(int idPatch, string patchNumber, DateOnly patchDateRelease)
+        public string? Description { get; private set; }
+
+        public static (PatchDomain? PatchDomain, string? Message) Create(int idPatch, string patchNumber, DateOnly patchDateRelease, string? description)
         {
             string message = string.Empty;
+            const int MaxDescriptionLength = 20000;
 
             if (string.IsNullOrWhiteSpace(patchNumber))
             {
                 return (null, "Вы забыли указать номер патча.");
+            }
+
+            if (description?.Length > MaxDescriptionLength)
+            {
+                return (null, $"Максимально допустима длинна описания - {MaxDescriptionLength}");
             }
                 
             var patch = new PatchDomain(idPatch, patchNumber, patchDateRelease);

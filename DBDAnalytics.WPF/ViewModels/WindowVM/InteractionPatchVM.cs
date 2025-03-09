@@ -41,7 +41,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         #endregion
 
-        #region Свойства : Selected | PatchNumber | PatchDateRelease
+        #region Свойства : Selected | PatchNumber | PatchDateRelease| PatchDateDescription
 
         private PatchDTO _selectedPatch;
         public PatchDTO SelectedPatch
@@ -68,6 +68,17 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             set
             {
                 _patchNumber = value;
+                OnPropertyChanged();
+            }
+        }        
+        
+        private string _patchDateDescription;
+        public string PatchDateDescription
+        {
+            get => _patchDateDescription;
+            set
+            {
+                _patchDateDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -102,8 +113,6 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         /*--Методы----------------------------------------------------------------------------------------*/
 
-        #region CRUD
-
         private async void GetPatches()
         {
             var patches = await _patchService.GetAllAsync();
@@ -112,10 +121,12 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 Patches.Add(patch);
         }
 
+        #region CRUD
+
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddPatch()
         {
-            var newPatchDTO = await _patchService.CreateAsync(PatchNumber, DateOnly.FromDateTime(PatchDateRelease));
+            var newPatchDTO = await _patchService.CreateAsync(PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
 
             if (newPatchDTO.Message != string.Empty)
             {
@@ -147,7 +158,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (SelectedPatch == null)
                 return;
 
-            var (PatchDTO, Message) = await _patchService.UpdateAsync(SelectedPatch.IdPatch, PatchNumber, DateOnly.FromDateTime(PatchDateRelease));
+            var (PatchDTO, Message) = await _patchService.UpdateAsync(SelectedPatch.IdPatch, PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
 
             if (Message == string.Empty)
                 Patches.ReplaceItem(SelectedPatch, PatchDTO);
@@ -155,7 +166,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             {
                 if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    var forcedPatchDTO = await _patchService.ForcedUpdateAsync(SelectedPatch.IdPatch, PatchNumber, DateOnly.FromDateTime(PatchDateRelease));
+                    var forcedPatchDTO = await _patchService.ForcedUpdateAsync(SelectedPatch.IdPatch, PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
                     Patches.ReplaceItem(SelectedPatch, forcedPatchDTO);
                 }
             }

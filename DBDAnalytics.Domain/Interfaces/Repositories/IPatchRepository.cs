@@ -4,7 +4,7 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
 {
     public interface IPatchRepository
     {
-        Task<int> CreateAsync(string patchNumber, DateOnly patchDateRelease);
+        Task<int> CreateAsync(string patchNumber, DateOnly patchDateRelease, string? description);
         Task<int> DeleteAsync(int idPatch);
         bool Exist(int idPatch);
         bool Exist(string patchNumber);
@@ -13,6 +13,6 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
         IEnumerable<PatchDomain> GetAll();
         Task<IEnumerable<PatchDomain>> GetAllAsync();
         Task<PatchDomain?> GetAsync(int idPatch);
-        Task<int> UpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease);
+        Task<int> UpdateAsync(int idPatch, string patchNumber, DateOnly patchDateRelease, string? description);
     }
 }

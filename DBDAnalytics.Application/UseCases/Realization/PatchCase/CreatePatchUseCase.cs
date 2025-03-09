@@ -10,11 +10,11 @@ namespace DBDAnalytics.Application.UseCases.Realization.PatchCase
     {
         private readonly IPatchRepository _patchRepository = patchRepository;
 
-        public async Task<(PatchDTO? PatchDTO, string? Message)> CreateAsync(string patchNumber, DateOnly patchDateRelease)
+        public async Task<(PatchDTO? PatchDTO, string? Message)> CreateAsync(string patchNumber, DateOnly patchDateRelease, string? description)
         {
             string message = string.Empty;
 
-            var (CreatedPatch, Message) = PatchDomain.Create(0, patchNumber, patchDateRelease);
+            var (CreatedPatch, Message) = PatchDomain.Create(0, patchNumber, patchDateRelease, description);
 
             if (CreatedPatch is null)
             {
@@ -26,7 +26,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.PatchCase
             if (exist)
                 return (null, "Патч с таким номером уже существует.");
 
-            var id = await _patchRepository.CreateAsync(patchNumber, patchDateRelease);
+            var id = await _patchRepository.CreateAsync(patchNumber, patchDateRelease, description);
 
             var domainEntity = await _patchRepository.GetAsync(id);
 
