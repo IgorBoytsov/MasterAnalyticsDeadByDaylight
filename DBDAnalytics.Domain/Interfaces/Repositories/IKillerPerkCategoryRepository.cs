@@ -4,7 +4,7 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
 {
     public interface IKillerPerkCategoryRepository
     {
-        Task<int> CreateAsync(string killerPerkCategoryName);
+        Task<int> CreateAsync(string killerPerkCategoryName, string? description);
         Task<int> DeleteAsync(int idKillerPerkCategory);
         bool Exist(int idKillerPerkCategory);
         bool Exist(string killerPerkCategoryName);
@@ -13,6 +13,6 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
         IEnumerable<KillerPerkCategoryDomain> GetAll();
         Task<IEnumerable<KillerPerkCategoryDomain>> GetAllAsync();
         Task<KillerPerkCategoryDomain?> GetAsync(int idKillerPerkCategory);
-        Task<int> UpdateAsync(int idKillerPerkCategory, string killerPerkCategoryName);
+        Task<int> UpdateAsync(int idKillerPerkCategory, string killerPerkCategoryName, string? description);
     }
 }

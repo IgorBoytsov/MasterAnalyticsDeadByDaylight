@@ -14,9 +14,9 @@ namespace DBDAnalytics.Application.Services.Realization
         private readonly IGetKillerPerkCategoryUseCase _getKillerPerkCategoryUseCase = getKillerPerkCategoryUseCase;
         private readonly IUpdateKillerPerkCategoryUseCase _updateKillerPerkCategoryUseCase = updateKillerPerkCategoryUseCase;
 
-        public async Task<(KillerPerkCategoryDTO? KillerPerkCategoryDTO, string Message)> CreateAsync(string killerPerkCategoryName)
+        public async Task<(KillerPerkCategoryDTO? KillerPerkCategoryDTO, string? Message)> CreateAsync(string killerPerkCategoryName, string? description)
         {
-            return await _createKillerPerkCategoryUseCase.CreateAsync(killerPerkCategoryName);
+            return await _createKillerPerkCategoryUseCase.CreateAsync(killerPerkCategoryName, description);
         }
 
         public async Task<(bool IsDeleted, string Message)> DeleteAsync(int idKillerPerkCategory)
@@ -39,9 +39,9 @@ namespace DBDAnalytics.Application.Services.Realization
             return await _getKillerPerkCategoryUseCase.GetAsync(idKillerPerkCategory);
         }
 
-        public async Task<(KillerPerkCategoryDTO? KillerPerkCategoryDTO, string? Message)> UpdateAsync(int idKillerPerkCategory, string killerPerkCategoryName)
+        public async Task<(KillerPerkCategoryDTO? KillerPerkCategoryDTO, string? Message)> UpdateAsync(int idKillerPerkCategory, string killerPerkCategoryName, string? description)
         {
-            return await _updateKillerPerkCategoryUseCase.UpdateAsync(idKillerPerkCategory, killerPerkCategoryName);
+            return await _updateKillerPerkCategoryUseCase.UpdateAsync(idKillerPerkCategory, killerPerkCategoryName, description);
         }
     }
 }

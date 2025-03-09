@@ -13,13 +13,14 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
         /*--CRUD------------------------------------------------------------------------------------------*/
 
-        public async Task<int> CreateAsync(string killerPerkCategoryName)
+        public async Task<int> CreateAsync(string killerPerkCategoryName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
                 var killerPerkCategoryEntity = new KillerPerkCategory
                 {
-                    CategoryName = killerPerkCategoryName
+                    CategoryName = killerPerkCategoryName,
+                    Description = description
                 };
 
                 await _dbContext.KillerPerkCategories.AddAsync(killerPerkCategoryEntity);
@@ -34,7 +35,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> UpdateAsync(int idKillerPerkCategory, string killerPerkCategoryName)
+        public async Task<int> UpdateAsync(int idKillerPerkCategory, string killerPerkCategoryName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
@@ -44,6 +45,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 {
 
                     entity.CategoryName = killerPerkCategoryName;
+                    entity.Description = description;
 
                     _dbContext.KillerPerkCategories.Update(entity);
                     _dbContext.SaveChanges();
@@ -87,7 +89,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                 var (CreatedKillerPerkCategory, Message) = KillerPerkCategoryDomain.Create(
                     killerPerkCategoryEntity.IdKillerPerkCategory, 
-                    killerPerkCategoryEntity.CategoryName);
+                    killerPerkCategoryEntity.CategoryName,
+                    killerPerkCategoryEntity.Description);
 
                 if (CreatedKillerPerkCategory == null)
                 {
@@ -113,7 +116,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                     var (CreatedKillerPerkCategory, Message) = KillerPerkCategoryDomain.Create(
                          killerPerkCategoryEntity.IdKillerPerkCategory,
-                         killerPerkCategoryEntity.CategoryName);
+                         killerPerkCategoryEntity.CategoryName, 
+                         killerPerkCategoryEntity.Description);
 
                     if (CreatedKillerPerkCategory == null)
                     {

@@ -7,5 +7,7 @@ namespace DBDAnalytics.Application.DTOs
         public int IdKillerPerkCategory { get; set; }
 
         public string CategoryName { get; set; } = null!;
+
+        public string? Description { get; set; }
     }
 }

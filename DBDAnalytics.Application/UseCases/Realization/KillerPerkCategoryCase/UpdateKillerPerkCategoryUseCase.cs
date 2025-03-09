@@ -9,7 +9,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.KillerPerkCategoryCase
     {
         private readonly IKillerPerkCategoryRepository _KillerPerkCategoryRepository = KillerPerkCategoryRepository;
 
-        public async Task<(KillerPerkCategoryDTO? KillerPerkCategoryDTO, string? Message)> UpdateAsync(int idKillerPerkCategory, string KillerPerkCategoryName)
+        public async Task<(KillerPerkCategoryDTO? KillerPerkCategoryDTO, string? Message)> UpdateAsync(int idKillerPerkCategory, string KillerPerkCategoryName, string? description)
         {
             string message = string.Empty;
 
@@ -21,7 +21,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.KillerPerkCategoryCase
             if (exist)
                 return (null, "Название на которое вы хотите поменять - уже существует.");
 
-            int id = await _KillerPerkCategoryRepository.UpdateAsync(idKillerPerkCategory, KillerPerkCategoryName);
+            int id = await _KillerPerkCategoryRepository.UpdateAsync(idKillerPerkCategory, KillerPerkCategoryName, description);
 
             var domainEntity = await _KillerPerkCategoryRepository.GetAsync(id);
 

@@ -10,11 +10,11 @@ namespace DBDAnalytics.Application.UseCases.Realization.KillerPerkCategoryCase
     {
         private readonly IKillerPerkCategoryRepository _KillerPerkCategoryRepository = KillerPerkCategoryRepository;
 
-        public async Task<(KillerPerkCategoryDTO? KillerPerkCategoryDTO, string? Message)> CreateAsync(string KillerPerkCategoryName)
+        public async Task<(KillerPerkCategoryDTO? KillerPerkCategoryDTO, string? Message)> CreateAsync(string KillerPerkCategoryName, string? description)
         {
             string message = string.Empty;
 
-            var (CreatedKillerPerkCategory, Message) = KillerPerkCategoryDomain.Create(0, KillerPerkCategoryName);
+            var (CreatedKillerPerkCategory, Message) = KillerPerkCategoryDomain.Create(0, KillerPerkCategoryName, description);
 
             if (CreatedKillerPerkCategory is null)
             {
@@ -26,7 +26,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.KillerPerkCategoryCase
             if (exist)
                 return (null, "Запись с таким названием уже существует.");
 
-            var id = await _KillerPerkCategoryRepository.CreateAsync(KillerPerkCategoryName);
+            var id = await _KillerPerkCategoryRepository.CreateAsync(KillerPerkCategoryName, description);
 
             var domainEntity = await _KillerPerkCategoryRepository.GetAsync(id);
 

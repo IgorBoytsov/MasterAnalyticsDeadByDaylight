@@ -9,5 +9,7 @@ public partial class KillerPerkCategory
 
     public string CategoryName { get; set; } = null!;
 
+    public string? Description { get; set; }
+
     public virtual ICollection<KillerPerk> KillerPerks { get; set; } = new List<KillerPerk>();
 }

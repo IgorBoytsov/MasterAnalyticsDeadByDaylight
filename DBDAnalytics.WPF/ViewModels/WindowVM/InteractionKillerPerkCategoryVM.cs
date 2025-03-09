@@ -41,7 +41,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         #endregion
 
-        #region Свойства : Selected | KillerPerkCategoryName
+        #region Свойства : Selected | KillerPerkCategoryName | KillerPerkCategoryDescription
 
         private KillerPerkCategoryDTO _selectedKillerPerkCategory;
         public KillerPerkCategoryDTO SelectedKillerPerkCategory
@@ -67,6 +67,17 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             set
             {
                 _killerPerkCategoryName = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private string _killerPerkCategoryDescription;
+        public string KillerPerkCategoryDescription
+        {
+            get => _killerPerkCategoryDescription;
+            set
+            {
+                _killerPerkCategoryDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -103,7 +114,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddKillerPerkCategory()
         {
-            var newKillerPerkCategoryDTO = await _killerPerkCategoryService.CreateAsync(KillerPerkCategoryName);
+            var newKillerPerkCategoryDTO = await _killerPerkCategoryService.CreateAsync(KillerPerkCategoryName, KillerPerkCategoryDescription);
 
             if (newKillerPerkCategoryDTO.Message != string.Empty)
             {
@@ -123,7 +134,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (SelectedKillerPerkCategory == null)
                 return;
 
-            var (KillerPerkCategoryDTO, Message) = await _killerPerkCategoryService.UpdateAsync(SelectedKillerPerkCategory.IdKillerPerkCategory, KillerPerkCategoryName);
+            var (KillerPerkCategoryDTO, Message) = await _killerPerkCategoryService.UpdateAsync(SelectedKillerPerkCategory.IdKillerPerkCategory, KillerPerkCategoryName, KillerPerkCategoryDescription);
 
             if (Message == string.Empty)
             {

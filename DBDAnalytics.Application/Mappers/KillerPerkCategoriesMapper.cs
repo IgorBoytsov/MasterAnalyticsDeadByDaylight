@@ -11,6 +11,7 @@ namespace DBDAnalytics.Application.Mappers
             {
                 IdKillerPerkCategory = killerPerkCategory.IdKillerPerkCategory,
                 CategoryName = killerPerkCategory.CategoryName,
+                Description = killerPerkCategory.Description,
             };
         }
 
