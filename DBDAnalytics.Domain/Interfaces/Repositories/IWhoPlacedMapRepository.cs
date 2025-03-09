@@ -4,7 +4,7 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
 {
     public interface IWhoPlacedMapRepository
     {
-        Task<int> CreateAsync(string whoPlacedMapName);
+        Task<int> CreateAsync(string whoPlacedMapName, string? description);
         Task<int> DeleteAsync(int idWhoPlacedMap);
         bool Exist(int idWhoPlacedMap);
         bool Exist(string whoPlacedMapName);
@@ -13,6 +13,6 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
         IEnumerable<WhoPlacedMapDomain> GetAll();
         Task<IEnumerable<WhoPlacedMapDomain>> GetAllAsync();
         Task<WhoPlacedMapDomain?> GetAsync(int idWhoPlacedMap);
-        Task<int> UpdateAsync(int idWhoPlacedMap, string whoPlacedMapName);
+        Task<int> UpdateAsync(int idWhoPlacedMap, string whoPlacedMapName, string? description);
     }
 }

@@ -13,13 +13,14 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
         /*--CRUD------------------------------------------------------------------------------------------*/
 
-        public async Task<int> CreateAsync(string whoPlacedMapName)
+        public async Task<int> CreateAsync(string whoPlacedMapName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
                 var whoPlacedMapEntity = new WhoPlacedMap
                 {
-                    WhoPlacedMapName = whoPlacedMapName
+                    WhoPlacedMapName = whoPlacedMapName,
+                    Description = description
                 };
 
                 await _dbContext.WhoPlacedMaps.AddAsync(whoPlacedMapEntity);
@@ -34,7 +35,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> UpdateAsync(int idWhoPlacedMap, string whoPlacedMapName)
+        public async Task<int> UpdateAsync(int idWhoPlacedMap, string whoPlacedMapName, string? description)
         {
             using (var _dbContext = _contextFactory())
             {
@@ -43,6 +44,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 if (entity != null)
                 {
                     entity.WhoPlacedMapName = whoPlacedMapName;
+                    entity.Description = description;
 
                     _dbContext.WhoPlacedMaps.Update(entity);
                     await _dbContext.SaveChangesAsync();
@@ -84,7 +86,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
                     return null;
                 }
 
-                var (CreatedWhoPlacedMap, Message) = WhoPlacedMapDomain.Create(whoPlacedMapEntity.IdWhoPlacedMap, whoPlacedMapEntity.WhoPlacedMapName);
+                var (CreatedWhoPlacedMap, Message) = WhoPlacedMapDomain.Create(
+                    whoPlacedMapEntity.IdWhoPlacedMap, 
+                    whoPlacedMapEntity.WhoPlacedMapName, 
+                    whoPlacedMapEntity.Description);
 
                 if (CreatedWhoPlacedMap == null)
                 {
@@ -114,7 +119,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                     var id = whoPlacedMapEntity.IdWhoPlacedMap;
 
-                    var (CreatedWhoPlacedMap, Message) = WhoPlacedMapDomain.Create(whoPlacedMapEntity.IdWhoPlacedMap, whoPlacedMapEntity.WhoPlacedMapName);
+                    var (CreatedWhoPlacedMap, Message) = WhoPlacedMapDomain.Create(
+                        whoPlacedMapEntity.IdWhoPlacedMap, 
+                        whoPlacedMapEntity.WhoPlacedMapName,
+                        whoPlacedMapEntity.Description);
 
                     if (CreatedWhoPlacedMap == null)
                     {

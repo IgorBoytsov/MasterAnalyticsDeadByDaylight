@@ -10,11 +10,11 @@ namespace DBDAnalytics.Application.UseCases.Realization.WhoPlacedMapCase
     {
         private readonly IWhoPlacedMapRepository _whoPlacedMapRepository = whoPlacedMapRepository;
 
-        public async Task<(WhoPlacedMapDTO? WhoPlacedMapDTO, string? Message)> CreateAsync(string whoPlacedMapName)
+        public async Task<(WhoPlacedMapDTO? WhoPlacedMapDTO, string? Message)> CreateAsync(string whoPlacedMapName, string? description)
         {
             string message = string.Empty;
 
-            var (CreatedWhoPlaceMap, Message) = WhoPlacedMapDomain.Create(0, whoPlacedMapName);
+            var (CreatedWhoPlaceMap, Message) = WhoPlacedMapDomain.Create(0, whoPlacedMapName, description);
 
             if (message is null)
             {
@@ -26,7 +26,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.WhoPlacedMapCase
             if (exist)
                 return (null, "Запись с таким названием уже существует.");
 
-            var id = await _whoPlacedMapRepository.CreateAsync(whoPlacedMapName);
+            var id = await _whoPlacedMapRepository.CreateAsync(whoPlacedMapName, description);
 
             var domainEntity = await _whoPlacedMapRepository.GetAsync(id);
 

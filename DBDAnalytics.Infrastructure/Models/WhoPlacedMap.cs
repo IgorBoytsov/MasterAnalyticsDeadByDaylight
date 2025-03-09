@@ -9,6 +9,8 @@ public partial class WhoPlacedMap
 
     public string WhoPlacedMapName { get; set; } = null!;
 
+    public string? Description { get; set; }
+
     public virtual ICollection<GameStatistic> GameStatisticIdWhoPlacedMapNavigations { get; set; } = new List<GameStatistic>();
 
     public virtual ICollection<GameStatistic> GameStatisticIdWhoPlacedMapWinNavigations { get; set; } = new List<GameStatistic>();

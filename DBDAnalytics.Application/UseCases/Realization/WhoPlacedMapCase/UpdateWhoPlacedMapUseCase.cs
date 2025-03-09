@@ -9,7 +9,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.WhoPlacedMapCase
     {
         private readonly IWhoPlacedMapRepository _whoPlacedMapRepository = whoPlacedMapRepository;
 
-        public async Task<(WhoPlacedMapDTO? WhoPlacedMapDTO, string? Message)> UpdateAsync(int idWhoPlacedMap, string whoPlacedMapName)
+        public async Task<(WhoPlacedMapDTO? WhoPlacedMapDTO, string? Message)> UpdateAsync(int idWhoPlacedMap, string whoPlacedMapName, string? description)
         {
             string message = string.Empty;
 
@@ -21,7 +21,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.WhoPlacedMapCase
             if (exist)
                 return (null, "Название на которое вы хотите поменять - уже существует.");
 
-            int id = await _whoPlacedMapRepository.UpdateAsync(idWhoPlacedMap, whoPlacedMapName);
+            int id = await _whoPlacedMapRepository.UpdateAsync(idWhoPlacedMap, whoPlacedMapName, description);
 
             var domainEntity = await _whoPlacedMapRepository.GetAsync(id);
 

@@ -41,7 +41,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         #endregion
 
-        #region Свойства : Selected | WhoPlacedMapnName 
+        #region Свойства : Selected | WhoPlacedMapName | WhoPlacedMapDescription
 
         private WhoPlacedMapDTO _selectedWhoPlacedMap;
         public WhoPlacedMapDTO SelectedWhoPlacedMap
@@ -69,6 +69,17 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 _whoPlacedMapName = value;
                 OnPropertyChanged();
             }
+        } 
+        
+        private string _whoPlacedMapDescription;
+        public string WhoPlacedMapDescription
+        {
+            get => _whoPlacedMapDescription;
+            set
+            {
+                _whoPlacedMapDescription = value;
+                OnPropertyChanged();
+            }
         }
 
         #endregion 
@@ -89,9 +100,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         #endregion
 
         /*--Методы----------------------------------------------------------------------------------------*/
-
-        #region CRUD
-
+       
         private async void GetWhoPlacedMaps()
         {
             var whoPlacedMaps = await _whoPlacedMapService.GetAllAsync();
@@ -100,10 +109,12 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 WhoPlacedMaps.Add(whoPlacedMap);
         }
 
+        #region CRUD
+
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddWhoPlacedMap()
         {
-            var newWhoPlacedMapDTO = await _whoPlacedMapService.CreateAsync(WhoPlacedMapName);
+            var newWhoPlacedMapDTO = await _whoPlacedMapService.CreateAsync(WhoPlacedMapName, WhoPlacedMapDescription);
 
             if (newWhoPlacedMapDTO.Message != string.Empty)
             {
@@ -135,7 +146,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (SelectedWhoPlacedMap == null)
                 return;
 
-            var (WhoPlacedMapDTO, Message) = await _whoPlacedMapService.UpdateAsync(SelectedWhoPlacedMap.IdWhoPlacedMap, WhoPlacedMapName);
+            var (WhoPlacedMapDTO, Message) = await _whoPlacedMapService.UpdateAsync(SelectedWhoPlacedMap.IdWhoPlacedMap, WhoPlacedMapName, WhoPlacedMapDescription);
 
             if (Message == string.Empty)
                 WhoPlacedMaps.ReplaceItem(SelectedWhoPlacedMap, WhoPlacedMapDTO);

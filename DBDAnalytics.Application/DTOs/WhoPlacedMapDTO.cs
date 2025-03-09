@@ -7,5 +7,7 @@ namespace DBDAnalytics.Application.DTOs
         public int IdWhoPlacedMap { get; set; }
 
         public string WhoPlacedMapName { get; set; } = null!;
+
+        public string? Description { get; set; }
     }
 }

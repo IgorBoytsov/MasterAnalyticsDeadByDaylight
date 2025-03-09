@@ -14,9 +14,9 @@ namespace DBDAnalytics.Application.Services.Realization
         private readonly IGetWhoPlacedMapUseCase _geWhoPlacedMapUseCase = getWhoPlacedMapUseCase;
         private readonly IUpdateWhoPlacedMapUseCase _updateWhoPlacedMapUseCase = updateWhoPlacedMapUseCase;
 
-        public async Task<(WhoPlacedMapDTO? WhoPlacedMapDTO, string Message)> CreateAsync(string whoPlacedMapName)
+        public async Task<(WhoPlacedMapDTO? WhoPlacedMapDTO, string? Message)> CreateAsync(string whoPlacedMapName, string? description)
         {
-            return await _createWhoPlacedMapUseCase.CreateAsync(whoPlacedMapName);
+            return await _createWhoPlacedMapUseCase.CreateAsync(whoPlacedMapName, description);
         }
 
         public async Task<(bool IsDeleted, string Message)> DeleteAsync(int idWhoPlacedMap)
@@ -39,9 +39,9 @@ namespace DBDAnalytics.Application.Services.Realization
             return await _geWhoPlacedMapUseCase.GetAsync(idWhoPlacedMap);
         }
 
-        public async Task<(WhoPlacedMapDTO? WhoPlacedMapDTO, string? Message)> UpdateAsync(int idWhoPlacedMap, string whoPlacedMapName)
+        public async Task<(WhoPlacedMapDTO? WhoPlacedMapDTO, string? Message)> UpdateAsync(int idWhoPlacedMap, string whoPlacedMapName, string? description)
         {
-            return await _updateWhoPlacedMapUseCase.UpdateAsync(idWhoPlacedMap, whoPlacedMapName);
+            return await _updateWhoPlacedMapUseCase.UpdateAsync(idWhoPlacedMap, whoPlacedMapName, description);
         }
     }
 }

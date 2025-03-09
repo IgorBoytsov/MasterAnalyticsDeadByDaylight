@@ -11,6 +11,7 @@ namespace DBDAnalytics.Application.Mappers
             {
                 IdWhoPlacedMap = whoPlacedMap.IdWhoPlacedMap,
                 WhoPlacedMapName = whoPlacedMap.WhoPlacedMapName,
+                Description = whoPlacedMap.Description,
             };
         }
 
