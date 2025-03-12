@@ -431,6 +431,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                     KillerPerks = new ObservableCollection<KillerPerkDTO>()
                 });
 
+                NotificationTransmittingValue(WindowName.AddMatch, Killer, TypeParameter.AddAndNotification);
                 ClearInputDataKiller();
             }
         }
@@ -454,6 +455,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                                                KillerAddons = SelectedKillerLoadout.KillerAddons,
                                                KillerPerks = SelectedKillerLoadout.KillerPerks
                                            });
+
+                NotificationTransmittingValue(WindowName.AddMatch, Killer, TypeParameter.UpdateAndNotification);
                 ClearInputDataKiller();
             }
             else
@@ -471,6 +474,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                                                    KillerAddons = SelectedKillerLoadout.KillerAddons,
                                                    KillerPerks = SelectedKillerLoadout.KillerPerks
                                                });
+
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedKillersLoadoutDTO, TypeParameter.UpdateAndNotification);
                     ClearInputDataKiller();
                 }
             }
@@ -492,6 +497,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, new KillerDTO { IdKiller = SelectedKillerLoadout.IdKiller }, TypeParameter.DeleteAndNotification);
                     KillersLoadout.Remove(SelectedKillerLoadout);
                     ClearInputDataKiller();
                 }
@@ -522,17 +528,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             }
             else
             {
-
-                SelectedKillerLoadout.KillerAddons.Add(new KillerAddonDTO
-                {
-                    IdKillerAddon = Addon.IdKillerAddon,
-                    IdKiller = Addon.IdKiller,
-                    IdRarity = Addon.IdRarity,
-                    AddonName = Addon.AddonName,
-                    AddonImage = Addon.AddonImage,
-                    AddonDescription = Addon.AddonDescription,
-                });
-
+                SelectedKillerLoadout.KillerAddons.Add(Addon);
+                NotificationTransmittingValue(WindowName.AddMatch, Addon, TypeParameter.AddAndNotification);
                 ClearInputDataAddon();
             }
         }
@@ -551,16 +548,9 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
             if (Message == string.Empty)
             {
-                SelectedKillerLoadout.KillerAddons.ReplaceItem(SelectedKillerAddon,
-                                                               new KillerAddonDTO
-                                                               {
-                                                                   IdKillerAddon = Addon.IdKillerAddon,
-                                                                   IdKiller = Addon.IdKiller,
-                                                                   IdRarity = Addon.IdRarity,
-                                                                   AddonName = Addon.AddonName,
-                                                                   AddonImage = Addon.AddonImage,
-                                                                   AddonDescription = Addon.AddonDescription,
-                                                               });
+                SelectedKillerLoadout.KillerAddons.ReplaceItem(SelectedKillerAddon, Addon);
+
+                NotificationTransmittingValue(WindowName.AddMatch, Addon, TypeParameter.UpdateAndNotification);
                 ClearInputDataAddon();
             }
         }
@@ -581,6 +571,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedKillerAddon, TypeParameter.DeleteAndNotification);
                     SelectedKillerLoadout.KillerAddons.Remove(SelectedKillerAddon);
                     ClearInputDataAddon();
                 }
@@ -602,7 +593,6 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 return;
             }
                 
-
             var (Perk, Message) = await _killerPerkService.CreateAsync(SelectedKillerLoadout.IdKiller, PerkName, PerkImage, SelectedKillerPerkCategory.IdKillerPerkCategory, PerkDescription);
 
             if (!string.IsNullOrWhiteSpace(Message))
@@ -612,16 +602,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             }
             else
             {
-                SelectedKillerLoadout.KillerPerks.Add(new KillerPerkDTO
-                {
-                    IdCategory = Perk.IdCategory,
-                    IdKiller = Perk.IdKiller,
-                    IdKillerPerk = Perk.IdKillerPerk,
-                    PerkName = Perk.PerkName,
-                    PerkDescription = Perk.PerkDescription,
-                    PerkImage = Perk.PerkImage,
-                });
-
+                SelectedKillerLoadout.KillerPerks.Add(Perk);
+                NotificationTransmittingValue(WindowName.AddMatch, Perk, TypeParameter.AddAndNotification);
                 ClearInputDataPerk();
             }
         }
@@ -635,16 +617,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
             if (Message == string.Empty)
             {
-                SelectedKillerLoadout.KillerPerks.ReplaceItem(SelectedKillerPerk,
-                                                               new KillerPerkDTO
-                                                               {
-                                                                   IdCategory = Perk.IdCategory,
-                                                                   IdKiller = Perk.IdKiller,
-                                                                   IdKillerPerk = Perk.IdKillerPerk,
-                                                                   PerkName = Perk.PerkName,
-                                                                   PerkDescription = Perk.PerkDescription,
-                                                                   PerkImage = Perk.PerkImage,
-                                                               });
+                SelectedKillerLoadout.KillerPerks.ReplaceItem(SelectedKillerPerk, Perk);
+                NotificationTransmittingValue(WindowName.AddMatch, Perk, TypeParameter.UpdateAndNotification);
                 ClearInputDataPerk();
             }
         }
@@ -665,6 +639,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedKillerPerk, TypeParameter.DeleteAndNotification);
                     SelectedKillerLoadout.KillerPerks.Remove(SelectedKillerPerk);
                     ClearInputDataPerk();
                 }

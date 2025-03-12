@@ -102,8 +102,6 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         /*--Методы----------------------------------------------------------------------------------------*/
 
-        #region CRUD
-
         private async void GetPlatforms()
         {
             var platforms = await _platformService.GetAllAsync();
@@ -112,18 +110,47 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 Platforms.Add(platform);
         }
 
+        #region CRUD
+
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddPlatform()
         {
-            var newPlatformDTO = await _platformService.CreateAsync(PlatformName, PlatformDescription);
+            var (Platform, Message) = await _platformService.CreateAsync(PlatformName, PlatformDescription);
 
-            if (newPlatformDTO.Message != string.Empty)
+            if (Message != string.Empty)
             {
-                MessageBox.Show(newPlatformDTO.Message);
+                MessageBox.Show(Message);
                 return;
             }
             else
-                Platforms.Add(newPlatformDTO.PlatformDTO);
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, Platform, TypeParameter.AddAndNotification);
+                Platforms.Add(Platform);
+            }
+                
+        }
+
+        private async void UpdatePlatform()
+        {
+            if (SelectedPlatform == null)
+                return;
+
+            var (PlatformDTO, Message) = await _platformService.UpdateAsync(SelectedPlatform.IdPlatform, PlatformName, PlatformDescription);
+
+            if (Message == string.Empty)
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, PlatformDTO, TypeParameter.UpdateAndNotification);
+                Platforms.ReplaceItem(SelectedPlatform, PlatformDTO);
+            }
+            else
+            {
+                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var forcedPlatformDTO = await _platformService.ForcedUpdateAsync(SelectedPlatform.IdPlatform, PlatformName, PlatformDescription);
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedPlatformDTO, TypeParameter.UpdateAndNotification);
+                    Platforms.ReplaceItem(SelectedPlatform, forcedPlatformDTO);
+                }
+            }
         }
 
         private async void DeletePlatform()
@@ -136,29 +163,13 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 var (IsDeleted, Message) = await _platformService.DeleteAsync(SelectedPlatform.IdPlatform);
 
                 if (IsDeleted == true)
+                {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedPlatform, TypeParameter.DeleteAndNotification);
                     Platforms.Remove(SelectedPlatform);
+                }
                 else
                     MessageBox.Show(Message);
             }   
-        }
-
-        private async void UpdatePlatform()
-        {
-            if (SelectedPlatform == null)
-                return;
-
-            var (PlatformDTO, Message) = await _platformService.UpdateAsync(SelectedPlatform.IdPlatform, PlatformName, PlatformDescription);
-
-            if (Message == string.Empty)
-                Platforms.ReplaceItem(SelectedPlatform, PlatformDTO);
-            else
-            {
-                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    var forcedPlatformDTO = await _platformService.ForcedUpdateAsync(SelectedPlatform.IdPlatform, PlatformName, PlatformDescription);
-                    Platforms.ReplaceItem(SelectedPlatform, forcedPlatformDTO);
-                }
-            }
         }
 
         #endregion

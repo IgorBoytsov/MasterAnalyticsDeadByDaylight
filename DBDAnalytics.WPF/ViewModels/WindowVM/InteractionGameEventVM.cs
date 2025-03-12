@@ -115,17 +115,44 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddGameEvent()
         {
-            var newEventDTO = await _gameEventService.CreateAsync(GameEventName, GameEventDescription);
+            var (GameEvent, Message) = await _gameEventService.CreateAsync(GameEventName, GameEventDescription);
 
-            if (newEventDTO.Message != string.Empty)
+            if (Message != string.Empty)
             {
-                MessageBox.Show(newEventDTO.Message);
+                MessageBox.Show(Message);
                 return;
             }
             else
-                GameEvents.Add(newEventDTO.GameEventDTO);
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, GameEvent, TypeParameter.AddAndNotification);
+                GameEvents.Add(GameEvent);
+            }
+                
         }
 
+        private async void UpdateGameEvent()
+        {
+            if (SelectedGameEvent == null) 
+                return;
+
+            var (GameEventDTO, Message) = await _gameEventService.UpdateAsync(SelectedGameEvent.IdGameEvent, GameEventName, GameEventDescription);
+
+            if (Message == string.Empty)
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, GameEventDTO, TypeParameter.UpdateAndNotification);
+                GameEvents.ReplaceItem(SelectedGameEvent, GameEventDTO);
+            }
+            else
+            {
+                if (MessageBox.Show(Message + "Вы точно хотите обновить запись?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var forcedGameEventDTO = await _gameEventService.ForcedUpdateAsync(SelectedGameEvent.IdGameEvent, GameEventName, GameEventDescription);
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedGameEventDTO, TypeParameter.UpdateAndNotification);
+                    GameEvents.ReplaceItem(SelectedGameEvent, forcedGameEventDTO);
+                }
+            }
+        }
+        
         private async void DeleteGameEvent()
         {
             if (SelectedGameEvent == null) 
@@ -136,30 +163,14 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 var (IsDeleted, Message) = await _gameEventService.DeleteAsync(SelectedGameEvent.IdGameEvent);
 
                 if (IsDeleted == true)
+                {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedGameEvent, TypeParameter.DeleteAndNotification);
                     GameEvents.Remove(SelectedGameEvent);
+                }
                 else
                     MessageBox.Show(Message);
             }
         } 
-        
-        private async void UpdateGameEvent()
-        {
-            if (SelectedGameEvent == null) 
-                return;
-
-            var (GameEventDTO, Message) = await _gameEventService.UpdateAsync(SelectedGameEvent.IdGameEvent, GameEventName, GameEventDescription);
-
-            if (Message == string.Empty)
-                GameEvents.ReplaceItem(SelectedGameEvent, GameEventDTO);
-            else
-            {
-                if (MessageBox.Show(Message + "Вы точно хотите обновить запись?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    var forcedGameEventDTO = await _gameEventService.ForcedUpdateAsync(SelectedGameEvent.IdGameEvent, GameEventName, GameEventDescription);
-                    GameEvents.ReplaceItem(SelectedGameEvent, forcedGameEventDTO);
-                }
-            }
-        }
 
         #endregion
     }

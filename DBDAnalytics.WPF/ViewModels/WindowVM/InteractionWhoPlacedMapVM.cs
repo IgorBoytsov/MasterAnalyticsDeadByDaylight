@@ -114,15 +114,35 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddWhoPlacedMap()
         {
-            var newWhoPlacedMapDTO = await _whoPlacedMapService.CreateAsync(WhoPlacedMapName, WhoPlacedMapDescription);
+            var (WhoPlacedMap, Message) = await _whoPlacedMapService.CreateAsync(WhoPlacedMapName, WhoPlacedMapDescription);
 
-            if (newWhoPlacedMapDTO.Message != string.Empty)
+            if (Message != string.Empty)
             {
-                MessageBox.Show(newWhoPlacedMapDTO.Message);
+                MessageBox.Show(Message);
                 return;
             }
             else
-                WhoPlacedMaps.Add(newWhoPlacedMapDTO.WhoPlacedMapDTO);
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, WhoPlacedMap, TypeParameter.AddAndNotification);
+                WhoPlacedMaps.Add(WhoPlacedMap);
+            }
+               
+        }
+
+        private async void UpdateWhoPlacedMap()
+        {
+            if (SelectedWhoPlacedMap == null)
+                return;
+
+            var (WhoPlacedMapDTO, Message) = await _whoPlacedMapService.UpdateAsync(SelectedWhoPlacedMap.IdWhoPlacedMap, WhoPlacedMapName, WhoPlacedMapDescription);
+
+            if (Message == string.Empty)
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, WhoPlacedMapDTO, TypeParameter.UpdateAndNotification);
+                WhoPlacedMaps.ReplaceItem(SelectedWhoPlacedMap, WhoPlacedMapDTO);
+            }
+            else
+                MessageBox.Show(Message);
         }
 
         private async void DeleteWhoPlacedMap()
@@ -135,23 +155,13 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 var (IsDeleted, Message) = await _whoPlacedMapService.DeleteAsync(SelectedWhoPlacedMap.IdWhoPlacedMap);
 
                 if (IsDeleted == true)
+                {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedWhoPlacedMap, TypeParameter.UpdateAndNotification);
                     WhoPlacedMaps.Remove(SelectedWhoPlacedMap);
+                }
                 else
                     MessageBox.Show(Message);
             }
-        }
-
-        private async void UpdateWhoPlacedMap()
-        {
-            if (SelectedWhoPlacedMap == null)
-                return;
-
-            var (WhoPlacedMapDTO, Message) = await _whoPlacedMapService.UpdateAsync(SelectedWhoPlacedMap.IdWhoPlacedMap, WhoPlacedMapName, WhoPlacedMapDescription);
-
-            if (Message == string.Empty)
-                WhoPlacedMaps.ReplaceItem(SelectedWhoPlacedMap, WhoPlacedMapDTO);
-            else
-                MessageBox.Show(Message);
         }
 
         #endregion

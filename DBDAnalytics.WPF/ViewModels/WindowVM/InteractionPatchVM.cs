@@ -126,15 +126,42 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddPatch()
         {
-            var newPatchDTO = await _patchService.CreateAsync(PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
+            var (Patch, Message) = await _patchService.CreateAsync(PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
 
-            if (newPatchDTO.Message != string.Empty)
+            if (Message != string.Empty)
             {
-                MessageBox.Show(newPatchDTO.Message);
+                MessageBox.Show(Message);
                 return;
             }
             else
-                Patches.Add(newPatchDTO.PatchDTO);
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, Patch, TypeParameter.AddAndNotification);
+                Patches.Add(Patch);
+            }
+                
+        }
+
+        private async void UpdatePatch()
+        {
+            if (SelectedPatch == null)
+                return;
+
+            var (PatchDTO, Message) = await _patchService.UpdateAsync(SelectedPatch.IdPatch, PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
+
+            if (Message == string.Empty)
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, PatchDTO, TypeParameter.UpdateAndNotification);
+                Patches.ReplaceItem(SelectedPatch, PatchDTO);
+            }
+            else
+            {
+                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var forcedPatchDTO = await _patchService.ForcedUpdateAsync(SelectedPatch.IdPatch, PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedPatchDTO, TypeParameter.UpdateAndNotification);
+                    Patches.ReplaceItem(SelectedPatch, forcedPatchDTO);
+                }
+            }
         }
 
         private async void DeletePatch()
@@ -147,28 +174,12 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 var (IsDeleted, Message) = await _patchService.DeleteAsync(SelectedPatch.IdPatch);
 
                 if (IsDeleted == true)
+                {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedPatch, TypeParameter.DeleteAndNotification);
                     Patches.Remove(SelectedPatch);
+                }
                 else
                     MessageBox.Show(Message);
-            }
-        }
-
-        private async void UpdatePatch()
-        {
-            if (SelectedPatch == null)
-                return;
-
-            var (PatchDTO, Message) = await _patchService.UpdateAsync(SelectedPatch.IdPatch, PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
-
-            if (Message == string.Empty)
-                Patches.ReplaceItem(SelectedPatch, PatchDTO);
-            else
-            {
-                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    var forcedPatchDTO = await _patchService.ForcedUpdateAsync(SelectedPatch.IdPatch, PatchNumber, DateOnly.FromDateTime(PatchDateRelease), PatchDateDescription);
-                    Patches.ReplaceItem(SelectedPatch, forcedPatchDTO);
-                }
             }
         }
 

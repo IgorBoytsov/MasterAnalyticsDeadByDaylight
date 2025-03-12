@@ -300,6 +300,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                     ItemAddons = new ObservableCollection<ItemAddonDTO>() 
                 });
 
+                NotificationTransmittingValue(WindowName.AddMatch, ItemDTO, TypeParameter.AddAndNotification);
                 ClearInputDataItem();
             }
         }
@@ -322,6 +323,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                                                    ItemDescription = ItemDTO.ItemDescription,
                                                    ItemAddons = SelectedItemWithAddonsDTO.ItemAddons,
                                                });
+
+                NotificationTransmittingValue(WindowName.AddMatch, ItemDTO, TypeParameter.UpdateAndNotification);
                 ClearInputDataItem();
             }
             else
@@ -332,12 +335,14 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                     ItemWithAddonsDTOs.ReplaceItem(SelectedItemWithAddonsDTO,
                                                    new ItemWithAddonsDTO
                                                    {
-                                                       IdItem = ItemDTO.IdItem,
-                                                       ItemName = ItemDTO.ItemName,
-                                                       ItemImage = ItemDTO.ItemImage,
-                                                       ItemDescription = ItemDTO.ItemDescription,
+                                                       IdItem = forcedItemWithAddonDTO.IdItem,
+                                                       ItemName = forcedItemWithAddonDTO.ItemName,
+                                                       ItemImage = forcedItemWithAddonDTO.ItemImage,
+                                                       ItemDescription = forcedItemWithAddonDTO.ItemDescription,
                                                        ItemAddons = SelectedItemWithAddonsDTO.ItemAddons,
                                                    });
+
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedItemWithAddonDTO, TypeParameter.UpdateAndNotification);
                     ClearInputDataItem();
                 }
             }
@@ -359,6 +364,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, new ItemDTO { IdItem = SelectedItemWithAddonsDTO.IdItem }, TypeParameter.DeleteAndNotification);
                     ItemWithAddonsDTOs.Remove(SelectedItemWithAddonsDTO);
                     ClearInputDataItem();
                 }
@@ -392,6 +398,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             }
             else
             {
+                NotificationTransmittingValue(WindowName.AddMatch, ItemAddonDTO, TypeParameter.AddAndNotification);
                 SelectedItemWithAddonsDTO.ItemAddons.Add(ItemAddonDTO);
                 ClearInputDataItemAddon();
             } 
@@ -416,7 +423,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                                                                               ItemAddonDescription);
 
             if (Message == string.Empty)
-            {      
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, ItemAddonDTO, TypeParameter.UpdateAndNotification);
                 SelectedItemWithAddonsDTO.ItemAddons.ReplaceItem(SelectedItemAddonDTO, ItemAddonDTO);
                 ClearInputDataItemAddon();
             }
@@ -440,6 +448,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedItemAddonDTO, TypeParameter.DeleteAndNotification);
                     SelectedItemWithAddonsDTO.ItemAddons.Remove(SelectedItemAddonDTO);
                     ClearInputDataItemAddon();
                 }

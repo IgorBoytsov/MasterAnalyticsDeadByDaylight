@@ -115,15 +115,42 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddGameMode()
         {
-            var newEventDTO = await _gameModeService.CreateAsync(GameModeName, GameModeDescription);
+            var (GameMode, Message) = await _gameModeService.CreateAsync(GameModeName, GameModeDescription);
 
-            if (newEventDTO.Message != string.Empty)
+            if (Message != string.Empty)
             {
-                MessageBox.Show(newEventDTO.Message);
+                MessageBox.Show(Message);
                 return;
             }
             else
-                GameMods.Add(newEventDTO.GameModeDTO);
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, GameMode, TypeParameter.AddAndNotification);
+                GameMods.Add(GameMode);
+            }
+                
+        }
+
+        private async void UpdateGameMode()
+        {
+            if (SelectedGameMode == null)
+                return;
+
+            var (GameModeDTO, Message) = await _gameModeService.UpdateAsync(SelectedGameMode.IdGameMode, GameModeName, GameModeDescription);
+
+            if (Message == string.Empty)
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, GameModeDTO, TypeParameter.UpdateAndNotification);
+                GameMods.ReplaceItem(SelectedGameMode, GameModeDTO);
+            }
+            else
+            {
+                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var forcedGameModeDTO = await _gameModeService.ForcedUpdateAsync(SelectedGameMode.IdGameMode, GameModeName, GameModeDescription);
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedGameModeDTO, TypeParameter.UpdateAndNotification);
+                    GameMods.ReplaceItem(SelectedGameMode, forcedGameModeDTO);
+                }
+            }
         }
 
         private async void DeleteGameMode()
@@ -136,29 +163,13 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 var (IsDeleted, Message) = await _gameModeService.DeleteAsync(SelectedGameMode.IdGameMode);
 
                 if (IsDeleted == true)
+                {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedGameMode, TypeParameter.DeleteAndNotification);
                     GameMods.Remove(SelectedGameMode);
+                }
                 else
                     MessageBox.Show(Message);
             } 
-        }
-
-        private async void UpdateGameMode()
-        {
-            if (SelectedGameMode == null)
-                return;
-
-            var (GameModeDTO, Message) = await _gameModeService.UpdateAsync(SelectedGameMode.IdGameMode, GameModeName, GameModeDescription);
-
-            if (Message == string.Empty)
-                GameMods.ReplaceItem(SelectedGameMode, GameModeDTO);
-            else
-            {
-                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    var forcedGameEventDTO = await _gameModeService.ForcedUpdateAsync(SelectedGameMode.IdGameMode, GameModeName, GameModeDescription);
-                    GameMods.ReplaceItem(SelectedGameMode, forcedGameEventDTO);
-                }
-            }
         }
 
         #endregion

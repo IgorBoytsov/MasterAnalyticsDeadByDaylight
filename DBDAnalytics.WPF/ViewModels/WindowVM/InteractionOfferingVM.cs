@@ -341,17 +341,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             }
             else
             {
-                Offerings.Add(new OfferingDTO
-                {
-                    IdCategory = Offering.IdCategory,
-                    OfferingName = Offering.OfferingName,
-                    IdOffering = Offering.IdOffering,
-                    IdRarity = Offering.IdRarity,
-                    IdRole = Offering.IdRole,
-                    OfferingDescription = Offering.OfferingDescription,
-                    OfferingImage = Offering.OfferingImage,
-                });
-
+                Offerings.Add(Offering);
+                NotificationTransmittingValue(WindowName.AddMatch, Offering, TypeParameter.AddAndNotification);
                 ClearInputDataOffering();
             }
         }
@@ -371,39 +362,24 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
             if (Message == string.Empty)
             {
-                Offerings.ReplaceItem(SelectedOffering, new OfferingDTO
-                {
-                    IdCategory = Offering.IdCategory,
-                    OfferingName = Offering.OfferingName,
-                    IdOffering = Offering.IdOffering,
-                    IdRarity = Offering.IdRarity,
-                    IdRole = Offering.IdRole,
-                    OfferingDescription = Offering.OfferingDescription,
-                    OfferingImage = Offering.OfferingImage,
-                });
+                Offerings.ReplaceItem(SelectedOffering, Offering);
+                NotificationTransmittingValue(WindowName.AddMatch, Offering, TypeParameter.UpdateAndNotification);
                 ClearInputDataOffering();
             }
             else
             {
                 if (MessageBox.Show(Message + "Вы точно хотите обновить запись?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    var forcedItemWithAddonDTO = await _offeringService.ForcedUpdateAsync(SelectedOffering.IdOffering,
-                                                                                          SelectedRole.IdRole,
-                                                                                          SelectedOfferingCategory.IdCategory,
-                                                                                          SelectedRarity.IdRarity,
-                                                                                          OfferingName,
-                                                                                          OfferingImage,
-                                                                                          OfferingDescription);
-                    Offerings.ReplaceItem(SelectedOffering, new OfferingDTO
-                    {
-                        IdCategory = forcedItemWithAddonDTO.IdCategory,
-                        OfferingName = forcedItemWithAddonDTO.OfferingName,
-                        IdOffering = forcedItemWithAddonDTO.IdOffering,
-                        IdRarity = forcedItemWithAddonDTO.IdRarity,
-                        IdRole = forcedItemWithAddonDTO.IdRole,
-                        OfferingDescription = forcedItemWithAddonDTO.OfferingDescription,
-                        OfferingImage = forcedItemWithAddonDTO.OfferingImage,
-                    });
+                    var forcedOffering = await _offeringService.ForcedUpdateAsync(SelectedOffering.IdOffering,
+                                                                                  SelectedRole.IdRole,
+                                                                                  SelectedOfferingCategory.IdCategory,
+                                                                                  SelectedRarity.IdRarity,
+                                                                                  OfferingName,
+                                                                                  OfferingImage,
+                                                                                  OfferingDescription);
+
+                    Offerings.ReplaceItem(SelectedOffering, forcedOffering);
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedOffering, TypeParameter.UpdateAndNotification);
                     ClearInputDataOffering();
                 }
             }
@@ -425,6 +401,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedOffering, TypeParameter.DeleteAndNotification);
                     Offerings.Remove(SelectedOffering);
                     ClearInputDataOffering();
                 }

@@ -90,7 +90,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         #region Добавление | Удаление | Обновление записей
 
         private RelayCommand _addRoleCommand;
-        public RelayCommand AddRoleCommand { get => _addRoleCommand ??= new(obj => { AddRole(); }); }
+        public RelayCommand AddRoleCommand { get => _addRoleCommand ??= new(obj => { CreateRole(); }); }
 
         private RelayCommand _deleteRoleCommand;
         public RelayCommand DeleteRoleCommand { get => _deleteRoleCommand ??= new(obj => { DeleteRole(); }); }
@@ -113,19 +113,20 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         #region CRUD
 
         // TODO : Изменить MessageBox на кастомное окно
-        private async void AddRole()
+        private async void CreateRole()
         {
-            var newRoleDTO = await _roleService.CreateAsync(RoleName, RoleDescription);
+            var (Role, Message) = await _roleService.CreateAsync(RoleName, RoleDescription);
 
-            if (newRoleDTO.Message != string.Empty)
+            if (Message != string.Empty)
             {
-                MessageBox.Show(newRoleDTO.Message);
+                MessageBox.Show(Message);
                 return;
             }
             else
             {
-                NotificationTransmittingValue(WindowName.InteractionOffering, newRoleDTO.RoleDTO, TypeParameter.AddAndNotification);
-                Roles.Add(newRoleDTO.RoleDTO);
+                NotificationTransmittingValue(WindowName.InteractionOffering, Role, TypeParameter.AddAndNotification);
+                NotificationTransmittingValue(WindowName.AddMatch, Role, TypeParameter.AddAndNotification);
+                Roles.Add(Role);
             }
                 
         }
@@ -140,6 +141,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (Message == string.Empty)
             {
                 NotificationTransmittingValue(WindowName.InteractionOffering, RoleDTO, TypeParameter.UpdateAndNotification);
+                NotificationTransmittingValue(WindowName.AddMatch, RoleDTO, TypeParameter.UpdateAndNotification);
                 Roles.ReplaceItem(SelectedRole, RoleDTO);
             }
             else
@@ -148,6 +150,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 {
                     var forcedRoleDTO = await _roleService.ForcedUpdateAsync(SelectedRole.IdRole, RoleName, RoleDescription);
                     NotificationTransmittingValue(WindowName.InteractionOffering, forcedRoleDTO, TypeParameter.UpdateAndNotification);
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedRoleDTO, TypeParameter.UpdateAndNotification);
                     Roles.ReplaceItem(SelectedRole, forcedRoleDTO);
                 }
             }
@@ -165,6 +168,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 if (IsDeleted == true)
                 {
                     NotificationTransmittingValue(WindowName.InteractionOffering, SelectedRole.IdRole, TypeParameter.DeleteAndNotification);
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedRole, TypeParameter.UpdateAndNotification);
                     Roles.Remove(SelectedRole);
                 }
                 else

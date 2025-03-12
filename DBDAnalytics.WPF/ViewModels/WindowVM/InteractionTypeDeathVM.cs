@@ -102,8 +102,6 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         /*--Методы----------------------------------------------------------------------------------------*/
 
-        #region CRUD
-
         private async void GetTypeDeaths()
         {
             var typeDeaths = await _typeDeathService.GetAllAsync();
@@ -112,18 +110,46 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 TypeDeaths.Add(typeDeath);
         }
 
+        #region CRUD
+
         // TODO : Изменить MessageBox на кастомное окно
         private async void AddTypeDeath()
         {
-            var newTypeDeathDTO = await _typeDeathService.CreateAsync(TypeDeathName, TypeDeathDescription);
+            var (TypeDeath, Message) = await _typeDeathService.CreateAsync(TypeDeathName, TypeDeathDescription);
 
-            if (newTypeDeathDTO.Message != string.Empty)
+            if (Message != string.Empty)
             {
-                MessageBox.Show(newTypeDeathDTO.Message);
+                MessageBox.Show(Message);
                 return;
             }
             else
-                TypeDeaths.Add(newTypeDeathDTO.TypeDeathDTO);
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, TypeDeath, TypeParameter.AddAndNotification);
+                TypeDeaths.Add(TypeDeath);
+            }  
+        }
+
+        private async void UpdateTypeDeath()
+        {
+            if (SelectedTypeDeath == null)
+                return;
+
+            var (TypeDeathDTO, Message) = await _typeDeathService.UpdateAsync(SelectedTypeDeath.IdTypeDeath, TypeDeathName, TypeDeathDescription);
+
+            if (Message == string.Empty)
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, TypeDeathDTO, TypeParameter.UpdateAndNotification);
+                TypeDeaths.ReplaceItem(SelectedTypeDeath, TypeDeathDTO);
+            }
+            else
+            {
+                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var forcedTypeDeathDTO = await _typeDeathService.ForcedUpdateAsync(SelectedTypeDeath.IdTypeDeath, TypeDeathName, TypeDeathDescription);
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedTypeDeathDTO, TypeParameter.UpdateAndNotification);
+                    TypeDeaths.ReplaceItem(SelectedTypeDeath, forcedTypeDeathDTO);
+                }
+            }
         }
 
         private async void DeleteTypeDeath()
@@ -136,28 +162,12 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 var (IsDeleted, Message) = await _typeDeathService.DeleteAsync(SelectedTypeDeath.IdTypeDeath);
 
                 if (IsDeleted == true)
+                {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedTypeDeath, TypeParameter.DeleteAndNotification);
                     TypeDeaths.Remove(SelectedTypeDeath);
+                }
                 else
                     MessageBox.Show(Message);
-            } 
-        }
-
-        private async void UpdateTypeDeath()
-        {
-            if (SelectedTypeDeath == null)
-                return;
-
-            var (TypeDeathDTO, Message) = await _typeDeathService.UpdateAsync(SelectedTypeDeath.IdTypeDeath, TypeDeathName, TypeDeathDescription);
-
-            if (Message == string.Empty)
-                TypeDeaths.ReplaceItem(SelectedTypeDeath, TypeDeathDTO);
-            else
-            {
-                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    var forcedTypeDeathDTO = await _typeDeathService.ForcedUpdateAsync(SelectedTypeDeath.IdTypeDeath, TypeDeathName, TypeDeathDescription);
-                    TypeDeaths.ReplaceItem(SelectedTypeDeath, forcedTypeDeathDTO);
-                }
             }
         }
 

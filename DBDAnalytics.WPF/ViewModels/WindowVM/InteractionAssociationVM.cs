@@ -55,6 +55,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
                     PlayerAssociationName = value?.PlayerAssociationName;
                     PlayerAssociationDescription = value?.PlayerAssociationDescription;
+                    Message = string.Empty;
 
                     OnPropertyChanged();
                 }
@@ -83,14 +84,29 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             }
         }
 
-        #endregion 
+        #endregion
+
+        #region Свойсвто : Message
+
+        private string _message;
+        public string Message
+        {
+            get => _message;
+            set
+            {
+                _message = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
 
         /*--Команды---------------------------------------------------------------------------------------*/
 
         #region Добавление | Удаление | Обновление записей
 
         private RelayCommand _addPlayerAssociationCommand;
-        public RelayCommand AddPlayerAssociationCommand { get => _addPlayerAssociationCommand ??= new(obj => { AddPlayerAssociation(); }); }
+        public RelayCommand AddPlayerAssociationCommand { get => _addPlayerAssociationCommand ??= new(obj => { CreatePlayerAssociation(); }); }
 
         private RelayCommand _deletePlayerAssociationCommand;
         public RelayCommand DeletePlayerAssociationCommand { get => _deletePlayerAssociationCommand ??= new(obj => { DeletePlayerAssociation(); }); }
@@ -113,17 +129,44 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         #region CRUD
 
         // TODO : Изменить MessageBox на кастомное окно
-        private async void AddPlayerAssociation()
+        private async void CreatePlayerAssociation()
         {
-            var newPlayerAssociationDTO = await _associationService.CreateAsync(PlayerAssociationName, PlayerAssociationDescription);
+            var (PlayerAssociation, Message) = await _associationService.CreateAsync(PlayerAssociationName, PlayerAssociationDescription);
 
-            if (newPlayerAssociationDTO.Message != string.Empty)
+            if (Message != string.Empty)
             {
-                MessageBox.Show(newPlayerAssociationDTO.Message);
+                MessageBox.Show(Message);
                 return;
             }
             else
-                PlayerAssociations.Add(newPlayerAssociationDTO.PlayerAssociationDTO);
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, PlayerAssociation, TypeParameter.AddAndNotification);
+                PlayerAssociations.Add(PlayerAssociation);
+            }
+               
+        }
+
+        private async void UpdatePlayerAssociation()
+        {
+            if (SelectedPlayerAssociation == null)
+                return;
+
+            var (PlayerAssociationDTO, Message) = await _associationService.UpdateAsync(SelectedPlayerAssociation.IdPlayerAssociation, PlayerAssociationName, PlayerAssociationDescription);
+
+            if (Message == string.Empty)
+            {
+                NotificationTransmittingValue(WindowName.AddMatch, PlayerAssociationDTO, TypeParameter.UpdateAndNotification);
+                PlayerAssociations.ReplaceItem(SelectedPlayerAssociation, PlayerAssociationDTO);
+            }
+            else
+            {
+                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var forcedPlayerAssociationDTO = await _associationService.ForcedUpdateAsync(SelectedPlayerAssociation.IdPlayerAssociation, PlayerAssociationName, PlayerAssociationDescription);
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedPlayerAssociationDTO, TypeParameter.UpdateAndNotification);
+                    PlayerAssociations.ReplaceItem(SelectedPlayerAssociation, forcedPlayerAssociationDTO);
+                }
+            }
         }
 
         private async void DeletePlayerAssociation()
@@ -136,31 +179,16 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 var (IsDeleted, Message) = await _associationService.DeleteAsync(SelectedPlayerAssociation.IdPlayerAssociation);
 
                 if (IsDeleted == true)
+                {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedPlayerAssociation, TypeParameter.DeleteAndNotification);
                     PlayerAssociations.Remove(SelectedPlayerAssociation);
+                }
                 else
                     MessageBox.Show(Message);
             }
         }
 
-        private async void UpdatePlayerAssociation()
-        {
-            if (SelectedPlayerAssociation == null)
-                return;
-
-            var (PlayerAssociationDTO, Message) = await _associationService.UpdateAsync(SelectedPlayerAssociation.IdPlayerAssociation, PlayerAssociationName, PlayerAssociationDescription);
-
-            if (Message == string.Empty)
-                PlayerAssociations.ReplaceItem(SelectedPlayerAssociation, PlayerAssociationDTO);
-            else
-            {
-                if (MessageBox.Show(Message + "Вы точно хотите произвести обновление?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    var forcedPlayerAssociationDTO = await _associationService.ForcedUpdateAsync(SelectedPlayerAssociation.IdPlayerAssociation, PlayerAssociationName, PlayerAssociationDescription);
-                    PlayerAssociations.ReplaceItem(SelectedPlayerAssociation, forcedPlayerAssociationDTO);
-                }
-            }
-        }
-
         #endregion
+
     }
 }

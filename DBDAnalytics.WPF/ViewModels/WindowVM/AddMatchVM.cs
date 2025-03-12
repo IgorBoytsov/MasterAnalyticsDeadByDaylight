@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.Application.DTOs;
+using DBDAnalytics.Application.Extensions;
 using DBDAnalytics.Application.Services.Abstraction;
 using DBDAnalytics.WPF.Command;
 using DBDAnalytics.WPF.Enums;
@@ -69,53 +70,254 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             _killerService = killerService;
             _survivorService = survivorService;
 
-            Title = "Добавить матч.";
-            var image = _gameStatisticService.Get(13781);
-            ResultMathImages = image.ResultMatch;
+            Title = "Добавление матча";
 
             GetData();
         }
 
-        private byte[] _resultMathImages;
-        public byte[] ResultMathImages
-        {
-            get => _resultMathImages;
-            set
-            {
-                _resultMathImages = value;
-                OnPropertyChanged();
-            }
-        }
-
         public void Update(object parameter, TypeParameter typeParameter = TypeParameter.None)
         {
-            #region Принятие добавляемых данных
+            if (typeParameter == TypeParameter.AddAndNotification) GettingAddAndNotificationData(parameter);
 
-            if (typeParameter == TypeParameter.AddAndNotification)
-            {
+            if (typeParameter == TypeParameter.UpdateAndNotification) GettingUpdateAndNotificationData(parameter);
 
-            }
-
-            #endregion
-
-            #region Обновление обновляемых данных
-
-            if (typeParameter == TypeParameter.UpdateAndNotification)
-            {
-
-            }
-
-            #endregion
-
-            #region Удаление удаляемых данных
-
-            if (typeParameter == TypeParameter.DeleteAndNotification)
-            {
-
-            }
-
-            #endregion
+            if (typeParameter == TypeParameter.DeleteAndNotification) GettingDeleteAndNotificationData(parameter);
         }
+
+        #region Обработка получаемых значений с других окон | страниц
+
+        private void GettingAddAndNotificationData(object value)
+        {
+            Action action = value switch
+            {
+                KillerDTO => () => Killers.Add((KillerDTO)value)
+                ,
+                KillerPerkDTO => () => KillerPerks.Add((KillerPerkDTO)value)
+                ,
+                PlatformDTO => () => Platforms.Add((PlatformDTO)value)
+                ,
+                TypeDeathDTO => () => TypeDeaths.Add((TypeDeathDTO)value)
+                ,
+                MapDTO => () => Maps.Add((MapDTO)value)
+                ,
+                PatchDTO => () => Patches.Add((PatchDTO)value)
+                ,
+                GameModeDTO => () => GameModes.Add((GameModeDTO)value)
+                ,
+                GameEventDTO => () => GameEvents.Add((GameEventDTO)value)
+                ,
+                WhoPlacedMapDTO => () => WhoPlacedMaps.Add((WhoPlacedMapDTO)value)
+                ,
+                SurvivorDTO => () => Survivors.Add((SurvivorDTO)value)
+                ,
+                SurvivorPerkDTO => () => SurvivorPerks.Add((SurvivorPerkDTO)value)
+                ,
+                ItemDTO => () => Items.Add((ItemDTO)value)
+                ,
+                MatchAttributeDTO => () => MatchAttributes.Add((MatchAttributeDTO)value)
+                ,
+                KillerAddonDTO => () =>
+                {
+                    _killerAddons.Add((KillerAddonDTO)value);
+                    LoadKillerAddons();
+                }
+                ,
+                OfferingDTO => () =>
+                {
+                    _offerings.Add((OfferingDTO)value);
+
+                    LoadFirstSurvivorOffering();
+                    LoadSecondSurvivorOffering();
+                    LoadThirdSurvivorOffering();
+                    LoadFourthSurvivorOffering();
+
+                    LoadKillerOffering();
+                }
+                ,
+                ItemAddonDTO => () =>
+                {
+                    _itemAddons.Add((ItemAddonDTO)value);
+
+                    LoadFirstSurvivorItemAddon();
+                    LoadSecondSurvivorItemAddon();
+                    LoadThirdSurvivorItemAddon();
+                    LoadFourthSurvivorItemAddon();
+                }
+                ,
+                PlayerAssociationDTO => () =>
+                {
+                    KillerPlayerAssociations.Add((PlayerAssociationDTO)value);
+                    GetPlayerAssociations();
+                }
+                ,
+                RoleDTO => () =>
+                {
+                    _roles.Add((RoleDTO)value);
+                    LoadSurvivorRoles();
+                    LoadKillerRoles();
+                }
+                ,
+                _ => () => throw new Exception("Такой тип не обрабатывается.")
+            };
+
+            action?.Invoke();
+        }
+
+        private void GettingUpdateAndNotificationData(object value)
+        {
+            Action action = value switch
+            {
+                KillerDTO => () => Killers.ReplaceItem(Killers.FirstOrDefault(x => x.IdKiller == ((KillerDTO)value).IdKiller), (KillerDTO)value) 
+                ,
+                KillerPerkDTO => () => KillerPerks.ReplaceItem(KillerPerks.FirstOrDefault(x => x.IdKillerPerk == ((KillerPerkDTO)value).IdKillerPerk), (KillerPerkDTO)value)
+                ,
+                PlatformDTO => () => Platforms.ReplaceItem(Platforms.FirstOrDefault(x => x.IdPlatform == ((PlatformDTO)value).IdPlatform), (PlatformDTO)value)
+                ,
+                TypeDeathDTO => () => TypeDeaths.ReplaceItem(TypeDeaths.FirstOrDefault(x => x.IdTypeDeath == ((TypeDeathDTO)value).IdTypeDeath), (TypeDeathDTO)value)
+                ,
+                MapDTO => () => Maps.ReplaceItem(Maps.FirstOrDefault(x => x.IdMap == ((MapDTO)value).IdMap), (MapDTO)value)
+                ,
+                PatchDTO => () => Patches.ReplaceItem(Patches.FirstOrDefault(x => x.IdPatch == ((PatchDTO)value).IdPatch), (PatchDTO)value)
+                ,
+                GameModeDTO => () => GameModes.ReplaceItem(GameModes.FirstOrDefault(x => x.IdGameMode == ((GameModeDTO)value).IdGameMode), (GameModeDTO)value)
+                ,
+                GameEventDTO => () => GameEvents.ReplaceItem(GameEvents.FirstOrDefault(x => x.IdGameEvent == ((GameEventDTO)value).IdGameEvent), (GameEventDTO)value)
+                ,
+                WhoPlacedMapDTO => () => WhoPlacedMaps.ReplaceItem(WhoPlacedMaps.FirstOrDefault(x => x.IdWhoPlacedMap == ((WhoPlacedMapDTO)value).IdWhoPlacedMap), (WhoPlacedMapDTO)value)
+                ,
+                SurvivorDTO => () => Survivors.ReplaceItem(Survivors.FirstOrDefault(x => x.IdSurvivor == ((SurvivorDTO)value).IdSurvivor), (SurvivorDTO)value)
+                ,
+                SurvivorPerkDTO => () => SurvivorPerks.ReplaceItem(SurvivorPerks.FirstOrDefault(x => x.IdSurvivorPerk == ((SurvivorPerkDTO)value).IdSurvivorPerk), (SurvivorPerkDTO)value)
+                ,
+                ItemDTO => () => Items.ReplaceItem(Items.FirstOrDefault(x => x.IdItem == ((ItemDTO)value).IdItem), (ItemDTO)value)
+                ,
+                MatchAttributeDTO => () => MatchAttributes.ReplaceItem(MatchAttributes.FirstOrDefault(x => x.IdMatchAttribute == ((MatchAttributeDTO)value).IdMatchAttribute), (MatchAttributeDTO)value)
+                ,
+                KillerAddonDTO => () =>
+                {
+                    _killerAddons.ReplaceItem(_killerAddons.FirstOrDefault(x => x.IdKillerAddon == ((KillerAddonDTO)value).IdKillerAddon), (KillerAddonDTO)value);
+                    LoadKillerAddons();
+                }
+                ,
+                OfferingDTO => () =>
+                {
+                    _offerings.ReplaceItem(_offerings.FirstOrDefault(x => x.IdOffering == ((OfferingDTO)value).IdOffering), (OfferingDTO)value);
+
+                    LoadFirstSurvivorOffering();
+                    LoadSecondSurvivorOffering();
+                    LoadThirdSurvivorOffering();
+                    LoadFourthSurvivorOffering();
+
+                    LoadKillerOffering();
+                }
+                ,
+                ItemAddonDTO => () =>
+                {
+                    _itemAddons.ReplaceItem(_itemAddons.FirstOrDefault(x => x.IdItemAddon == ((ItemAddonDTO)value).IdItemAddon), (ItemAddonDTO)value);
+
+                    LoadFirstSurvivorItemAddon();
+                    LoadSecondSurvivorItemAddon();
+                    LoadThirdSurvivorItemAddon();
+                    LoadFourthSurvivorItemAddon();
+                }
+                ,
+                PlayerAssociationDTO => () =>
+                {
+                    KillerPlayerAssociations.ReplaceItem(KillerPlayerAssociations.FirstOrDefault(x => x.IdPlayerAssociation == ((PlayerAssociationDTO)value).IdPlayerAssociation), (PlayerAssociationDTO)value);
+                    GetPlayerAssociations();
+                }
+                ,
+                RoleDTO => () =>
+                {
+                    _roles.ReplaceItem(_roles.FirstOrDefault(x => x.IdRole == ((RoleDTO)value).IdRole), (RoleDTO)value);
+                    LoadSurvivorRoles();
+                    LoadKillerRoles();
+                }
+                ,
+                _ => () => throw new Exception("Такой тип не обрабатывается.")
+            };
+
+            action?.Invoke();
+        }
+
+        private void GettingDeleteAndNotificationData(object value)
+        {
+            Action action = value switch
+            {
+                KillerDTO => () => Killers.Remove(Killers.FirstOrDefault(x => x.IdKiller == ((KillerDTO)value).IdKiller))
+                ,
+                KillerPerkDTO => () => KillerPerks.Remove(KillerPerks.FirstOrDefault(x => x.IdKillerPerk == ((KillerPerkDTO)value).IdKillerPerk))
+                ,
+                PlatformDTO => () => Platforms.Remove(Platforms.FirstOrDefault(x => x.IdPlatform == ((PlatformDTO)value).IdPlatform))
+                ,
+                TypeDeathDTO => () => TypeDeaths.Remove(TypeDeaths.FirstOrDefault(x => x.IdTypeDeath == ((TypeDeathDTO)value).IdTypeDeath))
+                ,
+                MapDTO => () => Maps.Remove(Maps.FirstOrDefault(x => x.IdMap == ((MapDTO)value).IdMap))
+                ,
+                PatchDTO => () => Patches.Remove(Patches.FirstOrDefault(x => x.IdPatch == ((PatchDTO)value).IdPatch))
+                ,
+                GameModeDTO => () => GameModes.Remove(GameModes.FirstOrDefault(x => x.IdGameMode == ((GameModeDTO)value).IdGameMode))
+                ,
+                GameEventDTO => () => GameEvents.Remove(GameEvents.FirstOrDefault(x => x.IdGameEvent == ((GameEventDTO)value).IdGameEvent))
+                ,
+                WhoPlacedMapDTO => () => WhoPlacedMaps.Remove(WhoPlacedMaps.FirstOrDefault(x => x.IdWhoPlacedMap == ((WhoPlacedMapDTO)value).IdWhoPlacedMap))
+                ,
+                SurvivorDTO => () => Survivors.Remove(Survivors.FirstOrDefault(x => x.IdSurvivor == ((SurvivorDTO)value).IdSurvivor))
+                ,
+                SurvivorPerkDTO => () => SurvivorPerks.Remove(SurvivorPerks.FirstOrDefault(x => x.IdSurvivorPerk == ((SurvivorPerkDTO)value).IdSurvivorPerk))
+                ,
+                ItemDTO => () => Items.Remove(Items.FirstOrDefault(x => x.IdItem == ((ItemDTO)value).IdItem))
+                ,
+                MatchAttributeDTO => () => MatchAttributes.Remove(MatchAttributes.FirstOrDefault(x => x.IdMatchAttribute == ((MatchAttributeDTO)value).IdMatchAttribute))
+                ,
+                KillerAddonDTO => () =>
+                {
+                    _killerAddons.Remove(_killerAddons.FirstOrDefault(x => x.IdKillerAddon == ((KillerAddonDTO)value).IdKillerAddon));
+                    LoadKillerAddons();
+                }
+                ,
+                OfferingDTO => () =>
+                {
+                    _offerings.Remove(_offerings.FirstOrDefault(x => x.IdOffering == ((OfferingDTO)value).IdOffering));
+
+                    LoadFirstSurvivorOffering();
+                    LoadSecondSurvivorOffering();
+                    LoadThirdSurvivorOffering();
+                    LoadFourthSurvivorOffering();
+
+                    LoadKillerOffering();
+                }
+                ,
+                ItemAddonDTO => () =>
+                {
+                    _itemAddons.Remove(_itemAddons.FirstOrDefault(x => x.IdItemAddon == ((ItemAddonDTO)value).IdItemAddon));
+
+                    LoadFirstSurvivorItemAddon();
+                    LoadSecondSurvivorItemAddon();
+                    LoadThirdSurvivorItemAddon();
+                    LoadFourthSurvivorItemAddon();
+                }
+                ,
+                PlayerAssociationDTO => () =>
+                {
+                    KillerPlayerAssociations.Remove(KillerPlayerAssociations.FirstOrDefault(x => x.IdPlayerAssociation == ((PlayerAssociationDTO)value).IdPlayerAssociation));
+                    GetPlayerAssociations();
+                }
+                ,
+                RoleDTO => () =>
+                {
+                    _roles.Remove(_roles.FirstOrDefault(x => x.IdRole == ((RoleDTO)value).IdRole));
+                    LoadSurvivorRoles();
+                    LoadKillerRoles();
+                }
+                ,
+                _ => () => throw new Exception("Такой тип не обрабатывается.")
+            };
+
+            action?.Invoke();
+        }
+
+        #endregion
 
         /*--Свойства \ Коллекции--------------------------------------------------------------------------*/
 
@@ -130,6 +332,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         private List<OfferingDTO> _offerings = [];
 
         private List<RoleDTO> _roles = [];
+
+        private List<PlayerAssociationDTO> _playerAssociations = [];
 
         public ObservableCollection<PlatformDTO> Platforms { get; private set; } = [];
 
@@ -1803,12 +2007,12 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         #endregion
 
 
-        #region Выбор изображений
+        #region Изображения
 
         private RelayCommand _selectImagesCommand;
         public RelayCommand SelectImagesCommand
         {
-            get => _selectImagesCommand ??= new( obj =>
+            get => _selectImagesCommand ??= new( async obj =>
             {
                 // TODO : Заменить на сервис
                 OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -1817,7 +2021,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 {
                     foreach (var file in openFileDialog.FileNames)
                     {
-                        var imageByte = ImageHelper.ImageToByteArray(file);
+                        var imageByte = await ImageHelper.ImageToByteArrayAsync(file);
 
                         var imageInfo = new ImageInfo
                         {
@@ -1860,13 +2064,63 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         public RelayCommand LoadEndMatchImageCommand { get => _loadEndMatchImageCommand ??= new(obj => { CropEndMatchImage(); }); }
 
         private RelayCommand _clearImageListCommand;
-        public RelayCommand ClearImageListCommand { get => _clearImageListCommand ??= new(obj => { ImagePaths.Clear(); }); }
+        public RelayCommand ClearImageListCommand 
+        { 
+            get => _clearImageListCommand ??= new(obj => 
+            { 
+                ImagePaths.Clear(); 
+                SetNullImage();
+            }); 
+        }
 
         private RelayCommand _deleteSelectedImageCommand;
         public RelayCommand DeleteSelectedImageCommand { get => _deleteSelectedImageCommand ??= new(obj => { DeleteSelectImage(); }); }
 
         #endregion
 
+
+        #region Открытие окон для добавление зависимых данных
+
+        private RelayCommand _openKillerWindowCommand;
+        public RelayCommand OpenKillerWindowCommand { get => _openKillerWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionKiller, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openPlatformWindowCommand;
+        public RelayCommand OpenPlatformWindowCommand { get => _openPlatformWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionPlatform, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openTypeDeathWindowCommand;
+        public RelayCommand OpenTypeDeathWindowCommand { get => _openTypeDeathWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionTypeDeath, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openMeasurementWindowCommand;
+        public RelayCommand OpenMeasurementWindowCommand { get => _openMeasurementWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionMeasurement, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openPatchWindowCommand;
+        public RelayCommand OpenPatchWindowCommand { get => _openPatchWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionPatch, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openGameModeWindowCommand;
+        public RelayCommand OpenGameModeWindowCommand { get => _openGameModeWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionGameMode, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openGameEventWindowCommand;
+        public RelayCommand OpenGameEventWindowCommand { get => _openGameEventWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionGameEvent, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openWhoPlacedMapWindowCommand;
+        public RelayCommand OpenWhoPlacedMapWindowCommand { get => _openWhoPlacedMapWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionWhoPlacedMap, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openSurvivorWindowCommand;
+        public RelayCommand OpenSurvivorWindowCommand { get => _openSurvivorWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionSurvivor, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openItemWindowCommand;
+        public RelayCommand OpenItemWindowCommand { get => _openItemWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionItem, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openOfferingWindowCommand;
+        public RelayCommand OpenOfferingWindowCommand { get => _openOfferingWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionOffering, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openPlayerAssociationWindowCommand;
+        public RelayCommand OpenPlayerAssociationWindowCommand { get => _openPlayerAssociationWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionAssociation, parameter: null, TypeParameter.None, true); }); }
+
+        private RelayCommand _openRoleWindowCommand;
+        public RelayCommand OpenRoleWindowCommand { get => _openRoleWindowCommand ??= new(obj => { _windowNavigationService.OpenWindow(WindowName.InteractionRole, parameter: null, TypeParameter.None, true); }); }
+
+        #endregion
 
         #region Добавление матча в БД
 
@@ -1881,7 +2135,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         {
             GetPlatforms();
             GetTypeDeaths();
-            GetAndLoadPlayerAssociations();
+            GetPlayerAssociations();
             GetOffering();
             GetRoles();
             GetMatchAttributes();
@@ -1896,7 +2150,9 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             GetKillerPerks();
 
             LoadKillerRoles();
+            LoadKillerPlayerAssociations();
             LoadSurvivorRoles();
+            LoadSurvivorPlayerAssociations();
 
             GetMaps();
             GetPatches();
@@ -1923,23 +2179,23 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             SelectedFourthSurvivorPlatform = Platforms.FirstOrDefault();
         }
 
-        private void GetRoles()
-        {
-            _roles = _roleService.GetAll();
-        }
+        private void GetRoles() => _roles = _roleService.GetAll();
 
-        private void GetAndLoadPlayerAssociations()
-        {
-            var playerAssociation = _associationService.GetAll();
+        private void GetPlayerAssociations() => _playerAssociations = _associationService.GetAll();
 
-            foreach (var item in playerAssociation.Where(x => x.IdPlayerAssociation != 2 && x.IdPlayerAssociation != 4))
+        private void LoadKillerPlayerAssociations()
+        {
+            foreach (var item in _playerAssociations.Where(x => x.IdPlayerAssociation != 2 && x.IdPlayerAssociation != 4))
             {
                 KillerPlayerAssociations.Add(item);
             }
 
             SelectedKillerPlayerAssociation = KillerPlayerAssociations.FirstOrDefault();
+        }
 
-            foreach (var item in playerAssociation)
+        private void LoadSurvivorPlayerAssociations()
+        {
+            foreach (var item in _playerAssociations)
             {
                 SurvivorPlayerAssociations.Add(item);
             }
@@ -1967,26 +2223,27 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             SelectedKiller = Killers.FirstOrDefault();
         }
 
-        private void GetKillerAddons()
-        {
-            _killerAddons =  _killerAddonService.GetAll();
-        }     
+        private void GetKillerAddons() => _killerAddons = _killerAddonService.GetAll();
 
         private void GetKillerPerks()
         {
             _killerPerks.Clear();
-            _killerPerks = _killerPerkService.GetAll();
+            _killerPerks = _killerPerkService.GetAll().OrderBy(x => x.PerkName).ToList();
 
             foreach (var item in _killerPerks)
             {
                 KillerPerks.Add(item);
             }
+
+            var emptyPerk = KillerPerks.FirstOrDefault(x => x.IdKillerPerk == 119);
+
+            SelectedKillerFirstPerk = emptyPerk;
+            SelectedKillerSecondPerk = emptyPerk;
+            SelectedKillerThirdPerk = emptyPerk;
+            SelectedKillerFourthPerk = emptyPerk;
         }
 
-        private void GetOffering()
-        {
-            _offerings = _offeringService.GetAll();
-        }
+        private void GetOffering() => _offerings = _offeringService.GetAll();
 
         #endregion
 
@@ -1999,6 +2256,11 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             {
                 KillerAddons.Add(item);
             }
+
+            var emptyAddon = KillerAddons.Where(x => x.IdKiller == SelectedKiller.IdKiller).OrderByDescending(x => x.IdRarity).FirstOrDefault();
+
+            SelectedKillerFirstAddon = emptyAddon;
+            SelectedKillerSecondAddon = emptyAddon;
         }
 
         private void LoadKillerRoles()
@@ -2015,7 +2277,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         private void LoadKillerOffering()
         {
             KillerOfferings.Clear();
-            foreach (var item in _offerings.Where(x => x.IdRole == SelectedKillerRole.IdRole).OrderBy(x => x.IdRarity))
+            foreach (var item in _offerings.Where(x => x.IdRole == SelectedKillerRole.IdRole).OrderBy(x => x.IdRarity).ThenBy(x => x.OfferingName))
             {
                 KillerOfferings.Add(item);
             }
@@ -2046,12 +2308,34 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
         private void GetSurvivorPerks()
         {
-            _survivorPerks = _survivorPerkService.GetAll();
+            _survivorPerks = _survivorPerkService.GetAll().OrderBy(x => x.PerkName).ToList();
 
             foreach (var item in _survivorPerks)
             {
                 SurvivorPerks.Add(item);
             }
+
+            var emptyPerk = SurvivorPerks.FirstOrDefault(x => x.IdSurvivorPerk == 138);
+
+            SelectedFirstSurvivorFirstPerk = emptyPerk;
+            SelectedFirstSurvivorSecondPerk = emptyPerk;
+            SelectedFirstSurvivorThirdPerk = emptyPerk;
+            SelectedFirstSurvivorFourthPerk = emptyPerk;  
+            
+            SelectedSecondSurvivorFirstPerk = emptyPerk;
+            SelectedSecondSurvivorSecondPerk = emptyPerk;
+            SelectedSecondSurvivorThirdPerk = emptyPerk;
+            SelectedSecondSurvivorFourthPerk = emptyPerk;
+
+            SelectedThirdSurvivorFirstPerk = emptyPerk;
+            SelectedThirdSurvivorSecondPerk = emptyPerk;
+            SelectedThirdSurvivorThirdPerk = emptyPerk;
+            SelectedThirdSurvivorFourthPerk = emptyPerk;
+
+            SelectedFourthSurvivorFirstPerk = emptyPerk;
+            SelectedFourthSurvivorSecondPerk = emptyPerk;
+            SelectedFourthSurvivorThirdPerk = emptyPerk;
+            SelectedFourthSurvivorFourthPerk = emptyPerk;
         }
 
         private void GetTypeDeaths()
@@ -2084,10 +2368,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             SelectedFourthSurvivorItem = Items.LastOrDefault();
         }
 
-        private void GetItemAddons()
-        {
-            _itemAddons = _itemAddonService.GetAll();
-        }
+        private void GetItemAddons() => _itemAddons = _itemAddonService.GetAll();
 
         #endregion
 
@@ -2126,7 +2407,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         private void LoadFirstSurvivorOffering()
         {
             FirstSurvivorOfferings.Clear();
-            foreach (var item in _offerings.Where(x => x.IdRole == SelectedRoleFirstSurvivor.IdRole).OrderBy(x => x.IdRarity))
+            foreach (var item in _offerings.Where(x => x.IdRole == SelectedRoleFirstSurvivor.IdRole).OrderBy(x => x.IdRarity).ThenBy(x => x.OfferingName))
             {
                 FirstSurvivorOfferings.Add(item);
             }
@@ -2153,7 +2434,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         private void LoadSecondSurvivorOffering()
         {
             SecondSurvivorOfferings.Clear();
-            foreach (var item in _offerings.Where(x => x.IdRole == SelectedRoleSecondSurvivor.IdRole).OrderBy(x => x.IdRarity))
+            foreach (var item in _offerings.Where(x => x.IdRole == SelectedRoleSecondSurvivor.IdRole).OrderBy(x => x.IdRarity).ThenBy(x => x.OfferingName))
             {
                 SecondSurvivorOfferings.Add(item);
             }
@@ -2180,7 +2461,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         private void LoadThirdSurvivorOffering()
         {
             ThirdSurvivorOfferings.Clear();
-            foreach (var item in _offerings.Where(x => x.IdRole == SelectedRoleThirdSurvivor.IdRole).OrderBy(x => x.IdRarity))
+            foreach (var item in _offerings.Where(x => x.IdRole == SelectedRoleThirdSurvivor.IdRole).OrderBy(x => x.IdRarity).ThenBy(x => x.OfferingName))
             {
                 ThirdSurvivorOfferings.Add(item);
             }
@@ -2207,7 +2488,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         private void LoadFourthSurvivorOffering()
         {
             FourthSurvivorOfferings.Clear();
-            foreach (var item in _offerings.Where(x => x.IdRole == SelectedRoleFourthSurvivor.IdRole).OrderBy(x => x.IdRarity))
+            foreach (var item in _offerings.Where(x => x.IdRole == SelectedRoleFourthSurvivor.IdRole).OrderBy(x => x.IdRarity).ThenBy(x => x.OfferingName))
             {
                 FourthSurvivorOfferings.Add(item);
             }
@@ -2307,20 +2588,11 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             DurationMatch = $"{timePlayed}";
         }
 
-        private void SetStartTime(FileInfo file)
-        {
-            StartTime = file.CreationTime;
-        }
+        private void SetStartTime(FileInfo file) => StartTime = file.CreationTime;
 
-        private void SetEndTime(FileInfo file)
-        {
-            EndTime = file.CreationTime;
-        }
+        private void SetEndTime(FileInfo file) => EndTime = file.CreationTime;
 
-        private void SetDateTimeMatch(FileInfo file)
-        {
-            SelectedDateTimeGameMatch = file.CreationTime;
-        }
+        private void SetDateTimeMatch(FileInfo file) => SelectedDateTimeGameMatch = file.CreationTime;
 
         #endregion
 
@@ -2338,15 +2610,9 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             ResultMatchImage =               ImageHelper.GetBitmapImage(ImageHelper.CropImage(SelectedImagePath.PathImage, 90, 200, 980, 850));
         }
 
-        private void CropStartMatchImage()
-        {
-            StartMatchImage = ImageHelper.GetBitmapImage(ImageHelper.CropImage(SelectedImagePath.PathImage, 0, 900, 1100, 500));
-        }  
-        
-        private void CropEndMatchImage()
-        {
-            EndMatchImage = ImageHelper.GetBitmapImage(ImageHelper.CropImage(SelectedImagePath.PathImage, 0, 250, 800, 1100));
-        }
+        private void CropStartMatchImage() => StartMatchImage = ImageHelper.GetBitmapImage(ImageHelper.CropImage(SelectedImagePath.PathImage, 0, 900, 1100, 500));
+
+        private void CropEndMatchImage() => EndMatchImage = ImageHelper.GetBitmapImage(ImageHelper.CropImage(SelectedImagePath.PathImage, 0, 250, 600, 900));
 
         #endregion
 
@@ -2671,13 +2937,17 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             KillerPrestige = 0;
             KillerAccount = 0;
 
-            SelectedKillerFirstPerk = null;
-            SelectedKillerSecondPerk = null;
-            SelectedKillerThirdPerk = null;
-            SelectedKillerFourthPerk = null;
+            var emptyPerk = KillerPerks.FirstOrDefault(x => x.IdKillerPerk == 119);
 
-            SelectedKillerFirstAddon = null;
-            SelectedKillerSecondAddon = null;
+            SelectedKillerFirstPerk = emptyPerk;
+            SelectedKillerSecondPerk = emptyPerk;
+            SelectedKillerThirdPerk = emptyPerk;
+            SelectedKillerFourthPerk = emptyPerk;
+
+            var emptyAddon = KillerAddons.Where(x => x.IdKiller == SelectedKiller.IdKiller).OrderByDescending(x => x.IdRarity).FirstOrDefault();
+
+            SelectedKillerFirstAddon = emptyAddon;
+            SelectedKillerSecondAddon = emptyAddon;
         }
 
         private void SetNullSurvivorData()

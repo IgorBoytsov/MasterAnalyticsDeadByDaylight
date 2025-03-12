@@ -299,6 +299,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             else
             {
                 SelectedMeasurementWithMapsDTO.Maps.Add(MapDTO);
+                NotificationTransmittingValue(WindowName.AddMatch, MapDTO, TypeParameter.AddAndNotification);
                 ClearInputDataMap();
             }
         }
@@ -317,6 +318,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (Message == string.Empty)
             {
                 SelectedMeasurementWithMapsDTO.Maps.ReplaceItem(SelectedMap, MapDTO);
+                NotificationTransmittingValue(WindowName.AddMatch, MapDTO, TypeParameter.UpdateAndNotification);
                 ClearInputDataMap();
             }
             else
@@ -339,6 +341,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedMap, TypeParameter.DeleteAndNotification);
                     SelectedMeasurementWithMapsDTO.Maps.Remove(SelectedMap);
                     ClearInputDataMap();
                 }

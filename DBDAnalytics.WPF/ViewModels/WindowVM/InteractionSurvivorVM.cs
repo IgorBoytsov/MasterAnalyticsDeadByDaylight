@@ -293,6 +293,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                     SurvivorPerks = new ObservableCollection<SurvivorPerkDTO>()
                 });
 
+                NotificationTransmittingValue(WindowName.AddMatch, SurvivorDTO, TypeParameter.AddAndNotification);
                 ClearInputDataSurvivor();
             }
         }
@@ -315,6 +316,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                                                   SurvivorDescription = SurvivorDTO.SurvivorDescription,
                                                   SurvivorPerks = SelectedSurvivorWithPerks.SurvivorPerks
                                               });
+
+                NotificationTransmittingValue(WindowName.AddMatch, SurvivorDTO, TypeParameter.UpdateAndNotification);
                 ClearInputDataSurvivor();
             }
             else
@@ -331,6 +334,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                                                       SurvivorDescription = forcedSurvivorWithPerksDTO.SurvivorDescription,
                                                       SurvivorPerks = SelectedSurvivorWithPerks.SurvivorPerks
                                                   });
+
+                    NotificationTransmittingValue(WindowName.AddMatch, forcedSurvivorWithPerksDTO, TypeParameter.UpdateAndNotification);
                     ClearInputDataSurvivor();
                 }
             }
@@ -352,6 +357,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, new SurvivorDTO { IdSurvivor = SelectedSurvivorWithPerks.IdSurvivor }, TypeParameter.DeleteAndNotification);
                     SurvivorWithPerks.Remove(SelectedSurvivorWithPerks);
                     ClearInputDataSurvivor();
                 }
@@ -384,6 +390,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             }
             else
             {
+                NotificationTransmittingValue(WindowName.AddMatch, SurvivorPerk, TypeParameter.AddAndNotification);
                 SelectedSurvivorWithPerks.SurvivorPerks.Add(SurvivorPerk);
                 ClearInputDataPerk();
             }
@@ -409,6 +416,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
             if (Message == string.Empty)
             {
+                NotificationTransmittingValue(WindowName.AddMatch, Perk, TypeParameter.UpdateAndNotification);
                 SelectedSurvivorWithPerks.SurvivorPerks.ReplaceItem(SelectedSurvivorPerk, Perk);
                 ClearInputDataPerk();
             }
@@ -432,11 +440,13 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 }
                 else
                 {
+                    NotificationTransmittingValue(WindowName.AddMatch, SelectedSurvivorPerk, TypeParameter.DeleteAndNotification);
                     SelectedSurvivorWithPerks.SurvivorPerks.Remove(SelectedSurvivorPerk);
                     ClearInputDataSurvivor();
                 }
             }
         }
+
         #endregion
 
         //TODO : Заменить прямой вызов OpenFileDialog на вызов из сервиса
