@@ -1,14 +1,28 @@
 ﻿<Application x:Class="DBDAnalytics.WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DBDAnalytics.WPF">
+             xmlns:local="clr-namespace:DBDAnalytics.WPF"
+             xmlns:converters="clr-namespace:DBDAnalytics.WPF.ValueConverters">
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
 
+            <converters:ErrorToBrushConverter x:Key="ErrorToBrushConverter"/>
+            <converters:StringTrimmerConverter x:Key="StringTrimmerConverter"/>
+            
+            <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Assets\Brushes\MainBrushes.xaml"/>
 
+                <ResourceDictionary Source="Assets\StylesAndTemplates\BorderStyle.xaml"/>
                 <ResourceDictionary Source="Assets\StylesAndTemplates\ButtonStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\CheckBoxStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\DataGridStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\ImageStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\ListViewStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\ScrollViewerStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\TabControlStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\TextBlockStyle.xaml"/>
+                <ResourceDictionary Source="Assets\StylesAndTemplates\TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="Assets\StylesAndTemplates\WindowStyle.xaml"/>
 
             </ResourceDictionary.MergedDictionaries>
