@@ -17,6 +17,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
     internal class AddMatchVM : BaseVM, IUpdatable
     {
         private readonly IWindowNavigationService _windowNavigationService;
+        private readonly IPageNavigationService _pageNavigationService;
         private readonly IGameStatisticService _gameStatisticService;
         private readonly IMatchAttributeService _matchAttributeService;
         private readonly IOfferingService _offeringService;
@@ -39,13 +40,13 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
         private readonly IKillerService _killerService;
         private readonly ISurvivorService _survivorService;
 
-        public AddMatchVM(IWindowNavigationService windowNavigationService,
+        public AddMatchVM(IWindowNavigationService windowNavigationService, IPageNavigationService pageNavigationService,
                           IGameStatisticService gameStatisticService, IMatchAttributeService matchAttributeService,
                           IOfferingService offeringService, ITypeDeathService typeDeathService, IMapService mapService, IWhoPlacedMapService whoPlacedMapService,
                           IGameModeService gameModeService, IGameEventService gameEventService, IPlatformService platformService, IAssociationService associationService, IPatchService patchService, IRoleService roleService,
                           IKillerService killerService, IKillerInfoService killerInfoService, IKillerAddonService killerAddonService, IKillerPerkService killerPerkService,
                           ISurvivorService survivorService, ISurvivorInfoService survivorInfoService, ISurvivorPerkService survivorPerkService,
-                          IItemService itemService, IItemAddonService itemAddonService) : base(windowNavigationService)
+                          IItemService itemService, IItemAddonService itemAddonService) : base(windowNavigationService, pageNavigationService)
         {
             _windowNavigationService = windowNavigationService;
             _gameStatisticService = gameStatisticService;
@@ -2569,6 +2570,8 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             {
                 MatchAttributes.Add(item);
             }
+
+            SelectedMatchAttribute = MatchAttributes.FirstOrDefault();
         }
 
         #endregion
@@ -2697,7 +2700,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             {
                 MessageBox.Show("Вы заполнили не все данные в категории - Игра.", "Ошибка заполнения");
                 return;
-            } 
+            }
             if (SelectedMatchAttribute != null) { }
             else
             {
@@ -2735,7 +2738,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             if (KillerPrestige != 0) { }
             else
             {
-                if (MessageBox.Show("У киллера престиж 0! Вы уверены?", "Ошибка заполнения", MessageBoxButton.YesNo) == MessageBoxResult.No) 
+                if (MessageBox.Show("У киллера престиж 0! Вы уверены?", "Ошибка заполнения", MessageBoxButton.YesNo) == MessageBoxResult.No)
                     return;
             }
 
@@ -2751,7 +2754,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
 
             List<int> lastFourRecords = _survivorInfoService.GetLastNRecordsId(4).IdRecords;
 
-            _gameStatisticService.Create(
+            var (idGameStatistic, Message) = _gameStatisticService.Create(
                 lastKillerInfoID,
                 lastFourRecords[0],
                 lastFourRecords[1],
@@ -2772,6 +2775,9 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 ResultFullMatchImage,
                 SelectedMatchAttribute.IdMatchAttribute);
 
+            var match = _gameStatisticService.Get(idGameStatistic);
+
+            NotificationTransmittingValue(PageName.DashBoard, FrameName.MainFrame, match, TypeParameter.AddAndNotification);
 
             SetNullKillerData();
             SetNullSurvivorData();
@@ -2937,6 +2943,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             KillerPrestige = 0;
             KillerAccount = 0;
 
+            SearchKillerPerkInput = string.Empty;
             var emptyPerk = KillerPerks.FirstOrDefault(x => x.IdKillerPerk == 119);
 
             SelectedKillerFirstPerk = emptyPerk;
@@ -2994,29 +3001,32 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             ThirdSurvivorBot = false;
             FourthSurvivorBot = false;
 
+            SearchSurvivorPerkInput = string.Empty;
+            var emptyPerk = SurvivorPerks.FirstOrDefault(x => x.IdSurvivorPerk == 138);
+
             /* Сброс первого перка игроков на выживших */
-            SelectedFirstSurvivorFirstPerk = null;
-            SelectedFirstSurvivorSecondPerk = null;
-            SelectedFirstSurvivorThirdPerk = null;
-            SelectedFirstSurvivorFourthPerk = null;
+            SelectedFirstSurvivorFirstPerk = emptyPerk;
+            SelectedFirstSurvivorSecondPerk = emptyPerk;
+            SelectedFirstSurvivorThirdPerk = emptyPerk;
+            SelectedFirstSurvivorFourthPerk = emptyPerk;
 
             /* Сброс второго перка игроков на выживших */
-            SelectedSecondSurvivorFirstPerk = null;
-            SelectedSecondSurvivorSecondPerk = null;
-            SelectedSecondSurvivorThirdPerk = null;
-            SelectedSecondSurvivorFourthPerk = null;
+            SelectedSecondSurvivorFirstPerk = emptyPerk;
+            SelectedSecondSurvivorSecondPerk = emptyPerk;
+            SelectedSecondSurvivorThirdPerk = emptyPerk;
+            SelectedSecondSurvivorFourthPerk = emptyPerk;
 
             /* Сброс третьего перка игроков на выживших */
-            SelectedThirdSurvivorFirstPerk = null;
-            SelectedThirdSurvivorSecondPerk = null;
-            SelectedThirdSurvivorThirdPerk = null;
-            SelectedThirdSurvivorFourthPerk = null;
+            SelectedThirdSurvivorFirstPerk = emptyPerk;
+            SelectedThirdSurvivorSecondPerk = emptyPerk;
+            SelectedThirdSurvivorThirdPerk = emptyPerk;
+            SelectedThirdSurvivorFourthPerk = emptyPerk;
 
             /* Сброс четвертого перка игроков на выживших */
-            SelectedFourthSurvivorFirstPerk = null;
-            SelectedFourthSurvivorSecondPerk = null;
-            SelectedFourthSurvivorThirdPerk = null;
-            SelectedFourthSurvivorFourthPerk = null;
+            SelectedFourthSurvivorFirstPerk = emptyPerk;
+            SelectedFourthSurvivorSecondPerk = emptyPerk;
+            SelectedFourthSurvivorThirdPerk = emptyPerk;
+            SelectedFourthSurvivorFourthPerk = emptyPerk;
 
             /* Выбор предмета по умолчанию у выживших */
 
@@ -3047,6 +3057,7 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
             SelectedWhoPlacedMap = whoPlacedMap;
             SelectedWhoPlacedMapWin = whoPlacedMap;
             DescriptionGame = string.Empty;
+            SelectedMatchAttribute = MatchAttributes.FirstOrDefault();
         }
 
         private void SetNullImage()
