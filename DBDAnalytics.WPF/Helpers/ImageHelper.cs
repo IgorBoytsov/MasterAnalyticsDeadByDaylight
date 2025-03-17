@@ -21,6 +21,22 @@ namespace DBDAnalytics.WPF.Helpers
             }
         }
 
+        public static async Task<byte[]> ImageToByteArrayAsync(string imagePath)
+        {
+            return await Task.Run(() => 
+            {
+                using (var image = Image.FromFile(imagePath))
+                {
+                    using (MemoryStream memoryStream = new())
+                    {
+                        image.Save(memoryStream, ImageFormat.Png);
+
+                        return memoryStream.ToArray();
+                    }
+                }
+            });
+        }
+
         public static async Task<BitmapImage> ConvertBitmapToBitmapImageAsync(Bitmap bitmap)
         {
             return await Task.Run(() =>
