@@ -9,10 +9,17 @@ namespace DBDAnalytics.WPF.ViewModels
     internal class BaseVM : INotifyPropertyChanged
     {
         private readonly IWindowNavigationService _windowNavigationService;
+        private readonly IPageNavigationService _pageNavigationService;
 
         public BaseVM(IWindowNavigationService windowNavigationService)
         {
             _windowNavigationService = windowNavigationService;
+        }        
+        
+        public BaseVM(IWindowNavigationService windowNavigationService, IPageNavigationService pageNavigationService)
+        {
+            _windowNavigationService = windowNavigationService;
+            _pageNavigationService = pageNavigationService;
         }
 
         public BaseVM()
@@ -79,11 +86,16 @@ namespace DBDAnalytics.WPF.ViewModels
 
         #endregion
 
-       #region Метод : Уведомления о изменение значений
+        #region Метод : Уведомления о изменение значений
 
         public void NotificationTransmittingValue<T>(WindowName windowName, T value, TypeParameter typeParameter)
         {
             _windowNavigationService.TransmittingValue(windowName, value, typeParameter);
+        }
+
+        public void NotificationTransmittingValue<T>(PageName pageName, FrameName frameName, T value, TypeParameter typeParameter)
+        {
+            _pageNavigationService.TransmittingValue(pageName, frameName, value, typeParameter);
         }
 
         #endregion
