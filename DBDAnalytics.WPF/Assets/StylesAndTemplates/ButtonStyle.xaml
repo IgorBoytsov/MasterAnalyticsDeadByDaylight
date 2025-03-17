@@ -49,7 +49,9 @@
  
     <!--#endregion-->
 
-    <Style x:Key="MainWindow.SideMenu" TargetType="Button">
+    <!--#region MainWindow -->
+    
+    <Style x:Key="Button.SideMenu" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Bold"/>
@@ -86,5 +88,63 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--#endregion-->
+
+    <!--#region BaseButton -->
+
+    <Style x:Key="Button.Base" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#F0F1F3"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="buttonBorder"
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}">
+
+                        <ContentControl x:Name="contenButton" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"
+                                        FontSize="{TemplateBinding FontSize}"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        Content="{TemplateBinding Content}" 
+                                        Margin="0,0,0,2"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="buttonBorder" Property="Background" Value="Gray"/>
+                            <Setter TargetName="buttonBorder" Property="BorderBrush" Value="{StaticResource Brush.BorderBrushAroundImage}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="buttonBorder" Property="Background" Value="Gray"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--#endregion-->
+    
+    <!--#region Кнопка для добавление зависимых данных -->
+
+    <Style x:Key="Button.AddingDependentData" TargetType="Button" BasedOn="{StaticResource Button.Base}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="1,5,1,5"/>
+        <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+        <Setter Property="ToolTipService.Placement" Value="Right"/>
+    </Style>
+
+    <!--#endregion-->
 
 </ResourceDictionary>
