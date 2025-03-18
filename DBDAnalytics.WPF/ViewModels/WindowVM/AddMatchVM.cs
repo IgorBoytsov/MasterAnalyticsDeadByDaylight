@@ -2774,10 +2774,17 @@ namespace DBDAnalytics.WPF.ViewModels.WindowVM
                 DescriptionGame,
                 ResultFullMatchImage,
                 SelectedMatchAttribute.IdMatchAttribute);
-
-            var match = _gameStatisticService.Get(idGameStatistic);
-
-            NotificationTransmittingValue(PageName.DashBoard, FrameName.MainFrame, match, TypeParameter.AddAndNotification);
+          
+            if (SelectedKillerPlayerAssociation.IdPlayerAssociation == 1)
+            {
+                var killerMatch = _gameStatisticService.GetKillerView(idGameStatistic);
+                NotificationTransmittingValue(PageName.DashBoard, FrameName.MainFrame, killerMatch, TypeParameter.AddAndNotification);
+            }
+            else
+            {
+                var survivorMatch = _gameStatisticService.GetSurvivorView(idGameStatistic);
+                NotificationTransmittingValue(PageName.DashBoard, FrameName.MainFrame, survivorMatch, TypeParameter.AddAndNotification);
+            }
 
             SetNullKillerData();
             SetNullSurvivorData();
