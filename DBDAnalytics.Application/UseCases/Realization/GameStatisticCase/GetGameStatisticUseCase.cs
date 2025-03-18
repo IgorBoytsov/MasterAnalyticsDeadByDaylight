@@ -9,31 +9,58 @@ namespace DBDAnalytics.Application.UseCases.Realization.GameStatisticCase
     {
         private readonly IGameStatisticRepository _gameStatisticRepository = gameStatisticRepository;
 
-        public async Task<GameStatisticViewingDTO> GetAsync(int idGameStatistic)
+        public async Task<List<GameStatisticKillerViewingDTO>> GetKillerViewsAsync()
         {
-            var domainEntity = await _gameStatisticRepository.GetAsync(idGameStatistic);
+            var domainEntities = await _gameStatisticRepository.GetKillerViewsAsync();
 
-            var dtoEntity = domainEntity.ToDTO();
+            var dtoEntities = domainEntities.ToDTO();
 
-            return dtoEntity;
-        }        
-        
-        public GameStatisticViewingDTO? Get(int idGameStatistic)
+            return dtoEntities;
+        }
+
+        public async Task<GameStatisticKillerViewingDTO> GetKillerViewAsync(int idGameStatistic)
         {
-            var domainEntity = _gameStatisticRepository.Get(idGameStatistic);
+            var domainEntity = await _gameStatisticRepository.GetKillerViewAsync(idGameStatistic);
 
             var dtoEntity = domainEntity.ToDTO();
 
             return dtoEntity;
         }
 
-        public async Task<List<GameStatisticViewingDTO>> GetViewsAsync()
+        public GameStatisticKillerViewingDTO GetKillerView(int idGameStatistic)
         {
-            var domainEntities = await _gameStatisticRepository.GetViewsAsync();
+            var domainEntity = _gameStatisticRepository.GetKillerView(idGameStatistic);
+
+            var dtoEntity = domainEntity.ToDTO();
+
+            return dtoEntity;
+        }
+
+        public async Task<List<GameStatisticSurvivorViewingDTO>> GetSurvivorViewsAsync()
+        {
+            var domainEntities = await _gameStatisticRepository.GetSurvivorViewsAsync();
 
             var dtoEntities = domainEntities.ToDTO();
 
             return dtoEntities;
-        }       
+        }
+
+        public async Task<GameStatisticSurvivorViewingDTO> GetSurvivorViewAsync(int idGameStatistic)
+        {
+            var domainEntity = await _gameStatisticRepository.GetSurvivorViewAsync(idGameStatistic);
+
+            var dtoEntity = domainEntity.ToDTO();
+
+            return dtoEntity;
+        }
+
+        public GameStatisticSurvivorViewingDTO GetSurvivorView(int idGameStatistic)
+        {
+            var domainEntity = _gameStatisticRepository.GetSurvivorView(idGameStatistic);
+
+            var dtoEntity = domainEntity.ToDTO();
+
+            return dtoEntity;
+        }
     }
 }

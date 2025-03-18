@@ -10,6 +10,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
     {
         private readonly Func<DBDContext> _contextFactory = context;
 
+        /*--CRUD------------------------------------------------------------------------------------------*/
+
         public int Create(int idKillerInfo,
                           int idFirstSurvivor, int idSecondSurvivor, int idThirdSurvivor, int idFourthSurvivor,
                           int idMap, int idWhoPlacedMap, int idWhoPlacedMapWin,
@@ -57,15 +59,19 @@ namespace DBDAnalytics.Infrastructure.Repositories
             }
         }
 
-        public async Task<GameStatisticViewingDomain?> GetAsync(int idGameStatistic)
+        /*--GET-------------------------------------------------------------------------------------------*/
+
+        public async Task<List<GameStatisticKillerViewingDomain>> GetKillerViewsAsync()
         {
             using (var _context = _contextFactory())
             {
-                var match = await _context.GameStatistics
+                var matches = await _context.GameStatistics
                     .Include(x => x.IdKillerNavigation.IdKillerNavigation)
                     .Include(x => x.IdMapNavigation)
-                    .Where(x => x.IdGameStatistic == idGameStatistic)
-                    .Select(x => GameStatisticViewingDomain.Create(
+                    .Where(x => x.IdKillerNavigation.IdAssociation == 1)
+                    .OrderByDescending(x => x.DateTimeMatch)
+                    .Take(100)
+                    .Select(x => GameStatisticKillerViewingDomain.Create(
                         x.IdGameStatistic,
                         x.IdKiller,
                         x.IdKillerNavigation.IdKillerNavigation.KillerImage,
@@ -75,47 +81,123 @@ namespace DBDAnalytics.Infrastructure.Repositories
                         x.IdMapNavigation.MapImage,
                         x.CountKills,
                         x.CountHooks,
-                        x.NumberRecentGenerators,
-                        x.ResultMatch).GameStatisticViewingDTO).ToListAsync();
+                        x.NumberRecentGenerators).GameStatisticKillerViewing)
+                    .ToListAsync();
 
-                if (match == null)
-                {
-                    Console.WriteLine($"Не удалось получить GameStatistics для Id: {idGameStatistic}");
-                    return null;
-                }
+                return matches;
+            }
+        }
+
+        public async Task<GameStatisticKillerViewingDomain> GetKillerViewAsync(int idGameStatistic)
+        {
+            using (var _context = _contextFactory())
+            {
+                var match = await _context.GameStatistics
+                    .Include(x => x.IdKillerNavigation.IdKillerNavigation)
+                    .Include(x => x.IdMapNavigation)
+                    .Where(x => x.IdGameStatistic == idGameStatistic)
+                    .Select(x => GameStatisticKillerViewingDomain.Create(
+                        x.IdGameStatistic,
+                        x.IdKiller,
+                        x.IdKillerNavigation.IdKillerNavigation.KillerImage,
+                        x.DateTimeMatch,
+                        x.GameTimeMatch,
+                        x.IdMapNavigation.MapName,
+                        x.IdMapNavigation.MapImage,
+                        x.CountKills,
+                        x.CountHooks,
+                        x.NumberRecentGenerators)
+                    .GameStatisticKillerViewing).ToListAsync();
 
                 return match.FirstOrDefault();
             }
         }
 
-        public GameStatisticViewingDomain? Get(int idGameStatistic)
+        public GameStatisticKillerViewingDomain GetKillerView(int idGameStatistic)
         {
-            return Task.Run(() => GetAsync(idGameStatistic)).Result;
+            return Task.Run(() => GetKillerViewAsync(idGameStatistic)).Result;
         }
 
-        public async Task<List<GameStatisticViewingDomain>> GetViewsAsync()
+        public async Task<List<GameStatisticSurvivorViewingDomain>> GetSurvivorViewsAsync()
         {
             using (var _context = _contextFactory())
             {
                 var matches = await _context.GameStatistics
-                    .Include(x => x.IdKillerNavigation.IdKillerNavigation)
+                    .Include(x => x.IdSurvivors1Navigation).ThenInclude(x => x.IdSurvivorNavigation)
+                    .Include(x => x.IdSurvivors2Navigation).ThenInclude(x => x.IdSurvivorNavigation)
+                    .Include(x => x.IdSurvivors3Navigation).ThenInclude(x => x.IdSurvivorNavigation)
+                    .Include(x => x.IdSurvivors4Navigation).ThenInclude(x => x.IdSurvivorNavigation)
                     .Include(x => x.IdMapNavigation)
-                    .Select(x => GameStatisticViewingDomain.Create(
-                        x.IdGameStatistic, 
-                        x.IdKiller, 
-                        x.IdKillerNavigation.IdKillerNavigation.KillerImage,
-                        x.DateTimeMatch, 
+                    .Where(x => x.IdKillerNavigation.IdAssociation == 3)
+                    .OrderByDescending(x => x.DateTimeMatch)
+                    .Take(100)
+                    .Select(x => GameStatisticSurvivorViewingDomain.Create(
+                        x.IdGameStatistic,
+
+                        (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1 :
+                         x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors2 :
+                         x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3 :
+                         x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4 : 0),
+
+                        (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdSurvivorNavigation.SurvivorImage :
+                         x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors2Navigation.IdSurvivorNavigation.SurvivorImage :
+                         x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3Navigation.IdSurvivorNavigation.SurvivorImage :
+                         x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4Navigation.IdSurvivorNavigation.SurvivorImage : null),
+
+                        x.DateTimeMatch,
                         x.GameTimeMatch,
-                        x.IdMapNavigation.MapName, 
-                        x.IdMapNavigation.MapImage,
+                        x.IdMapNavigation.MapName,
                         x.CountKills,
-                        x.CountHooks, 
-                        x.NumberRecentGenerators,
-                        x.ResultMatch).GameStatisticViewingDTO)
+                        x.CountHooks,
+                        x.NumberRecentGenerators)
+                    .GameStatisticSurvivorViewingDomain)
                     .ToListAsync();
 
                 return matches;
             }
+        }
+
+        public async Task<GameStatisticSurvivorViewingDomain> GetSurvivorViewAsync(int idGameStatistic)
+        {
+            using (var _context = _contextFactory())
+            {
+                var matches = await _context.GameStatistics
+                    .Include(x => x.IdSurvivors1Navigation).ThenInclude(x => x.IdSurvivorNavigation)
+                    .Include(x => x.IdSurvivors2Navigation).ThenInclude(x => x.IdSurvivorNavigation)
+                    .Include(x => x.IdSurvivors3Navigation).ThenInclude(x => x.IdSurvivorNavigation)
+                    .Include(x => x.IdSurvivors4Navigation).ThenInclude(x => x.IdSurvivorNavigation)
+                    .Include(x => x.IdMapNavigation)
+                    .OrderByDescending(x => x.DateTimeMatch)
+                    .Where(x => x.IdGameStatistic == idGameStatistic)
+                    .Select(x => GameStatisticSurvivorViewingDomain.Create(
+                        x.IdGameStatistic,
+
+                        (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1 :
+                         x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors2 :
+                         x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3 :
+                         x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4 : 0),
+
+                        (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdSurvivorNavigation.SurvivorImage :
+                         x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors2Navigation.IdSurvivorNavigation.SurvivorImage :
+                         x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3Navigation.IdSurvivorNavigation.SurvivorImage :
+                         x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4Navigation.IdSurvivorNavigation.SurvivorImage : null),
+
+                        x.DateTimeMatch,
+                        x.GameTimeMatch,
+                        x.IdMapNavigation.MapName,
+                        x.CountKills,
+                        x.CountHooks,
+                        x.NumberRecentGenerators)
+                    .GameStatisticSurvivorViewingDomain)
+                    .FirstOrDefaultAsync(x => x.IdGameStatistic == idGameStatistic);
+
+                return matches;
+            }
+        }
+
+        public GameStatisticSurvivorViewingDomain GetSurvivorView(int idGameStatistic)
+        {
+            return Task.Run(() => GetSurvivorViewAsync(idGameStatistic)).Result;
         }
     }
 }

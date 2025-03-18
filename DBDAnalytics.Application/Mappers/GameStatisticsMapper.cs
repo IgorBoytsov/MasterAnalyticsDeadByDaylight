@@ -44,9 +44,9 @@ namespace DBDAnalytics.Application.Mappers
             return list;
         }
 
-        public static GameStatisticViewingDTO ToDTO(this GameStatisticViewingDomain gameStatistic)
+        public static GameStatisticKillerViewingDTO ToDTO(this GameStatisticKillerViewingDomain gameStatistic)
         {
-            return new GameStatisticViewingDTO
+            return new GameStatisticKillerViewingDTO
             {
                 IdGameStatistic = gameStatistic.IdGameStatistic,
                 IdKiller = gameStatistic.IdKiller,
@@ -58,13 +58,40 @@ namespace DBDAnalytics.Application.Mappers
                 CountKill = gameStatistic.CountKill,
                 CountHook = gameStatistic.CountHook,
                 CountRecentGenerator = gameStatistic.CountRecentGenerator,
-                ResultMatch = gameStatistic.ResultMatch
             };
         }
 
-        public static List<GameStatisticViewingDTO> ToDTO(this IEnumerable<GameStatisticViewingDomain> gameStatistics)
+        public static List<GameStatisticKillerViewingDTO> ToDTO(this IEnumerable<GameStatisticKillerViewingDomain> gameStatistics)
         {
-            var list = new List<GameStatisticViewingDTO>();
+            var list = new List<GameStatisticKillerViewingDTO>();
+
+            foreach (var gameStatistic in gameStatistics)
+            {
+                list.Add(gameStatistic.ToDTO());
+            }
+
+            return list;
+        }
+
+        public static GameStatisticSurvivorViewingDTO ToDTO(this GameStatisticSurvivorViewingDomain gameStatistic)
+        {
+            return new GameStatisticSurvivorViewingDTO
+            {
+                IdGameStatistic = gameStatistic.IdGameStatistic,
+                IdSurvivor = gameStatistic.IdSurvivor,
+                SurvivorImage = gameStatistic.SurvivorImage,
+                DateMatch = gameStatistic.DateMatch,
+                MatchTime = gameStatistic.MatchTime,
+                MapName = gameStatistic.MapName,
+                CountKill = gameStatistic.CountKill,
+                CountHook = gameStatistic.CountHook,
+                CountRecentGenerator = gameStatistic.CountRecentGenerator,
+            };
+        }
+
+        public static List<GameStatisticSurvivorViewingDTO> ToDTO(this IEnumerable<GameStatisticSurvivorViewingDomain> gameStatistics)
+        {
+            var list = new List<GameStatisticSurvivorViewingDTO>();
 
             foreach (var gameStatistic in gameStatistics)
             {

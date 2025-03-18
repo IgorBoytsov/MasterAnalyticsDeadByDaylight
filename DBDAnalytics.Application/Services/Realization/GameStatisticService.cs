@@ -27,19 +27,34 @@ namespace DBDAnalytics.Application.Services.Realization
                          idMatchAttribute: idMatchAttribute);
         }
 
-        public async Task<GameStatisticViewingDTO> GetAsync(int idGameStatistic)
+        public async Task<GameStatisticKillerViewingDTO> GetKillerViewAsync(int idGameStatistic)
         {
-            return await _getGameStatisticUseCase.GetAsync(idGameStatistic);
-        }
+            return await _getGameStatisticUseCase.GetKillerViewAsync(idGameStatistic);
+        }        
         
-        public GameStatisticViewingDTO Get(int idGameStatistic)
+        public GameStatisticKillerViewingDTO GetKillerView(int idGameStatistic)
         {
-            return _getGameStatisticUseCase.Get(idGameStatistic);
+            return _getGameStatisticUseCase.GetKillerView(idGameStatistic);
         }
 
-        public async Task<List<GameStatisticViewingDTO>> GetViewsAsync()
+        public async Task<List<GameStatisticKillerViewingDTO>> GetKillerViewsAsync()
         {
-            return await _getGameStatisticUseCase.GetViewsAsync();
+            return await _getGameStatisticUseCase.GetKillerViewsAsync();
+        }
+
+        public async Task<GameStatisticSurvivorViewingDTO> GetSurvivorViewAsync(int idGameStatistic)
+        {
+            return await _getGameStatisticUseCase.GetSurvivorViewAsync(idGameStatistic);
+        }
+                
+        public GameStatisticSurvivorViewingDTO GetSurvivorView(int idGameStatistic)
+        {
+            return _getGameStatisticUseCase.GetSurvivorView(idGameStatistic);
+        }
+
+        public async Task<List<GameStatisticSurvivorViewingDTO>> GetSurvivorViewsAsync()
+        {
+            return await _getGameStatisticUseCase.GetSurvivorViewsAsync();
         }
     }
 }

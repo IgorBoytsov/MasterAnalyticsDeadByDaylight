@@ -1,10 +1,10 @@
 ﻿namespace DBDAnalytics.Domain.DomainModels
 {
-    public class GameStatisticViewingDomain
+    public class GameStatisticKillerViewingDomain
     {
-        private GameStatisticViewingDomain(
+        private GameStatisticKillerViewingDomain(
             int idGameStatistic, int idKiller, byte[]? killerImage, DateTime? dateMatch, string? matchTime,
-            string mapName, byte[]? mapImage, int countKill, int countHook, int countRecentGenerator, byte[]? resultMatch)
+            string mapName, byte[]? mapImage, int countKill, int countHook, int countRecentGenerator)
         {
             IdGameStatistic = idGameStatistic;
             IdKiller = idKiller;
@@ -16,7 +16,6 @@
             CountKill = countKill;
             CountHook = countHook;
             CountRecentGenerator = countRecentGenerator;
-            ResultMatch = resultMatch;
         }
 
         public int IdGameStatistic { get; private set; }
@@ -39,15 +38,13 @@
 
         public int CountRecentGenerator { get; set; }
 
-        public byte[]? ResultMatch { get; set; }
-
-        public static (GameStatisticViewingDomain GameStatisticViewingDTO, string Message) Create(
+        public static (GameStatisticKillerViewingDomain GameStatisticKillerViewing, string Message) Create(
               int idGameStatistic, int idKiller, byte[]? killerImage, DateTime? dateMatch, string? matchTime,
-              string mapName, byte[]? mapImage, int countKill, int countHook, int countRecentGenerator, byte[]? resultMatch)
+              string mapName, byte[]? mapImage, int countKill, int countHook, int countRecentGenerator)
         {
             string message = string.Empty;
 
-            var matchView = new GameStatisticViewingDomain(idGameStatistic, idKiller, killerImage, dateMatch, matchTime, mapName, mapImage, countKill, countHook, countRecentGenerator, resultMatch);
+            var matchView = new GameStatisticKillerViewingDomain(idGameStatistic, idKiller, killerImage, dateMatch, matchTime, mapName, mapImage, countKill, countHook, countRecentGenerator);
 
             return (matchView, message);
         }

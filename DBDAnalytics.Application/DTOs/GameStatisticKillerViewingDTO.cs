@@ -1,6 +1,6 @@
 ﻿namespace DBDAnalytics.Application.DTOs
 {
-    public class GameStatisticViewingDTO
+    public class GameStatisticKillerViewingDTO
     {
         public int IdGameStatistic { get; set; }
 
@@ -21,7 +21,5 @@
         public int CountHook { get; set; }
 
         public int CountRecentGenerator { get; set; }
-
-        public byte[]? ResultMatch { get; set; }
     }
 }
