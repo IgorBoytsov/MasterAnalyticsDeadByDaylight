@@ -1,41 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:dto="clr-namespace:DBDAnalytics.Application.DTOs;assembly=DBDAnalytics.Application" 
-                    >
+                    xmlns:dto="clr-namespace:DBDAnalytics.Application.DTOs;assembly=DBDAnalytics.Application">
 
-    <!--#region AddMatchWindow -->
-
-    <Style x:Key="AddMatchWindow.SelectedItem" TargetType="ListViewItem">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListViewItem">
-                    <Border Name="border" Background="Transparent" 
-                            CornerRadius="10" 
-                            Margin="6" 
-                            SnapsToDevicePixels="true">
-                        <ContentPresenter/>
-                    </Border>
-                    <ControlTemplate.Triggers>
-
-                        <Trigger Property="IsSelected" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="Gray"/>
-                            <Setter TargetName="border" Property="BorderBrush" Value="Green"/>
-                            <Setter Property="Foreground" Value="Black"/>
-                        </Trigger>
-
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="Gray"/>
-                            <Setter TargetName="border" Property="BorderBrush" Value="#7EB4EA"/>
-                            <Setter Property="Foreground" Value="Black"/>
-                        </Trigger>
-                        
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!--#endregion-->
+    <!--#region Стиль + разметка для ListViewItem с анимацией -->
 
     <Style x:Key="AnimatedListViewItemStyle" TargetType="ListViewItem">
         <Setter Property="Template">
@@ -96,22 +63,62 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--#endregion-->
+
+    <!--#region Базовый стиль для виртуализации в ListView -->
+
+    <Style x:Key="ListView.BaseVirtualizing" TargetType="ListView">
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+        <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+        <Setter Property="VirtualizingPanel.CacheLength" Value="15.15"/>
+        <Setter Property="VirtualizingPanel.CacheLengthUnit" Value="Item"/>
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
+    </Style>
+    
+    <!--#endregion-->
+
+    <!--#region Стиль для ListView с списком Перков, улучшений и подношений в окне AddMatch -->
+  
+    <Style x:Key="AddMatchWindow.DataSelection" TargetType="ListView" BasedOn="{StaticResource ListView.BaseVirtualizing}">
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <!--<Setter Property="HorizontalAlignment" Value="Center"/>-->
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
+    <!--#endregion-->
+
+    <!--#region Стилья для ListView с выбранными изображениями -->
+
+    <Style x:Key="AddMatchWindow.ListImages" TargetType="ListView" BasedOn="{StaticResource ListView.BaseVirtualizing}">
+        <Setter Property="Background" Value="{StaticResource Brush.AppCardBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderBrushAroundImage}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="15,15,0,15"/>
+    </Style>
+    
+    <!--#endregion-->
+
+    <!--#region DataTemplate -->
 
     <DataTemplate x:Key="AddMatch.KillerPerk" DataType="dto:KillerPerkDTO">
         <Border BorderBrush="White" 
-                Width="95" 
-                Height="95" 
-                BorderThickness="1" 
-                CornerRadius="10">
+            Width="95" 
+            Height="95" 
+            BorderThickness="1" 
+            CornerRadius="10">
             <Border.ToolTip>
                 <ToolTip Content="{Binding PerkName}" 
-                         FontSize="20" 
-                         Placement="Right" 
-                         ToolTipService.InitialShowDelay="1" 
-                         ToolTipService.ShowDuration="10"/>
+                     FontSize="20" 
+                     Placement="Right" 
+                     ToolTipService.InitialShowDelay="1" 
+                     ToolTipService.ShowDuration="10"/>
             </Border.ToolTip>
             <StackPanel Orientation="Horizontal" 
-                        Margin="10">
+                    Margin="10">
                 <Grid>
                     <Image Source="{Binding PerkImage}"/>
                 </Grid>
@@ -156,8 +163,8 @@
                 </Grid>
             </StackPanel>
         </Border>
-    </DataTemplate>    
-    
+    </DataTemplate>
+
     <DataTemplate x:Key="AddMatch.ItemAddon" DataType="dto:ItemAddonDTO">
         <Border BorderBrush="White" Width="95" Height="95" BorderThickness="1" CornerRadius="10">
             <Border.ToolTip>
@@ -170,5 +177,7 @@
             </StackPanel>
         </Border>
     </DataTemplate>
+
+    <!--#endregion-->
 
 </ResourceDictionary>
