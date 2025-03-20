@@ -1,8 +1,10 @@
 ﻿using DBDAnalytics.Application.Ico;
 using DBDAnalytics.WPF.Enums;
+using DBDAnalytics.WPF.Factories.PageFactories;
 using DBDAnalytics.WPF.Factories.WindowFactories;
 using DBDAnalytics.WPF.Interfaces;
 using DBDAnalytics.WPF.Services;
+using DBDAnalytics.WPF.ViewModels.PageVM;
 using DBDAnalytics.WPF.ViewModels.WindowVM;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
@@ -113,7 +115,9 @@ namespace DBDAnalytics.WPF
         // Добавление Pages и их VM в коллекцию сервисов 
         private static void ConfigurePage(ServiceCollection services)
         {
-        
+            services.AddTransient<IPageFactory, DashBoardFactory>();
+            services.AddTransient<DashBoardVM>();
+            services.AddSingleton<Func<DashBoardVM>>(provider => () => provider.GetRequiredService<DashBoardVM>());
         }
 
         // Добавляем сервисы WPF коллекцию сервисов 
@@ -122,6 +126,7 @@ namespace DBDAnalytics.WPF
             services.AddTransient(typeof(Lazy<>), typeof(LazyService<>));
 
             services.AddSingleton<IWindowNavigationService, WindowNavigationService>();
+            services.AddSingleton<IPageNavigationService, PageNavigationService>();
         }
     }
 }
