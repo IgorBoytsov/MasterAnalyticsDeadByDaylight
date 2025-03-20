@@ -23,11 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Assets\PathElements\" />
-    <Folder Include="Factories\PageFactories\" />
-    <Folder Include="ViewModels\PageVM\" />
-    <Folder Include="Views\Pages\" />
-    <Folder Include="Views\UserControls\" />
-    <Folder Include="ValueConverters\" />
   </ItemGroup>
 
   <ItemGroup>
