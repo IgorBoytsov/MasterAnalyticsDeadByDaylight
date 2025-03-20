@@ -54,7 +54,6 @@ namespace DBDAnalytics.Application.Mappers
                 DateMatch = gameStatistic.DateMatch,
                 MatchTime = gameStatistic.MatchTime,
                 MapName = gameStatistic.MapName,
-                MapImage = gameStatistic.MapImage,
                 CountKill = gameStatistic.CountKill,
                 CountHook = gameStatistic.CountHook,
                 CountRecentGenerator = gameStatistic.CountRecentGenerator,
@@ -99,6 +98,80 @@ namespace DBDAnalytics.Application.Mappers
             }
 
             return list;
+        }
+
+        public static GameStatisticKillerFilterDTO ToDTO(this GameStatisticKillerFilterDomain filter)
+        {
+            return new GameStatisticKillerFilterDTO
+            {
+                IdKiller = filter.IdKiller,
+
+                IdGameMode = filter.IdGameMode,
+                IdGameEvent = filter.IdGameEvent,
+
+                IsConsiderDateTime = filter.IsConsiderDateTime,
+                StartTime = filter.StartTime,
+                EndTime = filter.EndTime,
+
+                IdPatch = filter.IdPatch,
+                IdMatchAttribute = filter.IdMatchAttribute
+            };
+        }
+
+        public static GameStatisticKillerFilterDomain ToDomain(this GameStatisticKillerFilterDTO filter)
+        {
+            return new GameStatisticKillerFilterDomain
+            {
+                IdKiller = filter.IdKiller,
+
+                IdGameMode = filter.IdGameMode,
+                IdGameEvent = filter.IdGameEvent,
+
+                IsConsiderDateTime = filter.IsConsiderDateTime,
+                StartTime = filter.StartTime,
+                EndTime = filter.EndTime,
+
+                IdPatch = filter.IdPatch,
+                IdMatchAttribute = filter.IdMatchAttribute
+            };
+        }
+
+        public static GameStatisticSurvivorFilterDTO ToDTO(this GameStatisticSurvivorFilterDomain filter)
+        {
+            return new GameStatisticSurvivorFilterDTO
+            {
+                IdSurvivor = filter.IdSurvivor,
+                IdOpponentKiller = filter.IdOpponentKiller,
+
+                IdGameMode = filter.IdGameMode,
+                IdGameEvent = filter.IdGameEvent,
+
+                IsConsiderDateTime = filter.IsConsiderDateTime,
+                StartTime = filter.StartTime,
+                EndTime = filter.EndTime,
+
+                IdPatch = filter.IdPatch,
+                IdMatchAttribute = filter.IdMatchAttribute
+            };
+        }
+
+        public static GameStatisticSurvivorFilterDomain ToDomain(this GameStatisticSurvivorFilterDTO filter)
+        {
+            return new GameStatisticSurvivorFilterDomain
+            {
+                IdSurvivor = filter.IdSurvivor,
+                IdOpponentKiller = filter.IdOpponentKiller,
+
+                IdGameMode = filter.IdGameMode,
+                IdGameEvent = filter.IdGameEvent,
+
+                IsConsiderDateTime = filter.IsConsiderDateTime,
+                StartTime = filter.StartTime,
+                EndTime = filter.EndTime,
+
+                IdPatch = filter.IdPatch,
+                IdMatchAttribute = filter.IdMatchAttribute
+            };
         }
     }
 }

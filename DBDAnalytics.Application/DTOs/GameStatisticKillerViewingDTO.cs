@@ -14,8 +14,6 @@
 
         public string MapName { get; set; } = null!;
 
-        public byte[] MapImage { get; set; } = null!;
-
         public int CountKill { get; set; }
 
         public int CountHook { get; set; }

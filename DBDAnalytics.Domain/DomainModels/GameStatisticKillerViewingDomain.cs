@@ -4,7 +4,7 @@
     {
         private GameStatisticKillerViewingDomain(
             int idGameStatistic, int idKiller, byte[]? killerImage, DateTime? dateMatch, string? matchTime,
-            string mapName, byte[]? mapImage, int countKill, int countHook, int countRecentGenerator)
+            string mapName, int countKill, int countHook, int countRecentGenerator)
         {
             IdGameStatistic = idGameStatistic;
             IdKiller = idKiller;
@@ -12,7 +12,6 @@
             DateMatch = dateMatch;
             MatchTime = matchTime;
             MapName = mapName;
-            MapImage = mapImage;
             CountKill = countKill;
             CountHook = countHook;
             CountRecentGenerator = countRecentGenerator;
@@ -30,8 +29,6 @@
 
         public string MapName { get; private set; } = null!;
 
-        public byte[]? MapImage { get; private set; } = null!;
-
         public int CountKill { get; private set; }
 
         public int CountHook { get; private set; }
@@ -40,11 +37,11 @@
 
         public static (GameStatisticKillerViewingDomain GameStatisticKillerViewing, string Message) Create(
               int idGameStatistic, int idKiller, byte[]? killerImage, DateTime? dateMatch, string? matchTime,
-              string mapName, byte[]? mapImage, int countKill, int countHook, int countRecentGenerator)
+              string mapName, int countKill, int countHook, int countRecentGenerator)
         {
             string message = string.Empty;
 
-            var matchView = new GameStatisticKillerViewingDomain(idGameStatistic, idKiller, killerImage, dateMatch, matchTime, mapName, mapImage, countKill, countHook, countRecentGenerator);
+            var matchView = new GameStatisticKillerViewingDomain(idGameStatistic, idKiller, killerImage, dateMatch, matchTime, mapName, countKill, countHook, countRecentGenerator);
 
             return (matchView, message);
         }

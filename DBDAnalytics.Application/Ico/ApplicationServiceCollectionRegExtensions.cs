@@ -118,7 +118,8 @@ namespace DBDAnalytics.Application.Ico
             services.AddScoped<IUpdateGameModeUseCase, UpdateGameModeUseCase>();
 
             services.AddScoped<ICreateGameStatisticUseCase, CreateGameStatisticUseCase>();
-            services.AddScoped<IGetGameStatisticUseCase, GetGameStatisticUseCase>();
+            services.AddScoped<IGetGameStatisticKillerViewingUseCase, GetGameStatisticKillerViewingUseCase>();
+            services.AddScoped<IGetGameStatisticSurvivorViewingUseCase, GetGameStatisticSurvivorViewingUseCase>();
 
             services.AddScoped<ICreateItemAddonUseCase, CreateItemAddonUseCase>();
             services.AddScoped<IDeleteItemAddonUseCase, DeleteItemAddonUseCase>();
