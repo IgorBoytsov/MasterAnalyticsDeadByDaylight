@@ -8,6 +8,12 @@
         <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
 
+    <Style x:Key="TextBlock.Header" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
     <!--#region Window : AddMatch -->
 
     <Style x:Key="AddMatch.TextBlock.InputData" TargetType="TextBlock">
@@ -17,5 +23,17 @@
     </Style>
 
     <!--#endregion-->
+
+    <!--#region Popup -->
+
+    <Style x:Key="TextBlock.Popup" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
     
+    <!--#endregion-->
+
 </ResourceDictionary>
