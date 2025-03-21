@@ -72,6 +72,7 @@
         <Setter Property="Background" Value="White"/>
         <Setter Property="Padding" Value="5"/>
         <Setter Property="Margin" Value="5"/>
+        <Setter Property="Background" Value="{StaticResource Brush.AppBackground}"/>
         <Setter Property="ItemContainerStyle" Value="{StaticResource App.TabItem}"/>
     </Style>
 
