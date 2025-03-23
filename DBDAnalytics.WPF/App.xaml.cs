@@ -118,6 +118,10 @@ namespace DBDAnalytics.WPF
             services.AddTransient<IPageFactory, DashBoardFactory>();
             services.AddTransient<DashBoardVM>();
             services.AddSingleton<Func<DashBoardVM>>(provider => () => provider.GetRequiredService<DashBoardVM>());
+
+            services.AddTransient<IPageFactory, KillerDetailsFactory>();
+            services.AddTransient<KillerDetailsVM>();
+            services.AddSingleton<Func<KillerDetailsVM>>(provider => () => provider.GetRequiredService<KillerDetailsVM>());
         }
 
         // Добавляем сервисы WPF коллекцию сервисов 
