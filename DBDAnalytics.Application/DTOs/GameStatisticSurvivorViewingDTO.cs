@@ -6,6 +6,8 @@
 
         public int IdSurvivor { get; set; }
 
+        public int IdTypeDeath { get; set; }
+
         public byte[] SurvivorImage { get;  set; } = null!;
 
         public DateTime? DateMatch { get; set; }

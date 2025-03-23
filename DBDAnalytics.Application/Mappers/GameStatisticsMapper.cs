@@ -78,6 +78,7 @@ namespace DBDAnalytics.Application.Mappers
             {
                 IdGameStatistic = gameStatistic.IdGameStatistic,
                 IdSurvivor = gameStatistic.IdSurvivor,
+                IdTypeDeath = gameStatistic.IdTypeDeath,
                 SurvivorImage = gameStatistic.SurvivorImage,
                 DateMatch = gameStatistic.DateMatch,
                 MatchTime = gameStatistic.MatchTime,

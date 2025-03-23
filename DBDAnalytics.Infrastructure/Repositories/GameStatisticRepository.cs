@@ -182,6 +182,11 @@ namespace DBDAnalytics.Infrastructure.Repositories
                          x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3 :
                          x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4 : 0),
 
+                        (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdTypeDeath :
+                         x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdTypeDeath :
+                         x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdTypeDeath :
+                         x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdTypeDeath : 0),
+
                         (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdSurvivorNavigation.SurvivorImage :
                          x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors2Navigation.IdSurvivorNavigation.SurvivorImage :
                          x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3Navigation.IdSurvivorNavigation.SurvivorImage :
@@ -263,6 +268,16 @@ namespace DBDAnalytics.Infrastructure.Repositories
                            x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3 :
                            x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4 : 0),
 
+                        filter.IdSurvivor.HasValue
+                        ? (x.IdSurvivors1Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors1Navigation.IdTypeDeath :
+                           x.IdSurvivors2Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors2Navigation.IdTypeDeath :
+                           x.IdSurvivors3Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors3Navigation.IdTypeDeath :
+                           x.IdSurvivors4Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors4Navigation.IdTypeDeath : 0)
+                        : (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdTypeDeath :
+                           x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors2Navigation.IdTypeDeath :
+                           x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3Navigation.IdTypeDeath :
+                           x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4Navigation.IdTypeDeath : 0),
+                        
                         filter.IdSurvivor.HasValue
                         ? (x.IdSurvivors1Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors1Navigation.IdSurvivorNavigation.SurvivorImage :
                            x.IdSurvivors2Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors2Navigation.IdSurvivorNavigation.SurvivorImage :
