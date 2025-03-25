@@ -5,15 +5,17 @@ using DBDAnalytics.Domain.Interfaces.Repositories;
 
 namespace DBDAnalytics.Application.UseCases.Realization.GameStatisticCase
 {
-    public class GetGameStatisticSurvivorViewingUseCase(IGameStatisticRepository gameStatisticRepository) : IGetGameStatisticSurvivorViewingUseCase
+    public class GetGameStatisticSurvivorViewingUseCase(IGameStatisticSurvivorViewingRepository gameStatisticSurvivorViewingRepository,
+                                                        IGameStatisticRepository gameStatisticRepository) : IGetGameStatisticSurvivorViewingUseCase
     {
+        private readonly IGameStatisticSurvivorViewingRepository _gameStatisticSurvivorViewingRepository = gameStatisticSurvivorViewingRepository;
         private readonly IGameStatisticRepository _gameStatisticRepository = gameStatisticRepository;
 
         public async Task<List<GameStatisticSurvivorViewingDTO>> GetSurvivorViewsAsync(GameStatisticSurvivorFilterDTO filter)
         {
             var domainFilter = filter.ToDomain();
 
-            var domainEntities = await _gameStatisticRepository.GetSurvivorViewsAsync(domainFilter);
+            var domainEntities = await _gameStatisticSurvivorViewingRepository.GetSurvivorViewsAsync(domainFilter);
 
             var dtoEntities = domainEntities.ToDTO();
 
@@ -22,7 +24,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.GameStatisticCase
 
         public async Task<GameStatisticSurvivorViewingDTO> GetSurvivorViewAsync(int idGameStatistic)
         {
-            var domainEntity = await _gameStatisticRepository.GetSurvivorViewAsync(idGameStatistic);
+            var domainEntity = await _gameStatisticSurvivorViewingRepository.GetSurvivorViewAsync(idGameStatistic);
 
             var dtoEntity = domainEntity.ToDTO();
 
@@ -31,7 +33,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.GameStatisticCase
 
         public GameStatisticSurvivorViewingDTO GetSurvivorView(int idGameStatistic)
         {
-            var domainEntity = _gameStatisticRepository.GetSurvivorView(idGameStatistic);
+            var domainEntity = _gameStatisticSurvivorViewingRepository.GetSurvivorView(idGameStatistic);
 
             var dtoEntity = domainEntity.ToDTO();
 

@@ -5,13 +5,15 @@ using DBDAnalytics.Domain.Interfaces.Repositories;
 
 namespace DBDAnalytics.Application.UseCases.Realization.GameStatisticCase
 {
-    public class GetGameStatisticKillerViewingUseCase(IGameStatisticRepository gameStatisticRepository) : IGetGameStatisticKillerViewingUseCase
+    public class GetGameStatisticKillerViewingUseCase(IGameStatisticKillerViewingRepository gameStatisticKillerViewingRepository,
+                                                      IGameStatisticRepository gameStatisticRepository) : IGetGameStatisticKillerViewingUseCase
     {
+        private readonly IGameStatisticKillerViewingRepository _gameStatisticKillerViewingRepository = gameStatisticKillerViewingRepository;
         private readonly IGameStatisticRepository _gameStatisticRepository = gameStatisticRepository;
 
         public async Task<GameStatisticKillerViewingDTO> GetKillerViewAsync(int idGameStatistic)
         {
-            var domainEntity = await _gameStatisticRepository.GetKillerViewAsync(idGameStatistic);
+            var domainEntity = await _gameStatisticKillerViewingRepository.GetKillerViewAsync(idGameStatistic);
 
             var dtoEntity = domainEntity.ToDTO();
 
@@ -20,7 +22,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.GameStatisticCase
 
         public GameStatisticKillerViewingDTO GetKillerView(int idGameStatistic)
         {
-            var domainEntity = _gameStatisticRepository.GetKillerView(idGameStatistic);
+            var domainEntity = _gameStatisticKillerViewingRepository.GetKillerView(idGameStatistic);
 
             var dtoEntity = domainEntity.ToDTO();
 
@@ -30,7 +32,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.GameStatisticCase
         public async Task<List<GameStatisticKillerViewingDTO>> GetKillerViewsFilteredAsync(GameStatisticKillerFilterDTO filter)
         {
             var filterDomain = filter.ToDomain();
-            var domainEntities = await _gameStatisticRepository.GetKillerViewsFilteredAsync(filterDomain);
+            var domainEntities = await _gameStatisticKillerViewingRepository.GetKillerViewsFilteredAsync(filterDomain);
 
             var dtoEntities = domainEntities.ToDTO();
 
