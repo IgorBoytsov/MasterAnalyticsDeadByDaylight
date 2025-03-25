@@ -17,6 +17,8 @@ namespace DBDAnalytics.Infrastructure.Ioc
             services.AddScoped<IGameModeRepository, GameModeRepository>();
 
             services.AddScoped<IGameStatisticRepository, GameStatisticRepository>();
+            services.AddScoped<IGameStatisticKillerViewingRepository, GameStatisticKillerViewingRepository>();
+            services.AddScoped<IGameStatisticSurvivorViewingRepository, GameStatisticSurvivorViewingRepository>();
             services.AddScoped<IMatchAttributeRepository, MatchAttributeRepository>();
 
             services.AddScoped<IItemAddonRepository, ItemAddonRepository>();
