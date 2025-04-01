@@ -11,6 +11,7 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
         KillerAddonDomain? Get(int idKillerAddon);
         IEnumerable<KillerAddonDomain> GetAll();
         Task<IEnumerable<KillerAddonDomain>> GetAllAsync();
+        Task<List<KillerAddonDomain>> GetAllByIdKiller(int idKiller);
         Task<KillerAddonDomain?> GetAsync(int idKillerAddon);
         Task<int> UpdateAsync(int idAddon, int idKiller, int? idRarity, string addonName, byte[]? addonImage, string? addonDescription);
     }

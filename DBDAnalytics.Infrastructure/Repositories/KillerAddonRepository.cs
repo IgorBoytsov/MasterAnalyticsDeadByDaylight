@@ -150,6 +150,40 @@ namespace DBDAnalytics.Infrastructure.Repositories
             return Task.Run(() => GetAllAsync()).Result;
         }
 
+        public async Task<List<KillerAddonDomain>> GetAllByIdKiller(int idKiller)
+        {
+            using (var _dbContext = _contextFactory())
+            {
+                var killerAddonsEntity = _dbContext.KillerAddons
+                    .AsNoTracking()
+                        .Where(x => x.IdKiller == idKiller)
+                            .AsQueryable();
+
+                var killerAddonsDomain = (await killerAddonsEntity.ToListAsync())
+                    .Select(x =>
+                    {
+                        var result = KillerAddonDomain.Create(
+                            x.IdKillerAddon,
+                            x.IdKiller,
+                            x.IdRarity,
+                            x.AddonName,
+                            x.AddonImage,
+                            x.AddonDescription);
+
+                        if (result.KillerAddonDomain is null)
+                        {
+                            Debug.WriteLine($"Не удалось создать элемент коллекции KillerAddonDomain для Id {x.IdKillerAddon} при получение из БД. Ошибка: {result.Message}");
+                        }
+
+                        return result.KillerAddonDomain;
+                    })
+                    .Where(x => x != null)
+                    .ToList();
+
+                return killerAddonsDomain;
+            }
+        }
+
         /*--Exist-----------------------------------------------------------------------------------------*/
 
         public async Task<bool> ExistAsync(int idKillerAddon)
