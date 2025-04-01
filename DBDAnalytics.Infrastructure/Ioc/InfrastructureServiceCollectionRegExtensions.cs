@@ -49,6 +49,8 @@ namespace DBDAnalytics.Infrastructure.Ioc
             services.AddScoped<ITypeDeathRepository, TypeDeathRepository>();
             services.AddScoped<IWhoPlacedMapRepository, WhoPlacedMapRepository>();
 
+            services.AddScoped<IDetailsMatchRepository, DetailsMatchRepository>();
+
             return services;
         }
     }
