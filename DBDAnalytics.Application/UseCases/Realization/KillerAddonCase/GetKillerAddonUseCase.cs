@@ -28,6 +28,15 @@ namespace DBDAnalytics.Application.UseCases.Realization.KillerAddonCase
             return dtoEntities;
         }
 
+        public async Task<List<KillerAddonDTO>> GetAllByIdKiller(int idKiller)
+        {
+            var domainEntities = await _killerAddonRepository.GetAllByIdKiller(idKiller);
+
+            var dtoEntities = domainEntities.ToDTO();
+
+            return dtoEntities;
+        }
+
         public async Task<KillerAddonDTO?> GetAsync(int idKillerAddon)
         {
             var domainEntity = await _killerAddonRepository.GetAsync(idKillerAddon);

@@ -7,5 +7,6 @@ namespace DBDAnalytics.Application.UseCases.Abstraction.KillerAddonCase
         List<KillerAddonDTO> GetAll();
         Task<List<KillerAddonDTO>> GetAllAsync();
         Task<KillerAddonDTO?> GetAsync(int idKillerAddon);
+        Task<List<KillerAddonDTO>> GetAllByIdKiller(int idKiller);
     }
 }
