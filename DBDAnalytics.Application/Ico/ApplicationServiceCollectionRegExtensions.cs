@@ -20,6 +20,7 @@ using DBDAnalytics.Application.UseCases.Abstraction.PatchCase;
 using DBDAnalytics.Application.UseCases.Abstraction.PlatformCase;
 using DBDAnalytics.Application.UseCases.Abstraction.RarityCase;
 using DBDAnalytics.Application.UseCases.Abstraction.RoleCase;
+using DBDAnalytics.Application.UseCases.Abstraction.StatisticCase;
 using DBDAnalytics.Application.UseCases.Abstraction.SurvivorCase;
 using DBDAnalytics.Application.UseCases.Abstraction.SurvivorInfoCase;
 using DBDAnalytics.Application.UseCases.Abstraction.SurvivorPerkCase;
@@ -46,6 +47,7 @@ using DBDAnalytics.Application.UseCases.Realization.PatchCase;
 using DBDAnalytics.Application.UseCases.Realization.PlatformCase;
 using DBDAnalytics.Application.UseCases.Realization.RarityCase;
 using DBDAnalytics.Application.UseCases.Realization.RoleCase;
+using DBDAnalytics.Application.UseCases.Realization.StatisticCase;
 using DBDAnalytics.Application.UseCases.Realization.SurvivorCase;
 using DBDAnalytics.Application.UseCases.Realization.SurvivorInfoCase;
 using DBDAnalytics.Application.UseCases.Realization.SurvivorPerkCase;
@@ -100,7 +102,7 @@ namespace DBDAnalytics.Application.Ico
 
             #endregion
 
-            #region UseCases
+            #region UseCases Table
 
             services.AddScoped<ICreateAssociationUseCase, CreateAssociationUseCase>();
             services.AddScoped<IDeleteAssociationUseCase, DeleteAssociationUseCase>();
@@ -229,6 +231,23 @@ namespace DBDAnalytics.Application.Ico
             services.AddScoped<IDeleteWhoPlacedMapUseCase, DeleteWhoPlacedMapUseCase>();
             services.AddScoped<IGetWhoPlacedMapUseCase, GetWhoPlacedMapUseCase>();
             services.AddScoped<IUpdateWhoPlacedMapUseCase, UpdateWhoPlacedMapUseCase>();
+
+            #endregion
+
+            #region UseCases Stats
+
+            services.AddScoped<IGetDetailsMatchUseCase, GetDetailsMatchUseCase>();
+
+            #endregion
+
+            #region CalculationService
+
+            services.AddSingleton<ICreatingApplicationModelsService, CreatingApplicationModelsService>();
+
+            services.AddSingleton<ICalculationGeneralService, CalculationGeneralService>();
+            services.AddSingleton<ICalculationTimeService, CalculationTimeService>();
+            services.AddSingleton<ICalculationKillerService, CalculationKillerService>();
+            services.AddSingleton<ICalculationSurvivorService, CalculationSurvivorService>();
 
             #endregion
 
