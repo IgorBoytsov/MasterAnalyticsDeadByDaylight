@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="DBDAnalytics.WPF.Assets.CustomControls.IndicatorProgressBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DBDAnalytics.WPF.Assets.CustomControls"
+             mc:Ignorable="d" 
+             d:Height="30" d:Width="300">
+    <Grid>
+        
+        <ProgressBar Value="{Binding CurrentValue, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                     Minimum="{Binding MinimumValue, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                     Maximum="{Binding MaximumValue, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                     Foreground="{Binding ForegroundProgress, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{Binding BackgroundProgressBar, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                     BorderThickness="0"/>
+
+
+        <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Center">
+
+            <TextBlock Text="{Binding MinimumValue, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Margin="5,0,0,0"/>
+
+            <TextBlock Text="{Binding DisplayedValueType, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="Bold"/>
+        </WrapPanel>
+
+
+        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <TextBlock Text="{Binding TextValue, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <TextBlock Text="{Binding CurrentValue, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text="{Binding DisplayedValueType, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="Bold"/>
+        </WrapPanel>
+
+        <WrapPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+            <TextBlock Text="{Binding MaximumValue, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                   Foreground="White"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"/>
+
+            <TextBlock Text="{Binding DisplayedValueType, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Margin="0,0,5,0"/>
+        </WrapPanel>
+
+    </Grid>
+</UserControl>
