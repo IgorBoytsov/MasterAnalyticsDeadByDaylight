@@ -8,7 +8,7 @@
 
         public int CountMatchWithItemLoadout { get; set; }
 
-        public int TotalMatch { get; set; }
+        public int CountWinMatchWithItemLoadout { get; set; }
 
         public double PickRate { get; set; }
 

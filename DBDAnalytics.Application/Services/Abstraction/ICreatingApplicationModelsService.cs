@@ -9,7 +9,7 @@ namespace DBDAnalytics.Application.Services.Abstraction
         LoadoutPopularity CreatedLoadoutPopularity(
             string name,
             byte[]? image,
-            int totalMatch,
+            int countWinMatchWithItemLoadout,
             int countMatchWithItemLoadout,
             double pickRate,
             double winRateAllMatch,

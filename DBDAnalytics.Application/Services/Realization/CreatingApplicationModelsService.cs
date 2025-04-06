@@ -36,7 +36,7 @@ namespace DBDAnalytics.Application.Services.Realization
         public LoadoutPopularity CreatedLoadoutPopularity(
             string name,
             byte[]? image,
-            int totalMatch,
+            int countWinMatchWithItemLoadout,
             int countMatchWithItemLoadout,
             double pickRate,
             double winRateAllMatch,
@@ -46,7 +46,7 @@ namespace DBDAnalytics.Application.Services.Realization
             {
                 Name = name,
                 Image = image,
-                TotalMatch = totalMatch,
+                CountWinMatchWithItemLoadout = countWinMatchWithItemLoadout,
                 CountMatchWithItemLoadout = countMatchWithItemLoadout,
                 PickRate = pickRate,
                 WinRateAllMatch = winRateAllMatch,
