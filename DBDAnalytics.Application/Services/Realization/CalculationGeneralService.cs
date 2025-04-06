@@ -479,6 +479,26 @@ namespace DBDAnalytics.Application.Services.Realization
             return dayOrWeekActivity;
         }
 
+        public List<LabeledValue> MonthlyActivity(List<DetailsMatchDTO> matches)
+        {
+            List<LabeledValue> monthlyActivity = [];
+
+            var months = _calculationTimeService.GetMonths();
+
+            foreach (var month in months)
+            {
+                int count = matches.Count(x => x.Date.HasValue && x.Date.Value.Month == month.Value);
+
+                monthlyActivity.Add(new LabeledValue
+                {
+                    Name = month.Key,
+                    Value = count,
+                });
+            }
+
+            return monthlyActivity;
+        }
+
         /*--Расчеты популярности--------------------------------------------------------------------------*/
 
         public List<LoadoutPopularity> CalculatePopularity<TCollectionItem>(

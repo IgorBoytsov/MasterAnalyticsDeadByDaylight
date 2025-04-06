@@ -75,6 +75,29 @@ namespace DBDAnalytics.Application.Services.Realization
 
         public List<DayOfWeek> GetDayOfWeeks() => Enum.GetValues<DayOfWeek>().Skip(1).Concat(Enum.GetValues<DayOfWeek>().Take(1)).ToList();
 
+        public Dictionary<string, int> GetMonths()
+        {
+            Dictionary<string, int> monthMap = [];
+
+            CultureInfo russianCulture = new("ru-RU");
+            DateTimeFormatInfo dtfi = russianCulture.DateTimeFormat;
+            TextInfo textInfo = russianCulture.TextInfo;
+
+            string[] monthNames = dtfi.MonthNames;
+
+            for (int i = 0; i < 12; i++) 
+            {
+                string monthName = monthNames[i];
+
+                int monthNumber = i + 1;
+
+                string capitalizedMonthName = textInfo.ToTitleCase(monthName);
+                monthMap.Add(capitalizedMonthName, monthNumber);
+            }
+
+            return monthMap;
+        }
+
         public string FormatTimeSpanAdaptive(TimeSpan timeSpan) =>
             timeSpan.TotalHours > 24 ? $"{timeSpan.Days}д {timeSpan.Hours}ч {timeSpan.Minutes}м" : $"{timeSpan.Hours}ч {timeSpan.Minutes}м {timeSpan.Seconds}с";
     }
