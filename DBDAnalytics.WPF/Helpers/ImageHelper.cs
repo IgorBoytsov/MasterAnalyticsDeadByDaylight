@@ -37,6 +37,23 @@ namespace DBDAnalytics.WPF.Helpers
             });
         }
 
+        public static byte[] BitmapImageToByteArray(BitmapImage bitmapImage)
+        {
+            if (bitmapImage == null)
+            {
+                throw new ArgumentNullException(nameof(bitmapImage), "BitmapImage не может быть null.");
+            }
+
+            using (MemoryStream memoryStream = new())
+            {
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+                encoder.Save(memoryStream);
+
+                return memoryStream.ToArray();
+            }
+        }
+
         public static async Task<BitmapImage> ConvertBitmapToBitmapImageAsync(Bitmap bitmap)
         {
             return await Task.Run(() =>
