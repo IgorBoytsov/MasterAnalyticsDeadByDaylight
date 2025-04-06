@@ -73,6 +73,8 @@ namespace DBDAnalytics.Application.Services.Realization
             return weekNumber;
         }
 
+        public List<DayOfWeek> GetDayOfWeeks() => Enum.GetValues<DayOfWeek>().Skip(1).Concat(Enum.GetValues<DayOfWeek>().Take(1)).ToList();
+
         public string FormatTimeSpanAdaptive(TimeSpan timeSpan) =>
             timeSpan.TotalHours > 24 ? $"{timeSpan.Days}д {timeSpan.Hours}ч {timeSpan.Minutes}м" : $"{timeSpan.Hours}ч {timeSpan.Minutes}м {timeSpan.Seconds}с";
     }

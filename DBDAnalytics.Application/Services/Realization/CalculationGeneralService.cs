@@ -3,6 +3,7 @@ using DBDAnalytics.Application.DTOs.DetailsDTOs;
 using DBDAnalytics.Application.Enums;
 using DBDAnalytics.Application.Services.Abstraction;
 using DBDAnalytics.Domain.Constants;
+using System.Globalization;
 
 namespace DBDAnalytics.Application.Services.Realization
 {
@@ -452,6 +453,32 @@ namespace DBDAnalytics.Application.Services.Realization
             return hourlyActivity;
         }
 
+        public List<LabeledValue> DayOrWeekActivity(List<DetailsMatchDTO> matches)
+        {
+            List<LabeledValue> dayOrWeekActivity = [];
+
+            var dayOfWeeks = _calculationTimeService.GetDayOfWeeks();
+            CultureInfo russianCulture = new("ru-RU");
+            TextInfo russianTextInfo = russianCulture.TextInfo;
+
+            foreach (var week in dayOfWeeks)
+            {
+                int count = matches.Count(x => x.Date.HasValue && CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(x.Date.Value) == week);
+
+                string lowerCaseDayName = russianCulture.DateTimeFormat.GetDayName(week);
+
+                string titleCaseDayName = russianTextInfo.ToTitleCase(lowerCaseDayName);
+
+                dayOrWeekActivity.Add(new LabeledValue
+                {
+                    Name = titleCaseDayName,
+                    Value = count,
+                });
+            }
+
+            return dayOrWeekActivity;
+        }
+
         /*--Расчеты популярности--------------------------------------------------------------------------*/
 
         public List<LoadoutPopularity> CalculatePopularity<TCollectionItem>(
@@ -485,7 +512,7 @@ namespace DBDAnalytics.Application.Services.Realization
                 string itemName = nameSelector(item);
                 byte[]? itemImage = imageSelector(item);
 
-                return _creatingApplicationModelsService.CreatedLoadoutPopularity(itemName, itemImage, totalMatchesCount, itemMatchesCount, pickRate, winRateContributionToAll, winRateWhenPicked);
+                return _creatingApplicationModelsService.CreatedLoadoutPopularity(itemName, itemImage, itemWinMatchesCount, itemMatchesCount, pickRate, winRateContributionToAll, winRateWhenPicked);
             })
             .OrderByDescending(x => x.PickRate)
             .ToList();

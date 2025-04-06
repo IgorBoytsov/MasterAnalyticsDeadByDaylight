@@ -8,6 +8,7 @@ namespace DBDAnalytics.Application.Services.Abstraction
         int GetIso8601WeekOfYear(DateTime time);
         DateTime GetIso8601WeekStart(DateTime time);
         int GetWeekOfMonth(DateTime date);
+        public List<DayOfWeek> GetDayOfWeeks();
         /// <summary>
         /// Вот этот комментарий должен отображаться.
         /// > 24ч = Дни:Часы:Минуты

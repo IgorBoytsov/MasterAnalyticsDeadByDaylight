@@ -13,6 +13,7 @@ namespace DBDAnalytics.Application.Services.Abstraction
         public List<LabeledValue> CountMatchesByTimePeriod(List<DetailsMatchDTO> matches, TimePeriod period);
         public List<LabeledValue> AvgScoreByTimePeriod(List<DetailsMatchDTO> matches, TimePeriod period, Func<DetailsMatchDTO, int> selector);
         public List<LabeledValue> HourlyActivity(List<DetailsMatchDTO> killerDetailsList);
+        public List<LabeledValue> DayOrWeekActivity(List<DetailsMatchDTO> matches);
         List<LoadoutPopularity> CalculatePopularity<TCollectionItem>(
             List<DetailsMatchDTO> matches,
             List<TCollectionItem> items,
