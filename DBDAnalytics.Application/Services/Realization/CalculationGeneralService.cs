@@ -544,9 +544,10 @@ namespace DBDAnalytics.Application.Services.Realization
             List<DetailsMatchDTO> matches, 
             List<TAddon> addons, 
             Func<int, TAddon> addonSelector, 
+            Func<DetailsMatchDTO,(int? FirstAddonID, int? SecondAddonID)> idAddonSelector,
             Func<DetailsMatchDTO, bool> rulesForFilteringWinRatePredicate) where TAddon : class
         {
-            var rawAddonPairs = matches.Select(x => (x.KillerDTO.FirstAddonID, x.KillerDTO.SecondAddonID));
+            var rawAddonPairs = matches.Select(x => idAddonSelector(x));
 
             var normalizedPairs = rawAddonPairs.Where(pair => pair.FirstAddonID.HasValue && pair.SecondAddonID.HasValue)
                 .Select(pair =>

@@ -28,6 +28,7 @@ namespace DBDAnalytics.Application.Services.Abstraction
             List<DetailsMatchDTO> matches,
             List<TAddon> addons,
             Func<int, TAddon> addonSelector,
+            Func<DetailsMatchDTO, (int? FirstAddonID, int? SecondAddonID)> idAddonSelector,
             Func<DetailsMatchDTO, bool> rulesForWinPredicate) where TAddon : class;
     }
 }
