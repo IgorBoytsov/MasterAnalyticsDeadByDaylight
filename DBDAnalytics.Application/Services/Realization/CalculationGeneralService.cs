@@ -540,6 +540,53 @@ namespace DBDAnalytics.Application.Services.Realization
             return result;
         }
 
+        public List<DoubleAddonsPopularity<TAddon>> DoubleAddonPopularity<TAddon>(
+            List<DetailsMatchDTO> matches, 
+            List<TAddon> addons, 
+            Func<int, TAddon> addonSelector, 
+            Func<DetailsMatchDTO, bool> rulesForFilteringWinRatePredicate) where TAddon : class
+        {
+            var rawAddonPairs = matches.Select(x => (x.KillerDTO.FirstAddonID, x.KillerDTO.SecondAddonID));
+
+            var normalizedPairs = rawAddonPairs.Where(pair => pair.FirstAddonID.HasValue && pair.SecondAddonID.HasValue)
+                .Select(pair =>
+                {
+                    // Ставим '!' перед .Value, означает, что мы сообщаем компилятору, что мы уверенны в том, что тут не будет null. Т.к была использована фильтрация с помощью Where.
+                    int id1 = pair.FirstAddonID!.Value;
+                    int id2 = pair.SecondAddonID!.Value;
+
+                    //return id1 <= id2 ? (Addon1: id1, Addon2: id2) : (Addon1: id2, Addon2: id1);
+                    return (FirstAddonID: Math.Min(id1, id2), SecondAddonID: Math.Max(id1, id2));
+                });
+
+            var pairCounts = normalizedPairs.GroupBy(pair => pair).ToDictionary(group => group.Key,group => group.Count());
+
+            List<DoubleAddonsPopularity<TAddon>> doubleAddons = pairCounts.Select(pair =>
+            {
+                Func<DetailsMatchDTO, bool> countPredicate = match => (match.KillerDTO.FirstAddonID == pair.Key.FirstAddonID && match.KillerDTO.SecondAddonID == pair.Key.SecondAddonID) || 
+                                                                      (match.KillerDTO.FirstAddonID == pair.Key.SecondAddonID && match.KillerDTO.SecondAddonID == pair.Key.FirstAddonID);
+                
+                var firstAddon = addonSelector(pair.Key.FirstAddonID);
+                var secondAddon = addonSelector(pair.Key.SecondAddonID);
+                var count = pair.Value;
+
+                var pickRate = Percentage(count, matches.Count);
+                var winRate = Percentage(matches.Where(x => rulesForFilteringWinRatePredicate(x)).Count(x => countPredicate(x)), matches.Count(match => countPredicate(match)));
+
+                return new DoubleAddonsPopularity<TAddon>
+                {
+                    FirstAddon = firstAddon,
+                    SecondAddon = secondAddon,
+                    Count = count,
+                    PickRate = pickRate,
+                    WinRate = winRate
+                };
+
+            }).ToList();
+
+            return doubleAddons;
+        }
+
         /*--Проверки--------------------------------------------------------------------------------------*/
 
         private static bool IsInvalidForAverageAndPercentage(int value, int size) => value <= 0 || size <= 0;

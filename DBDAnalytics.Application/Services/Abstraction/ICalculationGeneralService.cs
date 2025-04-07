@@ -15,6 +15,7 @@ namespace DBDAnalytics.Application.Services.Abstraction
         public List<LabeledValue> HourlyActivity(List<DetailsMatchDTO> killerDetailsList);
         public List<LabeledValue> DayOrWeekActivity(List<DetailsMatchDTO> matches);
         public List<LabeledValue> MonthlyActivity(List<DetailsMatchDTO> matches);
+
         List<LoadoutPopularity> CalculatePopularity<TCollectionItem>(
             List<DetailsMatchDTO> matches,
             List<TCollectionItem> items,
@@ -22,5 +23,11 @@ namespace DBDAnalytics.Application.Services.Abstraction
             Func<TCollectionItem, string> nameSelector,
             Func<TCollectionItem, byte[]?> imageSelector,
             Func<DetailsMatchDTO, bool> countPredicate);
+
+        public List<DoubleAddonsPopularity<TAddon>> DoubleAddonPopularity<TAddon>(
+            List<DetailsMatchDTO> matches,
+            List<TAddon> addons,
+            Func<int, TAddon> addonSelector,
+            Func<DetailsMatchDTO, bool> rulesForWinPredicate) where TAddon : class;
     }
 }
