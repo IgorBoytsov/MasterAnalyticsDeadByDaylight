@@ -24,6 +24,41 @@
 
     <!--#endregion-->
 
+    <!--#region Window : PreviewMatch -->
+
+    <Style x:Key="TextBlock.PreviewPlayer" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Page : Details -->
+
+    <Style x:Key="Details.Header.Card" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="Foreground" Value="{StaticResource Brush.Details.Header}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontFamily" Value="Book Antiqua"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="Details.TextStat.Name" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontFamily" Value="Book Antiqua"/>
+    </Style>
+
+    <Style x:Key="Details.TextStat.Value" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="Book Antiqua"/>
+    </Style>
+
+    <!--#endregion-->
+
     <!--#region Popup -->
 
     <Style x:Key="TextBlock.Popup" TargetType="TextBlock">

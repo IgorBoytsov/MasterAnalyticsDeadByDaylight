@@ -70,5 +70,28 @@
     </Style>
 
     <!--#endregion-->
+
+    <!--#region PreviewMatchWindow -->
+
+    <Style x:Key="Border.PreviewPlayer" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Brush.AppCardBackground}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Margin" Value="5"/>
+    </Style>
+    
+    <!--#endregion-->
+
+    <!--#region Details Page -->
+
+    <Style x:Key="Details.Border.Card" TargetType="Border">
+        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="Background" Value="{StaticResource Brush.AppCardBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="0,30,0,0"/>
+        <Setter Property="CornerRadius" Value="20"/>
+    </Style>
+    
+    <!--#endregion-->
     
 </ResourceDictionary>

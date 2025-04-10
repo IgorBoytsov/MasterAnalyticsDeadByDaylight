@@ -63,7 +63,37 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+    <Style x:Key="ShurtListViewItemStyle" TargetType="ListViewItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border Name="border" Background="Transparent" 
+                            CornerRadius="10"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="Gray"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="Green"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="Gray"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#7EB4EA"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                            <Setter TargetName="border" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--#endregion-->
 
     <!--#region Базовый стиль для виртуализации в ListView -->
@@ -79,16 +109,27 @@
     
     <!--#endregion-->
 
-    <!--#region Стиль для ListView с списком Перков, улучшений и подношений в окне AddMatch -->
+    <!--#region AddMatch : ListViewStyle с списком Перков, улучшений и подношений в окне  -->
   
     <Style x:Key="AddMatchWindow.DataSelection" TargetType="ListView" BasedOn="{StaticResource ListView.BaseVirtualizing}">
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <!--<Setter Property="HorizontalAlignment" Value="Center"/>-->
-        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
     </Style>
     
+    <!--#endregion-->
+
+    <!--#region KillerDetails : Список улучшений -->
+
+    <Style x:Key="KillerDetails.KillerAddons" TargetType="ListView" BasedOn="{StaticResource ListView.BaseVirtualizing}">
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+    </Style>
+
     <!--#endregion-->
 
     <!--#region Стилья для ListView с выбранными изображениями -->
