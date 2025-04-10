@@ -1,9 +1,11 @@
 ﻿using DBDAnalytics.Application.ApplicationModels.CalculationModels;
+using DBDAnalytics.Application.DTOs;
 using DBDAnalytics.Application.DTOs.DetailsDTOs;
 using DBDAnalytics.Application.Enums;
 using DBDAnalytics.Application.Services.Abstraction;
 using DBDAnalytics.Domain.Constants;
 using System.Globalization;
+using System.Linq;
 
 namespace DBDAnalytics.Application.Services.Realization
 {
@@ -545,6 +547,7 @@ namespace DBDAnalytics.Application.Services.Realization
             List<TAddon> addons, 
             Func<int, TAddon> addonSelector, 
             Func<DetailsMatchDTO,(int? FirstAddonID, int? SecondAddonID)> idAddonSelector,
+            Func<(int FirstAddonID, int SecondAddonID), Func<DetailsMatchDTO, bool>> createCountPredicate,
             Func<DetailsMatchDTO, bool> rulesForFilteringWinRatePredicate) where TAddon : class
         {
             var rawAddonPairs = matches.Select(x => idAddonSelector(x));
@@ -564,15 +567,18 @@ namespace DBDAnalytics.Application.Services.Realization
 
             List<DoubleAddonsPopularity<TAddon>> doubleAddons = pairCounts.Select(pair =>
             {
-                Func<DetailsMatchDTO, bool> countPredicate = match => (match.KillerDTO.FirstAddonID == pair.Key.FirstAddonID && match.KillerDTO.SecondAddonID == pair.Key.SecondAddonID) || 
-                                                                      (match.KillerDTO.FirstAddonID == pair.Key.SecondAddonID && match.KillerDTO.SecondAddonID == pair.Key.FirstAddonID);
-                
+                Func<DetailsMatchDTO, bool> countPredicate = createCountPredicate(pair.Key);
+
                 var firstAddon = addonSelector(pair.Key.FirstAddonID);
                 var secondAddon = addonSelector(pair.Key.SecondAddonID);
                 var count = pair.Value;
 
-                var pickRate = Percentage(count, matches.Count);
-                var winRate = Percentage(matches.Where(x => rulesForFilteringWinRatePredicate(x)).Count(x => countPredicate(x)), matches.Count(match => countPredicate(match)));
+                var totalMatchesCount = matches.Count;
+                var matchesWithThisPairCount = matches.Count(match => countPredicate(match));
+                var wonMatchesWithThisPairCount = matches.Where(x => rulesForFilteringWinRatePredicate(x)).Count(x => countPredicate(x));
+
+                var pickRate = Percentage(count, totalMatchesCount);
+                var winRate = Percentage(wonMatchesWithThisPairCount, matchesWithThisPairCount);
 
                 return new DoubleAddonsPopularity<TAddon>
                 {
@@ -586,6 +592,68 @@ namespace DBDAnalytics.Application.Services.Realization
             }).ToList();
 
             return doubleAddons;
+        }
+
+        public List<QuadruplePerksPopularity<TPerk>> QuadruplePerkPopularity<TPerk>(
+            List<DetailsMatchDTO> matches,
+            List<TPerk> perks,
+            Func<int, TPerk> perkSelector,
+            Func<DetailsMatchDTO, (int? FirstPerkID, int? SecondPerkID, int? ThirdPerkID, int? FourthPerkID)> idPerkSelector,
+            Func<(int FirstPerkID, int SecondPerkID, int ThirdPerkID, int FourthPerkID), Func<DetailsMatchDTO, bool>> createCountPredicate,
+            Func<DetailsMatchDTO, bool> rulesForFilteringWinRatePredicate) where TPerk : class
+        {
+            var rawPerkCombos = matches.Select(x => idPerkSelector(x));
+
+            var normalizedCombos = rawPerkCombos.Where(combo => combo.FirstPerkID.HasValue && combo.SecondPerkID.HasValue && combo.ThirdPerkID.HasValue && combo.FourthPerkID.HasValue)
+                .Select(combo =>
+                {
+                    int[] ids = 
+                    [
+                        combo.FirstPerkID!.Value,
+                        combo.SecondPerkID!.Value,
+                        combo.ThirdPerkID!.Value,
+                        combo.FourthPerkID!.Value
+                    ];
+
+                    Array.Sort(ids);
+
+                    return (FirstPerkID: ids[0], SecondPerkID: ids[1], ThirdPerkID: ids[2], FourthPerkID: ids[3]);
+                });
+
+            var comboCounts = normalizedCombos.GroupBy(combo => combo).ToDictionary(group => group.Key, group => group.Count());
+
+            List<QuadruplePerksPopularity<TPerk>> quadruplePerks = comboCounts.Select(kvp =>
+            {
+                var comboKey = kvp.Key;
+                var count = kvp.Value;
+
+                Func<DetailsMatchDTO, bool> countPredicate = createCountPredicate(comboKey);
+
+                var firstPerk = perkSelector(comboKey.FirstPerkID);
+                var secondPerk = perkSelector(comboKey.SecondPerkID);
+                var thirdPerk = perkSelector(comboKey.ThirdPerkID);
+                var fourthPerk = perkSelector(comboKey.FourthPerkID);
+
+                var totalMatchesCount = matches.Count;
+                var matchesWithThisComboCount = matches.Count(match => countPredicate(match)); 
+                var wonMatchesWithThisComboCount = matches.Where(x => rulesForFilteringWinRatePredicate(x)).Count(x => countPredicate(x)); 
+                var pickRate = Percentage(count, totalMatchesCount); 
+                var winRate = Percentage(wonMatchesWithThisComboCount, matchesWithThisComboCount);
+
+                return new QuadruplePerksPopularity<TPerk>
+                {
+                    FirstPerk = firstPerk,
+                    SecondPerk = secondPerk,
+                    ThirdPerk = thirdPerk,
+                    FourthPerk = fourthPerk,
+                    Count = count,
+                    PickRate = pickRate,
+                    WinRate = winRate
+                };
+
+            }).ToList();
+
+            return quadruplePerks;
         }
 
         /*--Проверки--------------------------------------------------------------------------------------*/

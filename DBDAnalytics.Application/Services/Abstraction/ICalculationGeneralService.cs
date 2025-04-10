@@ -29,6 +29,15 @@ namespace DBDAnalytics.Application.Services.Abstraction
             List<TAddon> addons,
             Func<int, TAddon> addonSelector,
             Func<DetailsMatchDTO, (int? FirstAddonID, int? SecondAddonID)> idAddonSelector,
+            Func<(int FirstAddonID, int SecondAddonID), Func<DetailsMatchDTO, bool>> createCountPredicate,
             Func<DetailsMatchDTO, bool> rulesForWinPredicate) where TAddon : class;
+
+        public List<QuadruplePerksPopularity<TPerk>> QuadruplePerkPopularity<TPerk>(
+            List<DetailsMatchDTO> matches,
+            List<TPerk> perks,
+            Func<int, TPerk> perkSelector,
+            Func<DetailsMatchDTO, (int? FirstPerkID, int? SecondPerkID, int? ThirdPerkID, int? FourthPerkID)> idPerkSelector,
+            Func<(int FirstPerkID, int SecondPerkID, int ThirdPerkID, int FourthPerkID), Func<DetailsMatchDTO, bool>> createCountPredicate,
+            Func<DetailsMatchDTO, bool> rulesForFilteringWinRatePredicate) where TPerk : class;
     }
 }
