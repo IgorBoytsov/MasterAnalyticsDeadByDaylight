@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <SolidColorBrush x:Key="Brush.Details.Header" Color="#FF8265FF"/>
+
+    <SolidColorBrush x:Key="Brush.IsAnonymous.Converter" Color="#FFFF6161"/>
+    <SolidColorBrush x:Key="Brush.NoAnonymous.Converter" Color="#FF39FF39"/>
+    
+    <SolidColorBrush x:Key="Brush.IsBot.Converter" Color="#FFFF6161"/>
+    <SolidColorBrush x:Key="Brush.NoBo.Converter" Color="#FF39FF39"/>
+    
+</ResourceDictionary>

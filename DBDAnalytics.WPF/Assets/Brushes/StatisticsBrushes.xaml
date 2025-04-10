@@ -1,0 +1,159 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="Brush.KillRate" Color="#FF932828"/>
+    <SolidColorBrush x:Key="Brush.WinRate" Color="#FF1B5D18"/>
+    <SolidColorBrush x:Key="Brush.PickRate" Color="#FF00758F"/>
+    <SolidColorBrush x:Key="Brush.GeneratorRate" Color="#3f3f3f"/>
+    <SolidColorBrush x:Key="Brush.HookRate" Color="#FFC01212"/>
+
+    <SolidColorBrush x:Key="Brush.ProgressBar.Background" Color="#121F2D"/>
+
+    <!--#region Киллы -->
+
+    <!--<SolidColorBrush x:Key="Brush.ZeroKills" Color="#FF3341"/>
+    <SolidColorBrush x:Key="Brush.OneKills" Color="#FF0011"/>
+    <SolidColorBrush x:Key="Brush.TwoKills" Color="#CC000E"/>
+    <SolidColorBrush x:Key="Brush.ThreeKills" Color="#99000A"/>
+    <SolidColorBrush x:Key="Brush.FourKills" Color="#660007"/>-->
+
+    <!--<SolidColorBrush x:Key="Brush.ZeroKills" Color="#00FF00"/>
+    <SolidColorBrush x:Key="Brush.OneKills" Color="#40BF00"/>
+    <SolidColorBrush x:Key="Brush.TwoKills" Color="#808000"/>
+    <SolidColorBrush x:Key="Brush.ThreeKills" Color="#BF4000"/>
+    <SolidColorBrush x:Key="Brush.FourKills" Color="#FF0000"/>-->
+
+    <SolidColorBrush x:Key="Brush.ZeroKills" Color="#FFA500"/>
+    <SolidColorBrush x:Key="Brush.OneKills" Color="#FF7C00"/>
+    <SolidColorBrush x:Key="Brush.TwoKills" Color="#FF5300"/>
+    <SolidColorBrush x:Key="Brush.ThreeKills" Color="#FF2900"/>
+    <SolidColorBrush x:Key="Brush.FourKills" Color="#FF0000"/>
+    
+    <!--#endregion-->
+
+    <!--#region Повесы -->
+
+    <!--<SolidColorBrush x:Key="Brush.ZeroHooks" Color="#3d0004 "/>
+    <SolidColorBrush x:Key="Brush.OneHooks" Color="#4d0005"/>
+    <SolidColorBrush x:Key="Brush.TwoHooks" Color="#5c0006"/>
+    <SolidColorBrush x:Key="Brush.ThreeHooks" Color="#6b0007"/>
+    <SolidColorBrush x:Key="Brush.FourHooks" Color="#7b0008"/>
+    <SolidColorBrush x:Key="Brush.FiveHooks" Color="#8a0009"/>
+    <SolidColorBrush x:Key="Brush.SixHooks" Color="#99000a"/>
+    <SolidColorBrush x:Key="Brush.SevenHooks" Color="#a8000b"/>
+    <SolidColorBrush x:Key="Brush.EightHooks" Color="#b8000c"/>
+    <SolidColorBrush x:Key="Brush.NineHooks" Color="#c7000d"/>
+    <SolidColorBrush x:Key="Brush.TenHooks" Color="#d6000e"/>
+    <SolidColorBrush x:Key="Brush.ElevenHooks" Color="#e6000f"/>
+    <SolidColorBrush x:Key="Brush.TwelveHooks" Color="#f50010"/>-->
+
+    <SolidColorBrush x:Key="Brush.ZeroHooks" Color="#00FF00 "/>
+    <SolidColorBrush x:Key="Brush.OneHooks" Color="#15EA00"/>
+    <SolidColorBrush x:Key="Brush.TwoHooks" Color="#2BD500"/>
+    <SolidColorBrush x:Key="Brush.ThreeHooks" Color="#40BF00"/>
+    <SolidColorBrush x:Key="Brush.FourHooks" Color="#55AA00"/>
+    <SolidColorBrush x:Key="Brush.FiveHooks" Color="#6A9500"/>
+    <SolidColorBrush x:Key="Brush.SixHooks" Color="#808000"/>
+    <SolidColorBrush x:Key="Brush.SevenHooks" Color="#956A00"/>
+    <SolidColorBrush x:Key="Brush.EightHooks" Color="#AA5500"/>
+    <SolidColorBrush x:Key="Brush.NineHooks" Color="#BF4000"/>
+    <SolidColorBrush x:Key="Brush.TenHooks" Color="#D52B00"/>
+    <SolidColorBrush x:Key="Brush.ElevenHooks" Color="#EA1500"/>
+    <SolidColorBrush x:Key="Brush.TwelveHooks" Color="#FF0000"/>
+
+    <!--#endregion-->
+
+    <!--#region Генераторы -->
+   
+    <SolidColorBrush x:Key="Brush.ZeroGenerator" Color="#645959"/>
+    <SolidColorBrush x:Key="Brush.OneGenerator" Color="#5e5353"/>
+    <SolidColorBrush x:Key="Brush.TwoGenerator" Color="#584e4e"/>
+    <SolidColorBrush x:Key="Brush.ThreeGenerator" Color="#514848"/>
+    <SolidColorBrush x:Key="Brush.FourGenerator" Color="#4b4343"/>
+    <SolidColorBrush x:Key="Brush.FiveGenerator" Color="#453d3d"/>
+
+    <!--#endregion-->
+
+    <!--#region Победы -->
+
+    <SolidColorBrush x:Key="Brush.WinRateZeroPercent" Color="#0A4804"/>
+    <SolidColorBrush x:Key="Brush.WinRateTenPercent" Color="#0B5004"/>
+    <SolidColorBrush x:Key="Brush.WinRateTwentyPercent" Color="#0C5904"/>
+    <SolidColorBrush x:Key="Brush.WinRateThirtyPercent" Color="#0D6304"/>
+    <SolidColorBrush x:Key="Brush.WinRateFortyPercent" Color="#0E6E04"/>
+    <SolidColorBrush x:Key="Brush.WinRateFiftyPercent" Color="#0F7A04"/>
+    <SolidColorBrush x:Key="Brush.WinRateSixtyPercent" Color="#118604"/>
+    <SolidColorBrush x:Key="Brush.WinRateSeventyPercent" Color="#139304"/>
+    <SolidColorBrush x:Key="Brush.WinRateEightyPercent" Color="#15A204"/>
+    <SolidColorBrush x:Key="Brush.WinRateNinetyPercent" Color="#17B204"/>
+    <SolidColorBrush x:Key="Brush.WinRateHundredPercent" Color="#19C404"/>
+
+    <SolidColorBrush x:Key="Brush.Win" Color="#FF31B820"/>
+    <SolidColorBrush x:Key="Brush.Defeat" Color="#0A4804"/>
+    <SolidColorBrush x:Key="Brush.Draw" Color="#FF8000"/>
+    
+    <!--#endregion-->
+
+    <!--#region Популярность -->
+
+    <SolidColorBrush x:Key="Brush.PickPateZeroPercent" Color="#04305C"/>
+    <SolidColorBrush x:Key="Brush.PickPateTenPercent" Color="#043566"/>
+    <SolidColorBrush x:Key="Brush.PickPateTwentyPercent" Color="#043B71"/>
+    <SolidColorBrush x:Key="Brush.PickPateThirtyPercent" Color="#05417E"/>
+    <SolidColorBrush x:Key="Brush.PickPateFortyPercent" Color="#05488C"/>
+    <SolidColorBrush x:Key="Brush.PickPateFiftyPercent" Color="#05509C"/>
+    <SolidColorBrush x:Key="Brush.PickPateSixtyPercent" Color="#0658AC"/>
+    <SolidColorBrush x:Key="Brush.PickPateSeventyPercent" Color="#0761BD"/>
+    <SolidColorBrush x:Key="Brush.PickPateEightyPercent" Color="#086BD0"/>
+    <SolidColorBrush x:Key="Brush.PickPateNinetyPercent" Color="#0976E5"/>
+    <SolidColorBrush x:Key="Brush.PickPateHundredPercent" Color="#1082F6"/>
+
+    <!--#endregion-->
+
+    <!--#region Платформы -->
+
+    <SolidColorBrush x:Key="Brush.Steam" Color="#04699D"/>
+    <SolidColorBrush x:Key="Brush.Crosplatform" Color="#FF33C254"/>
+
+    <!--#endregion-->
+
+    <!--#region Анонимные -->
+
+    <SolidColorBrush x:Key="Brush.Anonymous" Color="#FFD71C1C"/>
+    <SolidColorBrush x:Key="Brush.NoAnonymous" Color="#FF02750D"/>
+
+    <!--#endregion-->
+
+    <!--#region Боты -->
+
+    <SolidColorBrush x:Key="Brush.Bot" Color="#FFD71C1C"/>
+    <SolidColorBrush x:Key="Brush.NoBot" Color="#FF02750D"/>
+
+    <!--#endregion-->
+
+    <!--#region Типы смертей -->
+
+    <SolidColorBrush x:Key="Brush.DeathByHook" Color="#5D534B"/>
+    <!--<SolidColorBrush x:Key="Brush.DeathByGround" Color="#4C2200"/>-->
+
+    <LinearGradientBrush x:Key="Brush.DeathByGround" StartPoint="0,0" EndPoint="1,9">
+        <GradientStop Color="#4C2200" Offset="0" />
+        <GradientStop Color="#1C9004" Offset="0.5" />
+        <GradientStop Color="#4C2200" Offset="1" />
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="Brush.DeathByMementoMori" Color="#FFD71C1C"/>
+    
+    <!--<SolidColorBrush x:Key="Brush.DeathByKillerAbility" Color="#800000"/>-->
+
+    <LinearGradientBrush x:Key="Brush.DeathByKillerAbility" StartPoint="0,0" EndPoint="0,5">
+        <GradientStop Color="#800000" Offset="0" />
+        <GradientStop Color="#F04747" Offset="0.5" />
+        <GradientStop Color="#800000" Offset="1" />
+    </LinearGradientBrush>
+    
+    <SolidColorBrush x:Key="Brush.DeathByEscape" Color="#1C9004"/>
+
+    <!--#endregion-->
+
+</ResourceDictionary>
