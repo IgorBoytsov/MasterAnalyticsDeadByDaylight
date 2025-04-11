@@ -240,6 +240,12 @@ namespace DBDAnalytics.Application.Ico
 
             #endregion
 
+            #region UseCases DetailsView
+
+            services.AddScoped<IGetDetailsMatchViewUseCase, GetDetailsMatchViewUseCase>();
+
+            #endregion
+
             #region CalculationService
 
             services.AddSingleton<ICreatingApplicationModelsService, CreatingApplicationModelsService>();
