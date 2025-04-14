@@ -1,0 +1,469 @@
+﻿<Window x:Class="DBDAnalytics.WPF.Views.Windows.PreviewMatchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DBDAnalytics.WPF.Views.Windows" 
+        xmlns:windowvm="clr-namespace:DBDAnalytics.WPF.ViewModels.WindowVM" 
+        xmlns:converter="clr-namespace:DBDAnalytics.WPF.ValueConverters"
+        xmlns:enum="clr-namespace:DBDAnalytics.WPF.Enums"
+        xmlns:uc="clr-namespace:DBDAnalytics.WPF.Assets.CustomControls"
+        d:DataContext="{d:DesignInstance Type=windowvm:PreviewMatchVM}"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        Background="{StaticResource Brush.AppBackground}"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="500" MinWidth="1000"
+        Height="570" Width="1300"
+        Title="{Binding Title}">
+
+    <!--d:Height="Auto" d:Width="Auto"-->
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="34"
+                      GlassFrameThickness="0"
+                      CornerRadius="0"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <converter:BoolToAnonymousStatusConverter x:Key="BoolToAnonymousStatusConverter"/>
+        <converter:BoolToAnonymousColorStatusConverter x:Key="BoolToAnonymousColorStatusConverter"/>
+        <converter:BoolToBotStatusConverter x:Key="BoolToBotStatusConverter"/>
+        <converter:BoolToBotColorStatusConverter x:Key="BoolToBotColorStatusConverter"/>
+    </Window.Resources>
+    
+    <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height ="Auto"/>
+                <RowDefinition Height ="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Height="Auto" Background="#F999" Grid.ColumnSpan="2">
+
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <TextBlock Text="{Binding Title}" d:Text="Пример текста"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+
+                <!--#region Кнопки изменение WindowState-->
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                    <Button Style="{StaticResource MinimizeButtonStyle}" 
+                            Command="{Binding MinimizeWindowCommand}" 
+                            CommandParameter="{x:Static enum:WindowName.PreviewMatch}"
+                            WindowChrome.IsHitTestVisibleInChrome="True" 
+                            ToolTip="Minimize"/>
+
+                    <Button x:Name="RestoreButton" 
+                            Visibility="Collapsed" 
+                            Style="{StaticResource RestoreButtonStyle}" 
+                            Command="{Binding RestoreWindowCommand}" 
+                            CommandParameter="{x:Static enum:WindowName.PreviewMatch}"
+                            WindowChrome.IsHitTestVisibleInChrome="True" 
+                            ToolTip="Restore"/>
+
+                    <!--<Button x:Name="MaximizeButton" 
+                            Visibility="Visible" 
+                            Style="{StaticResource MaximizeButtonStyle}" 
+                            Command="{Binding MaximizeWindowCommand}"
+                            CommandParameter="{x:Static enum:WindowName.PreviewMatch}"
+                            WindowChrome.IsHitTestVisibleInChrome="True" 
+                            ToolTip="Maximize" />-->
+
+                    <Button Style="{StaticResource CloseButtonStyle}"  
+                            Command="{Binding CloseWindowCommand}"
+                            CommandParameter="{x:Static enum:WindowName.PreviewMatch}"
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            ToolTip="Close"/>
+
+                </StackPanel>
+
+                <!--#endregion-->
+
+            </Grid>
+
+            <Border Grid.Row="1" Margin="10" Visibility="Visible">
+                <Border.Resources>
+                    <Style x:Key="RowDefinitionHeight" TargetType="RowDefinition">
+                        <Setter Property="Height" Value="100"/>
+                    </Style>
+                </Border.Resources>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Style="{StaticResource RowDefinitionHeight}"/>
+                        <RowDefinition Style="{StaticResource RowDefinitionHeight}"/>
+                        <RowDefinition Style="{StaticResource RowDefinitionHeight}"/>
+                        <RowDefinition Style="{StaticResource RowDefinitionHeight}"/>
+                        <RowDefinition Style="{StaticResource RowDefinitionHeight}"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="730"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!--#region FirstSurvivor -->
+
+                    <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource Border.PreviewPlayer}">
+                        <DockPanel>
+                            <WrapPanel DockPanel.Dock="Top">
+                                <TextBlock Text="{Binding Match.FirstSurvivor.PlayerAssociation}" d:Text="Я" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,10,0"/>
+
+                                <TextBlock Text="{Binding Match.FirstSurvivor.Name}" d:Text="Дуайт Фэйрфилд" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.FirstSurvivor.TypeDeath,StringFormat=Умер {0}}" d:Text="От земли" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.FirstSurvivor.Platform}" d:Text="Steam" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.FirstSurvivor.IsAnonymous, Converter={StaticResource BoolToAnonymousStatusConverter}}" d:Text="Анонимный"
+                                           Foreground="{Binding Match.FirstSurvivor.IsAnonymous, Converter={StaticResource BoolToAnonymousColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.FirstSurvivor.IsBot, Converter={StaticResource BoolToBotStatusConverter}}" d:Text="Бот"
+                                           Foreground="{Binding Match.FirstSurvivor.IsBot, Converter={StaticResource BoolToBotColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                            </WrapPanel>
+                            <DockPanel>
+                                <WrapPanel DockPanel.Dock="Top" >
+                                    <Image Source="{Binding Match.FirstSurvivor.Image}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\1_Дуайт Фэйрфилд(Синий).png"/>
+                                    <Image Source="{Binding Match.FirstSurvivor.FirstPerkImage}"                                  
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\8b6401d5-59a8-48d1-b7d7-0a7bab02334d.png"/>
+                                    <Image Source="{Binding Match.FirstSurvivor.SecondPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\bc05c244-3a97-4e3c-852c-3ef6e141bda5.png"/>
+                                    <Image Source="{Binding Match.FirstSurvivor.ThirdPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\6e92e297-e2cd-4d76-9d71-6256a069cacd.png"/>
+                                    <Image Source="{Binding Match.FirstSurvivor.FourthPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\2_Мэг Томас\9c7b26b4-c6ae-464b-9b86-8de1a65950e8.png"/>
+                                    <StackPanel>
+
+                                    </StackPanel>
+                                </WrapPanel>
+                            </DockPanel>
+                            <WrapPanel VerticalAlignment="Bottom" Margin="15,0,0,0">
+                                <Image Source="{Binding Match.FirstSurvivor.ItemImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png"
+                                       Height="68.72"/>
+                                <Image Source="{Binding Match.FirstSurvivor.FirstItemAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png"
+                                       Height="58.72"/>
+                                <Image Source="{Binding Match.FirstSurvivor.SecondItemAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Аптечка) Брюшные повязки.png"
+                                       Height="58.72"/>
+                            </WrapPanel>
+                            <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding Match.FirstSurvivor.Score, Converter={StaticResource NumberDigitConverter}}" d:Text="24 567"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           FontSize="35"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region SecondSurvivor -->
+
+                    <Border Grid.Column="0" Grid.Row="1" Style="{StaticResource Border.PreviewPlayer}">
+                        <DockPanel>
+                            <WrapPanel DockPanel.Dock="Top">
+                                <TextBlock Text="{Binding Match.SecondSurvivor.PlayerAssociation}" d:Text="Противник" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,10,0"/>
+
+                                <TextBlock Text="{Binding Match.SecondSurvivor.Name}" d:Text="Дуайт Фэйрфилд" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.SecondSurvivor.TypeDeath,StringFormat=Умер {0}}" d:Text="От земли" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.SecondSurvivor.Platform}" d:Text="Steam" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.SecondSurvivor.IsAnonymous, Converter={StaticResource BoolToAnonymousStatusConverter}}" d:Text="Анонимный"
+                                           Foreground="{Binding Match.SecondSurvivor.IsAnonymous, Converter={StaticResource BoolToAnonymousColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.SecondSurvivor.IsBot, Converter={StaticResource BoolToBotStatusConverter}}" d:Text="Бот"
+                                           Foreground="{Binding Match.SecondSurvivor.IsBot, Converter={StaticResource BoolToBotColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                            </WrapPanel>
+                            <DockPanel>
+                                <WrapPanel DockPanel.Dock="Top">
+                                    <Image Source="{Binding Match.SecondSurvivor.Image}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\1_Дуайт Фэйрфилд(Синий).png"/>
+                                    <Image Source="{Binding Match.SecondSurvivor.FirstPerkImage}"                                  
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\8b6401d5-59a8-48d1-b7d7-0a7bab02334d.png"/>
+                                    <Image Source="{Binding Match.SecondSurvivor.SecondPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\bc05c244-3a97-4e3c-852c-3ef6e141bda5.png"/>
+                                    <Image Source="{Binding Match.SecondSurvivor.ThirdPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\6e92e297-e2cd-4d76-9d71-6256a069cacd.png"/>
+                                    <Image Source="{Binding Match.SecondSurvivor.FourthPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\2_Мэг Томас\9c7b26b4-c6ae-464b-9b86-8de1a65950e8.png"/>
+                                    <StackPanel>
+
+                                    </StackPanel>
+                                </WrapPanel>
+                            </DockPanel>
+                            <WrapPanel VerticalAlignment="Bottom" Margin="10,0,0,0">
+                                <Image Source="{Binding Match.SecondSurvivor.ItemImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png"
+                                        Height="68.72"/>
+                                <Image Source="{Binding Match.SecondSurvivor.FirstItemAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png"
+                                        Height="58.72"/>
+                                <Image Source="{Binding Match.SecondSurvivor.SecondItemAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Аптечка) Брюшные повязки.png"
+                                        Height="58.72"/>
+                            </WrapPanel>
+                            <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding Match.SecondSurvivor.Score, Converter={StaticResource NumberDigitConverter}}" d:Text="24 567"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           FontSize="35"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region ThirdSurvivor -->
+
+                    <Border Grid.Column="0" Grid.Row="2" Style="{StaticResource Border.PreviewPlayer}">
+                        <DockPanel>
+                            <WrapPanel DockPanel.Dock="Top">
+                                <TextBlock Text="{Binding Match.ThirdSurvivor.PlayerAssociation}" d:Text="Напарник, друг" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,10,0"/>
+
+                                <TextBlock Text="{Binding Match.ThirdSurvivor.Name}" d:Text="Дуайт Фэйрфилд" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.ThirdSurvivor.TypeDeath,StringFormat=Умер {0}}" d:Text="От земли" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.ThirdSurvivor.Platform}" d:Text="Steam" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.ThirdSurvivor.IsAnonymous, Converter={StaticResource BoolToAnonymousStatusConverter}}" d:Text="Анонимный"
+                                           Foreground="{Binding Match.ThirdSurvivor.IsAnonymous, Converter={StaticResource BoolToAnonymousColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.ThirdSurvivor.IsBot, Converter={StaticResource BoolToBotStatusConverter}}" d:Text="Бот"
+                                           Foreground="{Binding Match.ThirdSurvivor.IsBot, Converter={StaticResource BoolToBotColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                            </WrapPanel>
+                            <DockPanel>
+                                <WrapPanel DockPanel.Dock="Top">
+                                    <Image Source="{Binding Match.ThirdSurvivor.Image}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\1_Дуайт Фэйрфилд(Синий).png"/>
+                                    <Image Source="{Binding Match.ThirdSurvivor.FirstPerkImage}"                                  
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\8b6401d5-59a8-48d1-b7d7-0a7bab02334d.png"/>
+                                    <Image Source="{Binding Match.ThirdSurvivor.SecondPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\bc05c244-3a97-4e3c-852c-3ef6e141bda5.png"/>
+                                    <Image Source="{Binding Match.ThirdSurvivor.ThirdPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\6e92e297-e2cd-4d76-9d71-6256a069cacd.png"/>
+                                    <Image Source="{Binding Match.ThirdSurvivor.FourthPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\2_Мэг Томас\9c7b26b4-c6ae-464b-9b86-8de1a65950e8.png"/>
+                                    <StackPanel>
+
+                                    </StackPanel>
+                                </WrapPanel>
+                            </DockPanel>
+                            <WrapPanel VerticalAlignment="Bottom" Margin="10,0,0,0">
+                                <Image Source="{Binding Match.ThirdSurvivor.ItemImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png"
+                                       Height="68.72"/>
+                                <Image Source="{Binding Match.ThirdSurvivor.FirstItemAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png"
+                                       Height="58.72"/>
+                                <Image Source="{Binding Match.ThirdSurvivor.SecondItemAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Аптечка) Брюшные повязки.png"
+                                       Height="58.72"/>
+                            </WrapPanel>
+                            <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding Match.ThirdSurvivor.Score, Converter={StaticResource NumberDigitConverter}}" d:Text="24 567"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           FontSize="35"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region FourthSurvivor -->
+
+                    <Border Grid.Column="0" Grid.Row="3" Style="{StaticResource Border.PreviewPlayer}">
+                        <DockPanel>
+                            <WrapPanel DockPanel.Dock="Top">
+                                <TextBlock Text="{Binding Match.FourthSurvivor.PlayerAssociation}" d:Text="Рандомный игрок" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,10,0"/>
+                                
+                                <TextBlock Text="{Binding Match.FourthSurvivor.Name}" d:Text="Дуайт Фэйрфилд" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.FourthSurvivor.TypeDeath,StringFormat=Умер {0}}" d:Text="От земли" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.FourthSurvivor.Platform}" d:Text="Steam" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.FourthSurvivor.IsAnonymous, Converter={StaticResource BoolToAnonymousStatusConverter}}" d:Text="Анонимный"
+                                           Foreground="{Binding Match.FourthSurvivor.IsAnonymous, Converter={StaticResource BoolToAnonymousColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.FourthSurvivor.IsBot, Converter={StaticResource BoolToBotStatusConverter}}" d:Text="Бот"
+                                           Foreground="{Binding Match.FourthSurvivor.IsBot, Converter={StaticResource BoolToBotColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                            </WrapPanel>
+                            <DockPanel>
+                                <WrapPanel DockPanel.Dock="Top">
+                                    <Image Source="{Binding Match.FourthSurvivor.Image}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Сурвы Портреты\Персонажи\1_Дуайт Фэйрфилд(Синий).png"/>
+                                    <Image Source="{Binding Match.FourthSurvivor.FirstPerkImage}"                                  
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\8b6401d5-59a8-48d1-b7d7-0a7bab02334d.png"/>
+                                    <Image Source="{Binding Match.FourthSurvivor.SecondPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\bc05c244-3a97-4e3c-852c-3ef6e141bda5.png"/>
+                                    <Image Source="{Binding Match.FourthSurvivor.ThirdPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\1_Дуайт\6e92e297-e2cd-4d76-9d71-6256a069cacd.png"/>
+                                    <Image Source="{Binding Match.FourthSurvivor.FourthPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Выжившие\2_Мэг Томас\9c7b26b4-c6ae-464b-9b86-8de1a65950e8.png"/>
+                                    <StackPanel>
+
+                                    </StackPanel>
+                                </WrapPanel>
+                            </DockPanel>
+                            <WrapPanel VerticalAlignment="Bottom" Margin="10,0,0,0">
+                                <Image Source="{Binding Match.FourthSurvivor.ItemImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\Аптечка.png"
+                                       Height="68.72"/>
+                                <Image Source="{Binding Match.FourthSurvivor.FirstItemAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Апетчка )Очищенная сыворотка.png"
+                                       Height="58.72"/>
+                                <Image Source="{Binding Match.FourthSurvivor.SecondItemAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Предметы\(Аптечка) Брюшные повязки.png"
+                                       Height="58.72"/>
+                            </WrapPanel>
+                            <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding Match.FourthSurvivor.Score, Converter={StaticResource NumberDigitConverter}}" d:Text="24 567"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           FontSize="35"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Killer -->
+
+                    <Border Grid.Column="0" Grid.Row="4" Style="{StaticResource Border.PreviewPlayer}">
+                        <DockPanel>
+                            <WrapPanel DockPanel.Dock="Top">
+                                <TextBlock Text="{Binding Match.Killer.PlayerAssociation}" d:Text="Я" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,10,0"/>
+                                
+                                <TextBlock Text="{Binding Match.Killer.Name}" d:Text="Гуль" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="0,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.Killer.Platform}" d:Text="Steam" 
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                                
+                                <TextBlock Text="{Binding Match.Killer.IsAnonymous, Converter={StaticResource BoolToAnonymousStatusConverter}}" d:Text="Анонимный"
+                                           Foreground="{Binding Match.Killer.IsAnonymous, Converter={StaticResource BoolToAnonymousColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+
+                                <TextBlock Text="{Binding Match.Killer.IsBot, Converter={StaticResource BoolToBotStatusConverter}}" d:Text="Бот"
+                                           Foreground="{Binding Match.Killer.IsBot, Converter={StaticResource BoolToBotColorStatusConverter}}"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           Margin="10,0,0,0"/>
+                            </WrapPanel>
+                            <DockPanel>
+                                <WrapPanel DockPanel.Dock="Top">
+                                    <Image Source="{Binding Match.Killer.Image}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Портреты\38_Гуль.png"/>
+                                    <Image Source="{Binding Match.Killer.FirstPerkImage}"                                  
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\38_Гуль\35afa0b2-6b5f-4264-9df8-98768fdb662b.png"/>
+                                    <Image Source="{Binding Match.Killer.SecondPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\38_Гуль\eb2976bf-7e4f-4aba-8ab9-d3a552dbb28c.png"/>
+                                    <Image Source="{Binding Match.Killer.ThirdPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\38_Гуль\f9edffdc-8f1f-4444-b6d0-bee3c777aaa6.png"/>
+                                    <Image Source="{Binding Match.Killer.FourthPerkImage}"
+                                           d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Перки\Убийцы\37_Егерь\No Quarter.png"/>
+                                    <StackPanel>
+
+                                    </StackPanel>
+                                </WrapPanel>
+                            </DockPanel>
+                            <WrapPanel VerticalAlignment="Bottom" Margin="10,0,0,0">
+                                <Image Source="{Binding Match.Killer.Ability}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Портреты\38_Гуль(Способность).png"
+                                       Height="68.72"/>
+                                <Image Source="{Binding Match.Killer.FirstAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Аддоны\38_Гуль\Маска Ямори.png"
+                                       Height="58.72"/>
+                                <Image Source="{Binding Match.Killer.SecondAddonImage}"
+                                       d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Киллеры Аддоны\38_Гуль\Красноголовая сколопендра.png"
+                                       Height="58.72"/>
+                            </WrapPanel>
+                            <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding Match.Killer.Score, Converter={StaticResource NumberDigitConverter}}" d:Text="24 567"
+                                           Style="{StaticResource TextBlock.PreviewPlayer}"
+                                           FontSize="35"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Изображение -->
+
+                    <Border Grid.Column="1" Grid.RowSpan="5" Style="{StaticResource Border.PreviewPlayer}">
+
+                        <uc:ZoomImage Grid.Row="1" Source="{Binding Match.MatchImage}" Margin="10"/>
+                        
+                    </Border>
+                    
+                    <!--#endregion-->
+                    
+                    <!--d:Height="79.2"-->
+                    
+                </Grid>
+            </Border>
+            
+        </Grid>
+    </Border>
+</Window>
+
+<!--Title="{Binding Match.DateTimeMatch, Converter={StaticResource CapitalizeDayAndDateConverter}, StringFormat={}Дата: {0}}"-->

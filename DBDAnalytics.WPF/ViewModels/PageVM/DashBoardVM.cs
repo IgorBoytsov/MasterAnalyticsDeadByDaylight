@@ -16,6 +16,7 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
     internal class DashBoardVM : BaseVM, IUpdatable
     {
         private readonly IPageNavigationService _pageNavigationService;
+        private readonly IWindowNavigationService _windowNavigationService;
 
         private readonly IGetGameStatisticKillerViewingUseCase _getGameStatisticKillerViewingUseCase;
         private readonly IGetGameStatisticSurvivorViewingUseCase _getGameStatisticSurvivorViewingUseCase;
@@ -27,6 +28,7 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
         private readonly IGetMatchAttributeUseCase _getMatchAttributeUseCase;
 
         public DashBoardVM(IPageNavigationService pageNavigationService,
+                           IWindowNavigationService windowNavigationService,
                            IGetGameStatisticKillerViewingUseCase getGameStatisticKillerViewingUseCase,
                            IGetGameStatisticSurvivorViewingUseCase getGameStatisticSurvivorViewingUseCase,
                            IGetKillerUseCase getKillerUseCase,
@@ -37,6 +39,7 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
                            IGetMatchAttributeUseCase getMatchAttributeUseCase)
         {
             _pageNavigationService = pageNavigationService;
+            _windowNavigationService = windowNavigationService;
             _getGameStatisticKillerViewingUseCase = getGameStatisticKillerViewingUseCase;
             _getGameStatisticSurvivorViewingUseCase = getGameStatisticSurvivorViewingUseCase;
             _getKillerUseCase = getKillerUseCase;
@@ -119,7 +122,7 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
                 OnPropertyChanged();
             }
         }
-
+       
         #endregion
 
         #region Свойства : Выбор значений для фильтрации Киллера
@@ -351,12 +354,16 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
 
         /*--Команды---------------------------------------------------------------------------------------*/
 
+        /*--Управление страницей--*/
+
         #region Закрытие страницы
 
         private RelayCommand _closePageCommand;
         public RelayCommand ClosePageCommand { get => _closePageCommand ??= new(obj =>{ _pageNavigationService.Close(PageName.DashBoard, FrameName.MainFrame); }); }
 
         #endregion
+
+        /*--Фильтрация--*/
 
         #region Открытие Popup
 
@@ -452,7 +459,18 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
 
         #endregion
 
+        /*--Управление списком \ элементами списка--*/
+
+        #region Детализация матча
+
+        private RelayCommand _showMatchDetailsCommand;
+        public RelayCommand ShowMatchDetailsCommand => _showMatchDetailsCommand ??= new RelayCommand(ShowMatchDetails);
+
+        #endregion
+
         /*--Методы----------------------------------------------------------------------------------------*/
+
+        /*--Фильтрация--*/
 
         #region Создание фильтра | Установка дефолтных значений
 
@@ -618,6 +636,24 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
 
             foreach (var item in matchAttribute)
                 MatchAttributes.Add(item);
+        }
+
+        #endregion
+
+        /*--Управление списком \ элементами списка--*/
+
+        #region Детализация матча
+
+        private void ShowMatchDetails(object parameter)
+        {
+            if (parameter is GameStatisticKillerViewingDTO selectedKillerMatch)
+            {
+                _windowNavigationService.OpenWindow(WindowName.PreviewMatch, selectedKillerMatch.IdGameStatistic);
+            }
+            if (parameter is GameStatisticSurvivorViewingDTO selectedSurvivorMatch)
+            {
+                _windowNavigationService.OpenWindow(WindowName.PreviewMatch, selectedSurvivorMatch.IdGameStatistic);
+            }
         }
 
         #endregion
