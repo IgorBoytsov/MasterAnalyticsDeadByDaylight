@@ -1,5 +1,6 @@
 ﻿using DBDAnalytics.Domain.DomainModels.DetailsMatchView;
 using DBDAnalytics.Domain.DomainModels.DetailsModels;
+using DBDAnalytics.Domain.Enums;
 using DBDAnalytics.Domain.Interfaces.Repositories;
 using DBDAnalytics.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,15 @@ namespace DBDAnalytics.Infrastructure.Repositories
     {
         private readonly Func<DBDContext> _contextFactory = contextFactory;
 
-        public async Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(int idKiller, int idAssociation)
+        /// <summary>
+        /// Описание соответствует перегружаемым методам.
+        /// </summary>
+        /// <param name="idEntity">Id Киллера, выжившего, карты и любой сущности по которой нужно выполнить фильтрацию.</param>
+        /// <param name="idsMatches">Если нужно получить матчи по списку ID.</param>
+        /// <param name="associations">Игровая ассоциация. Значение элементов равные Id в источники данных.</param>
+        /// <param name="filterParameter">Определят по какой сущности нужно произвести фильтрацию.</param>
+        /// <returns></returns>
+        private async Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(int idEntity, List<int> idsMatches, Associations associations, FilterParameter filterParameter)
         {
             using (var _context = _contextFactory())
             {
@@ -21,10 +30,21 @@ namespace DBDAnalytics.Infrastructure.Repositories
                         .Include(x => x.IdSurvivors2Navigation)
                         .Include(x => x.IdSurvivors3Navigation)
                         .Include(x => x.IdSurvivors4Navigation)
-                            .AsSplitQuery()
-                                .Where(x => x.IdKillerNavigation.IdAssociation == idAssociation)
-                                .Where(x => x.IdKillerNavigation.IdKiller == idKiller)
-                                    .AsQueryable();
+                            .AsQueryable();
+
+                if (idEntity > 0)
+                {
+                    Action action = filterParameter switch
+                    {
+                        FilterParameter.Killers => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdKillerNavigation.IdKiller == idEntity),
+                        _ => () => throw new Exception("По такому параметру фильтрация не проводиться")
+                    };
+                    action?.Invoke();
+                }
+                else
+                {
+                    query = query.Where(x => idsMatches.Contains(x.IdGameStatistic));
+                }
 
                 var list = await query
                     .Select(x => DetailsMatchDomain.Create(
@@ -75,6 +95,16 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                 return (list, totalMatch);
             }
+        }
+
+        public async Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(int idEntity, Associations associations, FilterParameter filterParameter)
+        {
+            return await GetDetailsMatch(idEntity, new List<int>(), associations, filterParameter);
+        }
+
+        public async Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(List<int> idsMatches)
+        {
+            return await GetDetailsMatch(-1, idsMatches, Associations.None, FilterParameter.None);
         }
 
         public async Task<DetailsMatchViewDomain> GetDetailsViewMatch(int idGameStatistic)
