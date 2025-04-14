@@ -7,4 +7,7 @@
     <!--<SolidColorBrush x:Key="Brush.ItemsControl.Border.Background" Color="#FF223C5F"/>-->
     <SolidColorBrush x:Key="Brush.ItemsControl.Border.Background" Color="#1E2E44"/>
 
+    <SolidColorBrush x:Key="Brush.ComboBox.ExistKillerInMatches.CheckMark" Color="#FF068418"/>
+    <SolidColorBrush x:Key="Brush.ComboBox.NoExistKillerInMatches.CheckMark" Color="#FFEF2504"/>
+    
 </ResourceDictionary>
