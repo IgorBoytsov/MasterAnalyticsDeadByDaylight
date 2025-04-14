@@ -1,6 +1,9 @@
-﻿namespace DBDAnalytics.Application.DTOs.BaseDTOs
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace DBDAnalytics.Application.DTOs.BaseDTOs
 {
-    public abstract class BaseDTO<T> where T : BaseDTO<T>
+    public abstract class BaseDTO<T> : INotifyPropertyChanged where T : BaseDTO<T>
     {
         protected BaseDTO() { }
 
@@ -9,16 +12,6 @@
             setAction((T)this);
             return (T)this;
         }
-
-        //var gameMode = GameModeDTO.Create(1, "Survival", "Выживание");
-        //if (gameMode.GameModeDTO != null)
-        //{
-        //     gameMode.GameModeDTO.SetProperty(x => 
-        //    {
-        //         x.IdGameMode = 2;
-        //         x.GameModeName = "Escape";
-        //    });
-        //}
 
         #region Обобщенный метод создание DTO + пример использования
 
@@ -54,6 +47,14 @@
         //        });
         //}
 
-        #endregion 
+        #endregion
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
     }
 }
