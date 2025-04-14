@@ -11,5 +11,16 @@ namespace DBDAnalytics.Application.DTOs
         public byte[]? KillerImage { get; set; }
 
         public byte[]? KillerAbilityImage { get; set; }
+
+        private bool? _killerEnabled;
+        public bool? KillerEnabled
+        {
+            get => _killerEnabled;
+            set
+            {
+                _killerEnabled = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }
