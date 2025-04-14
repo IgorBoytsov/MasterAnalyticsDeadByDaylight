@@ -10,8 +10,10 @@ using DBDAnalytics.Application.UseCases.Abstraction.KillerPerkCase;
 using DBDAnalytics.Application.UseCases.Abstraction.PlatformCase;
 using DBDAnalytics.Application.UseCases.Abstraction.StatisticCase;
 using DBDAnalytics.Application.UseCases.Abstraction.TypeDeathCase;
+using DBDAnalytics.Domain.Enums;
 using DBDAnalytics.WPF.Command;
 using DBDAnalytics.WPF.Enums;
+using DBDAnalytics.WPF.Helpers;
 using DBDAnalytics.WPF.Interfaces;
 using System.Collections.ObjectModel;
 
@@ -34,7 +36,9 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
 
         private readonly IGetDetailsMatchUseCase _getDetailsMatchUseCase;
 
-        public KillerDetailsVM(IGetKillerUseCase getKillerUseCase,
+        public KillerDetailsVM(IWindowNavigationService windowNavigationService,
+                               IPageNavigationService pageNavigationService,
+                               IGetKillerUseCase getKillerUseCase,
                                IGetAssociationUseCase getAssociationUseCase,
                                IGetPlatformUseCase getPlatformUseCase,
                                IGetTypeDeathUseCase getTypeDeathUseCase,
@@ -61,6 +65,7 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
             IsCalculationAllData = true;
             IsCalculationSelectedAssociation = false;
             IsCalculationSelectedTimePeriod = false;
+            IsCalculationTransmittedMatches = false;
 
             TextStatistic = new();
 
@@ -75,9 +80,24 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
             SelectedKiller = Killers.FirstOrDefault();
         }
 
-        public void Update(object parameter, TypeParameter typeParameter = TypeParameter.None)
+        public async void Update(object parameter, TypeParameter typeParameter = TypeParameter.None)
         {
+            if (parameter is List<int> matchesIds && typeParameter == TypeParameter.Killers)
+            {
+                (List<DetailsMatchDTO> MatchDetails, int TotalMatch) = await _getDetailsMatchUseCase.GetDetailsMatch(matchesIds);
+                _transmittedMatches.Clear();
+                _transmittedMatches.AddRange(MatchDetails);
+                _totalCountMatch = TotalMatch;
 
+                IsCalculationTransmittedMatches = true;
+
+                if (!Killers.Any(x => x.IdKiller == -1))
+                    Killers.Insert(0, new KillerDTO { IdKiller = -1, KillerName = "По всем", KillerEnabled = true, KillerImage = ImageHelper.ImageToByteArray(@"Assets\Images\KillersLogo.png") });
+
+                IdentifyTransmittedMatchesKillers();
+
+                SelectedKiller = Killers.FirstOrDefault();
+            }
         }
 
         /*--Свойства \ Коллекции--------------------------------------------------------------------------*/
@@ -90,11 +110,15 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
         private bool IsCalculationSelectedTimePeriod;
         private bool IsCalculationSelectedAssociation;
 
+        private bool IsCalculationTransmittedMatches;
+
         #endregion
 
         /*--Коллекции--*/
 
         #region Коллекции : Списки матчей 
+
+        private List<DetailsMatchDTO> _transmittedMatches { get; set; } = [];
 
         private List<DetailsMatchDTO> _killerDetails { get; set; } = [];
 
@@ -177,13 +201,26 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
                     _selectedKiller = value;
                     GetSelectedKillerDetailsMatches();
 
-                    GetKillerAddons();
+                    if (value.IdKiller == -1)
+                    {
+                        CalculateHeaderStatistics();
+                        CalculateTextStatistics();
+                        CalculateDetailsStatistics();
+                        CalculateExtendedDetailsStatistics();
 
-                    CalculateHeaderStatistics();
-                    CalculateTextStatistics();
-                    CalculateDetailsStatistics();
-                    CalculateExtendedDetailsStatistics();
-                    CalculateLoadoutDetailsStatistics();
+                        KillerPerkPopularityStats();
+                        KillerQuadruplePerkPopularityStats();
+                    }
+                    else
+                    {
+                        GetKillerAddons();
+
+                        CalculateHeaderStatistics();
+                        CalculateTextStatistics();
+                        CalculateDetailsStatistics();
+                        CalculateExtendedDetailsStatistics();
+                        CalculateLoadoutDetailsStatistics();
+                    }
 
                     IsCalculationSelectedTimePeriod = true;
                     IsCalculationSelectedAssociation = true;
@@ -467,6 +504,20 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
             });
         }
 
+        private RelayCommand _defaultCalculationStatsCommand;
+        public RelayCommand DefaultCalculationStatsCommand
+        {
+            get => _defaultCalculationStatsCommand ??= new(obj =>
+            {
+                _transmittedMatches.Clear();
+                IsCalculationTransmittedMatches = false;
+
+                SelectedKiller = Killers[1];
+                Killers.RemoveAt(0);
+                IdentifyKillers();
+            });
+        }
+
         #endregion
 
         /*--Методы----------------------------------------------------------------------------------------*/
@@ -477,11 +528,26 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
         {
             _killerDetails.Clear();
 
-            var (KillerDetailsMatch, TotalMatches) = 
-                Task.Run(() => _getDetailsMatchUseCase.GetDetailsMatch(SelectedKiller.IdKiller, SelectedAssociation.Key)).Result;
+            if (SelectedKiller != null && SelectedKiller.IdKiller == -1)
+            {
+                _killerDetails.AddRange(_transmittedMatches);
+                return;
+            }
 
-            _killerDetails.AddRange(KillerDetailsMatch);
-            _totalCountMatch = TotalMatches;
+            if (IsCalculationTransmittedMatches)
+            {
+                var matches = _transmittedMatches.Where(x => x.KillerDTO.IdKiller == SelectedKiller.IdKiller);
+
+                _killerDetails.AddRange(matches);
+            }
+            else
+            {
+                var (KillerDetailsMatch, TotalMatches) =
+                    Task.Run(() => _getDetailsMatchUseCase.GetDetailsMatch(SelectedKiller.IdKiller, (Associations)SelectedAssociation.Key, FilterParameter.Killers)).Result;
+
+                _killerDetails.AddRange(KillerDetailsMatch);
+                _totalCountMatch = TotalMatches;
+            } 
         }
 
         #endregion
@@ -494,6 +560,8 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
 
             foreach (var item in killer.Skip(1))
                 Killers.Add(item);
+
+            IdentifyKillers();
         }
 
         private void GetKillerAddons()
@@ -874,6 +942,27 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
                 KillerPerkPopularity.Add(item);
 
             SelectedKillerPerks = KillerPerkPopularity.FirstOrDefault();
+        }
+
+        #endregion
+
+        /*--Вспомогательные--*/
+
+        #region Установка статуса у каждого киллера. Есть ли он в текущих матчах или нет
+
+        private void IdentifyTransmittedMatchesKillers()
+        {
+            foreach (var killer in Killers)
+            {
+                var killerExist = _transmittedMatches.Any(x => x.KillerDTO.IdKiller == killer.IdKiller);
+                killer.KillerEnabled = killerExist;
+            }
+        }
+
+        private void IdentifyKillers()
+        {
+            foreach (var killer in Killers)
+                killer.KillerEnabled = true;
         }
 
         #endregion

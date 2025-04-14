@@ -14,7 +14,6 @@
 
     <Page.Resources>
 
-        <converter:CapitalizeDayAndDateConverter x:Key="CapitalizeDayAndDateConverter"/>
         <converter:TimeStringRemoveZeroHoursConverter x:Key="TimeStringRemoveZeroHoursConverter" CharactersToRemove="3"/>
         <converter:CountMatchToStringConverter x:Key="CountMatchToStringConverter"/>
         <converter:StatusMatchToStringConverter x:Key="StatusMatchToStringConverter"/>
@@ -436,6 +435,12 @@
                             ToolTip="Предыдущий киллер"
                             Margin="5"/>
 
+                    <Menu VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0">
+                        <MenuItem Header="Детализация матчей по">
+                            <MenuItem Header="Убийцам" Command="{Binding KillerDetailsForKillersCommand}"/>
+                        </MenuItem>
+                    </Menu>
+
                 </WrapPanel>
 
                 <!--#endregion-->
@@ -485,7 +490,7 @@
                         <DataGridTemplateColumn Header="Дата и продолжительность" Width="Auto">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" Margin="10,0,10,0">
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent" Margin="10,0,10,0">
                                         <TextBlock Text="{Binding DateMatch, Converter={StaticResource CapitalizeDayAndDateConverter}}"
                                                    FontWeight="Bold"
                                                    FontSize="16"
@@ -878,6 +883,12 @@
                             ToolTip="Предыдущий виживший"
                             Margin="5"/>
 
+                    <Menu VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0">
+                        <MenuItem Header="Детализация матчей по">
+                            <MenuItem Header="Убийцам" Command="{Binding KillerDetailsForSurvivorsCommand}"/>
+                        </MenuItem>
+                    </Menu>
+
                 </WrapPanel>
 
                 <!--#endregion-->
@@ -924,10 +935,10 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn Header="Дата и длинна" Width="*">
+                        <DataGridTemplateColumn Header="Дата и длинна" Width="Auto">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" Margin="10,0,10,0">
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent" Margin="10,0,10,0">
                                         <TextBlock Text="{Binding DateMatch, Converter={StaticResource CapitalizeDayAndDateConverter}}"
                                                    FontWeight="Bold"
                                                    FontSize="16"

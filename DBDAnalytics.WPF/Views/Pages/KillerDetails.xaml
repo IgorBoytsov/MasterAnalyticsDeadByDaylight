@@ -7,11 +7,16 @@
       xmlns:uc="clr-namespace:DBDAnalytics.WPF.Assets.CustomControls" 
       xmlns:ucChart="clr-namespace:DBDAnalytics.WPF.Assets.CustomControls.Charts" 
       xmlns:pagevm="clr-namespace:DBDAnalytics.WPF.ViewModels.PageVM" 
+      xmlns:converters="clr-namespace:DBDAnalytics.WPF.ValueConverters"
       d:DataContext="{d:DesignInstance Type=pagevm:KillerDetailsVM}"
       mc:Ignorable="d" 
       d:Height="Auto" d:Width="1200"
       Title="KillerDetails">
 
+    <Page.Resources>
+        <converters:KillerIncludedMatchesConverter x:Key="KillerIncludedMatchesConverter"/>
+    </Page.Resources>
+    
     <Grid Background="{StaticResource Brush.AppBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -30,7 +35,8 @@
                 <DockPanel DockPanel.Dock="Top">
                     <StackPanel DockPanel.Dock="Left">
                         <DockPanel>
-                            <Button Content="Сбросить" Style="{StaticResource Button.Base}" 
+                            <Button Content="Сбросить выбранные матчи" Style="{StaticResource Button.Base}" 
+                                    Command="{Binding DefaultCalculationStatsCommand}"
                                     DockPanel.Dock="Left"/>
 
                             <Button Content="Обновить" Style="{StaticResource Button.Base}"
@@ -56,10 +62,31 @@
                             <ComboBox ItemsSource="{Binding Killers}"
                                       SelectedItem="{Binding SelectedKiller}"
                                       SelectedIndex="{Binding SelectedKillerIndex}"
-                                      DisplayMemberPath="KillerName"
                                       Style="{StaticResource BaseComboBox}"
                                       Width="150"
-                                      HorizontalAlignment="Left"/>
+                                      HorizontalAlignment="Left">
+
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"  
+                                                       Text="{Binding KillerName}"
+                                                       VerticalAlignment="Center"/>
+
+                                            <Viewbox Grid.Column="1" 
+                                                     Width="15" Height="15">
+                                                <Path Fill="{Binding KillerEnabled, Converter={StaticResource KillerIncludedMatchesConverter}}"
+                                                      Data="{StaticResource CheckMarkGeometry}" />
+                                            </Viewbox>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
 
                             <Button Content="⬅" 
                                     Style="{StaticResource Button.SwitchingIndexes}"
@@ -1110,11 +1137,29 @@
 
                                         </DockPanel>
 
-                                        <TextBlock Text="{Binding PickRate, StringFormat={}PR: {0}%}" d:Text="100%"
-                                                   FontSize="16"
-                                                   FontWeight="Bold"
-                                                   Foreground="White"
-                                                   HorizontalAlignment="Center"/>
+                                        <WrapPanel HorizontalAlignment="Center">
+
+                                            <TextBlock Text="{Binding PickRate, StringFormat={}PR: {0}%}" d:Text="100%"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,10,0"/>
+
+                                            <TextBlock Text="{Binding Count, StringFormat={}Кол-во: {0}}" d:Text="Кол-во 111"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="0,0,10,0"/>
+
+                                            <TextBlock Text="{Binding WinRate, StringFormat={}WR: {0}%}"  d:Text="WR: 100%"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="0,0,10,0"/>
+                                        </WrapPanel>
 
                                     </StackPanel>
                                 </DataTemplate>

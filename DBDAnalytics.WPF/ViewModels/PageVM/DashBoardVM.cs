@@ -36,7 +36,7 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
                            IGetGameModeUseCase getGameModeUseCase,
                            IGetGameEventUseCase getGameEventUseCase,
                            IGetPatchUseCase getPatchUseCase,
-                           IGetMatchAttributeUseCase getMatchAttributeUseCase)
+                           IGetMatchAttributeUseCase getMatchAttributeUseCase) : base(windowNavigationService, pageNavigationService)
         {
             _pageNavigationService = pageNavigationService;
             _windowNavigationService = windowNavigationService;
@@ -468,6 +468,28 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
 
         #endregion
 
+        #region Расчеты по списку матчей 
+
+        private RelayCommand _killerDetailsForKillersCommand;
+        public RelayCommand KillerDetailsForKillersCommand
+        {
+            get => _killerDetailsForKillersCommand ??= new(obj =>
+            {
+                KillersDetailsForKillers();
+            });
+        }
+
+        private RelayCommand _killerDetailsForSurvivorsCommand;
+        public RelayCommand KillerDetailsForSurvivorsCommand
+        {
+            get => _killerDetailsForSurvivorsCommand ??= new(obj =>
+            {
+                KillersDetailsForSurvivors();
+            });
+        }
+
+        #endregion
+
         /*--Методы----------------------------------------------------------------------------------------*/
 
         /*--Фильтрация--*/
@@ -654,6 +676,28 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
             {
                 _windowNavigationService.OpenWindow(WindowName.PreviewMatch, selectedSurvivorMatch.IdGameStatistic);
             }
+        }
+
+        #endregion
+
+        #region Расчеты по списку матчей 
+
+        private void KillersDetailsForKillers()
+        {
+            List<int> ids = [];
+
+            ids = KillerMatches.Select(x => x.IdGameStatistic).ToList();
+
+            NotificationTransmittingValue(PageName.KillerDetails, FrameName.MainFrame, ids, TypeParameter.Killers);
+        }
+
+        private void KillersDetailsForSurvivors()
+        {
+            List<int> ids = [];
+
+            ids = SurvivorMatches.Select(x => x.IdGameStatistic).ToList();
+
+            NotificationTransmittingValue(PageName.KillerDetails, FrameName.MainFrame, ids, TypeParameter.Killers);
         }
 
         #endregion

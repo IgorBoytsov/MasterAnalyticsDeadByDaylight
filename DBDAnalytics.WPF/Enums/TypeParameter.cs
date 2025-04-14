@@ -6,5 +6,7 @@
         AddAndNotification,
         UpdateAndNotification,
         DeleteAndNotification,
+
+        Killers,
     }
 }
