@@ -1,4 +1,6 @@
-﻿namespace DBDAnalytics.Application.Extensions
+﻿using System.Collections.ObjectModel;
+
+namespace DBDAnalytics.Application.Extensions
 {
     public static class CollectionExtensions
     {
@@ -11,6 +13,19 @@
             if (index != -1)
             {
                 collection[index] = newItem;
+            }
+        }
+
+        public static void ReverseInPlace<T>(this ObservableCollection<T> collection)
+        {
+            if (collection == null || collection.Count < 2)
+                return;
+
+            int count = collection.Count;
+
+            for (int i = 0; i < count - 1; i++)
+            {
+                collection.Move(count - 1, i);
             }
         }
     }
