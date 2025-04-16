@@ -54,7 +54,7 @@ namespace DBDAnalytics.WPF.Services
             }
         }
 
-        public void TransmittingValue(PageName pageName, FrameName frameName, object parameter = null, TypeParameter typeParameter = TypeParameter.None)
+        public void TransmittingValue(PageName pageName, FrameName frameName, object parameter = null, TypeParameter typeParameter = TypeParameter.None, bool isNavigateAfterTransmitting = true, bool forceOpenPage = true)
         {
             if (_pages.TryGetValue(pageName, out var pageExist))
             {
@@ -63,13 +63,19 @@ namespace DBDAnalytics.WPF.Services
                     if (_frames.TryGetValue(frameName, out var frame))
                     {
                         viewModel.Update(parameter, typeParameter);
-                        frame.Navigate(pageExist);
+
+                        if (isNavigateAfterTransmitting)
+                            frame.Navigate(pageExist);
                     }
                     else throw new Exception($"Frame с именем '{frameName}' не зарегистрировано.");
                 }
                 else throw new Exception($"У ViewModel страницы '{pageName}' не реализован интерфейс IUpdatable.");
             }
-            else throw new Exception("Такой страницы либо фрейма не существует.");
+            else
+            {
+                if (forceOpenPage)
+                    Navigate(pageName, frameName, parameter, typeParameter);
+            }
         }
 
         public void Close(PageName pageName, FrameName frameName)

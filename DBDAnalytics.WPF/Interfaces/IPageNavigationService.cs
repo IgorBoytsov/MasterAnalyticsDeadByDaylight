@@ -8,6 +8,6 @@ namespace DBDAnalytics.WPF.Interfaces
         void Close(PageName pageName, FrameName frameName);
         void Navigate(PageName pageName, FrameName frameName, object parameter = null, TypeParameter typeParameter = TypeParameter.None);
         void RegisterFrame(FrameName frameName, Frame frame);
-        void TransmittingValue(PageName pageName, FrameName frameName, object parameter = null, TypeParameter typeParameter = TypeParameter.None);
+        void TransmittingValue(PageName pageName, FrameName frameName, object parameter = null, TypeParameter typeParameter = TypeParameter.None, bool isNavigateAfterTransmitting = true, bool forceOpenPage = true);
     }
 }
