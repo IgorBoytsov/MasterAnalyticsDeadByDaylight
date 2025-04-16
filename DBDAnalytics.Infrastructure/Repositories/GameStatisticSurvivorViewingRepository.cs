@@ -2,6 +2,7 @@
 using DBDAnalytics.Domain.Interfaces.Repositories;
 using DBDAnalytics.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace DBDAnalytics.Infrastructure.Repositories
 {
@@ -139,14 +140,14 @@ namespace DBDAnalytics.Infrastructure.Repositories
                         x.IdGameStatistic,
 
                         filter.IdSurvivor.HasValue
-                        ? (x.IdSurvivors1Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors1 :
-                           x.IdSurvivors2Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors2 :
-                           x.IdSurvivors3Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors3 :
-                           x.IdSurvivors4Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors4 : 0)
-                        : (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1 :
-                           x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors2 :
-                           x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3 :
-                           x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4 : 0),
+                        ? (x.IdSurvivors1Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors1Navigation.IdSurvivor :
+                           x.IdSurvivors2Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors2Navigation.IdSurvivor :
+                           x.IdSurvivors3Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors3Navigation.IdSurvivor :
+                           x.IdSurvivors4Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors4Navigation.IdSurvivor : 0)
+                        : (x.IdSurvivors1Navigation.IdAssociation == 1 ? x.IdSurvivors1Navigation.IdSurvivor :
+                           x.IdSurvivors2Navigation.IdAssociation == 1 ? x.IdSurvivors2Navigation.IdSurvivor :
+                           x.IdSurvivors3Navigation.IdAssociation == 1 ? x.IdSurvivors3Navigation.IdSurvivor :
+                           x.IdSurvivors4Navigation.IdAssociation == 1 ? x.IdSurvivors4Navigation.IdSurvivor: 0),
 
                         filter.IdSurvivor.HasValue
                         ? (x.IdSurvivors1Navigation.IdSurvivor == filter.IdSurvivor ? x.IdSurvivors1Navigation.IdTypeDeath :
