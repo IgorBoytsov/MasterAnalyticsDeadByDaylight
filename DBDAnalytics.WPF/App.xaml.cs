@@ -37,7 +37,11 @@ namespace DBDAnalytics.WPF
         {
             services.AddTransient<IWindowFactory, MainWindowFactory>();
             services.AddTransient<MainWindowVM>();
-            services.AddSingleton<Func<MainWindowVM>>(provider => () => provider.GetRequiredService<MainWindowVM>());
+            services.AddSingleton<Func<MainWindowVM>>(provider => () => provider.GetRequiredService<MainWindowVM>());            
+            
+            services.AddTransient<IWindowFactory, PreviewMatchFactory>();
+            services.AddTransient<PreviewMatchVM>();
+            services.AddSingleton<Func<PreviewMatchVM>>(provider => () => provider.GetRequiredService<PreviewMatchVM>());
 
             services.AddTransient<IWindowFactory, InteractionAssociationFactory>();
             services.AddTransient<InteractionAssociationVM>();
