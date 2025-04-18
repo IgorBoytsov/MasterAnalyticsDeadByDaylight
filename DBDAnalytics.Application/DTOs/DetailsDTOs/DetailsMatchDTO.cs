@@ -6,6 +6,11 @@
 
         public int IdGameStatistic { get; set; }
 
+        public int IdWhoPlaceMap { get; set; }
+
+        public int IdWhoPlaceMapWin { get; set; }
+
+
         public int CountKill { get; set; }
 
         public int CountHook { get; set; }

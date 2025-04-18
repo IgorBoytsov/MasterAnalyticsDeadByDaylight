@@ -8,6 +8,10 @@
 
         public int IdGameStatistic { get; private set; }
 
+        public int IdWhoPlaceMap { get; private set; }
+
+        public int IdWhoPlaceMapWin { get; private set; }
+
         public int CountKill { get; private set; }
 
         public int CountHook { get; private set; }
@@ -31,6 +35,8 @@
         public static DetailsMatchDomain Create(
             DetailsMatchKillerDomain killer,
             int idGameStatistic,
+            int idWhoPlaceMap,
+            int idWhoPlaceMapWin,
             int countKill, int countHook, int recentGenerator, int score,
             string? DurationMatch, DateTime? date,
             DetailsMatchSurvivorDomain? firstSurvivorInfo,
@@ -43,6 +49,9 @@
                 Killer = killer,
 
                 IdGameStatistic = idGameStatistic,
+
+                IdWhoPlaceMap = idWhoPlaceMap,
+                IdWhoPlaceMapWin = idWhoPlaceMapWin,
 
                 CountKill = countKill,
                 CountHook = countHook,

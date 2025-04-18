@@ -13,6 +13,9 @@ namespace DBDAnalytics.Application.Mappers
 
                 IdGameStatistic = domain.IdGameStatistic,
 
+                IdWhoPlaceMap = domain.IdWhoPlaceMap,
+                IdWhoPlaceMapWin = domain.IdWhoPlaceMapWin,
+
                 CountKill = domain.CountKill,
                 CountHook = domain.CountHook,
                 RecentGenerator = domain.RecentGenerator,
