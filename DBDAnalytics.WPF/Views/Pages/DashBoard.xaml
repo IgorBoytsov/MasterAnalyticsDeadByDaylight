@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:DBDAnalytics.WPF.Views.Pages" 
       xmlns:pagevm="clr-namespace:DBDAnalytics.WPF.ViewModels.PageVM" 
       xmlns:converter="clr-namespace:DBDAnalytics.WPF.ValueConverters"
+      xmlns:appEnum="clr-namespace:DBDAnalytics.Application.Enums;assembly=DBDAnalytics.Application"
       xmlns:enum="clr-namespace:DBDAnalytics.WPF.Enums"
       d:DataContext="{d:DesignInstance Type=pagevm:DashBoardVM}"
       mc:Ignorable="d" 
@@ -197,6 +198,31 @@
 
         <!--#endregion-->
 
+        <!--#region ToolTip -->
+
+        <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="BorderBrush" Value="DarkGray"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Background="Gray" 
+                                BorderBrush="Gray" 
+                                BorderThickness="1" 
+                                CornerRadius="10"
+                                Padding="10">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--#endregion-->
+
     </Page.Resources>
 
     <TabControl Style="{StaticResource App.TabControl}" >
@@ -320,28 +346,28 @@
                                                            DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding Patches}" 
-                                              SelectedItem="{Binding SelectedPatchKillerFilter}" 
-                                              DisplayMemberPath="PatchNumber"
-                                              Style="{StaticResource BaseComboBox}"
-                                              DockPanel.Dock="Top"/>
+                                                          SelectedItem="{Binding SelectedPatchKillerFilter}" 
+                                                          DisplayMemberPath="PatchNumber"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top"/>
 
                                             </DockPanel>
 
                                             <DockPanel>
                                                 <StackPanel Orientation="Vertical">
                                                     <CheckBox Content="Учитывать?" 
-                                                  Foreground="White" 
-                                                  IsChecked="{Binding IsConsiderDateTimeKillerFilter}" 
-                                                  Margin="0,0,0,5"
-                                                  ToolTip="Если не учитывать, то будет выведины последние игры за месяц."/>
+                                                              Foreground="White" 
+                                                              IsChecked="{Binding IsConsiderDateTimeKillerFilter}" 
+                                                              Margin="0,0,0,5"
+                                                              ToolTip="Если не учитывать, то будет выведины последние игры за месяц."/>
                                                     <WrapPanel>
                                                         <TextBlock Text="От: " 
-                                                       Foreground="White"
-                                                       VerticalAlignment="Center"/>
+                                                                   Foreground="White"
+                                                                   VerticalAlignment="Center"/>
                                                         <DatePicker SelectedDate="{Binding StartTimeKillerFilter}"/>
                                                         <TextBlock Text="До: " 
-                                                       Foreground="White"
-                                                       VerticalAlignment="Center"/>
+                                                                   Foreground="White"
+                                                                   VerticalAlignment="Center"/>
                                                         <DatePicker SelectedDate="{Binding EndTimeKillerFilter}"/>
                                                     </WrapPanel>
                                                 </StackPanel>
@@ -350,15 +376,15 @@
                                             <DockPanel>
 
                                                 <TextBlock Text="Атрибут" 
-                                               Style="{StaticResource TextBlock.Popup}"
-                                               Margin="0,0,10,0"
-                                               DockPanel.Dock="Top"/>
+                                                           Style="{StaticResource TextBlock.Popup}"
+                                                           Margin="0,0,10,0"
+                                                           DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding MatchAttributes}" 
-                                              SelectedItem="{Binding SelectedMatchAttributeKillerFilter}" 
-                                              DisplayMemberPath="AttributeName"
-                                              Style="{StaticResource BaseComboBox}"
-                                              DockPanel.Dock="Top"/>
+                                                          SelectedItem="{Binding SelectedMatchAttributeKillerFilter}" 
+                                                          DisplayMemberPath="AttributeName"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top"/>
 
                                             </DockPanel>
 
@@ -405,7 +431,7 @@
 
                             <WrapPanel>
                                 <Button Content="Применить" Command="{Binding ApplyKillerFilterCommand}" Style="{StaticResource Button.Base}"/>
-                                <Button Content="Сбросить фильтр" Command="{Binding ApplyKillerFilterCommand}" Style="{StaticResource Button.Base}"/>
+                                <Button Content="Сбросить фильтр" Command="{Binding ResetKillerFilterCommand}" Style="{StaticResource Button.Base}"/>
                             </WrapPanel>
 
                         </DockPanel>
@@ -417,7 +443,7 @@
 
                 <!--#region Управление списком - киллеров -->
 
-                <WrapPanel Grid.Row="0" Grid.Column="0">
+                <DockPanel Grid.Row="0" Grid.Column="0">
 
                     <Button x:Name="FilterKillerMatchButton" Content="Фильтр"
                             Command="{Binding OpenKillerFilterPopupCommand}"
@@ -435,13 +461,26 @@
                             ToolTip="Предыдущий киллер"
                             Margin="5"/>
 
-                    <Menu VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0">
+                    <Menu VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" Margin="10,0,0,0">
                         <MenuItem Header="Детализация матчей по">
                             <MenuItem Header="Убийцам" Command="{Binding KillerDetailsForKillersCommand}"/>
                         </MenuItem>
                     </Menu>
 
-                </WrapPanel>
+                    <Button Style="{StaticResource Button.Base}" 
+                            Width="30" Height="30" 
+                            Command="{Binding ReversKillerMatches}"
+                            HorizontalAlignment="Right"
+                            ToolTip="Реверс списка"
+                            ToolTipService.InitialShowDelay="10">
+                        <Button.Content>
+                            <Viewbox>
+                                <Path Fill="White" Data="{StaticResource Revers}" />
+                            </Viewbox>
+                        </Button.Content>
+                    </Button>
+
+                </DockPanel>
 
                 <!--#endregion-->
 
@@ -464,6 +503,7 @@
 
                 <DataGrid Grid.Column="0" Grid.Row="2" Visibility="Visible"
                           ItemsSource="{Binding KillerMatches}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                          SelectedItem="{Binding SelectedKillerMatch}"
                           Style="{StaticResource DataGrid.Match.Style}"
                           RowStyle="{StaticResource DataGrid.Match.DataGridRow}"
                           CellStyle="{StaticResource DataGrid.Match.DataGridCell}"
@@ -526,10 +566,26 @@
                                                Foreground="{Binding CountKill, Converter={StaticResource StatusMatchToColorConverter}, ConverterParameter={x:Static enum:StatusMatchConverter.CountKills}}"
                                                FontWeight="Bold"
                                                FontSize="18"
-                                               IsHitTestVisible="False"
+                                               IsHitTestVisible="True"
                                                HorizontalAlignment="Center" 
                                                VerticalAlignment="Center"
-                                               Margin="10,0,10,0"/>
+                                               Margin="10,0,10,0" 
+                                               ToolTipService.Placement="Top" ToolTipService.InitialShowDelay="10">
+                                        <TextBlock.ToolTip>
+                                            <StackPanel Orientation="Horizontal">
+                                                <StackPanel>
+                                                    <TextBlock Text="Убийств: " Style="{StaticResource StatusMatchToolTip}"/>
+                                                    <TextBlock Text="Повесов: " Style="{StaticResource StatusMatchToolTip}"/>
+                                                    <TextBlock Text="Генераторов: " Style="{StaticResource StatusMatchToolTip}"/>
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding CountKill}" Style="{StaticResource StatusMatchToolTip}"/>
+                                                    <TextBlock Text="{Binding CountHook}" Style="{StaticResource StatusMatchToolTip}"/>
+                                                    <TextBlock Text="{Binding CountRecentGenerator}" Style="{StaticResource StatusMatchToolTip}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -539,26 +595,42 @@
                                 <DataTemplate>
                                     <WrapPanel HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Margin="0,0,50,0">
 
-                                        <Button Content="☆" ToolTip="Добавить в избранное"
+                                        <Button Content="☆"
                                                 FontSize="20"
                                                 Foreground="Yellow"
-                                                Style="{StaticResource Button.MatchList.Action}"/>
+                                                Style="{StaticResource Button.MatchList.Action}">
+                                            <Button.ToolTip>
+                                                <TextBlock Text="Добавить в избранное" Style="{StaticResource StatusMatchToolTip}"/>
+                                            </Button.ToolTip>
+                                        </Button>
 
-                                        <Button Content="ℹ️" ToolTip="Открыть подробный обзор матча."
+                                        <Button Content="ℹ️"
                                                 FontSize="20"
                                                 Foreground="LightBlue"
                                                 Command="{Binding DataContext.ShowMatchDetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}"
-                                                Style="{StaticResource Button.MatchList.Action}"/>
+                                                Style="{StaticResource Button.MatchList.Action}">
+                                            <Button.ToolTip>
+                                                <TextBlock Text="Открыть подробный обзор матча." Style="{StaticResource StatusMatchToolTip}"/>
+                                            </Button.ToolTip>
+                                        </Button>
 
-                                        <Button Content="🖼️" ToolTip="Просмотр изображение матча"
+                                        <Button Content="🖼️"
                                                 FontSize="20"
                                                 Foreground="Green"
-                                                Style="{StaticResource Button.MatchList.Action}"/>
+                                                Style="{StaticResource Button.MatchList.Action}">
+                                            <Button.ToolTip>
+                                                <TextBlock Text="Просмотр изображение матчае" Style="{StaticResource StatusMatchToolTip}"/>
+                                            </Button.ToolTip>
+                                        </Button>
 
-                                        <Button Content="🗑️" ToolTip="Удалить"
+                                        <Button Content="🗑️"
                                                 FontSize="20"
                                                 Foreground="Red"
-                                                Style="{StaticResource Button.MatchList.Action}"/>
+                                                Style="{StaticResource Button.MatchList.Action}">
+                                            <Button.ToolTip>
+                                                <TextBlock Text="Удалить" Style="{StaticResource StatusMatchToolTip}"/>
+                                            </Button.ToolTip>
+                                        </Button>
 
                                     </WrapPanel>
                                 </DataTemplate>
@@ -584,24 +656,35 @@
                                 </MenuItem>
                             </MenuItem>
 
-                            <MenuItem Header="Применить фильтрацию по...">
-                                <MenuItem Header="Киллеру"/>
-                                <MenuItem Header="Карте"/>
-                                <MenuItem Header="Измерению"/>
-                                <MenuItem Header="Статусу матча"/>
-                                <MenuItem Header="Колличеству киллов"/>
-                                <MenuItem Header="Колличеству повесов"/>
-                                <MenuItem Header="Колличеству генераторов"/>
+                            <MenuItem Header="Фильтрация...">
+                                <CheckBox Content="Не учитывать время" IsChecked="{Binding IsConsiderDateTimeKillerFilter}"/>
+                                <MenuItem Header="Времени">
+                                    <MenuItem Header="От выбранной даты" Command="{Binding FilterKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.DateTimeFrom}"/>
+                                    <MenuItem Header="До выбранной даты" Command="{Binding FilterKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.DateTimeBefore}"/>
+                                </MenuItem>
+                                <MenuItem Header="Киллеру" Command="{Binding FilterKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.Killer}"/>
+                                <Separator/>
+                                <MenuItem Header="Сбросить фильтрацию" Command="{Binding ResetKillerFilterCommand}"/>
                             </MenuItem>
 
-                            <MenuItem Header="Сортировать по...">
-                                <MenuItem Header="Киллеру"/>
-                                <MenuItem Header="Карте"/>
-                                <MenuItem Header="Измерению"/>
-                                <MenuItem Header="Статусу матча"/>
-                                <MenuItem Header="Колличеству киллов"/>
-                                <MenuItem Header="Колличеству повесов"/>
-                                <MenuItem Header="Колличеству генераторов"/>
+                            <MenuItem Header="Сортировка...">
+                                <MenuItem Header="Времени">
+                                    <MenuItem Header="Дате" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.DateTime}"/>
+                                    <MenuItem Header="Длительности" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.DurationMatch}"/>
+                                </MenuItem>
+                                <MenuItem Header="Киллеру" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.Killer}"/>
+                                <MenuItem Header="Карте" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.Map}"/>
+                                <MenuItem Header="Статусу матча">
+                                    <MenuItem Header="Победа" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.Win}"/>
+                                    <MenuItem Header="Ниьчя" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.Draw}"/>
+                                    <MenuItem Header="Порожение" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.Lose}"/>
+                                </MenuItem>
+                                <MenuItem Header="Достижению матча">
+                                    <MenuItem Header="Колличеству киллов" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.CountKills}"/>
+                                    <MenuItem Header="Колличеству повесов" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.CountHooks}"/>
+                                    <MenuItem Header="Колличеству генераторов" Command="{Binding SortKillerMatchCommand}" CommandParameter="{x:Static appEnum:By.RecentGenerators}"/>
+                                </MenuItem>
+
                             </MenuItem>
                             
                         </ContextMenu>
@@ -650,8 +733,8 @@
                                     <StackPanel Margin="0,0,20,0">
 
                                         <Border Grid.ColumnSpan="2"
-                                        Style="{StaticResource AddMatch.Border.Header}"
-                                        Width="200">
+                                                Style="{StaticResource AddMatch.Border.Header}"
+                                                Width="200">
                                             <TextBlock Text="Выживший" Style="{StaticResource TextBlock.Header}"/>
                                         </Border>
 
@@ -660,14 +743,14 @@
                                             <DockPanel>
 
                                                 <TextBlock Text="Выживший" 
-                                                   Style="{StaticResource TextBlock.Popup}"
-                                                   Margin="0,0,10,0"
-                                                   DockPanel.Dock="Top"/>
+                                                           Style="{StaticResource TextBlock.Popup}"
+                                                           Margin="0,0,10,0"
+                                                           DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding Survivors}" 
-                                                  SelectedItem="{Binding SelectedSurvivorFilter}"
-                                                  Style="{StaticResource BaseComboBox}"
-                                                  DockPanel.Dock="Top">
+                                                          SelectedItem="{Binding SelectedSurvivorFilter}"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top">
                                                     <ComboBox.ItemTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding SurvivorName}" ToolTipService.Placement="Right" ToolTipService.InitialShowDelay="10">
@@ -684,14 +767,14 @@
                                             <DockPanel>
 
                                                 <TextBlock Text="Киллер" 
-                                                   Style="{StaticResource TextBlock.Popup}"
-                                                   Margin="0,0,10,0"
-                                                   DockPanel.Dock="Top"/>
+                                                           Style="{StaticResource TextBlock.Popup}"
+                                                           Margin="0,0,10,0"
+                                                           DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding Killers}" 
-                                                  SelectedItem="{Binding SelectedOpponentKillerSurvivorFilter}"
-                                                  Style="{StaticResource BaseComboBox}"
-                                                  DockPanel.Dock="Top">
+                                                          SelectedItem="{Binding SelectedOpponentKillerSurvivorFilter}"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top">
                                                     <ComboBox.ItemTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding KillerName}" ToolTipService.Placement="Right" ToolTipService.InitialShowDelay="10">
@@ -718,8 +801,8 @@
                                     <StackPanel Margin="0,0,20,0">
 
                                         <Border Grid.ColumnSpan="2"
-                                        Style="{StaticResource AddMatch.Border.Header}"
-                                        Width="200">
+                                                Style="{StaticResource AddMatch.Border.Header}"
+                                                Width="200">
                                             <TextBlock Text="Игра" Style="{StaticResource TextBlock.Header}"/>
                                         </Border>
 
@@ -728,63 +811,63 @@
                                             <DockPanel>
 
                                                 <TextBlock Text="Режим" 
-                                                   Style="{StaticResource TextBlock.Popup}"
-                                                   Margin="0,0,10,0"
-                                                   DockPanel.Dock="Top"/>
+                                                           Style="{StaticResource TextBlock.Popup}"
+                                                           Margin="0,0,10,0"
+                                                           DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding GameModes}" 
-                                                  SelectedItem="{Binding SelectedGameModeSurvivorFilter}" 
-                                                  DisplayMemberPath="GameModeName" 
-                                                  Style="{StaticResource BaseComboBox}"
-                                                  DockPanel.Dock="Top"/>
+                                                          SelectedItem="{Binding SelectedGameModeSurvivorFilter}" 
+                                                          DisplayMemberPath="GameModeName" 
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top"/>
 
                                             </DockPanel>
 
                                             <DockPanel>
 
                                                 <TextBlock Text="Событие" 
-                                                   Style="{StaticResource TextBlock.Popup}"
-                                                   Margin="0,0,10,0"
-                                                   DockPanel.Dock="Top"/>
+                                                           Style="{StaticResource TextBlock.Popup}"
+                                                           Margin="0,0,10,0"
+                                                           DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding GameEvents}" 
-                                                  SelectedItem="{Binding SelectedGameEventSurvivorFilter}"
-                                                  DisplayMemberPath="GameEventName"
-                                                  Style="{StaticResource BaseComboBox}"
-                                                  DockPanel.Dock="Top"/>
+                                                          SelectedItem="{Binding SelectedGameEventSurvivorFilter}"
+                                                          DisplayMemberPath="GameEventName"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top"/>
 
                                             </DockPanel>
 
                                             <DockPanel>
 
                                                 <TextBlock Text="Патч" 
-                                                   Style="{StaticResource TextBlock.Popup}"
-                                                   Margin="0,0,10,0"
-                                                   DockPanel.Dock="Top"/>
+                                                           Style="{StaticResource TextBlock.Popup}"
+                                                           Margin="0,0,10,0"
+                                                           DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding Patches}" 
-                                                  SelectedItem="{Binding SelectedPatchSurvivorFilter}" 
-                                                  DisplayMemberPath="PatchNumber"
-                                                  Style="{StaticResource BaseComboBox}"
-                                                  DockPanel.Dock="Top"/>
+                                                          SelectedItem="{Binding SelectedPatchSurvivorFilter}" 
+                                                          DisplayMemberPath="PatchNumber"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top"/>
 
                                             </DockPanel>
 
                                             <DockPanel>
                                                 <StackPanel Orientation="Vertical">
                                                     <CheckBox Content="Учитывать?" 
-                                                      Foreground="White" 
-                                                      IsChecked="{Binding IsConsiderDateTimeSurvivorFilter}" 
-                                                      Margin="0,0,0,5"
-                                                      ToolTip="Если не учитывать, то будет выведины последние игры за месяц."/>
+                                                               Foreground="White" 
+                                                               IsChecked="{Binding IsConsiderDateTimeSurvivorFilter}" 
+                                                               Margin="0,0,0,5"
+                                                               ToolTip="Если не учитывать, то будет выведины последние игры за месяц."/>
                                                     <WrapPanel>
                                                         <TextBlock Text="От: " 
-                                                           Foreground="White"
-                                                           VerticalAlignment="Center"/>
+                                                                   Foreground="White"
+                                                                   VerticalAlignment="Center"/>
                                                         <DatePicker SelectedDate="{Binding StartTimeSurvivorFilter}"/>
                                                         <TextBlock Text="До: " 
-                                                           Foreground="White"
-                                                           VerticalAlignment="Center"/>
+                                                                   Foreground="White"
+                                                                   VerticalAlignment="Center"/>
                                                         <DatePicker SelectedDate="{Binding EndTimeSurvivorFilter}"/>
                                                     </WrapPanel>
                                                 </StackPanel>
@@ -793,15 +876,15 @@
                                             <DockPanel>
 
                                                 <TextBlock Text="Атрибут" 
-                                                   Style="{StaticResource TextBlock.Popup}"
-                                                   Margin="0,0,10,0"
-                                                   DockPanel.Dock="Top"/>
+                                                           Style="{StaticResource TextBlock.Popup}"
+                                                           Margin="0,0,10,0"
+                                                           DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding MatchAttributes}" 
-                                                  SelectedItem="{Binding SelectedMatchAttributeSurvivorFilter}" 
-                                                  DisplayMemberPath="AttributeName"
-                                                  Style="{StaticResource BaseComboBox}"
-                                                  DockPanel.Dock="Top"/>
+                                                          SelectedItem="{Binding SelectedMatchAttributeSurvivorFilter}" 
+                                                          DisplayMemberPath="AttributeName"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top"/>
 
                                             </DockPanel>
 
@@ -818,24 +901,24 @@
                                     <StackPanel Margin="0,0,20,0">
 
                                         <Border Grid.ColumnSpan="2"
-                                        Style="{StaticResource AddMatch.Border.Header}"
-                                        Width="200">
+                                                Style="{StaticResource AddMatch.Border.Header}"
+                                                Width="200">
                                             <TextBlock Text="Киллер" 
-                                               Style="{StaticResource TextBlock.Header}"/>
+                                                       Style="{StaticResource TextBlock.Header}"/>
                                         </Border>
 
                                         <StackPanel>
                                             <DockPanel>
 
                                                 <TextBlock Text="Сортировка" 
-                                                   Style="{StaticResource TextBlock.Popup}"
-                                                   Margin="0,0,10,0"
-                                                   DockPanel.Dock="Top"/>
+                                                           Style="{StaticResource TextBlock.Popup}"
+                                                           Margin="0,0,10,0"
+                                                           DockPanel.Dock="Top"/>
 
                                                 <ComboBox ItemsSource="{Binding SortingMatch}" 
-                                                  SelectedItem="{Binding SelectedSortingMatch}"
-                                                  Style="{StaticResource BaseComboBox}"
-                                                  DockPanel.Dock="Top"/>
+                                                          SelectedItem="{Binding SelectedSortingMatch}"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          DockPanel.Dock="Top"/>
 
 
                                             </DockPanel>
@@ -850,7 +933,7 @@
 
                             <WrapPanel>
                                 <Button Content="Применить" Command="{Binding ApplySurvivorFilterCommand}" Style="{StaticResource Button.Base}"/>
-                                <Button Content="Сбросить фильтр" Command="{Binding ApplySurvivorFilterCommand}" Style="{StaticResource Button.Base}"/>
+                                <Button Content="Сбросить фильтр" Command="{Binding ResetSurvivorFilterCommand}" Style="{StaticResource Button.Base}"/>
                             </WrapPanel>
 
                         </DockPanel>
@@ -861,8 +944,7 @@
 
                 <!--#region Управление списком - выжившие -->
 
-                <WrapPanel Grid.Column="2" VerticalAlignment="Center"
-                           HorizontalAlignment="Left">
+                <DockPanel Grid.Column="2" VerticalAlignment="Center">
 
                     <Button x:Name="FilterSurvivorMatchButton"
                             Grid.Column="2"
@@ -889,7 +971,20 @@
                         </MenuItem>
                     </Menu>
 
-                </WrapPanel>
+                    <Button Style="{StaticResource Button.Base}" 
+                            Width="30" Height="30" 
+                            Command="{Binding ReversSurvivorMatches}"
+                            HorizontalAlignment="Right"
+                            ToolTip="Реверс списка"
+                            ToolTipService.InitialShowDelay="10">
+                        <Button.Content>
+                            <Viewbox>
+                                <Path Fill="White" Data="{StaticResource Revers}" />
+                            </Viewbox>
+                        </Button.Content>
+                    </Button>
+
+                </DockPanel>
 
                 <!--#endregion-->
 
@@ -912,6 +1007,7 @@
 
                 <DataGrid Grid.Column="2" Grid.Row="3" 
                           ItemsSource="{Binding SurvivorMatches}" d:ItemsSource="{d:SampleData ItemCount=10}"
+                          SelectedItem="{Binding SelectedSurvivorMatch}"
                           Style="{StaticResource DataGrid.Match.Style}"
                           RowStyle="{StaticResource DataGrid.Match.DataGridRow}"
                           CellStyle="{StaticResource DataGrid.Match.DataGridCell}"
@@ -974,10 +1070,26 @@
                                                Foreground="{Binding IdTypeDeath, Converter={StaticResource StatusMatchToColorConverter}, ConverterParameter={x:Static enum:StatusMatchConverter.TypeDeath}}"
                                                FontWeight="Bold"
                                                FontSize="18"
-                                               IsHitTestVisible="False"
+                                               IsHitTestVisible="True"
                                                HorizontalAlignment="Center" 
                                                VerticalAlignment="Center"
-                                               Margin="10,0,10,0"/>
+                                               Margin="10,0,10,0"           
+                                               ToolTipService.Placement="Top" ToolTipService.InitialShowDelay="10">
+                                        <TextBlock.ToolTip>
+                                            <StackPanel Orientation="Horizontal">
+                                                <StackPanel>
+                                                    <TextBlock Text="Убийств: " Style="{StaticResource StatusMatchToolTip}"/>
+                                                    <TextBlock Text="Повесов: " Style="{StaticResource StatusMatchToolTip}"/>
+                                                    <TextBlock Text="Генераторов: " Style="{StaticResource StatusMatchToolTip}"/>
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding CountKill}" Style="{StaticResource StatusMatchToolTip}"/>
+                                                    <TextBlock Text="{Binding CountHook}" Style="{StaticResource StatusMatchToolTip}"/>
+                                                    <TextBlock Text="{Binding CountRecentGenerator}" Style="{StaticResource StatusMatchToolTip}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -987,26 +1099,42 @@
                                 <DataTemplate>
                                     <WrapPanel HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Margin="0,0,50,0">
 
-                                        <Button Content="☆" ToolTip="Добавить в избранное"
+                                        <Button Content="☆"
                                                 FontSize="20"
                                                 Foreground="Yellow"
-                                                Style="{StaticResource Button.MatchList.Action}"/>
+                                                Style="{StaticResource Button.MatchList.Action}">
+                                            <Button.ToolTip>
+                                                <TextBlock Text="Добавить в избранное" Style="{StaticResource StatusMatchToolTip}"/>
+                                            </Button.ToolTip>
+                                        </Button>
 
-                                        <Button Content="ℹ️" ToolTip="Открыть подробный обзор матча."
+                                        <Button Content="ℹ️"
                                                 FontSize="20"
                                                 Foreground="LightBlue"
                                                 Command="{Binding DataContext.ShowMatchDetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}"
-                                                Style="{StaticResource Button.MatchList.Action}"/>
+                                                Style="{StaticResource Button.MatchList.Action}">
+                                            <Button.ToolTip>
+                                                <TextBlock Text="Открыть подробный обзор матча." Style="{StaticResource StatusMatchToolTip}"/>
+                                            </Button.ToolTip>
+                                        </Button>
 
-                                        <Button Content="🖼️" ToolTip="Просмотр изображение матча"
+                                        <Button Content="🖼️"
                                                 FontSize="20"
                                                 Foreground="Green"
-                                                Style="{StaticResource Button.MatchList.Action}"/>
+                                                Style="{StaticResource Button.MatchList.Action}">
+                                            <Button.ToolTip>
+                                                <TextBlock Text="Просмотр изображение матча" Style="{StaticResource StatusMatchToolTip}"/>
+                                            </Button.ToolTip>
+                                        </Button>
 
-                                        <Button Content="🗑️" ToolTip="Удалить"
+                                        <Button Content="🗑️"
                                                 FontSize="20"
                                                 Foreground="Red"
-                                                Style="{StaticResource Button.MatchList.Action}"/>
+                                                Style="{StaticResource Button.MatchList.Action}">
+                                            <Button.ToolTip>
+                                                <TextBlock Text="Удалить" Style="{StaticResource StatusMatchToolTip}"/>
+                                            </Button.ToolTip>
+                                        </Button>
 
                                     </WrapPanel>
                                 </DataTemplate>
@@ -1031,21 +1159,36 @@
                                     <MenuItem Header="PDF"/>
                                 </MenuItem>
                             </MenuItem>
-
-                            <MenuItem Header="Применить фильтрацию по...">
-                                <MenuItem Header="Выжившему"/>
-                                <MenuItem Header="Карте"/>
-                                <MenuItem Header="Измерению"/>
-                                <MenuItem Header="Статусу матча"/>
+                            
+                            <MenuItem Header="Фильтрация...">
+                                <CheckBox Content="Не учитывать время" IsChecked="{Binding IsConsiderDateTimeSurvivorFilter}"/>
+                                <MenuItem Header="Времени">
+                                    <MenuItem Header="От выбранной даты" Command="{Binding FilterSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.DateTimeFrom}"/>
+                                    <MenuItem Header="До выбранной даты" Command="{Binding FilterSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.DateTimeBefore}"/>
+                                </MenuItem>
+                                <MenuItem Header="Выжившему" Command="{Binding FilterSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.Survivor}"/>
+                                <Separator/>
+                                <MenuItem Header="Сбросить фильтрацию" Command="{Binding ResetSurvivorFilterCommand}"/>
                             </MenuItem>
 
-                            <MenuItem Header="Сортировать по...">
-                                <MenuItem Header="Выжившему"/>
-                                <MenuItem Header="Карте"/>
-                                <MenuItem Header="Измерению"/>
-                                <MenuItem Header="Статусу матча"/>
+                            <MenuItem Header="Сортировка...">
+                                <MenuItem Header="Времени">
+                                    <MenuItem Header="Дате" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.DateTime}"/>
+                                    <MenuItem Header="Длительности" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.DurationMatch}"/>
+                                </MenuItem>
+                                <MenuItem Header="Выжившему" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.Survivor}"/>
+                                <MenuItem Header="Карте" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.Map}"/>
+                                <MenuItem Header="Статусу матча">
+                                    <MenuItem Header="Победа" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.Win}"/>
+                                    <MenuItem Header="Ниьчя" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.Draw}"/>
+                                    <MenuItem Header="Порожение" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.Lose}"/>
+                                </MenuItem>
+                                <MenuItem Header="Достижению матча">
+                                    <MenuItem Header="Колличеству киллов" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.CountKills}"/>
+                                    <MenuItem Header="Колличеству повесов" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.CountHooks}"/>
+                                    <MenuItem Header="Колличеству генераторов" Command="{Binding SortSurvivorMatchCommand}" CommandParameter="{x:Static appEnum:By.RecentGenerators}"/>
+                                </MenuItem>
                             </MenuItem>
-
                         </ContextMenu>
                     </DataGrid.ContextMenu>
 

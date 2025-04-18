@@ -1,4 +1,6 @@
 ﻿using DBDAnalytics.Application.DTOs;
+using DBDAnalytics.Application.Enums;
+using DBDAnalytics.Application.Extensions;
 using DBDAnalytics.Application.UseCases.Abstraction.GameEventCase;
 using DBDAnalytics.Application.UseCases.Abstraction.GameModeCase;
 using DBDAnalytics.Application.UseCases.Abstraction.GameStatisticCase;
@@ -10,6 +12,8 @@ using DBDAnalytics.WPF.Command;
 using DBDAnalytics.WPF.Enums;
 using DBDAnalytics.WPF.Interfaces;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Windows;
 
 namespace DBDAnalytics.WPF.ViewModels.PageVM
 {
@@ -96,6 +100,32 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
         public ObservableCollection<PatchDTO> Patches { get; set; } = [];
 
         public ObservableCollection<MatchAttributeDTO> MatchAttributes { get; set; } = [];
+
+        #endregion
+
+        #region Свойства : Выбор матча
+
+        private GameStatisticKillerViewingDTO _selectedKillerMatch;
+        public GameStatisticKillerViewingDTO SelectedKillerMatch
+        {
+            get => _selectedKillerMatch;
+            set
+            {
+                _selectedKillerMatch = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private GameStatisticSurvivorViewingDTO _selectedSurvivorMatch;
+        public GameStatisticSurvivorViewingDTO SelectedSurvivorMatch
+        {
+            get => _selectedSurvivorMatch;
+            set
+            {
+                _selectedSurvivorMatch = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
@@ -404,10 +434,24 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
         #region Сброс фильтров до дефолтных значений у Киллеров и Выживших
 
         private RelayCommand _resetKillerFilterCommand;
-        public RelayCommand ResetKillerFilterCommand { get => _resetKillerFilterCommand ??= new(obj => { SetDefaultKillerFilter(); }); }
+        public RelayCommand ResetKillerFilterCommand 
+        { 
+            get => _resetKillerFilterCommand ??= new(obj => 
+            { 
+                SetDefaultKillerFilter();
+                GetKillerMatches();
+            }); 
+        }
 
         private RelayCommand _resetSurvivorFilterCommand;
-        public RelayCommand ResetSurvivorFilterCommand { get => _resetSurvivorFilterCommand ??= new(obj => { SetDefaultSurvivorFilter(); }); }
+        public RelayCommand ResetSurvivorFilterCommand 
+        { 
+            get => _resetSurvivorFilterCommand ??= new(obj => 
+            { 
+                SetDefaultSurvivorFilter();
+                GetSurvivorMatches();
+            }); 
+        }
 
         #endregion
 
@@ -490,9 +534,39 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
 
         #endregion
 
+        #region Сортировка
+
+        private RelayCommand _sortKillerMatchCommand;
+        public RelayCommand SortKillerMatchCommand => _sortKillerMatchCommand ??= new RelayCommand(SortKillerMatch);
+
+        private RelayCommand _sortSurvivorMatchCommand;
+        public RelayCommand SortSurvivorMatchCommand => _sortSurvivorMatchCommand ??= new RelayCommand(SortSurvivorMatch);
+
+        #endregion
+
+        #region Фильтрация
+
+        private RelayCommand _filterKillerMatchCommand;
+        public RelayCommand FilterKillerMatchCommand => _filterKillerMatchCommand ??= new RelayCommand(FilterKillerMatch);
+
+        private RelayCommand _filterSurvivorMatchCommand;
+        public RelayCommand FilterSurvivorMatchCommand => _filterSurvivorMatchCommand ??= new RelayCommand(FilterSurvivorMatch);
+
+        #endregion
+
+        #region Реверс списков
+
+        private RelayCommand _reversKillerMatches;
+        public RelayCommand ReversKillerMatches { get => _reversKillerMatches ??= new(obj => { KillerMatches.ReverseInPlace(); }); }
+
+        private RelayCommand _reversSurvivorMatches;
+        public RelayCommand ReversSurvivorMatches { get => _reversSurvivorMatches ??= new(obj => { SurvivorMatches.ReverseInPlace(); }); }
+
+        #endregion
+
         /*--Методы----------------------------------------------------------------------------------------*/
 
-        /*--Фильтрация--*/
+        /*--Фильтрация получаемых данных--*/
 
         #region Создание фильтра | Установка дефолтных значений
 
@@ -698,6 +772,149 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
             ids = SurvivorMatches.Select(x => x.IdGameStatistic).ToList();
 
             NotificationTransmittingValue(PageName.KillerDetails, FrameName.MainFrame, ids, TypeParameter.Killers);
+        }
+
+        #endregion
+
+        #region Применение сортировки
+
+        private void SortKillerMatch(object parameter)
+        {
+            if (parameter is By sortParameter)
+            {
+                Action action = sortParameter switch
+                {
+                    By.DateTime         => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderByDescending(x => x.DateMatch)),
+                    By.Killer           => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderBy(x => x.IdKiller)),
+                    By.Map              => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderBy(x => x.MapName)),
+                    By.DurationMatch    => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderByDescending(x => TimeOnly.ParseExact(x.MatchTime, "HH:mm:ss", CultureInfo.InvariantCulture))),
+
+                    By.CountKills       => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderByDescending(x => x.CountKill)),
+                    By.CountHooks       => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderByDescending(x => x.CountHook)),
+                    By.RecentGenerators => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderByDescending(x => x.CountRecentGenerator)),
+
+                    By.Win              => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderByDescending(x => x.CountKill > 2).ThenByDescending(x => x.CountKill == 2)),
+                    By.Draw             => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderByDescending(x => x.CountKill == 2).ThenByDescending(x => x.CountKill < 2)),
+                    By.Lose             => () => KillerMatches = new ObservableCollection<GameStatisticKillerViewingDTO>(KillerMatches.OrderByDescending(x => x.CountKill < 2).ThenByDescending(x => x.CountKill == 2)),
+                    _ => () => throw new Exception("Такого вида сортировки нету.")
+                };
+                action?.Invoke();
+
+                OnPropertyChanged(nameof(KillerMatches));
+            }
+        }
+
+        private void SortSurvivorMatch(object parameter)
+        {
+            if (parameter is By sortParameter)
+            {
+                Action action = sortParameter switch
+                {
+                    By.DateTime         => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderByDescending(x => x.DateMatch)),
+                    By.Survivor         => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderBy(x => x.IdSurvivor)),
+                    By.Map              => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderBy(x => x.MapName)),
+                    By.DurationMatch    => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderByDescending(x => TimeOnly.ParseExact(x.MatchTime, "HH:mm:ss", CultureInfo.InvariantCulture))),
+
+                    By.CountKills       => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderByDescending(x => x.CountKill)),
+                    By.CountHooks       => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderByDescending(x => x.CountHook)),
+                    By.RecentGenerators => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderByDescending(x => x.CountRecentGenerator)),
+                                                 
+                    By.Win              => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderByDescending(x => x.CountKill > 2).ThenByDescending(x => x.CountKill == 2)),
+                    By.Draw             => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderByDescending(x => x.CountKill == 2).ThenByDescending(x => x.CountKill < 2)),
+                    By.Lose             => () => SurvivorMatches = new ObservableCollection<GameStatisticSurvivorViewingDTO>(SurvivorMatches.OrderByDescending(x => x.CountKill < 2).ThenByDescending(x => x.CountKill == 2)),
+
+                    _ => () => throw new Exception("Такого вида сортировки нету.")
+                };
+                action?.Invoke();
+
+                OnPropertyChanged(nameof(SurvivorMatches));
+            }
+        }
+
+        #endregion
+
+        #region Применение фильтрации
+
+        private void FilterKillerMatch(object parameter)
+        { 
+            //Обычный TODO : Заменить MessageBox на кастомное окно или аналог.
+            if (SelectedKillerMatch == null)
+            {
+                MessageBox.Show("Не выбран матч для применение фильтрации");
+                return;
+            }
+
+            if (parameter is By sortParameter)
+            {
+                Action action = sortParameter switch
+                {
+                    By.DateTimeFrom => () =>
+                    {
+                        StartTimeKillerFilter = SelectedKillerMatch.DateMatch;
+                        IsConsiderDateTimeKillerFilter = true;
+                        GetKillerMatches();
+                    }
+                    ,
+                    By.DateTimeBefore => () =>
+                    {
+                        EndTimeKillerFilter = SelectedKillerMatch.DateMatch;
+                        IsConsiderDateTimeKillerFilter = true;
+                        GetKillerMatches();
+                    }
+                    ,
+                    By.Killer => () =>
+                    {
+                        SelectedKillerFilter = Killers.FirstOrDefault(x => x.IdKiller == SelectedKillerMatch.IdKiller);
+                        GetKillerMatches();
+                    }
+                    ,
+                    _ => () => throw new Exception("Такого вида фильтрации нету.")
+                };
+                action?.Invoke();
+
+                OnPropertyChanged(nameof(KillerMatches));
+            }
+        }        
+        
+        private void FilterSurvivorMatch(object parameter)
+        { 
+            //Обычный TODO : Заменить MessageBox на кастомное окно или аналог.
+            if (SelectedSurvivorMatch == null)
+            {
+                MessageBox.Show("Не выбран матч для применение фильтрации");
+                return;
+            }
+
+            if (parameter is By sortParameter)
+            {
+                Action action = sortParameter switch
+                {
+                    By.DateTimeFrom => () =>
+                    {
+                        StartTimeSurvivorFilter = SelectedSurvivorMatch.DateMatch;
+                        IsConsiderDateTimeSurvivorFilter = true;
+                        GetSurvivorMatches();
+                    }
+                    ,
+                    By.DateTimeBefore => () =>
+                    {
+                        EndTimeSurvivorFilter = SelectedSurvivorMatch.DateMatch;
+                        IsConsiderDateTimeSurvivorFilter = true;
+                        GetSurvivorMatches();
+                    }
+                    ,
+                    By.Survivor => () =>
+                    {
+                        SelectedSurvivorFilter = Survivors.First(x => x.IdSurvivor == SelectedSurvivorMatch.IdSurvivor);
+                        GetSurvivorMatches();
+                    }
+                    ,
+                    _ => () => throw new Exception("Такого вида фильтрации нету.")
+                };
+                action?.Invoke();
+
+                OnPropertyChanged(nameof(SurvivorMatches));
+            }
         }
 
         #endregion
