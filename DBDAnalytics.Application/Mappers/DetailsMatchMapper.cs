@@ -36,6 +36,7 @@ namespace DBDAnalytics.Application.Mappers
                 IdSurvivor = domain.IdSurvivor,
                 IdPlatform = domain.IdPlatform,
                 IdTypeDeath = domain.IdTypeDeath,
+                IdAssociation = domain.IdAssociation,
                 Anonymous = domain.Anonymous,
                 Bot = domain.Bot
             };

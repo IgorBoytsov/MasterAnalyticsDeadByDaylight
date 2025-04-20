@@ -8,6 +8,8 @@
 
         public int IdPlatform { get; set; }
 
+        public int IdAssociation { get; set; }
+
         public bool Bot { get; set; }
 
         public bool Anonymous { get; set; }
