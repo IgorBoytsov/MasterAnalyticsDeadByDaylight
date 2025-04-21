@@ -4,5 +4,7 @@
     {
         None,
         Killers,
+        Map,
+        Measurement,
     }
 }

@@ -6,8 +6,8 @@ namespace DBDAnalytics.Domain.Interfaces.Repositories
 {
     public interface IDetailsMatchRepository
     {
-        Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(int idEntity, Associations associations, FilterParameter filterParameter);
-        Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(List<int> idsMatches);
+        Task<(List<DetailsMatchDomain> DetailsMatches, int TotalMatch)> GetDetailsMatch(int idEntity, Associations associations, FilterParameter filterParameter);
+        Task<(List<DetailsMatchDomain> DetailsMatches, int TotalMatch)> GetDetailsMatch(List<int> idsMatches);
         Task<DetailsMatchViewDomain> GetDetailsViewMatch(int idGameStatistic);
     }
 }

@@ -19,7 +19,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
         /// <param name="associations">Игровая ассоциация. Значение элементов равные Id в источники данных.</param>
         /// <param name="filterParameter">Определят по какой сущности нужно произвести фильтрацию.</param>
         /// <returns></returns>
-        private async Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(int idEntity, List<int> idsMatches, Associations associations, FilterParameter filterParameter)
+        private async Task<(List<DetailsMatchDomain> DetailsMatches, int TotalMatch)> GetDetailsMatch(int idEntity, List<int> idsMatches, Associations associations, FilterParameter filterParameter)
         {
             using (var _context = _contextFactory())
             {
@@ -30,16 +30,19 @@ namespace DBDAnalytics.Infrastructure.Repositories
                         .Include(x => x.IdSurvivors2Navigation)
                         .Include(x => x.IdSurvivors3Navigation)
                         .Include(x => x.IdSurvivors4Navigation)
+                        .Include(x => x.IdMapNavigation.IdMeasurementNavigation)
                             .AsQueryable();
 
                 if (idEntity > 0)
                 {
-                    Action action = filterParameter switch
+                    Action filterAction = filterParameter switch
                     {
                         FilterParameter.Killers => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdKillerNavigation.IdKiller == idEntity),
+                        FilterParameter.Map => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdMap == idEntity),
+                        FilterParameter.Measurement => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdMapNavigation.IdMeasurement == idEntity),
                         _ => () => throw new Exception("По такому параметру фильтрация не проводиться")
                     };
-                    action?.Invoke();
+                    filterAction?.Invoke();
                 }
                 else
                 {
@@ -58,6 +61,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdKillerNavigation.IdPerk4,
                             x.IdKillerNavigation.KillerAccount),
                         x.IdGameStatistic,
+                        x.IdWhoPlacedMap,
+                        x.IdWhoPlacedMapWin,
                         x.CountKills,
                         x.CountHooks,
                         x.NumberRecentGenerators,
@@ -68,41 +73,45 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors1Navigation.IdSurvivorNavigation.IdSurvivor,
                             x.IdSurvivors1Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors1Navigation.IdPlatformNavigation.IdPlatform,
+                            x.IdSurvivors1Navigation.IdAssociation,
                             x.IdSurvivors1Navigation.Bot,
                             x.IdSurvivors1Navigation.AnonymousMode),
                         DetailsMatchSurvivorDomain.Create(
                             x.IdSurvivors2Navigation.IdSurvivorNavigation.IdSurvivor,
                             x.IdSurvivors2Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors2Navigation.IdPlatformNavigation.IdPlatform,
+                            x.IdSurvivors2Navigation.IdAssociation,
                             x.IdSurvivors2Navigation.Bot,
                             x.IdSurvivors2Navigation.AnonymousMode),
                         DetailsMatchSurvivorDomain.Create(
                             x.IdSurvivors3Navigation.IdSurvivorNavigation.IdSurvivor,
                             x.IdSurvivors3Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors3Navigation.IdPlatformNavigation.IdPlatform,
+                            x.IdSurvivors3Navigation.IdAssociation,
                             x.IdSurvivors3Navigation.Bot,
                             x.IdSurvivors3Navigation.AnonymousMode),
                         DetailsMatchSurvivorDomain.Create(
                             x.IdSurvivors4Navigation.IdSurvivorNavigation.IdSurvivor,
                             x.IdSurvivors4Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors4Navigation.IdPlatformNavigation.IdPlatform,
+                            x.IdSurvivors4Navigation.IdAssociation,
                             x.IdSurvivors4Navigation.Bot,
                             x.IdSurvivors4Navigation.AnonymousMode)
                     ))
                     .ToListAsync();
 
-                var totalMatch = _context.GameStatistics.Count(x => x.IdKillerNavigation.IdAssociation == 1);
+                var totalMatch = _context.GameStatistics.Count(x => x.IdKillerNavigation.IdAssociation == (int)associations);
 
                 return (list, totalMatch);
             }
         }
 
-        public async Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(int idEntity, Associations associations, FilterParameter filterParameter)
+        public async Task<(List<DetailsMatchDomain> DetailsMatches, int TotalMatch)> GetDetailsMatch(int idEntity, Associations associations, FilterParameter filterParameter)
         {
             return await GetDetailsMatch(idEntity, new List<int>(), associations, filterParameter);
         }
 
-        public async Task<(List<DetailsMatchDomain> KillerDetails, int TotalMatch)> GetDetailsMatch(List<int> idsMatches)
+        public async Task<(List<DetailsMatchDomain> DetailsMatches, int TotalMatch)> GetDetailsMatch(List<int> idsMatches)
         {
             return await GetDetailsMatch(-1, idsMatches, Associations.None, FilterParameter.None);
         }
