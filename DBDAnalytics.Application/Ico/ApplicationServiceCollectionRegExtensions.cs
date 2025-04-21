@@ -254,6 +254,7 @@ namespace DBDAnalytics.Application.Ico
             services.AddSingleton<ICalculationTimeService, CalculationTimeService>();
             services.AddSingleton<ICalculationKillerService, CalculationKillerService>();
             services.AddSingleton<ICalculationSurvivorService, CalculationSurvivorService>();
+            services.AddSingleton<ICalculationMapService, CalculationMapService>();
 
             #endregion
 
