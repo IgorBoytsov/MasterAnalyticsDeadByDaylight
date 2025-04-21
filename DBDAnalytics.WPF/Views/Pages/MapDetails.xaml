@@ -1,0 +1,740 @@
+﻿<Page x:Class="DBDAnalytics.WPF.Views.Pages.MapDetails"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DBDAnalytics.WPF.Views.Pages" 
+      xmlns:pagevm="clr-namespace:DBDAnalytics.WPF.ViewModels.PageVM" 
+      d:DataContext="{d:DesignInstance Type=pagevm:MapDetailsVM}"
+      xmlns:uc="clr-namespace:DBDAnalytics.WPF.Assets.CustomControls" 
+      xmlns:dto="clr-namespace:DBDAnalytics.Application.DTOs;assembly=DBDAnalytics.Application" 
+      mc:Ignorable="d" 
+      d:Height="Auto" d:Width="1000"
+      Title="MapDetails">
+
+    <Grid Background="{StaticResource Brush.AppBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--#region Элементы управление | Заголовок -->
+
+        <Border Background="{StaticResource Brush.AppCardBackground}" 
+                CornerRadius="10"
+                Margin="10">
+            <DockPanel>
+
+                <!--#region Управление -->
+
+                <DockPanel DockPanel.Dock="Top">
+                    <StackPanel DockPanel.Dock="Left">
+                        <DockPanel>
+
+                            <Button Content="Обновить" Style="{StaticResource Button.Base}"
+                                    Command="{Binding UpdateCalculationCommand}"
+                                    DockPanel.Dock="Left"/>
+
+                            <Button Content="Сохранить все" Style="{StaticResource Button.Base}" 
+                                    DockPanel.Dock="Left"/>
+
+                            <Button Content="Список матчей"
+                                    ToolTip="Отобразить список матчей по выбранному персонажу"
+                                    Style="{StaticResource Button.Base}" 
+                                    DockPanel.Dock="Left"/>
+
+                            <Button Content="🗒️" Style="{StaticResource Button.Base}" 
+                                    DockPanel.Dock="Right"/>
+
+                            <Button Content="🔁" Style="{StaticResource Button.Base}" 
+                                    DockPanel.Dock="Right"/>
+                        </DockPanel>
+
+                        <DockPanel>
+                            <ComboBox ItemsSource="{Binding TypeMaps}"
+                                      SelectedItem="{Binding SelectedTypeMap}"
+                                      DisplayMemberPath="Value" 
+                                      Style="{StaticResource BaseComboBox}"
+                                      Width="150"
+                                      HorizontalAlignment="Left"/>
+
+                            <ComboBox ItemsSource="{Binding Maps}"
+                                      SelectedItem="{Binding SelectedMap}"
+                                      SelectedIndex="{Binding SelectedMapIndex}"
+                                      Style="{StaticResource BaseComboBox}"
+                                      Width="200"
+                                      HorizontalAlignment="Left">
+                                <ComboBox.Resources>
+
+                                    <DataTemplate DataType="{x:Type dto:MapDTO}">
+                                        <TextBlock Text="{Binding MapName}"/>
+                                    </DataTemplate>
+
+                                    <DataTemplate DataType="{x:Type dto:MeasurementDTO}">
+                                        <TextBlock Text="{Binding MeasurementName}"/>
+                                    </DataTemplate>
+                                </ComboBox.Resources>
+                            </ComboBox>
+
+                            <Button Content="⬅" 
+                                    Style="{StaticResource Button.SwitchingIndexes}"
+                                    Command="{Binding PreviousMapCommand}"
+                                    FontSize="25"
+                                    ToolTip="Предыдущий киллер"
+                                    Margin="1,5,1,5"/>
+
+                            <Button Content="⮕" 
+                                    Style="{StaticResource Button.SwitchingIndexes}"
+                                    Command="{Binding NextMapCommand}"
+                                    FontSize="25"
+                                    ToolTip="Следующий киллер"
+                                    Margin="1,5,1,5"/>
+
+                            <ComboBox ItemsSource="{Binding PeriodTimes}"
+                                      DisplayMemberPath="Value" 
+                                      SelectedItem="{Binding SelectedTimePeriod}"
+                                      Style="{StaticResource BaseComboBox}"
+                                      Width="150"
+                                      Margin="10,0,0,0"
+                                      DockPanel.Dock="Right"/>
+
+                            <ComboBox ItemsSource="{Binding PlayerAssociations}"
+                                      SelectedItem="{Binding SelectedAssociation}"
+                                      DisplayMemberPath="Value" 
+                                      Style="{StaticResource BaseComboBox}"
+                                      Width="200"
+                                      HorizontalAlignment="Right"/>
+
+                        </DockPanel>
+
+                    </StackPanel>
+                </DockPanel>
+
+                <!--#endregion-->
+
+                <Separator DockPanel.Dock="Top"/>
+
+                <!--#region Краткая информация -->
+
+                <DockPanel DockPanel.Dock="Top">
+
+                    <StackPanel DockPanel.Dock="Left">
+                        <Image Source="{Binding SelectedMapImage}" d:Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Карты\Заросли Дварки - Площадка Тобаpng.png"
+                               Width="200"/>
+                        <UniformGrid>
+                            <TextBlock Text="Подношение" FontSize="15" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="Без" FontSize="15" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </UniformGrid>
+                        <UniformGrid>
+                            <StackPanel>
+                                <TextBlock Text="{Binding CountWithOffering, StringFormat={}Матчей {0}}" d:Text="Матчей 15"
+                                           FontSize="14" Foreground="White" FontWeight="Light" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding PercentWithOffering, StringFormat={}({0} %)}" d:Text="(15 %)"
+                                           FontSize="14" Foreground="White" FontWeight="Light" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="{Binding CountNoOffering, StringFormat={}Матчей {0}}" d:Text="Матчей 15"
+                                           FontSize="14" Foreground="White" FontWeight="Light" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding PercentNoOffering, StringFormat={}({0} %)}" d:Text="(15 %)"
+                                           FontSize="14" Foreground="White" FontWeight="Light" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </UniformGrid>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="0">
+                        <uc:IndicatorProgressBar CurrentValue="{Binding KillRate}" d:CurrentValue="3.4"  
+                                                 MinimumValue="0.0"
+                                                 MaximumValue="4.0"
+                                                 DisplayedValueType=" "
+                                                 TextValue="Киллрейт: "
+                                                 ForegroundProgress="{Binding KillRate, Converter={StaticResource KIllRateToColorConverter}}" d:ForegroundProgress="{StaticResource Brush.ThreeKills}"
+                                                 BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                 Height="20"
+                                                 Margin="10,5,10,5"
+                                                 DockPanel.Dock="Top"/>
+
+                        <uc:IndicatorProgressBar CurrentValue="{Binding HookRate}" d:CurrentValue="8.2" 
+                                                 MinimumValue="0.0" 
+                                                 MaximumValue="12" 
+                                                 DisplayedValueType=""
+                                                 TextValue="Среднее кол-во повесов: "
+                                                 ForegroundProgress="{Binding HookRate, Converter={StaticResource HookRateToColorConverter}}" d:ForegroundProgress="{StaticResource Brush.EightHooks}"
+                                                 BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                 Height="22"
+                                                 Margin="10,5,10,5"
+                                                 VerticalAlignment="Top"
+                                                 DockPanel.Dock="Top"/>
+
+                        <uc:IndicatorProgressBar CurrentValue="{Binding WinRate}" d:CurrentValue="76.92" 
+                                                 MinimumValue="0.0"
+                                                 MaximumValue="100"
+                                                 DisplayedValueType="%"
+                                                 TextValue="Винрейт: "
+                                                 ForegroundProgress="{Binding WinRate, Converter={StaticResource WinRateToColorConverter}}" d:ForegroundProgress="{StaticResource Brush.WinRateSeventyPercent}"
+                                                 BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                 Height="22"
+                                                 Margin="10,5,10,5"
+                                                 DockPanel.Dock="Top"/>
+
+                        <UniformGrid Rows="1" Columns="3">
+
+                            <uc:IndicatorProgressBar CurrentValue="{Binding CountMatchWin}" d:CurrentValue="30" 
+                                                     MinimumValue="0.0"
+                                                     MaximumValue="{Binding CountMatch}"
+                                                     DisplayedValueType=" "
+                                                     TextValue="Выиграно: "
+                                                     ForegroundProgress="{StaticResource Brush.Win}"
+                                                     BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                     Height="22"
+                                                     Margin="10,5,10,5"/>
+
+                            <uc:IndicatorProgressBar CurrentValue="{Binding CountMatchDefeat}" d:CurrentValue="30" 
+                                                     MinimumValue="0.0"
+                                                     MaximumValue="{Binding CountMatch}"
+                                                     DisplayedValueType=" "
+                                                     TextValue="Проиграно: "
+                                                     ForegroundProgress="{StaticResource Brush.Defeat}"
+                                                     BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                     Height="22"
+                                                     Margin="10,5,10,5"/>
+
+                            <uc:IndicatorProgressBar CurrentValue="{Binding CountMatchDraw}" d:CurrentValue="16" 
+                                                     MinimumValue="0.0"
+                                                     MaximumValue="{Binding CountMatch}"
+                                                     DisplayedValueType=" "
+                                                     TextValue="Ничей: "
+                                                     ForegroundProgress="{StaticResource Brush.Draw}"
+                                                     BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                     Height="22"
+                                                     Margin="10,5,10,5"/>
+
+                        </UniformGrid>
+
+                        <UniformGrid Rows="1" Columns="2">
+
+                            <uc:IndicatorProgressBar CurrentValue="{Binding EscapeRate}" d:CurrentValue="76.92" 
+                                                     MinimumValue="0.0"
+                                                     MaximumValue="100"
+                                                     DisplayedValueType="%"
+                                                     TextValue="Побеги (Общие): "
+                                                     ForegroundProgress="Blue" d:ForegroundProgress="Blue"
+                                                     BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                     Height="22"
+                                                     Margin="10,5,10,5"
+                                                     DockPanel.Dock="Top"/>
+
+                            <uc:IndicatorProgressBar CurrentValue="{Binding EscapeRatePersonal}" d:CurrentValue="76.92" 
+                                                     MinimumValue="0.0"
+                                                     MaximumValue="100"
+                                                     DisplayedValueType="%"
+                                                     TextValue="Побеги (Личные): "
+                                                     ForegroundProgress="Blue" d:ForegroundProgress="Blue"
+                                                     BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                     Height="22"
+                                                     Margin="10,5,10,5"
+                                                     DockPanel.Dock="Top"/>
+                        </UniformGrid>
+
+
+                        <uc:IndicatorProgressBar CurrentValue="{Binding PickRate}" d:CurrentValue="14.56" 
+                                                 MinimumValue="0.0"
+                                                 MaximumValue="100" 
+                                                 DisplayedValueType="%"
+                                                 TextValue="Популярность: "
+                                                 ForegroundProgress="{StaticResource Brush.PickRate}"
+                                                 BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                 Height="22"
+                                                 Margin="10,5,10,5"
+                                                 VerticalAlignment="Top"
+                                                 DockPanel.Dock="Top"/>
+
+                        <uc:IndicatorProgressBar CurrentValue="{Binding RecentGenerators}" d:CurrentValue="4" 
+                                                 MinimumValue="0.0" 
+                                                 MaximumValue="5" 
+                                                 DisplayedValueType=""
+                                                 TextValue="Среднее кол-во оставшихся генераторов: "
+                                                 ForegroundProgress="{Binding RecentGenerators, Converter={StaticResource RecentGeneratorToColorConverter}}" d:ForegroundProgress="{StaticResource Brush.FourGenerator}"
+                                                 BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                 Height="22"
+                                                 Margin="10,5,10,5"
+                                                 VerticalAlignment="Top"
+                                                 DockPanel.Dock="Top"/>
+                    </StackPanel>
+
+                </DockPanel>
+
+                <!--#endregion-->
+
+            </DockPanel>
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region Статистика -->
+
+        <TabControl Grid.Row="1"
+                    Style="{StaticResource App.TabControl}"
+                    Margin="10,0,10,10">
+
+            <!--#region Матч -->
+
+            <TabItem Header="Матч">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--#region Лево -->
+
+                        <StackPanel Grid.Column="0" Grid.Row="0">
+
+                            <!--#region Текстовая статистика : Время -->
+
+                            <Border Style="{StaticResource Details.Border.Card}">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+
+                                    <TextBlock Text="Статистика времени"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <WrapPanel Margin="10,10,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="Общее время игры: "    Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Среднее время игры: "  Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Самый долгий матч: "   Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Самый короткий матч: " Style="{StaticResource Details.TextStat.Name}"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding TextStatistic.TotalTimeMatches}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.AverageTimeMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.LongestTimeMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.ShortestTimeMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                        </StackPanel>
+                                    </WrapPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!--#endregion-->
+
+                            <!--#region Текстовая статистика : Ничьи -->
+
+                            <Border Style="{StaticResource Details.Border.Card}">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+
+                                    <TextBlock Text="Статистика ничьей"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <WrapPanel Margin="10,10,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="Серия ничьей: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Самая долгая ничья: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Самая быстрая ничья: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Среднее время ничьей: " Style="{StaticResource Details.TextStat.Name}"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding TextStatistic.SeriesDraws}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.LongestTimeDrawMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.ShortestTimeDrawMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.AverageTimeDrawMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                        </StackPanel>
+                                    </WrapPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!--#endregion-->
+
+                        </StackPanel>
+
+                        <!--#endregion-->
+
+                        <!--#region Центр | На обе колонки -->
+
+                        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" VerticalAlignment="Top">
+
+                            <!--#region Детализация по генераторам -->
+
+                            <Border Style="{StaticResource Details.Border.Card}">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+                                    <TextBlock Text="Оставшиеся генераторы"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <ItemsControl ItemsSource="{Binding DetailsRecentGenerators}"
+                                                  d:ItemsSource="{d:SampleData ItemCount=12}">
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <uc:IndicatorProgressBar CurrentValue="{Binding Value}" MinimumValue="0.0" MaximumValue="100" 
+                                                                         DisplayedValueType="%"
+                                                                         TextValue="{Binding Name}"
+                                                                         ForegroundProgress="{Binding ConverterValue, Converter={StaticResource RecentGeneratorToColorConverter}}"
+                                                                         BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                                         Height="22"
+                                                                         Margin="10,5,10,5"
+                                                                         VerticalAlignment="Top"
+                                                                         DockPanel.Dock="Top"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+
+                                    </ItemsControl>
+
+                                </DockPanel>
+                            </Border>
+
+                            <!--#endregion-->
+
+                        </StackPanel>
+
+                        <!--#endregion-->
+
+                        <!--#region Право -->
+
+                        <StackPanel Grid.Column="2" Grid.Row="0">
+
+                            <!--#region Текстовая статистика : Победы -->
+
+                            <Border Style="{StaticResource Details.Border.Card}">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+
+                                    <TextBlock Text="Статистика побед"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <WrapPanel Margin="10,10,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="Серия побед: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Самая долгая победа: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Самая быстрая победа: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Среднее время победы: " Style="{StaticResource Details.TextStat.Name}"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding TextStatistic.SeriesWins}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.LongestTimeWinMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.ShortestTimeWinMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.AverageTimeWinMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                        </StackPanel>
+                                    </WrapPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!--#endregion-->
+
+                            <!--#region Текстовая статистика : Поражение -->
+
+                            <Border Style="{StaticResource Details.Border.Card}">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+
+                                    <TextBlock Text="Статистика поражений"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <WrapPanel Margin="10,10,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="Серия поражений: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Самое долгое поражение: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Самое быстрое поражение: " Style="{StaticResource Details.TextStat.Name}"/>
+                                            <TextBlock Text="Среднее время поражение: " Style="{StaticResource Details.TextStat.Name}"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding TextStatistic.SeriesDefeats}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.LongestTimeDefeatMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.ShortestTimeDefeatMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                            <TextBlock Text="{Binding TextStatistic.AverageTimeDefeatMatch}"
+                                                       Style="{StaticResource Details.TextStat.Value}"/>
+                                        </StackPanel>
+                                    </WrapPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!--#endregion-->
+
+                        </StackPanel>
+
+                        <!--#endregion-->
+
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <!--#endregion-->
+
+            <!--#region Карта | Измерение -->
+
+            <TabItem Header="Карта | Измерение">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--#region Лево -->
+
+                        <StackPanel Grid.Column="0" Grid.Row="0">
+
+                            <!--#region Кто ставит карты -->
+
+                            <Border Style="{StaticResource Details.Border.Card}">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+                                    <TextBlock Text="Кто ставит карты"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <ItemsControl ItemsSource="{Binding DetailsWhoPlaceMap}"
+                                                  d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <uc:IndicatorProgressBar CurrentValue="{Binding Value}" MinimumValue="0.0" MaximumValue="100" 
+                                                                         DisplayedValueType="%"
+                                                                         TextValue="{Binding Name, StringFormat='{}{0}: '}"
+                                                                         ForegroundProgress="{Binding Name, Converter={StaticResource PlatformToColorConverter}}"
+                                                                         BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                                         Height="22"
+                                                                         Margin="10,5,10,5"
+                                                                         VerticalAlignment="Top"
+                                                                         DockPanel.Dock="Top"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+
+                                    </ItemsControl>
+
+                                </DockPanel>
+                            </Border>
+
+                            <!--#endregion-->
+
+                        </StackPanel>
+
+                        <!--#endregion-->
+
+                        <!--#region Центр | На обе колонки -->
+
+
+
+                        <!--#endregion-->
+
+                        <!--#region Право -->
+
+                        <StackPanel Grid.Column="2" Grid.Row="0">
+
+                            <!--#region Кто ставит карты -->
+
+                            <Border Style="{StaticResource Details.Border.Card}">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+                                    <TextBlock Text="Чьи карты выпадают"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <ItemsControl ItemsSource="{Binding DetailsWhoPlaceMapWin}"
+                                                  d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <uc:IndicatorProgressBar CurrentValue="{Binding Value}" MinimumValue="0.0" MaximumValue="100" 
+                                                                         DisplayedValueType="%"
+                                                                         TextValue="{Binding Name, StringFormat='{}{0}: '}"
+                                                                         ForegroundProgress="{Binding Name, Converter={StaticResource PlatformToColorConverter}}"
+                                                                         BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                                         Height="22"
+                                                                         Margin="10,5,10,5"
+                                                                         VerticalAlignment="Top"
+                                                                         DockPanel.Dock="Top"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+
+                                    </ItemsControl>
+
+                                </DockPanel>
+                            </Border>
+
+                            <!--#endregion-->
+
+                        </StackPanel>
+
+                        <!--#endregion-->
+
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <!--#endregion-->
+
+            <!--#region Киллер -->
+
+            <TabItem Header="Киллер">
+
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--#region Лево -->
+
+                        <StackPanel Grid.Column="0" Grid.Row="0">
+
+                            <!--#region Детализация по киллам -->
+
+                            <Border Style="{StaticResource Details.Border.Card}">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+
+                                    <TextBlock Text="Эффективность убийств"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <ItemsControl ItemsSource="{Binding DetailsKills}"
+                                                  d:ItemsSource="{d:SampleData ItemCount=5}">
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <uc:IndicatorProgressBar CurrentValue="{Binding Value}" MinimumValue="0.0" MaximumValue="100"
+                                                                         DisplayedValueType="%"
+                                                                         TextValue="{Binding Name}"
+                                                                         ForegroundProgress="{Binding ConverterValue, Converter={StaticResource KIllRateToColorConverter}}"
+                                                                         BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                                         Height="22"
+                                                                         Margin="10,5,10,5"
+                                                                         VerticalAlignment="Top"
+                                                                         DockPanel.Dock="Top"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+
+                                    </ItemsControl>
+
+                                </DockPanel>
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Копировать данные"/>
+                                        <MenuItem Header="Сохранить">
+                                            <MenuItem Header="Word"/>
+                                            <MenuItem Header="PDF"/>
+                                            <MenuItem Header="Текст"/>
+                                        </MenuItem>
+                                        <MenuItem Header="Список матчей">
+                                            <MenuItem Header="С 0 убийствами"/>
+                                            <MenuItem Header="С 1 убийствами"/>
+                                            <MenuItem Header="С 2 убийствами"/>
+                                            <MenuItem Header="С 3 убийствами"/>
+                                            <MenuItem Header="С 4 убийствами"/>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
+                            </Border>
+
+                            <!--#endregion-->
+
+                        </StackPanel>
+
+                        <!--#endregion-->
+
+                        <!--#region Центр | На обе колонки -->
+
+
+                        <!--#endregion-->
+
+                        <!--#region Право -->
+
+                        <StackPanel Grid.Column="2" Grid.Row="0">
+
+                            <!--#region Детализация по повесам -->
+
+                            <Border Style="{StaticResource Details.Border.Card}" Height="Auto">
+                                <DockPanel Style="{StaticResource Details.Content.Card}">
+                                    <TextBlock Text="Эффективность стадий"
+                                               Style="{StaticResource Details.Header.Card}"
+                                               DockPanel.Dock="Top"/>
+
+                                    <Separator DockPanel.Dock="Top" Style="{StaticResource Details.Separator.Card}"/>
+
+                                    <ItemsControl ItemsSource="{Binding DetailsHooks}"
+                                                  d:ItemsSource="{d:SampleData ItemCount=12}">
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <uc:IndicatorProgressBar CurrentValue="{Binding Value}" MinimumValue="0.0" MaximumValue="100"
+                                                                         DisplayedValueType="%"
+                                                                         TextValue="{Binding Name}"
+                                                                         ForegroundProgress="{Binding ConverterValue, Converter={StaticResource HookRateToColorConverter}}"
+                                                                         BackgroundProgressBar="{StaticResource Brush.ProgressBar.Background}"
+                                                                         Height="22"
+                                                                         Margin="10,5,10,5"
+                                                                         VerticalAlignment="Top"
+                                                                         DockPanel.Dock="Top"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+
+                                    </ItemsControl>
+
+                                </DockPanel>
+                            </Border>
+
+                            <!--#endregion-->
+
+                        </StackPanel>
+
+                        <!--#endregion-->
+
+                    </Grid>
+                </ScrollViewer>
+
+            </TabItem>
+
+            <!--#endregion-->
+
+        </TabControl>
+
+        <!--#endregion-->
+
+    </Grid>
+</Page>
