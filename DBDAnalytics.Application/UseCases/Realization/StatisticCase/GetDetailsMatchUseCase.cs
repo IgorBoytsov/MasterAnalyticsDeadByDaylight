@@ -10,7 +10,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.StatisticCase
     {
         private readonly IDetailsMatchRepository _killStatsRepository = killStatsRepository;
 
-        public async Task<(List<DetailsMatchDTO> KillerDetails, int TotalMatches)> GetDetailsMatch(int idEntity, Associations associations, FilterParameter filterParameter)
+        public async Task<(List<DetailsMatchDTO> DetailsMatches, int TotalMatches)> GetDetailsMatch(int idEntity, Associations associations, FilterParameter filterParameter)
         {
             var (KillerDetails, TotalMatch) = await _killStatsRepository.GetDetailsMatch(idEntity, associations, filterParameter);
 
@@ -19,7 +19,7 @@ namespace DBDAnalytics.Application.UseCases.Realization.StatisticCase
             return (dto.ToList(), TotalMatch);
         } 
         
-        public async Task<(List<DetailsMatchDTO> KillerDetails, int TotalMatches)> GetDetailsMatch(List<int> idsMatches)
+        public async Task<(List<DetailsMatchDTO> DetailsMatches, int TotalMatches)> GetDetailsMatch(List<int> idsMatches)
         {
             var (KillerDetails, TotalMatch) = await _killStatsRepository.GetDetailsMatch(idsMatches);
 
