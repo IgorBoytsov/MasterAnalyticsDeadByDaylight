@@ -68,6 +68,16 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
+
+    <!--#endregion-->
+
+    <!--#region ToolTip -->
+
+    <Style x:Key="StatusMatchToolTip" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
     
     <!--#endregion-->
 
