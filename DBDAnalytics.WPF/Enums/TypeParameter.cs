@@ -8,5 +8,8 @@
         DeleteAndNotification,
 
         Killers,
+
+        Maps,
+        Measurement,
     }
 }
