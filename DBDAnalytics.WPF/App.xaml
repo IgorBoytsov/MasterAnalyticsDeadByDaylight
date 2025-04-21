@@ -24,6 +24,9 @@
                 <ResourceDictionary Source="Assets\Brushes\StatisticsBrushes.xaml"/>
                 <ResourceDictionary Source="Assets\Brushes\TextBrushes.xaml"/>
 
+                <ResourceDictionary Source="Assets\PathElements\CheckMark.xaml"/>
+                <ResourceDictionary Source="Assets\PathElements\Arrows.xaml"/>
+
                 <ResourceDictionary Source="Assets\StylesAndTemplates\BorderStyle.xaml"/>
                 <ResourceDictionary Source="Assets\StylesAndTemplates\ButtonStyle.xaml"/>
                 <ResourceDictionary Source="Assets\StylesAndTemplates\CheckBoxStyle.xaml"/>
