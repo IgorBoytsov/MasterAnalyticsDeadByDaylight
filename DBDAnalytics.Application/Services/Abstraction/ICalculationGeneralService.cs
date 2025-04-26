@@ -16,28 +16,29 @@ namespace DBDAnalytics.Application.Services.Abstraction
         public List<LabeledValue> DayOrWeekActivity(List<DetailsMatchDTO> matches);
         public List<LabeledValue> MonthlyActivity(List<DetailsMatchDTO> matches);
 
-        List<LoadoutPopularity> CalculatePopularity<TCollectionItem>(
-            List<DetailsMatchDTO> matches,
-            List<TCollectionItem> items,
-            Func<DetailsMatchDTO, TCollectionItem, bool> matchPredicate,
+        public List<LoadoutPopularity> CalculatePopularity<TDataSource, TCollectionItem>(
+            List<TDataSource> dataSourceItems,
+            List<TCollectionItem> itemsToAnalyze,
+            Func<TDataSource, TCollectionItem, bool> itemUsagePredicate,
             Func<TCollectionItem, string> nameSelector,
             Func<TCollectionItem, byte[]?> imageSelector,
-            Func<DetailsMatchDTO, bool> countPredicate);
+            Func<TDataSource, bool> winPredicate);
 
-        public List<DoubleAddonsPopularity<TAddon>> DoubleAddonPopularity<TAddon>(
-            List<DetailsMatchDTO> matches,
-            List<TAddon> addons,
-            Func<int, TAddon> addonSelector,
-            Func<DetailsMatchDTO, (int? FirstAddonID, int? SecondAddonID)> idAddonSelector,
-            Func<(int FirstAddonID, int SecondAddonID), Func<DetailsMatchDTO, bool>> createCountPredicate,
-            Func<DetailsMatchDTO, bool> rulesForWinPredicate) where TAddon : class;
+        public List<DoubleAddonsPopularity<TItem>> DoubleItemPopularity<TDataSource, TItem>(
+          List<TDataSource> dataSourceItems,
+          List<TItem> allItems,
+          Func<int, TItem?> itemSelectorById,
+          Func<TDataSource, (int? FirstItemID, int? SecondItemID)> idPairSelectorFromDataSource, 
+          Func<(int FirstItemID, int SecondItemID), Func<TDataSource, bool>> createCountPredicate,
+          Func<TDataSource, bool> winPredicate)
+          where TItem : class;
 
-        public List<QuadruplePerksPopularity<TPerk>> QuadruplePerkPopularity<TPerk>(
-            List<DetailsMatchDTO> matches,
-            List<TPerk> perks,
-            Func<int, TPerk> perkSelector,
-            Func<DetailsMatchDTO, (int? FirstPerkID, int? SecondPerkID, int? ThirdPerkID, int? FourthPerkID)> idPerkSelector,
-            Func<(int FirstPerkID, int SecondPerkID, int ThirdPerkID, int FourthPerkID), Func<DetailsMatchDTO, bool>> createCountPredicate,
-            Func<DetailsMatchDTO, bool> rulesForFilteringWinRatePredicate) where TPerk : class;
+        public List<QuadruplePerksPopularity<TItem>> QuadrupleItemPopularity<TDataSource, TItem>(
+            List<TDataSource> dataSourceItems,
+            List<TItem> allPerks,
+            Func<int, TItem> itemSelectorById,
+            Func<TDataSource, (int? FirstItemID, int? SecondItemID, int? ThirdItemID, int? FourthItemID)> idItemSelectorFromDataSource,
+            Func<(int FirstItemID, int SecondItemID, int ThirdItemID, int FourthItemID), Func<TDataSource, bool>> createCountPredicate,
+            Func<TDataSource, bool> winPredicate) where TItem : class;
     }
 }

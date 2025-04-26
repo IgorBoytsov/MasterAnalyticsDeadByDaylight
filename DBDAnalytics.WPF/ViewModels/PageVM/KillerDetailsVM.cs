@@ -842,12 +842,12 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
         {
             KillerAddonPopularity.Clear();
 
-            var list = _calculationGeneralService.CalculatePopularity(
+            var list = _calculationGeneralService.CalculatePopularity<DetailsMatchDTO, KillerAddonDTO>(
                 _killerDetails,
                 _killerAddons,
                 (match, addon) => match.KillerDTO.FirstAddonID == addon.IdKillerAddon || match.KillerDTO.SecondAddonID == addon.IdKillerAddon,
                 addon => addon.AddonName,
-                addon => addon.AddonImage,
+                addon => addon.AddonImage ,
                 match => match.CountKill > 2);
 
             foreach (var item in list)
@@ -860,16 +860,29 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
         {
             KillerDoubleAddonPopularity.Clear();
 
-            var list = _calculationGeneralService.DoubleAddonPopularity(
-                _killerDetails, _killerAddons,
-                addon => _killerAddons.FirstOrDefault(x => x.IdKillerAddon == addon),
-                idAddonSelector => (idAddonSelector.KillerDTO.FirstAddonID, idAddonSelector.KillerDTO.SecondAddonID),
+            var list = _calculationGeneralService.DoubleItemPopularity<DetailsMatchDTO, KillerAddonDTO>(
+                _killerDetails,
+                _killerAddons,
+                addonId => _killerAddons.FirstOrDefault(a => a.IdKillerAddon == addonId),
+                match => (match.KillerDTO?.FirstAddonID, match.KillerDTO?.SecondAddonID),
                 pairKey =>
                 {
-                    return match => (match.KillerDTO?.FirstAddonID == pairKey.FirstAddonID && match.KillerDTO?.SecondAddonID == pairKey.SecondAddonID) ||
-                                    (match.KillerDTO?.FirstAddonID == pairKey.SecondAddonID && match.KillerDTO?.SecondAddonID == pairKey.FirstAddonID);
+                    return match =>
+                    {
+                        if (match.KillerDTO == null || !match.KillerDTO.FirstAddonID.HasValue || !match.KillerDTO.SecondAddonID.HasValue)
+                            return false; 
+
+                        int firstAddonId = match.KillerDTO.FirstAddonID.Value;
+                        int secondAddonId = match.KillerDTO.SecondAddonID.Value;
+
+                        int minAddonId = Math.Min(firstAddonId, secondAddonId);
+                        int maxAddonId = Math.Max(firstAddonId, secondAddonId);
+
+                        return minAddonId == pairKey.FirstItemID && maxAddonId == pairKey.SecondItemID;
+                    };
                 },
-                win => win.CountKill > 2);
+                match => match.CountKill > 2
+            );
 
             foreach (var item in list.OrderByDescending(x => x.Count))
                 KillerDoubleAddonPopularity.Add(item);
@@ -881,62 +894,62 @@ namespace DBDAnalytics.WPF.ViewModels.PageVM
         {
             KillerQuadruplePerkPopularity.Clear();
 
-            var list = _calculationGeneralService.QuadruplePerkPopularity(
-                _killerDetails, _killerPerks,
-                perk => _killerPerks.FirstOrDefault(x => x.IdKillerPerk == perk),
-                idPerkSelector => (idPerkSelector.KillerDTO.FirstPerkID, idPerkSelector.KillerDTO.SecondPerkID, idPerkSelector.KillerDTO.ThirdPerkID, idPerkSelector.KillerDTO.FourthPerkID),
-                 comboKey =>
-                 {
-                     return match =>
-                     {
-                         var matchPerks = new List<int?>();
-                         if (match.KillerDTO != null)
-                         {
-                             matchPerks.Add(match.KillerDTO.FirstPerkID);
-                             matchPerks.Add(match.KillerDTO.SecondPerkID);
-                             matchPerks.Add(match.KillerDTO.ThirdPerkID);
-                             matchPerks.Add(match.KillerDTO.FourthPerkID);
-                         }
-                         else
-                             return false;
+            var list = _calculationGeneralService.QuadrupleItemPopularity<DetailsMatchDTO, KillerPerkDTO>(
+                _killerDetails,
+                _killerPerks,
+                perkId => _killerPerks.FirstOrDefault(x => x.IdKillerPerk == perkId),
+                match => (match.KillerDTO?.FirstPerkID, match.KillerDTO?.SecondPerkID, match.KillerDTO?.ThirdPerkID, match.KillerDTO?.FourthPerkID),
+                comboKey => 
+                {
+                    return match =>
+                    {
+                        if (match.KillerDTO == null) 
+                            return false;
 
-                         if (matchPerks.Any(id => !id.HasValue))
-                             return false;
+                        var matchPerks = new List<int?>
+                        {
+                            match.KillerDTO.FirstPerkID,
+                            match.KillerDTO.SecondPerkID,
+                            match.KillerDTO.ThirdPerkID,
+                            match.KillerDTO.FourthPerkID
+                        };
 
-                         var matchPerkIdsSet = matchPerks.Select(id => id!.Value).ToHashSet();
+                        if (matchPerks.Any(id => !id.HasValue))
+                            return false;
 
-                         var targetPerkIdsSet = new HashSet<int> { comboKey.FirstPerkID, comboKey.SecondPerkID, comboKey.ThirdPerkID, comboKey.FourthPerkID };
+                        var matchPerkIdsSet = matchPerks.Select(id => id!.Value).ToHashSet();
 
-                         return matchPerkIdsSet.Count == 4 && targetPerkIdsSet.SetEquals(matchPerkIdsSet);
+                        var targetPerkIdsSet = new HashSet<int> { comboKey.FirstItemID, comboKey.SecondItemID, comboKey.ThirdItemID, comboKey.FourthItemID };
 
-                         //var matchPerkIdsList = matchPerks.Select(id => id!.Value).ToList();
-                         //matchPerkIdsList.Sort();
-                         //return matchPerkIdsList.Count == 4 &&
-                         //       matchPerkIdsList[0] == comboKey.FirstPerkID &&
-                         //       matchPerkIdsList[1] == comboKey.SecondPerkID &&
-                         //       matchPerkIdsList[2] == comboKey.ThirdPerkID &&
-                         //       matchPerkIdsList[3] == comboKey.FourthPerkID;
-                     };
-                 },
-                win => win.CountKill > 2);
+                        return matchPerkIdsSet.Count == 4 && targetPerkIdsSet.SetEquals(matchPerkIdsSet);
+                    };
+                },
+                match => match.CountKill > 2
+            );
 
             foreach (var item in list.OrderByDescending(x => x.Count))
                 KillerQuadruplePerkPopularity.Add(item);
 
-            //SelectedDoubleKillerAddonsPopularity = KillerDoubleAddonPopularity.FirstOrDefault();
+            SelectedDoubleKillerAddonsPopularity = KillerDoubleAddonPopularity.FirstOrDefault();
         }
 
         private void KillerPerkPopularityStats()
         {
             KillerPerkPopularity.Clear();
 
-            var list = _calculationGeneralService.CalculatePopularity(
+            var list = _calculationGeneralService.CalculatePopularity<DetailsMatchDTO, KillerPerkDTO>(
                 _killerDetails,
-                _getKillerPerkUseCase.GetAll(),
-                (match, perk) => match.KillerDTO.FirstPerkID == perk.IdKillerPerk || match.KillerDTO.SecondPerkID == perk.IdKillerPerk || match.KillerDTO.ThirdPerkID == perk.IdKillerPerk || match.KillerDTO.FourthPerkID == perk.IdKillerPerk,
+                _killerPerks,
+                (match, perk) => 
+                    match.KillerDTO != null &&
+                    (match.KillerDTO.FirstPerkID == perk.IdKillerPerk ||
+                     match.KillerDTO.SecondPerkID == perk.IdKillerPerk ||
+                     match.KillerDTO.ThirdPerkID == perk.IdKillerPerk ||
+                     match.KillerDTO.FourthPerkID == perk.IdKillerPerk),
                 perk => perk.PerkName,
                 perk => perk.PerkImage,
-                match => match.CountKill > 2);
+                match => match.CountKill > 2 
+            );
 
             foreach (var item in list)
                 KillerPerkPopularity.Add(item);

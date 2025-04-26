@@ -1,11 +1,10 @@
 ﻿using DBDAnalytics.Application.ApplicationModels.CalculationModels;
-using DBDAnalytics.Application.DTOs;
 using DBDAnalytics.Application.DTOs.DetailsDTOs;
 using DBDAnalytics.Application.Enums;
 using DBDAnalytics.Application.Services.Abstraction;
 using DBDAnalytics.Domain.Constants;
+using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 
 namespace DBDAnalytics.Application.Services.Realization
 {
@@ -503,38 +502,49 @@ namespace DBDAnalytics.Application.Services.Realization
 
         /*--Расчеты популярности--------------------------------------------------------------------------*/
 
-        public List<LoadoutPopularity> CalculatePopularity<TCollectionItem>(
-            List<DetailsMatchDTO> matches,
-            List<TCollectionItem> items,
-            Func<DetailsMatchDTO, TCollectionItem, bool> matchPredicate,
+        /// <summary>
+        /// Рассчитывает популярность отдельных элементов (например, перков, аддонов, предметов) на основе списка данных.
+        /// </summary>
+        /// <typeparam name="TDataSource">Тип элемента в исходном списке данных (например, DetailsMatchDTO, DetailsMatchSurvivorDTO).</typeparam>
+        /// <typeparam name="TCollectionItem">Тип анализируемого элемента (например, KillerPerk, SurvivorAddon).</typeparam>
+        /// <param name="dataSourceItems">Список исходных данных для расчетов.</param>
+        /// <param name="itemsToAnalyze">Список элементов, популярность которых нужно рассчитать.</param>
+        /// <param name="itemUsagePredicate">Функция, определяющая, используется ли данный элемент TCollectionItem в данном элементе TDataSource.</param>
+        /// <param name="nameSelector">Селектор для получения имени элемента TCollectionItem.</param>
+        /// <param name="imageSelector">Селектор для получения изображения элемента TCollectionItem.</param>
+        /// <param name="winPredicate">Предикат для определения "победы" для элемента TDataSource (используется для расчета WinRate).</param>
+        /// <returns>Список объектов LoadoutPopularity с рассчитанной статистикой для каждого элемента TCollectionItem.</returns>
+        public List<LoadoutPopularity> CalculatePopularity<TDataSource, TCollectionItem>(
+            List<TDataSource> dataSourceItems,
+            List<TCollectionItem> itemsToAnalyze,
+            Func<TDataSource, TCollectionItem, bool> itemUsagePredicate,
             Func<TCollectionItem, string> nameSelector,
             Func<TCollectionItem, byte[]?> imageSelector,
-            Func<DetailsMatchDTO, bool> countPredicate)
+            Func<TDataSource, bool> winPredicate)
         {
-            if (matches == null || items == null)
+            if (dataSourceItems == null || itemsToAnalyze == null)
                 return [];
 
-            var totalMatchesCount = matches.Count;
-            if (totalMatchesCount == 0)
+            var totalDataSourceItemsCount = dataSourceItems.Count;
+            if (totalDataSourceItemsCount == 0)
                 return [];
 
-            var result = items.Select(item =>
+            var result = itemsToAnalyze.Select(item =>
             {
-                var itemMatches = matches
-                    .Where(match => matchPredicate(match, item))
+                var dataSourceItemsWithThisItem = dataSourceItems
+                    .Where(dataItem => itemUsagePredicate(dataItem, item))
                     .ToList();
 
-                var itemWinMatchesCount = itemMatches.Count(match => countPredicate(match));
-                var itemMatchesCount = itemMatches.Count;
-
-                double pickRate = Percentage(itemMatchesCount, totalMatchesCount);
-                double winRateContributionToAll = Percentage(itemWinMatchesCount, totalMatchesCount);
-                double winRateWhenPicked = itemMatchesCount > 0 ? Percentage(itemWinMatchesCount, itemMatchesCount) : 0.0;
+                var winCountWithThisItem = dataSourceItemsWithThisItem.Count(dataItem => winPredicate(dataItem));
+                var pickCountForItem = dataSourceItemsWithThisItem.Count;
+                double pickRate = Percentage(pickCountForItem, totalDataSourceItemsCount);
+                double winRateContributionToAll = Percentage(winCountWithThisItem, totalDataSourceItemsCount);
+                double winRateWhenPicked = pickCountForItem > 0 ? Percentage(winCountWithThisItem, pickCountForItem) : 0.0;
 
                 string itemName = nameSelector(item);
                 byte[]? itemImage = imageSelector(item);
 
-                return _creatingApplicationModelsService.CreatedLoadoutPopularity(itemName, itemImage, itemWinMatchesCount, itemMatchesCount, pickRate, winRateContributionToAll, winRateWhenPicked);
+                return _creatingApplicationModelsService.CreatedLoadoutPopularity(itemName, itemImage, winCountWithThisItem, pickCountForItem, pickRate, winRateContributionToAll, winRateWhenPicked);
             })
             .OrderByDescending(x => x.PickRate)
             .ToList();
@@ -542,118 +552,171 @@ namespace DBDAnalytics.Application.Services.Realization
             return result;
         }
 
-        public List<DoubleAddonsPopularity<TAddon>> DoubleAddonPopularity<TAddon>(
-            List<DetailsMatchDTO> matches, 
-            List<TAddon> addons, 
-            Func<int, TAddon> addonSelector, 
-            Func<DetailsMatchDTO,(int? FirstAddonID, int? SecondAddonID)> idAddonSelector,
-            Func<(int FirstAddonID, int SecondAddonID), Func<DetailsMatchDTO, bool>> createCountPredicate,
-            Func<DetailsMatchDTO, bool> rulesForFilteringWinRatePredicate) where TAddon : class
+        /// <summary>
+        /// Рассчитывает популярность комбинаций из двух "аддонов" (или других парных элементов).
+        /// </summary>
+        /// <typeparam name="TDataSource">Тип элемента в исходном списке данных (например, DetailsMatchDTO).</typeparam>
+        /// <typeparam name="TItem">Тип объекта (или парного элемента).</typeparam>
+        /// <param name="dataSourceItems">Список исходных данных для анализа.</param>
+        /// <param name="allItems">Полный список всех возможных предметов данного типа. (К примеру : Аддоны аптечки, улучшения киллера)</param>
+        /// <param name="itemSelectorById">Селектор для получения объекта предмета по его ID.</param>
+        /// <param name="idPairSelectorFromDataSource">Функция для извлечения кортежа состоящего из двух ID предмета из элемента TDataSource.</param>
+        /// <param name="createCountPredicate">Предикат, принимающий отсортированный кортеж ID предметов и возвращает предикат для подсчета совпадений в TDataSource.</param>
+        /// <param name="winPredicate">Предикат для определения "победы" для элемента TDataSource (используется для расчета WinRate).</param>
+        /// <returns>Список объектов DoubleAddonsPopularity с рассчитанной парой и их краткой статистикой.</returns>
+        public List<DoubleAddonsPopularity<TItem>> DoubleItemPopularity<TDataSource, TItem>(
+            List<TDataSource> dataSourceItems,
+            List<TItem> allItems,
+            Func<int, TItem?> itemSelectorById,
+            Func<TDataSource, (int? FirstItemID, int? SecondItemID)> idPairSelectorFromDataSource,
+            Func<(int FirstItemID, int SecondItemID), Func<TDataSource, bool>> createCountPredicate,
+            Func<TDataSource, bool> winPredicate) where TItem : class
         {
-            var rawAddonPairs = matches.Select(x => idAddonSelector(x));
+            if (dataSourceItems == null || dataSourceItems.Count == 0 || allItems == null)
+                return [];
 
-            var normalizedPairs = rawAddonPairs.Where(pair => pair.FirstAddonID.HasValue && pair.SecondAddonID.HasValue)
+            var rawItemPairs = dataSourceItems.Select(item => idPairSelectorFromDataSource(item));
+
+            var normalizedPairs = rawItemPairs
+                .Where(pair => pair.FirstItemID.HasValue && pair.SecondItemID.HasValue)
                 .Select(pair =>
                 {
-                    // Ставим '!' перед .Value, означает, что мы сообщаем компилятору, что мы уверенны в том, что тут не будет null. Т.к была использована фильтрация с помощью Where.
-                    int id1 = pair.FirstAddonID!.Value;
-                    int id2 = pair.SecondAddonID!.Value;
+                    int id1 = pair.FirstItemID!.Value;
+                    int id2 = pair.SecondItemID!.Value;
 
-                    //return id1 <= id2 ? (Addon1: id1, Addon2: id2) : (Addon1: id2, Addon2: id1);
-                    return (FirstAddonID: Math.Min(id1, id2), SecondAddonID: Math.Max(id1, id2));
+                    return (FirstItemID: Math.Min(id1, id2), SecondItemID: Math.Max(id1, id2));
                 });
 
-            var pairCounts = normalizedPairs.GroupBy(pair => pair).ToDictionary(group => group.Key,group => group.Count());
+            var pairCounts = normalizedPairs
+                .GroupBy(pair => pair)
+                .ToDictionary(group => group.Key, group => group.Count());
 
-            List<DoubleAddonsPopularity<TAddon>> doubleAddons = pairCounts.Select(pair =>
+            List<DoubleAddonsPopularity<TItem>> doubleItemStats = pairCounts.Select(kvp =>
             {
-                Func<DetailsMatchDTO, bool> countPredicate = createCountPredicate(pair.Key);
+                var pairKey = kvp.Key;
+                var countForThisPair = kvp.Value;
 
-                var firstAddon = addonSelector(pair.Key.FirstAddonID);
-                var secondAddon = addonSelector(pair.Key.SecondAddonID);
-                var count = pair.Value;
+                Func<TDataSource, bool> countPredicate = createCountPredicate(pairKey);
 
-                var totalMatchesCount = matches.Count;
-                var matchesWithThisPairCount = matches.Count(match => countPredicate(match));
-                var wonMatchesWithThisPairCount = matches.Where(x => rulesForFilteringWinRatePredicate(x)).Count(x => countPredicate(x));
+                var firstItem = itemSelectorById(pairKey.FirstItemID);
+                var secondItem = itemSelectorById(pairKey.SecondItemID);
 
-                var pickRate = Percentage(count, totalMatchesCount);
+                if (firstItem == null || secondItem == null)
+                {
+                    Console.WriteLine($"Предупреждение: Не удалось найти все улучшение для комбинированных идентификаторов {pairKey.FirstItemID}, {pairKey.SecondItemID}. Пропущенная пара.");
+                    return null;
+                }
+
+                var totalDataSourceItemsCount = dataSourceItems.Count;
+                var matchesWithThisPairCount = dataSourceItems.Count(dataItem => countPredicate(dataItem));
+                var wonMatchesWithThisPairCount = dataSourceItems.Where(dataItem => winPredicate(dataItem)).Count(dataItem => countPredicate(dataItem));
+                var pickRate = Percentage(countForThisPair, totalDataSourceItemsCount);
                 var winRate = Percentage(wonMatchesWithThisPairCount, matchesWithThisPairCount);
 
-                return new DoubleAddonsPopularity<TAddon>
+                return new DoubleAddonsPopularity<TItem>
                 {
-                    FirstAddon = firstAddon,
-                    SecondAddon = secondAddon,
-                    Count = count,
+                    FirstAddon = firstItem, 
+                    SecondAddon = secondItem,
+                    Count = countForThisPair,
                     PickRate = pickRate,
                     WinRate = winRate
                 };
+            })
+            .Where(result => result != null)
+            .Select(result => result!)  
+            .OrderByDescending(x => x.Count)
+            .ToList();
 
-            }).ToList();
-
-            return doubleAddons;
+            return doubleItemStats;
         }
 
-        public List<QuadruplePerksPopularity<TPerk>> QuadruplePerkPopularity<TPerk>(
-            List<DetailsMatchDTO> matches,
-            List<TPerk> perks,
-            Func<int, TPerk> perkSelector,
-            Func<DetailsMatchDTO, (int? FirstPerkID, int? SecondPerkID, int? ThirdPerkID, int? FourthPerkID)> idPerkSelector,
-            Func<(int FirstPerkID, int SecondPerkID, int ThirdPerkID, int FourthPerkID), Func<DetailsMatchDTO, bool>> createCountPredicate,
-            Func<DetailsMatchDTO, bool> rulesForFilteringWinRatePredicate) where TPerk : class
+        /// <summary>
+        /// Рассчитывает популярность комбинаций из четырех перков.
+        /// </summary>
+        /// <typeparam name="TDataSource">Исходный тип данных списка (например, DetailsMatchDTO или DetailsMatchSurvivorDTO).</typeparam>
+        /// <typeparam name="TItem">Тип объекта перка.</typeparam>
+        /// <param name="dataSourceItems">Список исходных данных для расчета.</param>
+        /// <param name="allItems">Полный список всех возможных предметов данного типа. (К примеру : Перки киллера, выжившего)</param>
+        /// <param name="itemSelectorById">Селектор для получения объекта предмета по его ID.</param>
+        /// <param name="idItemSelectorFromDataSource">Функция для извлечения кортежа состоящего из четырех ID предметов из TDataSource.</param>
+        /// <param name="createCountPredicate">Предикат, принимающий отсортированный кортеж ID предметов и проверяет подсчет совпадений в TDataSource.</param>
+        /// <param name="winPredicate">Предикат для определения "победы" для элемента TDataSource.</param>
+        /// <returns>Список объектов QuadruplePerksPopularity с рассчитанными комбинациями билдов и их краткой статистиков.</returns>
+        public List<QuadruplePerksPopularity<TItem>> QuadrupleItemPopularity<TDataSource, TItem>(
+            List<TDataSource> dataSourceItems,
+            List<TItem> allItems,
+            Func<int, TItem> itemSelectorById,
+            Func<TDataSource, (int? FirstItemID, int? SecondItemID, int? ThirdItemID, int? FourthItemID)> idItemSelectorFromDataSource,
+            Func<(int FirstItemID, int SecondItemID, int ThirdItemID, int FourthItemID), Func<TDataSource, bool>> createCountPredicate,
+            Func<TDataSource, bool> winPredicate) where TItem : class
         {
-            var rawPerkCombos = matches.Select(x => idPerkSelector(x));
+            if (dataSourceItems == null || dataSourceItems.Count == 0)
+                return [];
 
-            var normalizedCombos = rawPerkCombos.Where(combo => combo.FirstPerkID.HasValue && combo.SecondPerkID.HasValue && combo.ThirdPerkID.HasValue && combo.FourthPerkID.HasValue)
+            var rawPerkCombos = dataSourceItems.Select(item => idItemSelectorFromDataSource(item));
+
+            var normalizedCombos = rawPerkCombos
+                .Where(combo => combo.FirstItemID.HasValue && combo.SecondItemID.HasValue && combo.ThirdItemID.HasValue && combo.FourthItemID.HasValue)
                 .Select(combo =>
                 {
-                    int[] ids = 
+                    int[] ids =
                     [
-                        combo.FirstPerkID!.Value,
-                        combo.SecondPerkID!.Value,
-                        combo.ThirdPerkID!.Value,
-                        combo.FourthPerkID!.Value
+                        combo.FirstItemID!.Value,
+                        combo.SecondItemID!.Value,
+                        combo.ThirdItemID!.Value,
+                        combo.FourthItemID!.Value
                     ];
 
                     Array.Sort(ids);
 
-                    return (FirstPerkID: ids[0], SecondPerkID: ids[1], ThirdPerkID: ids[2], FourthPerkID: ids[3]);
+                    return (FirstItemID: ids[0], SecondItemID: ids[1], ThirdItemID: ids[2], FourthItemID: ids[3]);
                 });
 
-            var comboCounts = normalizedCombos.GroupBy(combo => combo).ToDictionary(group => group.Key, group => group.Count());
+            var comboCounts = normalizedCombos
+                .GroupBy(combo => combo)
+                .ToDictionary(group => group.Key, group => group.Count());
 
-            List<QuadruplePerksPopularity<TPerk>> quadruplePerks = comboCounts.Select(kvp =>
+            List<QuadruplePerksPopularity<TItem>> quadrupleItems = comboCounts.Select(kvp =>
             {
                 var comboKey = kvp.Key;
-                var count = kvp.Value;
+                var countForThisCombo = kvp.Value;
 
-                Func<DetailsMatchDTO, bool> countPredicate = createCountPredicate(comboKey);
+                Func<TDataSource, bool> countPredicate = createCountPredicate(comboKey);
 
-                var firstPerk = perkSelector(comboKey.FirstPerkID);
-                var secondPerk = perkSelector(comboKey.SecondPerkID);
-                var thirdPerk = perkSelector(comboKey.ThirdPerkID);
-                var fourthPerk = perkSelector(comboKey.FourthPerkID);
+                var firstItem = itemSelectorById(comboKey.FirstItemID);
+                var secondItem = itemSelectorById(comboKey.SecondItemID);
+                var thirdItem = itemSelectorById(comboKey.ThirdItemID);
+                var fourthItem = itemSelectorById(comboKey.FourthItemID);
 
-                var totalMatchesCount = matches.Count;
-                var matchesWithThisComboCount = matches.Count(match => countPredicate(match)); 
-                var wonMatchesWithThisComboCount = matches.Where(x => rulesForFilteringWinRatePredicate(x)).Count(x => countPredicate(x)); 
-                var pickRate = Percentage(count, totalMatchesCount); 
-                var winRate = Percentage(wonMatchesWithThisComboCount, matchesWithThisComboCount);
-
-                return new QuadruplePerksPopularity<TPerk>
+                if (firstItem == null || secondItem == null || thirdItem == null || fourthItem == null)
                 {
-                    FirstPerk = firstPerk,
-                    SecondPerk = secondPerk,
-                    ThirdPerk = thirdPerk,
-                    FourthPerk = fourthPerk,
-                    Count = count,
+                    Debug.WriteLine($"Предупреждение: Не удалось найти все перки для комбинированных идентификаторов {comboKey.FirstItemID}, {comboKey.SecondItemID}, {comboKey.ThirdItemID}, {comboKey.FourthItemID}. Пропущенное комбо.");
+                    return null;
+                }
+
+                var totalDataSourceItemsCount = dataSourceItems.Count;
+                var itemsWithThisComboCount = dataSourceItems.Count(item => countPredicate(item));
+                var wonItemsWithThisComboCount = dataSourceItems.Where(item => winPredicate(item)).Count(item => countPredicate(item));
+                var pickRate = Percentage(countForThisCombo, totalDataSourceItemsCount);
+                var winRate = Percentage(wonItemsWithThisComboCount, itemsWithThisComboCount);
+
+                return new QuadruplePerksPopularity<TItem>
+                {
+                    FirstPerk = firstItem,
+                    SecondPerk = secondItem,
+                    ThirdPerk = thirdItem,
+                    FourthPerk = fourthItem,
+                    Count = countForThisCombo,
                     PickRate = pickRate,
                     WinRate = winRate
                 };
 
-            }).ToList();
+            })
+           .Where(result => result != null)
+           .Select(result => result!)
+           .ToList();
 
-            return quadruplePerks;
+            return quadrupleItems;
         }
 
         /*--Проверки--------------------------------------------------------------------------------------*/
@@ -662,27 +725,3 @@ namespace DBDAnalytics.Application.Services.Realization
         
     }
 }
-
-//public List<LoadoutPopularity> PopularityKillerAddon(List<DetailsMatchDTO> matches, List<KillerAddonDTO> addons)
-//{
-//    var result = addons.Select(addon =>
-//    {
-//        var addonMatches = matches
-//            .Where(x => x.KillerDTO.FirstAddonID == addon.IdKillerAddon || x.KillerDTO.SecondAddonID == addon.IdKillerAddon)
-//            .ToList();
-
-//        var addonWinMatchesCount = addonMatches.Count(x => x.CountKill > 2);
-//        var totalMatchesCount = matches.Count;
-//        var addonMatchesCount = addonMatches.Count;
-
-//        double pickRate = _calculatorGeneralService.Percentage(addonMatchesCount, totalMatchesCount);
-//        double winRateAllMatch = _calculatorGeneralService.Percentage(addonWinMatchesCount, totalMatchesCount);
-//        double winRateWithItemLoadoutMatch = _calculatorGeneralService.Percentage(addonWinMatchesCount, addonMatchesCount);
-
-//        return CreatedLoadoutPopularity(addon.AddonName, addon.AddonImage, totalMatchesCount, addonMatchesCount, pickRate, winRateAllMatch, winRateWithItemLoadoutMatch);
-//    })
-//    .OrderByDescending(x => x.PickRate)
-//    .ToList();
-
-//    return result;
-//}
