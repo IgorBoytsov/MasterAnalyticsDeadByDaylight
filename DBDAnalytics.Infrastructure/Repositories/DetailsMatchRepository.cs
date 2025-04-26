@@ -37,9 +37,14 @@ namespace DBDAnalytics.Infrastructure.Repositories
                 {
                     Action filterAction = filterParameter switch
                     {
-                        FilterParameter.Killers => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdKillerNavigation.IdKiller == idEntity),
-                        FilterParameter.Map => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdMap == idEntity),
-                        FilterParameter.Measurement => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdMapNavigation.IdMeasurement == idEntity),
+                        FilterParameter.Killers => () => query = query.Where(killer => killer.IdKillerNavigation.IdAssociation == (int)associations).Where(killer => killer.IdKillerNavigation.IdKiller == idEntity),
+                        FilterParameter.Survivors => () => query = query.Where(match =>
+                            match.IdSurvivors1Navigation.IdAssociation == (int)associations && match.IdSurvivors1Navigation.IdSurvivor == idEntity ||
+                            match.IdSurvivors2Navigation.IdAssociation == (int)associations && match.IdSurvivors2Navigation.IdSurvivor == idEntity ||
+                            match.IdSurvivors3Navigation.IdAssociation == (int)associations && match.IdSurvivors3Navigation.IdSurvivor == idEntity ||
+                            match.IdSurvivors4Navigation.IdAssociation == (int)associations && match.IdSurvivors4Navigation.IdSurvivor == idEntity),
+                        FilterParameter.Map => () => query = query.Where(killer => killer.IdKillerNavigation.IdAssociation == (int)associations).Where(map => map.IdMap == idEntity),
+                        FilterParameter.Measurement => () => query = query.Where(killer => killer.IdKillerNavigation.IdAssociation == (int)associations).Where(measurement => measurement.IdMapNavigation.IdMeasurement == idEntity),
                         _ => () => throw new Exception("По такому параметру фильтрация не проводиться")
                     };
                     filterAction?.Invoke();
@@ -71,6 +76,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
                         x.DateTimeMatch,
                         DetailsMatchSurvivorDomain.Create(
                             x.IdSurvivors1Navigation.IdSurvivorNavigation.IdSurvivor,
+                            x.IdSurvivors1Navigation.IdPerk1,
+                            x.IdSurvivors1Navigation.IdPerk2,
+                            x.IdSurvivors1Navigation.IdPerk3,
+                            x.IdSurvivors1Navigation.IdPerk4,
                             x.IdSurvivors1Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors1Navigation.IdPlatformNavigation.IdPlatform,
                             x.IdSurvivors1Navigation.IdAssociation,
@@ -78,6 +87,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors1Navigation.AnonymousMode),
                         DetailsMatchSurvivorDomain.Create(
                             x.IdSurvivors2Navigation.IdSurvivorNavigation.IdSurvivor,
+                            x.IdSurvivors2Navigation.IdPerk1,
+                            x.IdSurvivors2Navigation.IdPerk2,
+                            x.IdSurvivors2Navigation.IdPerk3,
+                            x.IdSurvivors2Navigation.IdPerk4,
                             x.IdSurvivors2Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors2Navigation.IdPlatformNavigation.IdPlatform,
                             x.IdSurvivors2Navigation.IdAssociation,
@@ -85,6 +98,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors2Navigation.AnonymousMode),
                         DetailsMatchSurvivorDomain.Create(
                             x.IdSurvivors3Navigation.IdSurvivorNavigation.IdSurvivor,
+                            x.IdSurvivors3Navigation.IdPerk1,
+                            x.IdSurvivors3Navigation.IdPerk2,
+                            x.IdSurvivors3Navigation.IdPerk3,
+                            x.IdSurvivors3Navigation.IdPerk4,
                             x.IdSurvivors3Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors3Navigation.IdPlatformNavigation.IdPlatform,
                             x.IdSurvivors3Navigation.IdAssociation,
@@ -92,6 +109,10 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors3Navigation.AnonymousMode),
                         DetailsMatchSurvivorDomain.Create(
                             x.IdSurvivors4Navigation.IdSurvivorNavigation.IdSurvivor,
+                            x.IdSurvivors4Navigation.IdPerk1,
+                            x.IdSurvivors4Navigation.IdPerk2,
+                            x.IdSurvivors4Navigation.IdPerk3,
+                            x.IdSurvivors4Navigation.IdPerk4,
                             x.IdSurvivors4Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors4Navigation.IdPlatformNavigation.IdPlatform,
                             x.IdSurvivors4Navigation.IdAssociation,
@@ -100,7 +121,12 @@ namespace DBDAnalytics.Infrastructure.Repositories
                     ))
                     .ToListAsync();
 
-                var totalMatch = _context.GameStatistics.Count(x => x.IdKillerNavigation.IdAssociation == (int)associations);
+                int totalMatch = 0;
+
+                if (filterParameter == FilterParameter.Survivors)
+                    totalMatch = _context.SurvivorInfos.Count(x => x.IdAssociation == (int)associations);
+                else
+                    totalMatch = _context.GameStatistics.Count(x => x.IdKillerNavigation.IdAssociation == (int)associations);
 
                 return (list, totalMatch);
             }
