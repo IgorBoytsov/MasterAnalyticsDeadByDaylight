@@ -34,6 +34,10 @@ namespace DBDAnalytics.Application.Mappers
             return new DetailsMatchSurvivorDTO()
             {
                 IdSurvivor = domain.IdSurvivor,
+                IdFirstPerk = domain.IdFirstPerk,
+                IdSecondPerk = domain.IdSecondPerk,
+                IdThirdPerk = domain.IdThirdPerk,
+                IdFourthPerk = domain.IdFourthPerk,
                 IdPlatform = domain.IdPlatform,
                 IdTypeDeath = domain.IdTypeDeath,
                 IdAssociation = domain.IdAssociation,
