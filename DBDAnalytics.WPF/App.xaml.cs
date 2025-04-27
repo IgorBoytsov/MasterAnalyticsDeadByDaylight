@@ -134,6 +134,10 @@ namespace DBDAnalytics.WPF
             services.AddTransient<IPageFactory, SurvivorDetailsFactory>();
             services.AddTransient<SurvivorDetailsVM>();
             services.AddSingleton<Func<SurvivorDetailsVM>>(provider => () => provider.GetRequiredService<SurvivorDetailsVM>());
+
+            services.AddTransient<IPageFactory, ItemDetailsFactory>();
+            services.AddTransient<ItemDetailsVM>();
+            services.AddSingleton<Func<ItemDetailsVM>>(provider => () => provider.GetRequiredService<ItemDetailsVM>());
         }
 
         // Добавляем сервисы WPF коллекцию сервисов 
