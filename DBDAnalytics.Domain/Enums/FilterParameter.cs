@@ -5,6 +5,7 @@
         None,
         Killers,
         Survivors,
+        Item,
         Map,
         Measurement,
     }
