@@ -17,6 +17,12 @@
 
         public int? IdFourthPerk { get; private set; }
 
+        public int? IdItem { get; private set; }
+
+        public int? IdFirstAddon { get; private set; }
+
+        public int? IdSecondAddon { get; private set; }
+
         public int IdTypeDeath { get; private set; }
 
         public int IdPlatform { get; private set; }
@@ -28,7 +34,8 @@
         public bool Anonymous { get; private set; }
 
         public static DetailsMatchSurvivorDomain Create(
-            int idSurvivor, int? idFirstPerk, int? idSecondPerk, int? idThirdPerk, int? idFourthPerk, 
+            int idSurvivor, int? idFirstPerk, int? idSecondPerk, int? idThirdPerk, int? idFourthPerk,
+            int? idItem, int? idFirstAddon, int? idSecondAddon,
             int idTypeDeath, int idPlatform, int idAssociation,bool bot, bool anonymous)
         {
             var stats = new DetailsMatchSurvivorDomain
@@ -39,6 +46,10 @@
                 IdSecondPerk = idSecondPerk,
                 IdThirdPerk = idThirdPerk,
                 IdFourthPerk = idFourthPerk,
+
+                IdItem = idItem,
+                IdFirstAddon = idFirstAddon,
+                IdSecondAddon = idSecondAddon,
 
                 IdTypeDeath = idTypeDeath,
                 IdPlatform = idPlatform,

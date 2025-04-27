@@ -12,6 +12,12 @@
 
         public int? IdFourthPerk { get; set; }
 
+        public int? IdItem { get; set; }
+
+        public int? IdFirstAddon { get; set; }
+
+        public int? IdSecondAddon { get; set; }
+
         public int IdTypeDeath { get; set; }
 
         public int IdPlatform { get; set; }
