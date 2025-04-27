@@ -40,5 +40,13 @@ namespace DBDAnalytics.Application.Services.Abstraction
             Func<TDataSource, (int? FirstItemID, int? SecondItemID, int? ThirdItemID, int? FourthItemID)> idItemSelectorFromDataSource,
             Func<(int FirstItemID, int SecondItemID, int ThirdItemID, int FourthItemID), Func<TDataSource, bool>> createCountPredicate,
             Func<TDataSource, bool> winPredicate) where TItem : class;
+
+        public List<DetailsItemsTakenCharacter> DetailsCharacterPickItem<TCharacterList, TDetailsList>(
+            List<TCharacterList> characterList,
+            List<TDetailsList> detailsList,
+            Func<TDetailsList, TCharacterList, bool> detailsListCountPredicate,
+            Func<TCharacterList, int> idSelector,
+            Func<TCharacterList, byte[]> imageSelector,
+            Func<TCharacterList, string> nameSelector);
     }
 }

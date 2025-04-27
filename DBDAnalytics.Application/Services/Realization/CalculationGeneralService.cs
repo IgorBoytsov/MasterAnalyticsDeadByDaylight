@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.Application.ApplicationModels.CalculationModels;
+using DBDAnalytics.Application.DTOs;
 using DBDAnalytics.Application.DTOs.DetailsDTOs;
 using DBDAnalytics.Application.Enums;
 using DBDAnalytics.Application.Services.Abstraction;
@@ -717,6 +718,44 @@ namespace DBDAnalytics.Application.Services.Realization
            .ToList();
 
             return quadrupleItems;
+        }
+
+        /// <summary>
+        /// Рассчитывает сколько конкретный персонаж взять конкретный предмет. И небольшую статистику.
+        /// </summary>
+        /// <typeparam name="TCharacterList">Тип персонажей. (Убийцы, Выжившие и тд)</typeparam>
+        /// <typeparam name="TDetailsList">Тип детализации. (Убийцы, Выживших и тд)</typeparam>
+        /// <param name="characterList">Список персонажей.</param>
+        /// <param name="detailsList">Список детализации матчей, персонажей и тд</param>
+        /// <param name="detailsListCountPredicate">Предикат, принимающий элемент детализации, возвращающий количество записей удовлетворяющих условию.</param>
+        /// <param name="imageSelector">Селектор для изображение персонажа.</param>
+        /// <param name="nameSelector">Селектор для имени персонажа.</param>
+        /// <returns>Список персонажей с значениями того, сколько они взяли конкретного предмета.</returns>
+        public List<DetailsItemsTakenCharacter> DetailsCharacterPickItem<TCharacterList, TDetailsList>(
+            List<TCharacterList> characterList,
+            List<TDetailsList> detailsList,
+            Func<TDetailsList, TCharacterList, bool> detailsListCountPredicate,
+            Func<TCharacterList, int> idSelector,
+            Func<TCharacterList, byte[]> imageSelector,
+            Func<TCharacterList, string> nameSelector)
+        {
+            var list = characterList.Select(character =>
+            {
+                var countPick = detailsList.Count(details => detailsListCountPredicate(details, character));
+                var pickRate = Percentage(countPick, detailsList.Count);
+
+                return new DetailsItemsTakenCharacter
+                {
+                    CharacterId = idSelector(character),
+                    CharacterImage = imageSelector(character),
+                    CharacterName = nameSelector(character),
+                    CountPick = countPick,
+                    PickRate = pickRate
+                };
+
+            }).ToList();
+
+            return list;
         }
 
         /*--Проверки--------------------------------------------------------------------------------------*/
