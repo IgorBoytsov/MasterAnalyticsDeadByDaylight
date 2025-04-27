@@ -28,5 +28,17 @@ namespace DBDAnalytics.Application.Extensions
                 collection.Move(count - 1, i);
             }
         }
+
+        public static void ReplaceCollection<T>(this IList<T> targetCollection, IEnumerable<T> sourceCollection)
+        {
+            ArgumentNullException.ThrowIfNull(sourceCollection);
+
+            targetCollection.Clear();
+
+            foreach (var item in sourceCollection)
+            {
+                targetCollection.Add(item);
+            }
+        }
     }
 }
