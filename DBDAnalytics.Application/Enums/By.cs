@@ -4,6 +4,7 @@
     {
         Favorites,
 
+        ID,
         DateTime,
         DateTimeFrom,
         DateTimeBefore,
@@ -20,6 +21,10 @@
         Win,
         Draw,
         Lose,
+
+        PickRate,
+        WinRate,
+        Count,
 
         CountKills,
         CountHooks,
