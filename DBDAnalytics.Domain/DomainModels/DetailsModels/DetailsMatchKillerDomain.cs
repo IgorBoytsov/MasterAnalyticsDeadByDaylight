@@ -21,12 +21,14 @@
 
         public int? FourthPerkID { get; private set; }
 
+        public int? OfferingID { get; private set; }
+
         public int Score { get; private set; }
 
         public static DetailsMatchKillerDomain Create(
             int idKiller,
             int? idFirstAddon, int? idSecondAddon,
-            int? firstPerkID, int? secondPerkID, int? thirdPerkID, int? fourthPerkID,
+            int? firstPerkID, int? secondPerkID, int? thirdPerkID, int? fourthPerkID, int? offeringID,
             int score)
         {
             var stats = new DetailsMatchKillerDomain
@@ -38,6 +40,7 @@
                 SecondPerkID = secondPerkID,
                 ThirdPerkID = thirdPerkID,
                 FourthPerkID = fourthPerkID,
+                OfferingID = offeringID,
                 Score = score
             };
 

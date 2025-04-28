@@ -16,6 +16,8 @@
 
         public int? FourthPerkID { get; set; }
 
+        public int? OfferingID { get; set; }
+
         public int Score { get; set; }
     }
 }

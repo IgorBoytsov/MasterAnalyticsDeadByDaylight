@@ -18,6 +18,8 @@
 
         public int? IdSecondAddon { get; set; }
 
+        public int? IdOffering { get; set; }
+
         public int IdTypeDeath { get; set; }
 
         public int IdPlatform { get; set; }

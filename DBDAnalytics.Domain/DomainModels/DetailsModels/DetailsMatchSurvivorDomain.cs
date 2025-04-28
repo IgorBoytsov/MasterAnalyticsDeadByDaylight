@@ -23,6 +23,8 @@
 
         public int? IdSecondAddon { get; private set; }
 
+        public int? IdOffering { get; private set; }
+
         public int IdTypeDeath { get; private set; }
 
         public int IdPlatform { get; private set; }
@@ -35,7 +37,7 @@
 
         public static DetailsMatchSurvivorDomain Create(
             int idSurvivor, int? idFirstPerk, int? idSecondPerk, int? idThirdPerk, int? idFourthPerk,
-            int? idItem, int? idFirstAddon, int? idSecondAddon,
+            int? idItem, int? idFirstAddon, int? idSecondAddon, int? idOffering,
             int idTypeDeath, int idPlatform, int idAssociation,bool bot, bool anonymous)
         {
             var stats = new DetailsMatchSurvivorDomain
@@ -50,6 +52,8 @@
                 IdItem = idItem,
                 IdFirstAddon = idFirstAddon,
                 IdSecondAddon = idSecondAddon,
+
+                IdOffering = idOffering,
 
                 IdTypeDeath = idTypeDeath,
                 IdPlatform = idPlatform,

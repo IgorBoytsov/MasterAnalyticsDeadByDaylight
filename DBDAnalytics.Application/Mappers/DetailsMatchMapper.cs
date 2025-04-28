@@ -41,6 +41,7 @@ namespace DBDAnalytics.Application.Mappers
                 IdItem = domain.IdItem,
                 IdFirstAddon = domain.IdFirstAddon,
                 IdSecondAddon = domain.IdSecondAddon,
+                IdOffering = domain.IdOffering,
                 IdPlatform = domain.IdPlatform,
                 IdTypeDeath = domain.IdTypeDeath,
                 IdAssociation = domain.IdAssociation,
@@ -60,6 +61,7 @@ namespace DBDAnalytics.Application.Mappers
                 SecondPerkID = domain.SecondPerkID,
                 ThirdPerkID = domain.ThirdPerkID,
                 FourthPerkID = domain.FourthPerkID,
+                OfferingID = domain.OfferingID,
                 Score = domain.Score,
             };
         }
