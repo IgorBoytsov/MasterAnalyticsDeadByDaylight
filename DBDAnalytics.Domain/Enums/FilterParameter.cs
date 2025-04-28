@@ -8,5 +8,7 @@
         Item,
         Map,
         Measurement,
+        SurvivorOffering,
+        KillerOffering,
     }
 }

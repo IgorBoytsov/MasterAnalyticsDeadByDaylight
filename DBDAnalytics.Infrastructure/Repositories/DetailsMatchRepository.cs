@@ -51,8 +51,17 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             match.IdSurvivors3Navigation.IdAssociation == (int)associations && match.IdSurvivors3Navigation.IdItem == idEntity ||
                             match.IdSurvivors4Navigation.IdAssociation == (int)associations && match.IdSurvivors4Navigation.IdItem == idEntity),
 
+                        FilterParameter.SurvivorOffering => () => query = query.Where(match =>
+                            match.IdSurvivors1Navigation.IdAssociation == (int)associations && match.IdSurvivors1Navigation.IdSurvivorOffering == idEntity ||
+                            match.IdSurvivors2Navigation.IdAssociation == (int)associations && match.IdSurvivors2Navigation.IdSurvivorOffering == idEntity ||
+                            match.IdSurvivors3Navigation.IdAssociation == (int)associations && match.IdSurvivors3Navigation.IdSurvivorOffering == idEntity ||
+                            match.IdSurvivors4Navigation.IdAssociation == (int)associations && match.IdSurvivors4Navigation.IdSurvivorOffering == idEntity),
+
+                        FilterParameter.KillerOffering => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdKillerNavigation.IdKillerOffering == idEntity),
+
                         FilterParameter.Map => () => query = query.Where(killer => killer.IdKillerNavigation.IdAssociation == (int)associations).Where(map => map.IdMap == idEntity),
                         FilterParameter.Measurement => () => query = query.Where(killer => killer.IdKillerNavigation.IdAssociation == (int)associations).Where(measurement => measurement.IdMapNavigation.IdMeasurement == idEntity),
+
                         _ => () => throw new Exception("По такому параметру фильтрация не проводиться")
                     };
                     filterAction?.Invoke();
@@ -72,6 +81,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdKillerNavigation.IdPerk2,
                             x.IdKillerNavigation.IdPerk3,
                             x.IdKillerNavigation.IdPerk4,
+                            x.IdKillerNavigation.IdKillerOffering,
                             x.IdKillerNavigation.KillerAccount),
                         x.IdGameStatistic,
                         x.IdWhoPlacedMap,
@@ -91,6 +101,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors1Navigation.IdItem,
                             x.IdSurvivors1Navigation.IdAddon1,
                             x.IdSurvivors1Navigation.IdAddon2,
+                            x.IdSurvivors1Navigation.IdSurvivorOffering,
                             x.IdSurvivors1Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors1Navigation.IdPlatformNavigation.IdPlatform,
                             x.IdSurvivors1Navigation.IdAssociation,
@@ -105,6 +116,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors2Navigation.IdItem,
                             x.IdSurvivors2Navigation.IdAddon1,
                             x.IdSurvivors2Navigation.IdAddon2,
+                            x.IdSurvivors2Navigation.IdSurvivorOffering,
                             x.IdSurvivors2Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors2Navigation.IdPlatformNavigation.IdPlatform,
                             x.IdSurvivors2Navigation.IdAssociation,
@@ -118,7 +130,8 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors3Navigation.IdPerk4,
                             x.IdSurvivors3Navigation.IdItem,
                             x.IdSurvivors3Navigation.IdAddon1,
-                            x.IdSurvivors1Navigation.IdAddon2,
+                            x.IdSurvivors3Navigation.IdAddon2,
+                            x.IdSurvivors3Navigation.IdSurvivorOffering,
                             x.IdSurvivors3Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors3Navigation.IdPlatformNavigation.IdPlatform,
                             x.IdSurvivors3Navigation.IdAssociation,
@@ -133,6 +146,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors4Navigation.IdItem,
                             x.IdSurvivors4Navigation.IdAddon1,
                             x.IdSurvivors4Navigation.IdAddon2,
+                            x.IdSurvivors4Navigation.IdSurvivorOffering,
                             x.IdSurvivors4Navigation.IdTypeDeathNavigation.IdTypeDeath,
                             x.IdSurvivors4Navigation.IdPlatformNavigation.IdPlatform,
                             x.IdSurvivors4Navigation.IdAssociation,
@@ -143,7 +157,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                 int totalMatch = 0;
 
-                if (filterParameter == FilterParameter.Survivors || filterParameter == FilterParameter.Item)
+                if (filterParameter == FilterParameter.Survivors || filterParameter == FilterParameter.Item || filterParameter == FilterParameter.SurvivorOffering)
                     totalMatch = _context.SurvivorInfos.Count(x => x.IdAssociation == (int)associations);
                 else
                     totalMatch = _context.GameStatistics.Count(x => x.IdKillerNavigation.IdAssociation == (int)associations);
@@ -270,15 +284,15 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdKillerNavigation.IdAssociationNavigation.PlayerAssociationName,
                             x.IdKillerNavigation.IdPlatformNavigation.PlatformName,
 
-                            x.IdKillerNavigation.IdAddon1Navigation.AddonImage, x.IdKillerNavigation.IdAddon1Navigation.AddonName,
-                            x.IdKillerNavigation.IdAddon2Navigation.AddonImage, x.IdKillerNavigation.IdAddon2Navigation.AddonName,
+                            x.IdKillerNavigation.IdAddon1Navigation!.AddonImage, x.IdKillerNavigation.IdAddon1Navigation.AddonName,
+                            x.IdKillerNavigation.IdAddon2Navigation!.AddonImage, x.IdKillerNavigation.IdAddon2Navigation.AddonName,
 
-                            x.IdKillerNavigation.IdPerk1Navigation.PerkImage, x.IdKillerNavigation.IdPerk1Navigation.PerkName,
-                            x.IdKillerNavigation.IdPerk2Navigation.PerkImage, x.IdKillerNavigation.IdPerk2Navigation.PerkName,
-                            x.IdKillerNavigation.IdPerk3Navigation.PerkImage, x.IdKillerNavigation.IdPerk3Navigation.PerkName,
-                            x.IdKillerNavigation.IdPerk4Navigation.PerkImage, x.IdKillerNavigation.IdPerk4Navigation.PerkName,
+                            x.IdKillerNavigation.IdPerk1Navigation!.PerkImage, x.IdKillerNavigation.IdPerk1Navigation.PerkName,
+                            x.IdKillerNavigation.IdPerk2Navigation!.PerkImage, x.IdKillerNavigation.IdPerk2Navigation.PerkName,
+                            x.IdKillerNavigation.IdPerk3Navigation!.PerkImage, x.IdKillerNavigation.IdPerk3Navigation.PerkName,
+                            x.IdKillerNavigation.IdPerk4Navigation!.PerkImage, x.IdKillerNavigation.IdPerk4Navigation.PerkName,
                             
-                            x.IdKillerNavigation.IdKillerOfferingNavigation.OfferingImage,
+                            x.IdKillerNavigation.IdKillerOfferingNavigation!.OfferingImage,
                             x.IdKillerNavigation.IdKillerOfferingNavigation.OfferingName),
                         DetailsMatchSurvivorViewDomain.Create(
                             x.IdSurvivors1Navigation.IdSurvivorNavigation.SurvivorImage,
@@ -291,17 +305,17 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors1Navigation.IdPlatformNavigation.PlatformName,
                             x.IdSurvivors1Navigation.IdTypeDeathNavigation.TypeDeathName,
 
-                            x.IdSurvivors1Navigation.IdItemNavigation.ItemImage, x.IdSurvivors1Navigation.IdItemNavigation.ItemName,
+                            x.IdSurvivors1Navigation.IdItemNavigation!.ItemImage, x.IdSurvivors1Navigation.IdItemNavigation.ItemName,
 
-                            x.IdSurvivors1Navigation.IdAddon1Navigation.ItemAddonImage, x.IdSurvivors1Navigation.IdAddon1Navigation.ItemAddonName,
-                            x.IdSurvivors1Navigation.IdAddon2Navigation.ItemAddonImage, x.IdSurvivors1Navigation.IdAddon2Navigation.ItemAddonName,
+                            x.IdSurvivors1Navigation.IdAddon1Navigation!.ItemAddonImage, x.IdSurvivors1Navigation.IdAddon1Navigation.ItemAddonName,
+                            x.IdSurvivors1Navigation.IdAddon2Navigation!.ItemAddonImage, x.IdSurvivors1Navigation.IdAddon2Navigation.ItemAddonName,
 
-                            x.IdSurvivors1Navigation.IdPerk1Navigation.PerkImage, x.IdSurvivors1Navigation.IdPerk1Navigation.PerkName,
-                            x.IdSurvivors1Navigation.IdPerk2Navigation.PerkImage, x.IdSurvivors1Navigation.IdPerk2Navigation.PerkName,
-                            x.IdSurvivors1Navigation.IdPerk3Navigation.PerkImage, x.IdSurvivors1Navigation.IdPerk3Navigation.PerkName,
-                            x.IdSurvivors1Navigation.IdPerk4Navigation.PerkImage, x.IdSurvivors1Navigation.IdPerk4Navigation.PerkName,
+                            x.IdSurvivors1Navigation.IdPerk1Navigation!.PerkImage, x.IdSurvivors1Navigation.IdPerk1Navigation.PerkName,
+                            x.IdSurvivors1Navigation.IdPerk2Navigation!.PerkImage, x.IdSurvivors1Navigation.IdPerk2Navigation.PerkName,
+                            x.IdSurvivors1Navigation.IdPerk3Navigation!.PerkImage, x.IdSurvivors1Navigation.IdPerk3Navigation.PerkName,
+                            x.IdSurvivors1Navigation.IdPerk4Navigation!.PerkImage, x.IdSurvivors1Navigation.IdPerk4Navigation.PerkName,
                             
-                            x.IdSurvivors1Navigation.IdSurvivorOfferingNavigation.OfferingImage,
+                            x.IdSurvivors1Navigation.IdSurvivorOfferingNavigation!.OfferingImage,
                             x.IdSurvivors1Navigation.IdSurvivorOfferingNavigation.OfferingName),
                         DetailsMatchSurvivorViewDomain.Create(
                             x.IdSurvivors2Navigation.IdSurvivorNavigation.SurvivorImage,
@@ -314,17 +328,17 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors2Navigation.IdPlatformNavigation.PlatformName,
                             x.IdSurvivors2Navigation.IdTypeDeathNavigation.TypeDeathName,
 
-                            x.IdSurvivors2Navigation.IdItemNavigation.ItemImage, x.IdSurvivors2Navigation.IdItemNavigation.ItemName,
+                            x.IdSurvivors2Navigation.IdItemNavigation!.ItemImage, x.IdSurvivors2Navigation.IdItemNavigation.ItemName,
 
-                            x.IdSurvivors2Navigation.IdAddon1Navigation.ItemAddonImage, x.IdSurvivors2Navigation.IdAddon1Navigation.ItemAddonName,
-                            x.IdSurvivors2Navigation.IdAddon2Navigation.ItemAddonImage, x.IdSurvivors2Navigation.IdAddon2Navigation.ItemAddonName,
+                            x.IdSurvivors2Navigation.IdAddon1Navigation!.ItemAddonImage, x.IdSurvivors2Navigation.IdAddon1Navigation.ItemAddonName,
+                            x.IdSurvivors2Navigation.IdAddon2Navigation!.ItemAddonImage, x.IdSurvivors2Navigation.IdAddon2Navigation.ItemAddonName,
 
-                            x.IdSurvivors2Navigation.IdPerk1Navigation.PerkImage, x.IdSurvivors2Navigation.IdPerk1Navigation.PerkName,
-                            x.IdSurvivors2Navigation.IdPerk2Navigation.PerkImage, x.IdSurvivors2Navigation.IdPerk2Navigation.PerkName,
-                            x.IdSurvivors2Navigation.IdPerk3Navigation.PerkImage, x.IdSurvivors2Navigation.IdPerk3Navigation.PerkName,
-                            x.IdSurvivors2Navigation.IdPerk4Navigation.PerkImage, x.IdSurvivors2Navigation.IdPerk4Navigation.PerkName,
+                            x.IdSurvivors2Navigation.IdPerk1Navigation!.PerkImage, x.IdSurvivors2Navigation.IdPerk1Navigation.PerkName,
+                            x.IdSurvivors2Navigation.IdPerk2Navigation!.PerkImage, x.IdSurvivors2Navigation.IdPerk2Navigation.PerkName,
+                            x.IdSurvivors2Navigation.IdPerk3Navigation!.PerkImage, x.IdSurvivors2Navigation.IdPerk3Navigation.PerkName,
+                            x.IdSurvivors2Navigation.IdPerk4Navigation!.PerkImage, x.IdSurvivors2Navigation.IdPerk4Navigation.PerkName,
 
-                            x.IdSurvivors2Navigation.IdSurvivorOfferingNavigation.OfferingImage,
+                            x.IdSurvivors2Navigation.IdSurvivorOfferingNavigation!.OfferingImage,
                             x.IdSurvivors2Navigation.IdSurvivorOfferingNavigation.OfferingName),
                         DetailsMatchSurvivorViewDomain.Create(
                             x.IdSurvivors3Navigation.IdSurvivorNavigation.SurvivorImage,
@@ -337,17 +351,17 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors3Navigation.IdPlatformNavigation.PlatformName,
                             x.IdSurvivors3Navigation.IdTypeDeathNavigation.TypeDeathName,
 
-                            x.IdSurvivors3Navigation.IdItemNavigation.ItemImage, x.IdSurvivors3Navigation.IdItemNavigation.ItemName,
+                            x.IdSurvivors3Navigation.IdItemNavigation!.ItemImage, x.IdSurvivors3Navigation.IdItemNavigation.ItemName,
 
-                            x.IdSurvivors3Navigation.IdAddon1Navigation.ItemAddonImage, x.IdSurvivors3Navigation.IdAddon1Navigation.ItemAddonName,
-                            x.IdSurvivors3Navigation.IdAddon2Navigation.ItemAddonImage, x.IdSurvivors3Navigation.IdAddon2Navigation.ItemAddonName,
+                            x.IdSurvivors3Navigation.IdAddon1Navigation!.ItemAddonImage, x.IdSurvivors3Navigation.IdAddon1Navigation.ItemAddonName,
+                            x.IdSurvivors3Navigation.IdAddon2Navigation!.ItemAddonImage, x.IdSurvivors3Navigation.IdAddon2Navigation.ItemAddonName,
 
-                            x.IdSurvivors3Navigation.IdPerk1Navigation.PerkImage, x.IdSurvivors3Navigation.IdPerk1Navigation.PerkName,
-                            x.IdSurvivors3Navigation.IdPerk2Navigation.PerkImage, x.IdSurvivors3Navigation.IdPerk2Navigation.PerkName,
-                            x.IdSurvivors3Navigation.IdPerk3Navigation.PerkImage, x.IdSurvivors3Navigation.IdPerk3Navigation.PerkName,
-                            x.IdSurvivors3Navigation.IdPerk4Navigation.PerkImage, x.IdSurvivors3Navigation.IdPerk4Navigation.PerkName,
+                            x.IdSurvivors3Navigation.IdPerk1Navigation!.PerkImage, x.IdSurvivors3Navigation.IdPerk1Navigation.PerkName,
+                            x.IdSurvivors3Navigation.IdPerk2Navigation!.PerkImage, x.IdSurvivors3Navigation.IdPerk2Navigation.PerkName,
+                            x.IdSurvivors3Navigation.IdPerk3Navigation!.PerkImage, x.IdSurvivors3Navigation.IdPerk3Navigation.PerkName,
+                            x.IdSurvivors3Navigation.IdPerk4Navigation!.PerkImage, x.IdSurvivors3Navigation.IdPerk4Navigation.PerkName,
 
-                            x.IdSurvivors3Navigation.IdSurvivorOfferingNavigation.OfferingImage,
+                            x.IdSurvivors3Navigation.IdSurvivorOfferingNavigation!.OfferingImage,
                             x.IdSurvivors3Navigation.IdSurvivorOfferingNavigation.OfferingName),
                         DetailsMatchSurvivorViewDomain.Create(
                             x.IdSurvivors4Navigation.IdSurvivorNavigation.SurvivorImage,
@@ -360,17 +374,17 @@ namespace DBDAnalytics.Infrastructure.Repositories
                             x.IdSurvivors4Navigation.IdPlatformNavigation.PlatformName,
                             x.IdSurvivors4Navigation.IdTypeDeathNavigation.TypeDeathName,
 
-                            x.IdSurvivors4Navigation.IdItemNavigation.ItemImage, x.IdSurvivors4Navigation.IdItemNavigation.ItemName,
+                            x.IdSurvivors4Navigation.IdItemNavigation!.ItemImage, x.IdSurvivors4Navigation.IdItemNavigation.ItemName,
                                          
-                            x.IdSurvivors4Navigation.IdAddon1Navigation.ItemAddonImage, x.IdSurvivors4Navigation.IdAddon1Navigation.ItemAddonName,
-                            x.IdSurvivors4Navigation.IdAddon2Navigation.ItemAddonImage, x.IdSurvivors4Navigation.IdAddon2Navigation.ItemAddonName,
+                            x.IdSurvivors4Navigation.IdAddon1Navigation!.ItemAddonImage, x.IdSurvivors4Navigation.IdAddon1Navigation.ItemAddonName,
+                            x.IdSurvivors4Navigation.IdAddon2Navigation!.ItemAddonImage, x.IdSurvivors4Navigation.IdAddon2Navigation.ItemAddonName,
                                          
-                            x.IdSurvivors4Navigation.IdPerk1Navigation.PerkImage, x.IdSurvivors3Navigation.IdPerk1Navigation.PerkName,
-                            x.IdSurvivors4Navigation.IdPerk2Navigation.PerkImage, x.IdSurvivors4Navigation.IdPerk2Navigation.PerkName,
-                            x.IdSurvivors4Navigation.IdPerk3Navigation.PerkImage, x.IdSurvivors4Navigation.IdPerk3Navigation.PerkName,
-                            x.IdSurvivors4Navigation.IdPerk4Navigation.PerkImage, x.IdSurvivors4Navigation.IdPerk4Navigation.PerkName,
+                            x.IdSurvivors4Navigation.IdPerk1Navigation!.PerkImage, x.IdSurvivors3Navigation.IdPerk1Navigation.PerkName,
+                            x.IdSurvivors4Navigation.IdPerk2Navigation!.PerkImage, x.IdSurvivors4Navigation.IdPerk2Navigation.PerkName,
+                            x.IdSurvivors4Navigation.IdPerk3Navigation!.PerkImage, x.IdSurvivors4Navigation.IdPerk3Navigation.PerkName,
+                            x.IdSurvivors4Navigation.IdPerk4Navigation!.PerkImage, x.IdSurvivors4Navigation.IdPerk4Navigation.PerkName,
 
-                            x.IdSurvivors4Navigation.IdSurvivorOfferingNavigation.OfferingImage,
+                            x.IdSurvivors4Navigation.IdSurvivorOfferingNavigation!.OfferingImage,
                             x.IdSurvivors4Navigation.IdSurvivorOfferingNavigation.OfferingName)
                         ))
                     .FirstOrDefaultAsync();
