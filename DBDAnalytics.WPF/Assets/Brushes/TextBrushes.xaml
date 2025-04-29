@@ -8,5 +8,8 @@
     
     <SolidColorBrush x:Key="Brush.IsBot.Converter" Color="#FFFF6161"/>
     <SolidColorBrush x:Key="Brush.NoBo.Converter" Color="#FF39FF39"/>
+
+    <SolidColorBrush x:Key="Brush.SurvivorPerkCategory" Color="#FF32BEEB"/>
+    <SolidColorBrush x:Key="Brush.KillerPerkCategory" Color="#FFD24040"/>
     
 </ResourceDictionary>
