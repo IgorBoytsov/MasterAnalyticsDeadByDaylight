@@ -10,5 +10,7 @@
         Measurement,
         SurvivorOffering,
         KillerOffering,
+        SurvivorPerk,
+        KillerPerk,
     }
 }

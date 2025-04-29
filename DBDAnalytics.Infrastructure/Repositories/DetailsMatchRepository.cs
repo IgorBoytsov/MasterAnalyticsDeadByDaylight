@@ -59,7 +59,16 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                         FilterParameter.KillerOffering => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdKillerNavigation.IdKillerOffering == idEntity),
 
+                        FilterParameter.SurvivorPerk => () => query = query.Where(match =>
+                            match.IdSurvivors1Navigation.IdAssociation == (int)associations && (match.IdSurvivors1Navigation.IdPerk1 == idEntity || match.IdSurvivors1Navigation.IdPerk2 == idEntity || match.IdSurvivors1Navigation.IdPerk3 == idEntity || match.IdSurvivors1Navigation.IdPerk4 == idEntity) ||
+                            match.IdSurvivors2Navigation.IdAssociation == (int)associations && (match.IdSurvivors2Navigation.IdPerk1 == idEntity || match.IdSurvivors2Navigation.IdPerk2 == idEntity || match.IdSurvivors2Navigation.IdPerk3 == idEntity || match.IdSurvivors2Navigation.IdPerk4 == idEntity) ||
+                            match.IdSurvivors3Navigation.IdAssociation == (int)associations && (match.IdSurvivors3Navigation.IdPerk1 == idEntity || match.IdSurvivors3Navigation.IdPerk2 == idEntity || match.IdSurvivors3Navigation.IdPerk3 == idEntity || match.IdSurvivors3Navigation.IdPerk4 == idEntity) ||
+                            match.IdSurvivors4Navigation.IdAssociation == (int)associations && (match.IdSurvivors4Navigation.IdPerk1 == idEntity || match.IdSurvivors4Navigation.IdPerk2 == idEntity || match.IdSurvivors4Navigation.IdPerk3 == idEntity || match.IdSurvivors4Navigation.IdPerk4 == idEntity)),
+
+                        FilterParameter.KillerPerk => () => query = query.Where(x => x.IdKillerNavigation.IdAssociation == (int)associations).Where(x => x.IdKillerNavigation.IdPerk1 == idEntity || x.IdKillerNavigation.IdPerk2 == idEntity || x.IdKillerNavigation.IdPerk3 == idEntity || x.IdKillerNavigation.IdPerk4 == idEntity),
+
                         FilterParameter.Map => () => query = query.Where(killer => killer.IdKillerNavigation.IdAssociation == (int)associations).Where(map => map.IdMap == idEntity),
+
                         FilterParameter.Measurement => () => query = query.Where(killer => killer.IdKillerNavigation.IdAssociation == (int)associations).Where(measurement => measurement.IdMapNavigation.IdMeasurement == idEntity),
 
                         _ => () => throw new Exception("По такому параметру фильтрация не проводиться")
@@ -157,7 +166,7 @@ namespace DBDAnalytics.Infrastructure.Repositories
 
                 int totalMatch = 0;
 
-                if (filterParameter == FilterParameter.Survivors || filterParameter == FilterParameter.Item || filterParameter == FilterParameter.SurvivorOffering)
+                if (filterParameter == FilterParameter.Survivors || filterParameter == FilterParameter.Item || filterParameter == FilterParameter.SurvivorOffering || filterParameter == FilterParameter.SurvivorPerk)
                     totalMatch = _context.SurvivorInfos.Count(x => x.IdAssociation == (int)associations);
                 else
                     totalMatch = _context.GameStatistics.Count(x => x.IdKillerNavigation.IdAssociation == (int)associations);
