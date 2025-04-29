@@ -257,6 +257,7 @@ namespace DBDAnalytics.Application.Ico
             services.AddSingleton<ICalculationItemService, CalculationItemService>();
             services.AddSingleton<ICalculationMapService, CalculationMapService>();
             services.AddSingleton<ICalculationOfferingService, CalculationOfferingService>();
+            services.AddSingleton<ICalculationPerkService, CalculationPerkService>();
 
             #endregion
 
