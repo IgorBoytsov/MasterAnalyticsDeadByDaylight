@@ -17,8 +17,8 @@
         public static (MeasurementDomain? MeasurementDomain, string? Message) Create(int idMeasurement, string measurementName, string? measurementDescription)
         {
             string message = string.Empty;
-            const int MaxMeasurementNameLength = 100;
-            const int MaxMeasurementDescriptionLength = 100;
+            const int MaxMeasurementNameLength = 300;
+            const int MaxMeasurementDescriptionLength = 10000;
 
             if (string.IsNullOrWhiteSpace(measurementName))
             {
