@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="DBDAnalytics.WPF.Assets.CustomControls.TitleDescriptionInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DBDAnalytics.WPF.Assets.CustomControls" 
+             mc:Ignorable="d" 
+             Width="Auto"
+             d:DesignWidth="800">
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="Наименование"
+                   Foreground="Black"
+                   FontSize="12"/>
+
+        <TextBlock Grid.Row="0"
+                   HorizontalAlignment="Right"
+                   FontSize="12"
+                   Margin="0,0,10,0"
+                   Text="{Binding NameRecord.Length, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat='({0} \\ 50)'}" d:Text="(10 из 50)"/>
+
+
+        <TextBox Grid.Row="1"  
+                 Text="{Binding NameRecord, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                 BorderBrush="{Binding Path=ErrorMessage, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource ErrorToBrushConverter}}" d:BorderBrush="Black"
+                 Foreground="Black"
+                 FontSize="12"
+                 Margin="5"
+                 HorizontalAlignment="Stretch"/>
+
+        <TextBlock Grid.Row="2" 
+                   Text="Описание"
+                   Foreground="Black"
+                   FontSize="12"/>
+
+        <TextBlock Grid.Row="2"
+                   HorizontalAlignment="Right"
+                   FontSize="12"
+                   Margin="0,0,10,0"
+                   Text="{Binding DescriptionRecord.Length, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat='({0} \\ 1000)'}" d:Text="(10 из 50)"/>
+
+        <TextBox Grid.Row="3"
+                 Text="{Binding DescriptionRecord, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                 BorderBrush="{Binding Path=ErrorMessage, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource ErrorToBrushConverter}}" d:BorderBrush="Black"
+                 Foreground="Black" 
+                 FontSize="12"
+                 Margin="5"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Stretch"
+                 VerticalContentAlignment="Stretch"
+                 HorizontalAlignment="Stretch"/>
+        
+        <Grid Grid.Row="4" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="{Binding ErrorMessage, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       d:Text="Пример ошибки."
+                       FontSize="14"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       ToolTip="{Binding ErrorMessage, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       ToolTipService.InitialShowDelay="50"
+                       Margin="0,0,5,5"/>
+
+            <WrapPanel Grid.Column="1"
+                       HorizontalAlignment="Right">
+                <Button Content="Сохранить"
+                        Command="{Binding AddRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Width="100"
+                        Height="20"
+                        Margin="0,0,5,5"/>
+                <Button Content="Изменить"
+                        Command="{Binding UpdateRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Width="100"
+                        Height="20"
+                        Margin="0,0,5,5"/>
+                <Button Content="Удалить"
+                        Command="{Binding DeleteRecordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Width="100"
+                        Height="20"
+                        Margin="0,0,5,5"/>
+            </WrapPanel>
+        </Grid>
+
+    </Grid>
+</UserControl>
