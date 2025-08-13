@@ -1,0 +1,95 @@
+﻿using DBDAnalytics.CatalogService.Domain.Exceptions;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
+using DBDAnalytics.Shared.Domain.Exceptions.Guard;
+using DBDAnalytics.Shared.Domain.Primitives;
+
+namespace DBDAnalytics.CatalogService.Domain.Models
+{
+    public sealed class Killer : AggregateRoot<Guid>
+    {
+        public int OldId { get; private set; }
+        public KillerName Name { get; private set; } = null!;
+        public ImageKey? KillerImageKey { get; private set; }
+        public ImageKey? AbilityImageKey { get; private set; }
+
+        private readonly List<KillerPerk> _killerPerks = [];
+        public IReadOnlyCollection<KillerPerk> KillerPerks => _killerPerks.AsReadOnly();
+
+        private readonly List<KillerAddon> _killerAddons = [];
+        public IReadOnlyCollection<KillerAddon> KillerAddons => _killerAddons.AsReadOnly();
+
+        private Killer() { }
+
+        private Killer(Guid id, int oldId, KillerName name, ImageKey? killerImageKey, ImageKey? abilityImageKey) : base(id)
+        {
+            OldId = oldId;
+            Name = name;
+            KillerImageKey = killerImageKey;
+            AbilityImageKey = abilityImageKey;
+        }
+
+        /// <exception cref="InvalidKillerPropertyException"></exception>
+        public static Killer Create(int oldId, string name, ImageKey? killerImageKey, ImageKey? abilityImageKey)
+        {
+            var nameVo = KillerName.Create(name);
+            return new Killer(Guid.NewGuid(), oldId, nameVo, killerImageKey, abilityImageKey);
+        }
+
+        #region Улучшения
+
+        public void AddAddon(int oldId, string addonName, ImageKey? imageKey)
+        {
+            GuardException.Against.That(_killerAddons.Any(a => a.Name.Value == addonName), () => new DuplicateException($"Улучшение {addonName} уже существует у киллера."));
+
+            var newAddon = KillerAddon.Create(oldId, addonName, imageKey, this.Id);
+
+            _killerAddons.Add(newAddon);
+        }
+
+        public void RemoveAddon(Guid addonId)
+        {
+            var addonToRemove = _killerAddons.FirstOrDefault(a => a.Id == addonId);
+
+            if (addonToRemove is not null)
+                _killerAddons.Remove(addonToRemove);
+        }
+
+        public void ClearAddons() => _killerAddons.Clear();
+
+        #endregion
+
+        #region Перки
+
+        public void AddPerk(int oldId, string name, ImageKey? image, int? categoryId)
+        {
+            GuardException.Against.That(_killerPerks.Any(p => p.Name.Value == name), () => new DuplicateException($"Перк {name} уже существует у киллера."));
+
+            var newPerk = KillerPerk.Create(this.Id, oldId, name, image, categoryId);
+
+            _killerPerks.Add(newPerk);
+        }
+
+        public void RemovePerk(Guid perkId)
+        {
+            var perkToRemove = _killerPerks.FirstOrDefault(p => p.Id == perkId);
+
+            if (perkToRemove is not null)
+                _killerPerks.Remove(perkToRemove);
+        }
+
+        public void ClearPerks() => _killerPerks.Clear();
+
+        public void AssignCategoryToPerk(Guid perkId, KillerPerkCategoryId categoryId)
+        {
+            var perk = _killerPerks.FirstOrDefault(p => p.Id == perkId);
+
+            GuardException.Against.That(perk is null, () => new InvalidOperationException("Перк не найден."));
+
+            perk!.AssignCategory(categoryId);
+        }
+
+        #endregion
+    }
+}
