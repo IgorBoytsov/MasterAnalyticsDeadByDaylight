@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\KillerAddon\GetByIdKiller\" />
+    <Folder Include="Features\KillerAddon\GetById\" />
+    <Folder Include="Features\KillerPerkCategories\GetAll\" />
+    <Folder Include="Features\KillerPerkCategories\Update\" />
+    <Folder Include="Features\KillerPerkCategories\Delete\" />
+    <Folder Include="Features\KillerPerkCategories\Hide\" />
+    <Folder Include="Features\KillerPerk\GetByIdKiller\" />
+    <Folder Include="Features\KillerPerk\GetById\" />
+    <Folder Include="Features\Killers\RemoveAddon\" />
+    <Folder Include="Features\Killers\UpdateAddon\" />
+    <Folder Include="Features\Killers\HideAddon\" />
+    <Folder Include="Features\Killers\UpdatePerk\" />
+    <Folder Include="Features\Killers\Update\" />
+    <Folder Include="Features\Killers\GetById\" />
+    <Folder Include="Features\Killers\GetAll\" />
+    <Folder Include="Features\Killers\Hide\" />
+    <Folder Include="Features\Killers\RemovePerk\" />
+    <Folder Include="Features\Killers\HidePerk\" />
+    <Folder Include="Features\Killers\Delete\" />
+    <Folder Include="Features\Killers\Validators\Abstractions\" />
+    <Folder Include="Features\Killers\Validators\Implementations\" />
+    <Folder Include="Services\Abstractions\" />
+    <Folder Include="Services\Implementations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\DBDAnalytics.Shared.Contracts\DBDAnalytics.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Api.Application\Shared.Api.Application.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Api.Infrastructure\Shared.Api.Infrastructure.csproj" />
+    <ProjectReference Include="..\DBDAnalytics.CatalogService.Domain\DBDAnalytics.CatalogService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
