@@ -6,6 +6,9 @@ namespace DBDAnalytics.CatalogService.Application.Common.Abstractions
 {
     public interface IApplicationDbContext : IBaseDbContext
     {
+        public DbSet<GameMode> GameModes { get; set; }
+        public DbSet<GameEvent> GameEvents { get; set; }
+
         public DbSet<Killer> Killers { get; set; }
         public DbSet<KillerPerk> KillerPerks { get; set; }
         public DbSet<KillerAddon> KillerAddons { get; set; }

@@ -36,6 +36,9 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Ioc
             services.AddScoped<IFileStorageService, MinioFileStorageService>();
             services.AddScoped<IFileUploadManager, FileUploadManager>();
 
+            services.AddScoped<IGameModeRepository, GameModeRepository>();
+            services.AddScoped<IGameEventRepository, GameEventRepository>();
+
             services.AddScoped<IKillerRepository, KillerRepository>();
             services.AddScoped<IKillerPerkCategoryRepository, KillerPerkCategoryRepository>();
 

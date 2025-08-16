@@ -15,6 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\GameEvents\Hide\" />
+    <Folder Include="Features\GameEvents\Delete\" />
+    <Folder Include="Features\GameEvents\GetAll\" />
+    <Folder Include="Features\GameModes\Delete\" />
+    <Folder Include="Features\GameModes\GetAll\" />
+    <Folder Include="Features\GameModes\Hide\" />
     <Folder Include="Features\KillerAddon\GetByIdKiller\" />
     <Folder Include="Features\KillerAddon\GetById\" />
     <Folder Include="Features\KillerPerkCategories\GetAll\" />
