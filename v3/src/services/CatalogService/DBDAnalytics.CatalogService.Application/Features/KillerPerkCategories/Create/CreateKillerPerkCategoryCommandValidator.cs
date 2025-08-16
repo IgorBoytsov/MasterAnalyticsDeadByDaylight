@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
+using FluentValidation;
 using Shared.Api.Application.Validators.Implementations;
 
 namespace DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Create
@@ -7,7 +8,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.
     {
         public CreateKillerPerkCategoryCommandValidator()
         {
-            Include(new NameValidator<CreateKillerPerkCategoryCommand>());
+            Include(new NameValidator<CreateKillerPerkCategoryCommand>(KillerName.MAX_LENGTH));
         }
     }
 }

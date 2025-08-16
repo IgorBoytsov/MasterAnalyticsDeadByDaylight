@@ -9,6 +9,7 @@ namespace DBDAnalytics.CatalogService.Application.AutoMappers.Profiles
         public KillerPerkCategoryProfile()
         {
             CreateMap<KillerPerkCategory, KillerPerkCategoryResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.OldId, opt => opt.MapFrom(src => src.OldId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToString()));
         }
