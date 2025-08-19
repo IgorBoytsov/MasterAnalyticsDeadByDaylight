@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
+using DBDAnalytics.CatalogService.Domain.Models;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.Shared.Contracts.Responses.Killers;
 using DBDAnalytics.Shared.Domain.Constants;
@@ -25,6 +26,8 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddAddon
         {
             try
             {
+                List<KillerAddon> addingAddons = [];
+
                 var killerId = request.Addons.FirstOrDefault()?.KillerId;
 
                 if (killerId == null)
@@ -35,10 +38,11 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddAddon
                 foreach (var addon in request.Addons)
                 {
                     ImageKey? imageKey = await _fileUploadManager.UploadImageAsync(addon.Image, FileStoragePaths.KillerAddons(killer.Name), addon.SemanticImageName, cancellationToken);
-                    killer.AddAddon(addon.OldId, addon.Name, imageKey);
+                    var addAddon = killer.AddAddon(addon.OldId, addon.Name, imageKey);
+                    addingAddons.Add(addAddon);
                 }
 
-                var dto = _mapper.Map<List<KillerAddonResponse>>(killer.KillerAddons);
+                var dto = _mapper.Map<List<KillerAddonResponse>>(addingAddons);
 
                 await _context.SaveChangesAsync(cancellationToken);
 

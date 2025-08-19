@@ -56,14 +56,14 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
                 .HasForeignKey(p => p.KillerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Navigation(k => k.KillerPerks).UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Navigation(k => k.KillerPerks).HasField("_killerPerks").UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder.HasMany(k => k.KillerAddons)
                 .WithOne(a => a.Killer)
                 .HasForeignKey(a => a.KillerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Navigation(k => k.KillerAddons).UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Navigation(k => k.KillerAddons).HasField("_killerAddons").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

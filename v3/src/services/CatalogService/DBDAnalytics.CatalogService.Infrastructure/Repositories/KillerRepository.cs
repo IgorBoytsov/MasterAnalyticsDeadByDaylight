@@ -9,7 +9,11 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Repositories
     internal sealed class KillerRepository(IApplicationDbContext context) 
         : BaseRepository<Killer, IApplicationDbContext>(context), IKillerRepository
     {
-        public async Task<Killer> GetKiller(Guid id) => await _context.Killers.FirstOrDefaultAsync(k => k.Id == id);
+        public async Task<Killer> GetKiller(Guid id) 
+            => await _context.Killers
+                .Include(p => p.KillerPerks)
+                .Include(a => a.KillerAddons)
+                    .FirstOrDefaultAsync(k => k.Id == id);
 
         public async Task<bool> ExistName(string name) => await _context.Killers.AnyAsync(k => k.Name == name);
 

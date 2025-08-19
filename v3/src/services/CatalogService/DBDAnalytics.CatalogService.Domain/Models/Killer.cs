@@ -39,13 +39,15 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
         #region Улучшения
 
-        public void AddAddon(int oldId, string addonName, ImageKey? imageKey)
+        public KillerAddon AddAddon(int oldId, string addonName, ImageKey? imageKey)
         {
             GuardException.Against.That(_killerAddons.Any(a => a.Name.Value == addonName), () => new DuplicateException($"Улучшение {addonName} уже существует у киллера."));
 
             var newAddon = KillerAddon.Create(oldId, addonName, imageKey, this.Id);
 
             _killerAddons.Add(newAddon);
+
+            return newAddon;
         }
 
         public void RemoveAddon(Guid addonId)
@@ -62,13 +64,15 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
         #region Перки
 
-        public void AddPerk(int oldId, string name, ImageKey? image, int? categoryId)
+        public KillerPerk AddPerk(int oldId, string name, ImageKey? image, int? categoryId)
         {
             GuardException.Against.That(_killerPerks.Any(p => p.Name.Value == name), () => new DuplicateException($"Перк {name} уже существует у киллера."));
 
             var newPerk = KillerPerk.Create(this.Id, oldId, name, image, categoryId);
 
             _killerPerks.Add(newPerk);
+
+            return newPerk;
         }
 
         public void RemovePerk(Guid perkId)

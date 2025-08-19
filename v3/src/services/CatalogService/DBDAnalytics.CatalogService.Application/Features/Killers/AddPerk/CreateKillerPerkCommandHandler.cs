@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
+using DBDAnalytics.CatalogService.Domain.Models;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.Shared.Contracts.Responses.Killers;
 using DBDAnalytics.Shared.Domain.Constants;
@@ -25,6 +26,8 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk
         {
             try
             {
+                List<KillerPerk> addingPerks = [];
+
                 var killerId = request.Perks.FirstOrDefault()?.KillerId;
 
                 if (killerId == null)
@@ -35,10 +38,11 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk
                 foreach (var perk in request.Perks)
                 {
                     ImageKey? imageKey = await _fileUploadManager.UploadImageAsync(perk.Image, FileStoragePaths.KillerPerks(killer.Name), perk.SemanticImageName, cancellationToken);
-                    killer.AddPerk(perk.OldId, perk.Name, imageKey, null);
+                    var addPerk = killer.AddPerk(perk.OldId, perk.Name, imageKey, null);
+                    addingPerks.Add(addPerk);
                 }
 
-                var dto = _mapper.Map<List<KillerPerkResponse>>(killer.KillerPerks);
+                var dto = _mapper.Map<List<KillerPerkResponse>>(addingPerks);
 
                 await _context.SaveChangesAsync(cancellationToken);
 
