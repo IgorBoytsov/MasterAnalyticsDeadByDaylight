@@ -1,0 +1,15 @@
+﻿using DBDAnalytics.Shared.Contracts.Requests.Shared;
+using DBDAnalytics.Shared.Contracts.Responses.Maps;
+using DBDAnalytics.Shared.Domain.Results;
+using MediatR;
+using Shared.Api.Application.Validators.Abstractions;
+
+namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Create
+{
+    public sealed record CreateMeasurementCommand(int OldId, string Name, List<CreateMapCommandData> Maps) : IRequest<Result<MeasurementResponse>>,
+        IHasName;
+    
+    public sealed record CreateMapCommandData(int OldId, string Name, FileInput? Image, string SemanticImageName) : 
+        IHasName,
+        IHasSemanticImageName;
+}

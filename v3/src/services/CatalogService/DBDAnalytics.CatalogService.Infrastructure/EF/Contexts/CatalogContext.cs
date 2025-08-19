@@ -10,6 +10,9 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Contexts
         public DbSet<GameMode> GameModes { get; set; }
         public DbSet<GameEvent> GameEvents { get; set; }
 
+        public DbSet<Map> Maps { get; set; }
+        public DbSet<Measurement> Measurements { get; set; }
+        public DbSet<WhoPlacedMap> WhoPlacedMaps { get; set; }
 
         public DbSet<Killer> Killers { get; set; }
         public DbSet<KillerPerk> KillerPerks { get; set; }

@@ -8,6 +8,7 @@
         //Общие
         public const string Perks = "Perks";
         public const string Addons = "Addons";
+        public const string Maps = "Maps";
 
         /// <summary>
         /// "Killers/Portraits"

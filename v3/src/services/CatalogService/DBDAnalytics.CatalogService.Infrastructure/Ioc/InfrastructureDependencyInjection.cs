@@ -39,6 +39,9 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Ioc
             services.AddScoped<IGameModeRepository, GameModeRepository>();
             services.AddScoped<IGameEventRepository, GameEventRepository>();
 
+            services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+            services.AddScoped<IWhoPlacedMapRepository, WhoPlacedMapRepository>();
+
             services.AddScoped<IKillerRepository, KillerRepository>();
             services.AddScoped<IKillerPerkCategoryRepository, KillerPerkCategoryRepository>();
 
