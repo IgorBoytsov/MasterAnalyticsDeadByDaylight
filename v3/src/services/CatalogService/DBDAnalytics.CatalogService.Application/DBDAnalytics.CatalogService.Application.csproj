@@ -50,6 +50,12 @@
     <Folder Include="Features\Measurements\GetAll\" />
     <Folder Include="Features\Measurements\RemoveMap\" />
     <Folder Include="Features\Measurements\UpdateMap\" />
+    <Folder Include="Features\Rarities\Delete\" />
+    <Folder Include="Features\Rarities\Update\" />
+    <Folder Include="Features\Rarities\GetAll\" />
+    <Folder Include="Features\Roles\Delete\" />
+    <Folder Include="Features\Roles\GetAll\" />
+    <Folder Include="Features\Roles\Update\" />
     <Folder Include="Features\WhoPlacedMaps\Update\" />
     <Folder Include="Features\WhoPlacedMaps\Delete\" />
     <Folder Include="Features\WhoPlacedMaps\GetAll\" />

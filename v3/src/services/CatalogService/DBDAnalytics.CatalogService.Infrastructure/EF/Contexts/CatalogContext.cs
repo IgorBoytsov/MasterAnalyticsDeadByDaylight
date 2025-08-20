@@ -7,6 +7,9 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Contexts
 {
     internal sealed class CatalogContext : DbContext, IApplicationDbContext
     {
+        public DbSet<Rarity> Rarities { get; set; }
+        public DbSet<Role> Roles { get; set; }
+
         public DbSet<GameMode> GameModes { get; set; }
         public DbSet<GameEvent> GameEvents { get; set; }
 

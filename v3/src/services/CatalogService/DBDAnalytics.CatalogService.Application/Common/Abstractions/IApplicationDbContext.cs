@@ -6,6 +6,9 @@ namespace DBDAnalytics.CatalogService.Application.Common.Abstractions
 {
     public interface IApplicationDbContext : IBaseDbContext
     {
+        public DbSet<Rarity> Rarities { get; set; }
+        public DbSet<Role> Roles { get; set; }
+
         public DbSet<GameMode> GameModes { get; set; }
         public DbSet<GameEvent> GameEvents { get; set; }
 
