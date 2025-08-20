@@ -8,6 +8,7 @@ using DBDAnalytics.Shared.Domain.Constants;
 using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk
 {
@@ -31,9 +32,28 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk
                 var killerId = request.Perks.FirstOrDefault()?.KillerId;
 
                 if (killerId == null)
-                    return Result<List<KillerPerkResponse>>.Failure(new Error(ErrorCode.NotFound, "Киллер не найден, либо нечего добавлять."));
+                    return Result<List<KillerPerkResponse>>.Failure(new Error(ErrorCode.NotFound, "У убийцы нету идентификатора."));
+
+                #region Проверка на дубликаты записей
+
+                var requestPerksNames = request.Perks
+                    .Select(p => p.Name)
+                    .ToList();
+
+                var existingPerkNames = await _context.KillerPerks
+                    .Where(perk => perk.KillerId == killerId && requestPerksNames.Contains(perk.Name))
+                    .Select(perk => perk.Name.Value)
+                    .ToListAsync(cancellationToken);
+
+                if (existingPerkNames.Any())
+                    return Result<List<KillerPerkResponse>>.Failure(new Error(ErrorCode.Validation, $"Следующие перки уже существуют для этого убийцы: {string.Join(", ", existingPerkNames)}"));
+
+                #endregion
 
                 var killer = await _killerRepository.GetKiller(killerId.Value);
+
+                if (killer == null)
+                    return Result<List<KillerPerkResponse>>.Failure(new Error(ErrorCode.NotFound, "Киллер не найден."));
 
                 foreach (var perk in request.Perks)
                 {

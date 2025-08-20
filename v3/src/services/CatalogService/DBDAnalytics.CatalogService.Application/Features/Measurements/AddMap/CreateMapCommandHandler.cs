@@ -3,11 +3,13 @@ using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
 using DBDAnalytics.CatalogService.Domain.Models;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
+using DBDAnalytics.Shared.Contracts.Responses.Killers;
 using DBDAnalytics.Shared.Contracts.Responses.Maps;
 using DBDAnalytics.Shared.Domain.Constants;
 using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Measurements.AddMap
 {
@@ -31,10 +33,29 @@ namespace DBDAnalytics.CatalogService.Application.Features.Measurements.AddMap
 
                 var measurementId = request.Maps.FirstOrDefault()?.MeasurementId;
 
-                var measurement = await _measurementRepository.GetMeasurement(measurementId!.Value);
+                if (measurementId == null)
+                    return Result<List<MapResponse>>.Failure(new Error(ErrorCode.NotFound, "У измерения нету идентификатора."));
 
-                if (measurement is null)
-                    return Result<List<MapResponse>>.Failure(new Error(ErrorCode.NotFound, $"Измерение с ID '{measurementId}' не найдено."));
+                #region Проверка на дупликаты записей
+
+                var requestMapsNames = request.Maps
+                    .Select(a => a.Name)
+                    .ToList();
+
+                var existingMapNames = await _context.Maps
+                    .Where(map => map.MeasurementId == measurementId && requestMapsNames.Contains(map.Name))
+                    .Select(map => map.Name)
+                    .ToListAsync(cancellationToken);
+
+                if (existingMapNames.Any())
+                    return Result<List<MapResponse>>.Failure(new Error(ErrorCode.Validation, $"Следующие карты уже существуют для этого измерения: {string.Join(", ", existingMapNames)}"));
+
+                #endregion
+
+                var measurement = await _measurementRepository.GetMeasurement(measurementId.Value);
+
+                if (measurement == null)
+                    return Result<List<MapResponse>>.Failure(new Error(ErrorCode.NotFound, $"Измерение не найдено."));
 
                 foreach (var map in request.Maps)
                 {

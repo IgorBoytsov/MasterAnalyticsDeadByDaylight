@@ -33,7 +33,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Create
             When(x => !string.IsNullOrWhiteSpace(x.Name), () =>
             {
                 RuleFor(k => k.Name)
-                    .MustAsync(async (name, cancellationToken) => await _killerRepository.ExistName(name)).WithMessage($"Киллер с таким именем уже существует");
+                    .MustAsync(async (name, cancellationToken) => !await _killerRepository.ExistName(name)).WithMessage($"Киллер с таким именем уже существует");
             });
         }
     }

@@ -8,6 +8,7 @@ using DBDAnalytics.Shared.Domain.Constants;
 using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddAddon
 {
@@ -31,9 +32,28 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddAddon
                 var killerId = request.Addons.FirstOrDefault()?.KillerId;
 
                 if (killerId == null)
-                    return Result<List<KillerAddonResponse>>.Failure(new Error(ErrorCode.NotFound, "Киллер не найден, либо нечего добавлять."));
+                    return Result<List<KillerAddonResponse>>.Failure(new Error(ErrorCode.NotFound, "У убийцы нету идентификатора."));
+
+                #region Проверка на дубликаты записей
+
+                var requestAddonsNames = request.Addons
+                    .Select(a => a.Name)
+                    .ToList();
+
+                var existingAddonNames = await _context.KillerAddons
+                    .Where(addon => addon.KillerId == killerId && requestAddonsNames.Contains(addon.Name))
+                    .Select(addon => addon.Name)
+                    .ToListAsync(cancellationToken);
+
+                if (existingAddonNames.Any())
+                    return Result<List<KillerAddonResponse>>.Failure(new Error(ErrorCode.Validation, $"Следующие улучшения уже существуют для этого убийцы: {string.Join(", ", existingAddonNames)}"));
+
+                #endregion
 
                 var killer = await _killerRepository.GetKiller(killerId.Value);
+
+                if (killer == null)
+                    return Result<List<KillerAddonResponse>>.Failure(new Error(ErrorCode.NotFound, "Киллер не найден."));
 
                 foreach (var addon in request.Addons)
                 {
