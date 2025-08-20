@@ -45,6 +45,10 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Ioc
             services.AddScoped<IMeasurementRepository, MeasurementRepository>();
             services.AddScoped<IWhoPlacedMapRepository, WhoPlacedMapRepository>();
 
+            services.AddScoped<IPlatformRepository, PlatformRepository>();
+            services.AddScoped<ITypeDeathRepository, TypeDeathRepository>();
+            services.AddScoped<IPlayerAssociationRepository, PlayerAssociationRepository>();
+
             services.AddScoped<IKillerRepository, KillerRepository>();
             services.AddScoped<IKillerPerkCategoryRepository, KillerPerkCategoryRepository>();
 

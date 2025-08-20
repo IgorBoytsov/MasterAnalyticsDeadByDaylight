@@ -17,6 +17,10 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Contexts
         public DbSet<Measurement> Measurements { get; set; }
         public DbSet<WhoPlacedMap> WhoPlacedMaps { get; set; }
 
+        public DbSet<TypeDeath> TypeDeaths { get; set; }
+        public DbSet<Platform> Platforms { get; set; }
+        public DbSet<PlayerAssociation> PlayerAssociations { get; set; }
+
         public DbSet<Killer> Killers { get; set; }
         public DbSet<KillerPerk> KillerPerks { get; set; }
         public DbSet<KillerAddon> KillerAddons { get; set; }
