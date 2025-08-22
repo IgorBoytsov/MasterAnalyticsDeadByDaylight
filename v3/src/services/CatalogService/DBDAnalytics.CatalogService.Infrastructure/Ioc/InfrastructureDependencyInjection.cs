@@ -49,6 +49,9 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Ioc
             services.AddScoped<ITypeDeathRepository, TypeDeathRepository>();
             services.AddScoped<IPlayerAssociationRepository, PlayerAssociationRepository>();
 
+            services.AddScoped<IOfferingRepository, OfferingRepository>();
+            services.AddScoped<IOfferingCategoryRepository, OfferingCategoryRepository>();
+
             services.AddScoped<IKillerRepository, KillerRepository>();
             services.AddScoped<IKillerPerkCategoryRepository, KillerPerkCategoryRepository>();
 

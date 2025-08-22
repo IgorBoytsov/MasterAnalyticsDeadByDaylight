@@ -50,6 +50,14 @@
     <Folder Include="Features\Measurements\GetAll\" />
     <Folder Include="Features\Measurements\RemoveMap\" />
     <Folder Include="Features\Measurements\UpdateMap\" />
+    <Folder Include="Features\OfferingCategories\GetAll\" />
+    <Folder Include="Features\OfferingCategories\Delete\" />
+    <Folder Include="Features\OfferingCategories\Hide\" />
+    <Folder Include="Features\OfferingCategories\Update\" />
+    <Folder Include="Features\Offerings\Delete\" />
+    <Folder Include="Features\Offerings\GetAll\" />
+    <Folder Include="Features\Offerings\Hide\" />
+    <Folder Include="Features\Offerings\Update\" />
     <Folder Include="Features\Platforms\Delete\" />
     <Folder Include="Features\Platforms\GetAll\" />
     <Folder Include="Features\Platforms\Update\" />

@@ -3,6 +3,7 @@ using System;
 using DBDAnalytics.CatalogService.Infrastructure.EF.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
 {
     [DbContext(typeof(CatalogContext))]
-    partial class CatalogContextModelSnapshot : ModelSnapshot
+    [Migration("20250821132117_AddOfferingInfo")]
+    partial class AddOfferingInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,10 +256,6 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("Id");
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("integer")
-                        .HasColumnName("OfferingCategoryId");
-
                     b.Property<string>("ImageKey")
                         .HasColumnType("text")
                         .HasColumnName("ImageKey");
@@ -267,6 +266,10 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("Name")
                         .UseCollation("case_insensitive");
+
+                    b.Property<int?>("OfferingCategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("OfferingCategoryId");
 
                     b.Property<int>("OldId")
                         .HasColumnType("integer")
@@ -282,9 +285,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("RarityId");
+                    b.HasIndex("OfferingCategoryId");
 
                     b.ToTable("Offerings", (string)null);
                 });
@@ -507,17 +508,10 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                 {
                     b.HasOne("DBDAnalytics.CatalogService.Domain.Models.OfferingCategory", "OfferingCategory")
                         .WithMany("Offerings")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("DBDAnalytics.CatalogService.Domain.Models.Rarity", "Rarity")
-                        .WithMany("Offerings")
-                        .HasForeignKey("RarityId")
+                        .HasForeignKey("OfferingCategoryId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("OfferingCategory");
-
-                    b.Navigation("Rarity");
                 });
 
             modelBuilder.Entity("DBDAnalytics.CatalogService.Domain.Models.Killer", b =>
@@ -538,11 +532,6 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                 });
 
             modelBuilder.Entity("DBDAnalytics.CatalogService.Domain.Models.OfferingCategory", b =>
-                {
-                    b.Navigation("Offerings");
-                });
-
-            modelBuilder.Entity("DBDAnalytics.CatalogService.Domain.Models.Rarity", b =>
                 {
                     b.Navigation("Offerings");
                 });
