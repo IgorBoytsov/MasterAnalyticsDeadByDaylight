@@ -29,6 +29,10 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Contexts
         public DbSet<KillerAddon> KillerAddons { get; set; }
         public DbSet<KillerPerkCategory> KillerPerkCategories { get; set; }
 
+        public DbSet<Survivor> Survivors { get; set; }
+        public DbSet<SurvivorPerk> SurvivorPerks { get; set; }
+        public DbSet<SurvivorPerkCategory> SurvivorPerkCategories { get; set; }
+
         public CatalogContext(DbContextOptions<CatalogContext> options) : base(options)
         {
             

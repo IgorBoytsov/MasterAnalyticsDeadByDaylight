@@ -27,5 +27,9 @@ namespace DBDAnalytics.CatalogService.Application.Common.Abstractions
         public DbSet<KillerPerk> KillerPerks { get; set; }
         public DbSet<KillerAddon> KillerAddons { get; set; }
         public DbSet<KillerPerkCategory> KillerPerkCategories { get; set; }
+
+        public DbSet<Survivor> Survivors {  get; set; }
+        public DbSet<SurvivorPerk> SurvivorPerks { get; set; }
+        public DbSet<SurvivorPerkCategory> SurvivorPerkCategories { get; set; }
     }
 }

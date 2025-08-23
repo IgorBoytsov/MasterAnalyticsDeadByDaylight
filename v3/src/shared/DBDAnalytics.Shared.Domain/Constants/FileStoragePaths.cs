@@ -4,6 +4,7 @@
     {
         // Базовые категории
         public const string KillersBase = "Killers";
+        public const string SurvivorsBase = "Survivors";
 
         //Общие
         public const string Perks = "Perks";
@@ -25,6 +26,10 @@
         /// </summary>
         public const string KillerAbilities = KillersBase + "/Abilities";
 
+        /// <summary>
+        /// "Survivors/Portraits"
+        /// </summary>
+        public const string SurvivorPortraits = SurvivorsBase + "/Portraits";
 
         /// <summary>
         /// "Offerings/KillerRole"
@@ -51,6 +56,13 @@
         /// Killers/Addons/Trapper
         /// </summary>
         public static string KillerAddons(string killerName) => $"{KillersBase}/{Addons}/{Sanitize(killerName)}";
+
+        /// <summary>
+        /// Survivors/Perks/Кейт-Денсон
+        /// </summary>
+        /// <param name="survivorName"></param>
+        /// <returns></returns>
+        public static string SurvivorPerks(string survivorName) => $"{SurvivorsBase}/{Perks}/{Sanitize(survivorName)}";
 
         //private static string Sanitize(string input) => input.Trim().ToLower().Replace(" ", "-");
 

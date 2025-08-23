@@ -3,6 +3,7 @@ using System;
 using DBDAnalytics.CatalogService.Infrastructure.EF.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
 {
     [DbContext(typeof(CatalogContext))]
-    partial class CatalogContextModelSnapshot : ModelSnapshot
+    [Migration("20250822153239_AddSurvivorInfo")]
+    partial class AddSurvivorInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -468,8 +471,6 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("SurvivorId");
 
                     b.ToTable("SurvivorPerks", (string)null);
@@ -608,11 +609,6 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
 
             modelBuilder.Entity("DBDAnalytics.CatalogService.Domain.Models.SurvivorPerk", b =>
                 {
-                    b.HasOne("DBDAnalytics.CatalogService.Domain.Models.SurvivorPerkCategory", null)
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("DBDAnalytics.CatalogService.Domain.Models.Survivor", "Survivor")
                         .WithMany("SurvivorPerks")
                         .HasForeignKey("SurvivorId")

@@ -70,6 +70,16 @@
     <Folder Include="Features\Roles\Delete\" />
     <Folder Include="Features\Roles\GetAll\" />
     <Folder Include="Features\Roles\Update\" />
+    <Folder Include="Features\SurvivorPerkCategories\Delete\" />
+    <Folder Include="Features\SurvivorPerkCategories\GetAll\" />
+    <Folder Include="Features\SurvivorPerkCategories\Update\" />
+    <Folder Include="Features\SurvivorPerks\GetById\" />
+    <Folder Include="Features\SurvivorPerks\GetAll\" />
+    <Folder Include="Features\Survivors\GetAll\" />
+    <Folder Include="Features\Survivors\Delete\" />
+    <Folder Include="Features\Survivors\Update\" />
+    <Folder Include="Features\Survivors\RemovePerk\" />
+    <Folder Include="Features\Survivors\UpdatePerk\" />
     <Folder Include="Features\TypeDeaths\Delete\" />
     <Folder Include="Features\TypeDeaths\Update\" />
     <Folder Include="Features\TypeDeaths\GetAll\" />
