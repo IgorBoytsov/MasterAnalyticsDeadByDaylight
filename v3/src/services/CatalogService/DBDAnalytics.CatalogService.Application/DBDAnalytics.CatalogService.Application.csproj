@@ -21,6 +21,11 @@
     <Folder Include="Features\GameModes\Delete\" />
     <Folder Include="Features\GameModes\GetAll\" />
     <Folder Include="Features\GameModes\Hide\" />
+    <Folder Include="Features\Items\Update\" />
+    <Folder Include="Features\Items\Delete\" />
+    <Folder Include="Features\Items\GetAll\" />
+    <Folder Include="Features\Items\RemoveAddon\" />
+    <Folder Include="Features\Items\UpdateAddon\" />
     <Folder Include="Features\KillerAddons\GetByIdKiller\" />
     <Folder Include="Features\KillerAddons\GetById\" />
     <Folder Include="Features\KillerPerkCategories\GetAll\" />

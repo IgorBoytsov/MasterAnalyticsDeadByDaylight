@@ -58,6 +58,8 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Ioc
             services.AddScoped<ISurvivorRepository, SurvivorRepository>();
             services.AddScoped<ISurvivorPerkCategoryRepository, SurvivorPerkCategoryRepository>();
 
+            services.AddScoped<IItemRepository, ItemRepository>();
+
             return services;
         }
     }

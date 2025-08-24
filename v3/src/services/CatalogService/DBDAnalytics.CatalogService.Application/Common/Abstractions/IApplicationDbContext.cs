@@ -31,5 +31,8 @@ namespace DBDAnalytics.CatalogService.Application.Common.Abstractions
         public DbSet<Survivor> Survivors {  get; set; }
         public DbSet<SurvivorPerk> SurvivorPerks { get; set; }
         public DbSet<SurvivorPerkCategory> SurvivorPerkCategories { get; set; }
+
+        public DbSet<Item> Items { get; set; }
+        public DbSet<ItemAddon> ItemsAddon { get; set; }
     }
 }

@@ -11,6 +11,7 @@
         public const string Addons = "Addons";
         public const string Maps = "Maps";
         public const string Offerings = "Offerings";
+        public const string Items = "Items";
 
         public const string KillerRole = "KillerRole";
         public const string SurvivorRole = "SurvivorRole";
@@ -63,6 +64,8 @@
         /// <param name="survivorName"></param>
         /// <returns></returns>
         public static string SurvivorPerks(string survivorName) => $"{SurvivorsBase}/{Perks}/{Sanitize(survivorName)}";
+
+        public static string ItemAddons(string itemName) => $"{Items}/{itemName}";
 
         //private static string Sanitize(string input) => input.Trim().ToLower().Replace(" ", "-");
 
