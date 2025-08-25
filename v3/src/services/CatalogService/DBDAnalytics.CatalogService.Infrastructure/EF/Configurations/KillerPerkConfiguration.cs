@@ -55,6 +55,13 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
                     imageKey => imageKey != null ? imageKey.Value : null,
                     dbValue => dbValue != null ? ImageKey.Create(dbValue) : null);
 
+            /*__Связи__*/
+
+            builder.HasOne<KillerPerkCategory>()
+                .WithMany()
+                .HasForeignKey(kp => kp.CategoryId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

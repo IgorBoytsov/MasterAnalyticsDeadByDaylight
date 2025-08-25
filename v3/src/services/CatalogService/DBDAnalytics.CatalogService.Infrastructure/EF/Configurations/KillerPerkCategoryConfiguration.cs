@@ -33,16 +33,6 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
                 .HasMaxLength(KillerPerkCategoryName.MAX_LENGTH)
                 .UseCollation(PostgresConstants.COLLATION_NAME)
                 .IsRequired();
-
-            /*__Связи__*/
-
-            builder.HasMany(c => c.KillerPerks)
-                .WithOne(kp => kp.Category)
-                .HasForeignKey(kp => kp.CategoryId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            builder.Navigation(c => c.KillerPerks).HasField("_killerPerks").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

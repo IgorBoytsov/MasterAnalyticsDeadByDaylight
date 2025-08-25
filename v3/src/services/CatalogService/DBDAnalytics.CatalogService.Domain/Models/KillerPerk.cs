@@ -14,7 +14,6 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         public KillerPerkCategoryId? CategoryId { get; private set; }
 
         public Killer Killer { get; private set; } = null!;
-        public KillerPerkCategory? Category { get; private set; } = null!;
 
         private KillerPerk() { }
 

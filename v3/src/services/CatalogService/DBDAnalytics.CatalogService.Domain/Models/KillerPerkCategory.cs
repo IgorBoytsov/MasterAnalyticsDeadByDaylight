@@ -4,13 +4,10 @@ using DBDAnalytics.Shared.Domain.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {
-    public sealed class KillerPerkCategory : Entity<KillerPerkCategoryId>
+    public sealed class KillerPerkCategory : AggregateRoot<KillerPerkCategoryId>
     {
         public int OldId { get; private set; }
         public KillerPerkCategoryName Name { get; private set; } = null!;
-
-        private readonly List<KillerPerk> _killerPerks = [];
-        public IReadOnlyCollection<KillerPerk> KillerPerks => _killerPerks.AsReadOnly();
 
         private KillerPerkCategory() { }
 
