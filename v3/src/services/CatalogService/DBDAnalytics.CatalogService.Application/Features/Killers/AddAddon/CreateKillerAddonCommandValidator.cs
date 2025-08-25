@@ -9,15 +9,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddAddon
     {
         public CreateKillerAddonCommandValidator()
         {
-            RuleFor(x => x.Addons)
-                .NotEmpty().WithMessage("Кол-во улучшений для киллера должно быть больше 0, что бы операция могла быть выполнена");
-
-            RuleForEach(x => x.Addons)
-                .SetValidator(new AddAddonToKillerCommandDataValidator());
-
-            RuleFor(x => x.Addons)
-                .Must(addons => addons.GroupBy(a => a.Name.ToLower()).All(g => g.Count() == 1)).WithMessage("Найдены дубликаты аддонов по имени в одном запросе.")
-                .When(x => x.Addons != null && x.Addons.Any());
+            Include(new AddonsValidator<CreateKillerAddonCommand, AddAddonToKillerCommandData>(new AddAddonToKillerCommandDataValidator(), mustNotBeEmpty: true));
         }
     }
 

@@ -17,22 +17,8 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Create
 
             Include(new NameValidator<CreateItemCommand>(ItemName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<CreateItemCommand>());
-
-            RuleFor(x => x.Addons)
-                .Must(perks => perks.GroupBy(p => p.Name.ToLower()).All(g => g.Count() == 1)).WithMessage("Найдены дубликаты улучшений по имени в одном запросе.")
-                .When(x => x.Addons != null && x.Addons.Any());
-
-            RuleForEach(x => x.Addons)
-                .SetValidator(new CreateItemAddonCommandDataValidator());
-
-            When(x => x.Image != null, () =>
-            {
-                RuleFor(x => x.Image!.FileName)
-                .NotEmpty().WithMessage("Имя файла перка не может быть пустым");
-
-                RuleFor(x => x.Image!.Content)
-                .NotEmpty().WithMessage("Содержимое файла перка не может быть пустым.");
-            });
+            Include(new MayFileInputValidator());
+            Include(new AddonsValidator<CreateItemCommand, CreateItemAddonCommandData>(new CreateItemAddonCommandDataValidator()));
 
             When(x => !string.IsNullOrWhiteSpace(x.Name), () =>
             {

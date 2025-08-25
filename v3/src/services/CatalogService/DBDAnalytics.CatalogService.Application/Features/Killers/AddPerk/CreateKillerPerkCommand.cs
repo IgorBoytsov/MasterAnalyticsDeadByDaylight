@@ -7,7 +7,8 @@ using Shared.Api.Application.Validators.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk
 {
-    public sealed record CreateKillerPerkCommand(List<AddPerkToKillerCommandData> Perks) : IRequest<Result<List<KillerPerkResponse>>>;
+    public sealed record CreateKillerPerkCommand(List<AddPerkToKillerCommandData> Perks) : IRequest<Result<List<KillerPerkResponse>>>,
+        IHasPerks<AddPerkToKillerCommandData>;
 
     public sealed record AddPerkToKillerCommandData(Guid KillerId, int OldId, string Name, FileInput? Image, string SemanticImageName) :
         IHasKillerId,

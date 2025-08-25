@@ -9,7 +9,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Create
 {
     public sealed record CreateItemCommand(int OldId, string Name, FileInput? Image, string SemanticImageName, List<CreateItemAddonCommandData> Addons) : IRequest<Result<ItemResponse>>,
         IHasName,
-        IHasSemanticImageName;
+        IMayHasFileInput,
+        IHasSemanticImageName,
+        IHasAddons<CreateItemAddonCommandData>;
 
     public sealed record CreateItemAddonCommandData(int OldId, string Name, FileInput? Image, string SemanticImageName, int? RarityId) :
         IHasName,

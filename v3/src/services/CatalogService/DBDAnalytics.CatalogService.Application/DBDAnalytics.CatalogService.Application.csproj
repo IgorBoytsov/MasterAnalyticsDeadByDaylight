@@ -45,8 +45,6 @@
     <Folder Include="Features\Killers\RemovePerk\" />
     <Folder Include="Features\Killers\HidePerk\" />
     <Folder Include="Features\Killers\Delete\" />
-    <Folder Include="Features\Killers\Validators\Abstractions\" />
-    <Folder Include="Features\Killers\Validators\Implementations\" />
     <Folder Include="Features\Maps\GetByIdMeasurement\" />
     <Folder Include="Features\Maps\GetAll\" />
     <Folder Include="Features\Measurements\Update\" />
@@ -55,6 +53,7 @@
     <Folder Include="Features\Measurements\GetAll\" />
     <Folder Include="Features\Measurements\RemoveMap\" />
     <Folder Include="Features\Measurements\UpdateMap\" />
+    <Folder Include="Features\Measurements\Validators\" />
     <Folder Include="Features\OfferingCategories\GetAll\" />
     <Folder Include="Features\OfferingCategories\Delete\" />
     <Folder Include="Features\OfferingCategories\Hide\" />

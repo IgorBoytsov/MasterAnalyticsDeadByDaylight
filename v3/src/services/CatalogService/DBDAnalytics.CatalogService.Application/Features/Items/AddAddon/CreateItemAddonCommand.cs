@@ -7,7 +7,8 @@ using Shared.Api.Application.Validators.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Items.AddAddon
 {
-    public sealed record CreateItemAddonCommand(List<AddItemAddonCommandData> Addons) : IRequest<Result<List<ItemAddonResponse>>>;
+    public sealed record CreateItemAddonCommand(List<AddItemAddonCommandData> Addons) : IRequest<Result<List<ItemAddonResponse>>>,
+        IHasAddons<AddItemAddonCommandData>;
 
     public sealed record AddItemAddonCommandData(Guid ItemId, int OldId, string Name, FileInput? Image, string SemanticImageName, int? RarityId) :
         IHasName,

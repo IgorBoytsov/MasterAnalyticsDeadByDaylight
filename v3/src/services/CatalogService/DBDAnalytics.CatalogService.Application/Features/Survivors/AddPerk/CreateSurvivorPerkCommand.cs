@@ -7,7 +7,8 @@ using Shared.Api.Application.Validators.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Survivors.AddPerk
 {
-    public sealed record CreateSurvivorPerkCommand(List<AddSurvivorPerkCommandData> Perks) : IRequest<Result<List<SurvivorPerkResponse>>>;
+    public sealed record CreateSurvivorPerkCommand(List<AddSurvivorPerkCommandData> Perks) : IRequest<Result<List<SurvivorPerkResponse>>>,
+        IHasPerks<AddSurvivorPerkCommandData>;
 
     public sealed record AddSurvivorPerkCommandData(Guid SurvivorId, int OldId, string Name, FileInput? Image, string SemanticImageName) : 
         IHasName,

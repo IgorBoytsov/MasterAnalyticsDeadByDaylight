@@ -13,7 +13,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Create
         FileInput? AbilityImage, string SemanticAbilityImageName,
         List<CreateAddonCommandData> Addons,
         List<CreatePerkCommandData> Perks) : IRequest<Result<KillerResponse>>,
-        IHasName;
+        IHasName,
+        IHasAddons<CreateAddonCommandData>,
+        IHasPerks<CreatePerkCommandData>;
 
     public sealed record CreateAddonCommandData(int OldId, string Name, FileInput? Image, string SemanticImageName) : 
         IHasName,

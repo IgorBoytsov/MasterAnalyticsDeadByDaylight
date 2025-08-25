@@ -17,13 +17,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Create
 
             Include(new NameValidator<CreateSurvivorCommand>(SurvivorName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<CreateSurvivorCommand>());
-
-            RuleFor(x => x.Perks)
-                .Must(perks => perks.GroupBy(p => p.Name.ToLower()).All(g => g.Count() == 1)).WithMessage("Найдены дубликаты перков по имени в одном запросе.")
-                .When(x => x.Perks != null && x.Perks.Any());
-
-            RuleForEach(x => x.Perks)
-                .SetValidator(new CreateSurvivorPerkCommandDataValidator());
+            Include(new PerksValidator<CreateSurvivorCommand, CreateSurvivorPerkCommandData>(new CreateSurvivorPerkCommandDataValidator()));
 
             When(x => !string.IsNullOrWhiteSpace(x.Name), () =>
             {

@@ -9,7 +9,8 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Create
 {
     public sealed record CreateSurvivorCommand(int OldId, string Name, FileInput? Image, string SemanticImageName, List<CreateSurvivorPerkCommandData> Perks) : IRequest<Result<SurvivorResponse>>,
         IHasName,
-        IHasSemanticImageName;
+        IHasSemanticImageName,
+        IHasPerks<CreateSurvivorPerkCommandData>;
 
     public sealed record CreateSurvivorPerkCommandData(int OldId, string Name, FileInput? Image, string SemanticImageName) :
         IHasName,

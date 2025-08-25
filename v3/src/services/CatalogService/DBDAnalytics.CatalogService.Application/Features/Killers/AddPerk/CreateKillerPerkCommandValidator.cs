@@ -9,15 +9,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk
     {
         public CreateKillerPerkCommandValidator()
         {
-            RuleFor(x => x.Perks)
-                .NotEmpty().WithMessage("Кол-во перков для киллера должно быть больше 0, что бы операция могла быть выполнена");
-
-            RuleForEach(x => x.Perks)
-                .SetValidator(new AddPerkToKillerCommandDataValidator());
-
-            RuleFor(x => x.Perks)
-                .Must(perks => perks.GroupBy(a => a.Name.ToLower()).All(g => g.Count() == 1)).WithMessage("Найдены дубликаты перков по имени в одном запросе.")
-                .When(x => x.Perks != null && x.Perks.Any());
+            Include(new PerksValidator<CreateKillerPerkCommand, AddPerkToKillerCommandData>(new AddPerkToKillerCommandDataValidator(), mustNotBeEmpty: true));
         }
     }
 

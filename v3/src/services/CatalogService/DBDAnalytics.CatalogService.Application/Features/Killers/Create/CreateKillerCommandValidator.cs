@@ -16,20 +16,8 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Create
             _killerRepository = killerRepository;
 
             Include(new NameValidator<CreateKillerCommand>(KillerName.MAX_LENGTH));
-
-            RuleForEach(x => x.Addons)
-                .SetValidator(new CreateAddonCommandDataValidator());
-
-            RuleForEach(x => x.Perks)
-                .SetValidator(new CreatePerkCommandDataValidator());
-
-            RuleFor(x => x.Addons)
-                .Must(addons => addons.GroupBy(a => a.Name.ToLower()).All(g => g.Count() == 1)).WithMessage("Найдены дубликаты аддонов по имени в одном запросе.")
-                .When(x => x.Addons != null && x.Addons.Any());
-
-            RuleFor(x => x.Perks)
-                .Must(perks => perks.GroupBy(a => a.Name.ToLower()).All(g => g.Count() == 1)).WithMessage("Найдены дубликаты перков по имени в одном запросе.")
-                .When(x => x.Perks != null && x.Perks.Any());
+            Include(new AddonsValidator<CreateKillerCommand, CreateAddonCommandData>(new CreateAddonCommandDataValidator()));
+            Include(new PerksValidator<CreateKillerCommand, CreatePerkCommandData>(new CreatePerkCommandDataValidator()));
 
             When(x => !string.IsNullOrWhiteSpace(x.Name), () =>
             {
