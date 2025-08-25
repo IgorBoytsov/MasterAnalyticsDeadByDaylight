@@ -3,13 +3,10 @@ using DBDAnalytics.Shared.Domain.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {
-    public sealed class OfferingCategory : Entity<OfferingCategoryId>
+    public sealed class OfferingCategory : AggregateRoot<OfferingCategoryId>
     {
         public int OldId { get; private set; }
         public OfferingCategoryName Name { get; private set; } = null!;
-
-        private readonly List<Offering> _offerings = [];
-        public IReadOnlyCollection<Offering> Offerings => _offerings.AsReadOnly();
 
         private OfferingCategory() { }
 

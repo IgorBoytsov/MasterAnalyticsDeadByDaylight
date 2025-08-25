@@ -32,15 +32,6 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
                 .HasMaxLength(RarityName.MAX_LENGTH)
                 .UseCollation(PostgresConstants.COLLATION_NAME)
                 .IsRequired();
-
-            builder.HasMany(r => r.Offerings)
-                .WithOne(o => o.Rarity)
-                .HasForeignKey(o => o.RarityId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            builder.Navigation(r => r.Offerings).HasField("_offerings").UsePropertyAccessMode(PropertyAccessMode.Field);
-
         }
     }
 }

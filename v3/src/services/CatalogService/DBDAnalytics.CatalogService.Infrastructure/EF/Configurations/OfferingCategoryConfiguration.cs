@@ -32,16 +32,6 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
                 .HasMaxLength(OfferingCategoryName.MAX_LENGTH)
                 .UseCollation(PostgresConstants.COLLATION_NAME)
                 .IsRequired();
-
-            /*__Связи__*/
-
-            builder.HasMany(c => c.Offerings)
-                .WithOne(o => o.OfferingCategory)
-                .HasForeignKey(o => o.CategoryId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            builder.Navigation(c => c.Offerings).HasField("_offerings").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

@@ -67,6 +67,26 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
                     imageKey => imageKey != null ? imageKey.Value : null,
                     dbValue => dbValue != null ? ImageKey.Create(dbValue) : null)
                 .IsRequired(false);
+
+            /*__Связи__*/
+
+            builder.HasOne<Role>()
+                .WithMany()
+                .HasForeignKey(o => o.RoleId)
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<OfferingCategory>()
+                .WithMany()
+                .HasForeignKey(o => o.CategoryId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasOne<Rarity>()
+                .WithMany()
+                .HasForeignKey(o => o.RarityId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

@@ -17,9 +17,6 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         public RarityId? RarityId { get; private set; }
         public OfferingCategoryId? CategoryId { get; private set; }
 
-        public OfferingCategory? OfferingCategory { get; private set; }
-        public Rarity? Rarity { get; private set; }
-
         private Offering() { }
 
         private Offering(Guid id, int oldId, OfferingName name, ImageKey? imageKey, RoleId roleId) : base(id)
@@ -46,34 +43,23 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return offering;
         }
 
-        /// <exception cref="InvalidKillerPropertyException"></exception>
+        ///// <exception cref="InvalidKillerPropertyException"></exception>
         public void AssignCategory(OfferingCategory category)
         {
             GuardException.Against.Null(category, nameof(category));
 
-            OfferingCategory = category;
             CategoryId = category.Id;
         }
 
-        public void RemoveCategory()
-        {
-            OfferingCategory = null;
-            CategoryId = null;
-        }
+        public void RemoveCategory() => CategoryId = null;
 
         /// <exception cref="InvalidKillerPropertyException"></exception>
         public void AssignRarity(Rarity rarity)
         {
             GuardException.Against.Null(rarity, nameof(rarity));
-
-            Rarity = rarity;
             RarityId = rarity.Id;
         }
 
-        public void RemoveRarity()
-        {
-            Rarity = null;
-            RarityId = null;
-        }
+        public void RemoveRarity() => RarityId = null;
     }
 }

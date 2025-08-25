@@ -8,9 +8,6 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         public int OldId { get; private set; }
         public RarityName Name { get; private set; } = null!;
 
-        private readonly List<Offering> _offerings = [];
-        public IReadOnlyCollection<Offering> Offerings => _offerings.AsReadOnly();
-
         private Rarity() { }
 
         private Rarity(int oldId, RarityName rarityName)
