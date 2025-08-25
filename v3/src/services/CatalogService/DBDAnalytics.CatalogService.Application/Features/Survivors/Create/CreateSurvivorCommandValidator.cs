@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Repository;
+using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Survivor;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerk;
 using FluentValidation;
@@ -38,15 +39,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Create
         {
             Include(new NameValidator<CreateSurvivorPerkCommandData>(SurvivorPerkName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<CreateSurvivorPerkCommandData>());
-
-            When(x => x.Image != null, () =>
-            {
-                RuleFor(x => x.Image!.FileName)
-                .NotEmpty().WithMessage("Имя файла перка не может быть пустым");
-
-                RuleFor(x => x.Image!.Content)
-                .NotEmpty().WithMessage("Содержимое файла перка не может быть пустым.");
-            });
+            Include(new MayFileInputValidator());
         }
     }
 }

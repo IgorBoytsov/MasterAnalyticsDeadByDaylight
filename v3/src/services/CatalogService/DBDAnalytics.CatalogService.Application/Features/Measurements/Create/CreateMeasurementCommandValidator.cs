@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Repository;
+using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Map;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Measurement;
 using FluentValidation;
@@ -36,15 +37,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Create
         {
             Include(new NameValidator<CreateMapCommandData>(MapName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<CreateMapCommandData>());
-
-            When(m => m.Image != null, () =>
-            {
-                RuleFor(x => x.Image!.FileName)
-                    .NotEmpty().WithMessage("Имя файла улучшения не может быть пустым");
-
-                RuleFor(x => x.Image!.Content)
-                    .NotEmpty().WithMessage("Содержимое файла улучшения не может быть пустым.");
-            });
+            Include(new MayFileInputValidator());
         }
     }
 }

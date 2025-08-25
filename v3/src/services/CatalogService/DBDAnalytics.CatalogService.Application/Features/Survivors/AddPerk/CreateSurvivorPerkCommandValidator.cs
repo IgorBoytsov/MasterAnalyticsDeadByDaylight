@@ -1,4 +1,5 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerk;
+﻿using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerk;
 using FluentValidation;
 using Shared.Api.Application.Validators.Implementations;
 
@@ -26,6 +27,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.AddPerk
         {
             Include(new NameValidator<AddSurvivorPerkCommandData>(SurvivorPerkName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<AddSurvivorPerkCommandData>());
+            Include(new MayFileInputValidator());
         }
     }
 }

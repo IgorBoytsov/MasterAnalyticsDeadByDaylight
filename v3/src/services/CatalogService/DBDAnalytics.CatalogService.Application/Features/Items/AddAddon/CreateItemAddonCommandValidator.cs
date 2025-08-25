@@ -1,4 +1,5 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.ItemAddon;
+﻿using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.ItemAddon;
 using FluentValidation;
 using Shared.Api.Application.Validators.Implementations;
 
@@ -26,15 +27,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.AddAddon
         {
             Include(new NameValidator<AddItemAddonCommandData>(ItemAddonName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<AddItemAddonCommandData>());
-
-            When(x => x.Image != null, () =>
-            {
-                RuleFor(x => x.Image!.FileName)
-                .NotEmpty().WithMessage("Имя файла не может быть пустым");
-
-                RuleFor(x => x.Image!.Content)
-                .NotEmpty().WithMessage("Содержимое файла не может быть пустым.");
-            });
+            Include(new MayFileInputValidator());
         }
     }
 }

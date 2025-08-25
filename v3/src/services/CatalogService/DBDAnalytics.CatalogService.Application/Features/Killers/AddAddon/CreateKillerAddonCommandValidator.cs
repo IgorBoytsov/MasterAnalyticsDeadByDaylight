@@ -1,4 +1,5 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerAddon;
+﻿using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerAddon;
 using FluentValidation;
 using Shared.Api.Application.Validators.Implementations;
 
@@ -27,15 +28,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddAddon
             Include(new KillerIdValidator<AddAddonToKillerCommandData>());
             Include(new NameValidator<AddAddonToKillerCommandData>(KillerAddonName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<AddAddonToKillerCommandData>());
-
-            When(x => x.Image != null, () =>
-            {
-                RuleFor(x => x.Image!.FileName)
-                .NotEmpty().WithMessage("Имя файла не может быть пустым");
-                
-                RuleFor(x => x.Image!.Content)
-                .NotEmpty().WithMessage("Содержимое файла не может быть пустым.");
-            });
+            Include(new MayFileInputValidator());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Repository;
+using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Offering;
 using FluentValidation;
 using Shared.Api.Application.Validators.Implementations;
@@ -17,6 +18,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Offerings.Create
             Include(new RoleIdValidator());
             Include(new MayCategoryIdValidator<CreateOfferingCommand>());
             Include(new SemanticImageNameValidator<CreateOfferingCommand>());
+            Include(new MayFileInputValidator());
 
             When(x => !string.IsNullOrWhiteSpace(x.Name), () =>
             {

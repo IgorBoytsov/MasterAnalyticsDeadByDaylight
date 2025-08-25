@@ -1,4 +1,5 @@
-﻿using DBDAnalytics.Shared.Contracts.Requests.Shared;
+﻿using DBDAnalytics.CatalogService.Application.Features.Validators.Abstractions;
+using DBDAnalytics.Shared.Contracts.Requests.Shared;
 using DBDAnalytics.Shared.Contracts.Responses.Survivor;
 using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
@@ -12,5 +13,6 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Create
 
     public sealed record CreateItemAddonCommandData(int OldId, string Name, FileInput? Image, string SemanticImageName, int? RarityId) :
         IHasName,
+        IMayHasFileInput,
         IHasSemanticImageName;
 }

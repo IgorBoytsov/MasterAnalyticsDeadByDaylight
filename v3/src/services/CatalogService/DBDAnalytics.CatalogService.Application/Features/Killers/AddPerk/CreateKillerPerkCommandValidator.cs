@@ -1,4 +1,5 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
+﻿using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
 using FluentValidation;
 using Shared.Api.Application.Validators.Implementations;
 
@@ -27,6 +28,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk
             Include(new KillerIdValidator<AddPerkToKillerCommandData>());
             Include(new NameValidator<AddPerkToKillerCommandData>(KillerPerkName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<AddPerkToKillerCommandData>());
+            Include(new MayFileInputValidator());
         }
     }
 }

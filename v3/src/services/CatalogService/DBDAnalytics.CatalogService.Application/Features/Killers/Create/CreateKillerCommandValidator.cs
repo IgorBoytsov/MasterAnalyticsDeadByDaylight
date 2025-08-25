@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Repository;
+using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerAddon;
 using FluentValidation;
@@ -44,15 +45,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Create
         {
             Include(new NameValidator<CreateAddonCommandData>(KillerAddonName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<CreateAddonCommandData>());
-
-            When(x => x.Image != null, () =>
-            {
-                RuleFor(x => x.Image!.FileName)
-                .NotEmpty().WithMessage("Имя файла улучшения не может быть пустым");
-
-                RuleFor(x => x.Image!.Content)
-                .NotEmpty().WithMessage("Содержимое файла улучшения не может быть пустым.");
-            });
+            Include(new MayFileInputValidator());
         }
     }
 
@@ -62,15 +55,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Create
         {
             Include(new NameValidator<CreatePerkCommandData>(KillerPerkName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<CreatePerkCommandData>());
-
-            When(x => x.Image != null, () =>
-            {
-                RuleFor(x => x.Image!.FileName)
-                .NotEmpty().WithMessage("Имя файла перка не может быть пустым");
-
-                RuleFor(x => x.Image!.Content)
-                .NotEmpty().WithMessage("Содержимое перка файла не может быть пустым.");
-            });
+            Include(new MayFileInputValidator());
         }
     }
 }

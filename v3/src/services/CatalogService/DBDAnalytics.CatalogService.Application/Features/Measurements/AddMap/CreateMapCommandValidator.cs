@@ -1,4 +1,5 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Map;
+﻿using DBDAnalytics.CatalogService.Application.Features.Validators.Implementations;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.Map;
 using FluentValidation;
 using Shared.Api.Application.Validators.Implementations;
 
@@ -26,6 +27,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Measurements.AddMap
         {
             Include(new NameValidator<AddMapToMeasurementCommandData>(MapName.MAX_LENGTH));
             Include(new SemanticImageNameValidator<AddMapToMeasurementCommandData>());
+            Include(new MayFileInputValidator());
 
             RuleFor(m => m.MeasurementId)
                 .NotEmpty().WithMessage("Не было передано измерение, куда нужно добавлять карты.");

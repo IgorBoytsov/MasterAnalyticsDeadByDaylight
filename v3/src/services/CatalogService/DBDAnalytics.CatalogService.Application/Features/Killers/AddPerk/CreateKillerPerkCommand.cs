@@ -1,4 +1,5 @@
-﻿using DBDAnalytics.Shared.Contracts.Requests.Shared;
+﻿using DBDAnalytics.CatalogService.Application.Features.Validators.Abstractions;
+using DBDAnalytics.Shared.Contracts.Requests.Shared;
 using DBDAnalytics.Shared.Contracts.Responses.Killers;
 using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
@@ -11,5 +12,6 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk
     public sealed record AddPerkToKillerCommandData(Guid KillerId, int OldId, string Name, FileInput? Image, string SemanticImageName) :
         IHasKillerId,
         IHasName,
+        IMayHasFileInput,
         IHasSemanticImageName;
 }
