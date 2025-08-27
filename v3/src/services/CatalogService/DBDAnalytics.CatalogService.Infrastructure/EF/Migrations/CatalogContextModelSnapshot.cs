@@ -618,7 +618,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                     b.HasOne("DBDAnalytics.CatalogService.Domain.Models.Item", "Item")
                         .WithMany("ItemAddons")
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Item");
@@ -629,7 +629,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                     b.HasOne("DBDAnalytics.CatalogService.Domain.Models.Killer", "Killer")
                         .WithMany("KillerAddons")
                         .HasForeignKey("KillerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Killer");
@@ -645,7 +645,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                     b.HasOne("DBDAnalytics.CatalogService.Domain.Models.Killer", "Killer")
                         .WithMany("KillerPerks")
                         .HasForeignKey("KillerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Killer");
@@ -656,7 +656,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                     b.HasOne("DBDAnalytics.CatalogService.Domain.Models.Measurement", "Measurement")
                         .WithMany("Maps")
                         .HasForeignKey("MeasurementId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Measurement");
@@ -691,7 +691,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Migrations
                     b.HasOne("DBDAnalytics.CatalogService.Domain.Models.Survivor", "Survivor")
                         .WithMany("SurvivorPerks")
                         .HasForeignKey("SurvivorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Survivor");

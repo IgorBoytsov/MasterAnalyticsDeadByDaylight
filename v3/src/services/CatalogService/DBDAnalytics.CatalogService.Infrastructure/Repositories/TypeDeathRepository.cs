@@ -9,6 +9,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Repositories
     internal sealed class TypeDeathRepository(IApplicationDbContext context)
         : BaseRepository<TypeDeath, IApplicationDbContext>(context), ITypeDeathRepository
     {
+        public async Task<TypeDeath> Get(int id) => await _context.TypeDeaths.FirstOrDefaultAsync(td => td.Id == id);
         public async Task<bool> Exist(string name) => await _context.TypeDeaths.AnyAsync(t => t.Name == name);
     }
 }

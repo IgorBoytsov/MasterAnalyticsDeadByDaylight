@@ -5,6 +5,7 @@ namespace DBDAnalytics.CatalogService.Application.Common.Repository
 {
     public interface IRarityRepository : IBaseRepository<Rarity>
     {
+        Task<Rarity> Get(int id);
         Task<bool> Exist(string name);
     }
 }

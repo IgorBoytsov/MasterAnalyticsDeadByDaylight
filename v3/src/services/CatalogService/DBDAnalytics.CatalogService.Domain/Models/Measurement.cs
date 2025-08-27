@@ -40,6 +40,18 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return newMap;
         }
 
+        public bool RemoveMap(Guid mapId)
+        {
+            var map = _maps.FirstOrDefault(m => m.Id == mapId);
+
+            if (map is null)
+                return false;
+
+            _maps.Remove(map);
+
+            return true;
+        }
+
         public void ClearMaps() => _maps.Clear();   
     }
 }

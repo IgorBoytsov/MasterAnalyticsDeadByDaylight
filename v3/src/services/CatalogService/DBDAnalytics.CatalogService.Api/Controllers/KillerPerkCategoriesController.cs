@@ -1,5 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Create;
+using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Delete;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -26,6 +27,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(() => Ok(result.Value));
+        }
+
+        [HttpDelete("{killerPerkCategoryId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Delete([FromRoute] int killerPerkCategoryId)
+        {
+            var command = new DeleteKillerPerkCategoryCommand(killerPerkCategoryId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
     }
 }

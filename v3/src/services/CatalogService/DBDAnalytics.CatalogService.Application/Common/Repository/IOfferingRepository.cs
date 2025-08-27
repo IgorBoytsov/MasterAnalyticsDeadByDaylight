@@ -5,6 +5,7 @@ namespace DBDAnalytics.CatalogService.Application.Common.Repository
 {
     public interface IOfferingRepository : IBaseRepository<Offering>
     {
+        Task<Offering> Get(Guid id);
         Task<bool> Exist(string name);
     }
 }

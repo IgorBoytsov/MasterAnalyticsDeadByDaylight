@@ -9,6 +9,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Repositories
     internal sealed class SurvivorPerkCategoryRepository(IApplicationDbContext context)
         : BaseRepository<SurvivorPerkCategory, IApplicationDbContext>(context), ISurvivorPerkCategoryRepository
     {
+        public async Task<SurvivorPerkCategory> Get(int id) => await _context.SurvivorPerkCategories.FirstOrDefaultAsync(spc => spc.Id == id);
         public async Task<bool> Exist(string name) => await _context.SurvivorPerkCategories.AnyAsync(spc => spc.Name == name);
     }
 }

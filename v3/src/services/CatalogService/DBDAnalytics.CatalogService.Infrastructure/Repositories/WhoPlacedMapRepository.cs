@@ -9,6 +9,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Repositories
     public sealed class WhoPlacedMapRepository(IApplicationDbContext context) 
         : BaseRepository<WhoPlacedMap, IApplicationDbContext>(context), IWhoPlacedMapRepository
     {
+        public async Task<WhoPlacedMap> Get(int id) => await _context.WhoPlacedMaps.FirstOrDefaultAsync(wpm => wpm.Id == id);
         public async Task<bool> Exist(string name) => await _context.WhoPlacedMaps.AnyAsync(x => x.Name == name);
     }
 }

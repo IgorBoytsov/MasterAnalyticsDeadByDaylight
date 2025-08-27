@@ -40,7 +40,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
             builder.HasMany(i => i.ItemAddons)
                 .WithOne(ia => ia.Item)
                 .HasForeignKey(i => i.ItemId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(i => i.ItemAddons).HasField("_itemAddons").UsePropertyAccessMode(PropertyAccessMode.Field);
         }

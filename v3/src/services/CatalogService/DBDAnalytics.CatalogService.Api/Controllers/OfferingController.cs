@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignCategory;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignRarity;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Create;
+using DBDAnalytics.CatalogService.Application.Features.Offerings.Delete;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -46,6 +47,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public async Task<IActionResult> AssignRarity(Guid offeringId, [FromBody] AssignRarityToOfferingRequest request)
         {
             var command = new AssignRarityToOfferingCommand(offeringId, request.RarityId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
+        [HttpDelete("{offeringId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> AssignRarity(Guid offeringId)
+        {
+            var command = new DeleteOfferingCommand(offeringId);
 
             var result = await _mediator.Send(command);
 

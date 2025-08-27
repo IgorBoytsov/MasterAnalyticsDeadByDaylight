@@ -1,5 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
 using DBDAnalytics.CatalogService.Application.Features.WhoPlacedMaps.Create;
+using DBDAnalytics.CatalogService.Application.Features.WhoPlacedMaps.Delete;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -26,6 +27,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(() => Ok(result.Value));
+        }
+
+        [HttpDelete("{whoPlacedMapId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Delete([FromRoute] int whoPlacedMapId)
+        {
+            var command = new DeleteWhoPlacedMapCommand(whoPlacedMapId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
     }
 }

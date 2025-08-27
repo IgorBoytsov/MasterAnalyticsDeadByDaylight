@@ -5,6 +5,7 @@ namespace DBDAnalytics.CatalogService.Application.Common.Repository
 {
     public interface IWhoPlacedMapRepository : IBaseRepository<WhoPlacedMap>
     {
+        Task<WhoPlacedMap> Get(int id);
         Task<bool> Exist(string name);
     }
 }

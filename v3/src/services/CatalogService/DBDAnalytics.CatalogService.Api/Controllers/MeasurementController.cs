@@ -1,6 +1,9 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Application.Features.Killers.RemovePerk;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.AddMap;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.Create;
+using DBDAnalytics.CatalogService.Application.Features.Measurements.Delete;
+using DBDAnalytics.CatalogService.Application.Features.Measurements.RemoveMap;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -48,6 +51,28 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(() => Ok(result.Value));
+        }
+
+        [HttpDelete("{measurementId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> DeleteMeasurement([FromRoute] Guid measurementId)
+        {
+            var command = new DeleteMeasurementCommand(measurementId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
+        [HttpDelete("{measurementId}/maps/{mapId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> DeleteMap([FromRoute] Guid measurementId, [FromRoute] Guid mapId)
+        {
+            var command = new DeleteMapCommand(measurementId, mapId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
     }
 }

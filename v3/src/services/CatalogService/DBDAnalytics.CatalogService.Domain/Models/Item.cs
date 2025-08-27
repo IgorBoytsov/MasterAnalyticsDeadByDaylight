@@ -42,6 +42,18 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return itemAddon;
         }
 
+        public bool RemoveAddon(Guid idItem)
+        {
+            var itemAddonToDelete = _itemAddons.FirstOrDefault(ia => ia.Id == idItem);
+
+            if (itemAddonToDelete is null)
+                return false;
+
+            _itemAddons.Remove(itemAddonToDelete);
+
+            return true;
+        }
+
         public void AssignRarity(Guid itemAddonId, RarityId rarityId)
         {
             var itemAddon = _itemAddons.FirstOrDefault(p => p.Id == itemAddonId);

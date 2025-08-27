@@ -9,6 +9,8 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Repositories
     internal sealed class OfferingCategoryRepository(IApplicationDbContext context)
         : BaseRepository<OfferingCategory, IApplicationDbContext>(context), IOfferingCategoryRepository
     {
+        public async Task<OfferingCategory> Get(int id) => await _context.OfferingCategories.FirstOrDefaultAsync(oc => oc.Id == id);
+
         public async Task<bool> Exist(string name) => await _context.OfferingCategories.AnyAsync(c => c.Name == name);
     }
 }

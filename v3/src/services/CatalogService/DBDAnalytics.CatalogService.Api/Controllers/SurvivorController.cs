@@ -2,6 +2,8 @@
 using DBDAnalytics.CatalogService.Application.Features.Survivors.AddPerk;
 using DBDAnalytics.CatalogService.Application.Features.Survivors.AssignCategory;
 using DBDAnalytics.CatalogService.Application.Features.Survivors.Create;
+using DBDAnalytics.CatalogService.Application.Features.Survivors.Delete;
+using DBDAnalytics.CatalogService.Application.Features.Survivors.RemovePerk;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -56,6 +58,28 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public async Task<IActionResult> AssignCategoryToPerk(Guid survivorId, Guid perkId, [FromBody] AssignCategoryToSurvivorPerKRequest request)
         {
             var command = new AssignCategoryToPerkCommand(survivorId, perkId, request.CategoryId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
+        [HttpDelete("{survivorId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> DeletePerk(Guid survivorId)
+        {
+            var command = new DeleteSurvivorCommand(survivorId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
+        [HttpDelete("{survivorId}/perks/{perkId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> DeletePerk(Guid survivorId, Guid perkId)
+        {
+            var command = new DeleteSurvivorPerkCommand(survivorId, perkId);
 
             var result = await _mediator.Send(command);
 

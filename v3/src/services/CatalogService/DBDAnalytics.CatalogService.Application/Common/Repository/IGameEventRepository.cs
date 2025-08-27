@@ -5,6 +5,7 @@ namespace DBDAnalytics.CatalogService.Application.Common.Repository
 {
     public interface IGameEventRepository : IBaseRepository<GameEvent>
     {
+        Task<GameEvent> Get(int Id);
         Task<bool> Exist(string name);
     }
 }

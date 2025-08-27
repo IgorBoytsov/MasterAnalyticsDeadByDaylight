@@ -8,6 +8,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.Repositories
 {
     internal sealed class RoleRepository(IApplicationDbContext context) : BaseRepository<Role, IApplicationDbContext>(context), IRoleRepository
     {
+        public async Task<Role> Get(int id) => await _context.Roles.FirstOrDefaultAsync(r => r.Id == id);
         public async Task<bool> Exist(string name) => await _context.Roles.AnyAsync(r => r.Name == name);
     }
 }

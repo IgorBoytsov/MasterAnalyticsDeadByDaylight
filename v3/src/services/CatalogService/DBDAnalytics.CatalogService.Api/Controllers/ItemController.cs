@@ -1,7 +1,10 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Application.Features.GameEvents.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Items.AddAddon;
 using DBDAnalytics.CatalogService.Application.Features.Items.AssignRarity;
 using DBDAnalytics.CatalogService.Application.Features.Items.Create;
+using DBDAnalytics.CatalogService.Application.Features.Items.Delete;
+using DBDAnalytics.CatalogService.Application.Features.Items.RemoveAddon;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -56,6 +59,28 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public async Task<IActionResult> AssignRarityToAddon(Guid itemId, Guid itemAddonId, [FromBody] AssignRarityToItemAddonRequest request)
         {
             var command = new AssignRarityToItemAddonCommand(itemId, itemAddonId, request.RarityId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
+        [HttpDelete("{itemId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Delete([FromRoute] Guid itemId)
+        {
+            var command = new DeleteItemCommand(itemId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
+        [HttpDelete("{itemId}/addons/{itemAddonId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Delete([FromRoute] Guid itemId, [FromRoute] Guid itemAddonId)
+        {
+            var command = new DeleteItemAddonCommand(itemId, itemAddonId);
 
             var result = await _mediator.Send(command);
 

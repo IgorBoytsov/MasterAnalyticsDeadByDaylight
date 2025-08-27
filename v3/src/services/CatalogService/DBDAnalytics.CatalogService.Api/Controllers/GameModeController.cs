@@ -1,5 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.Create;
+using DBDAnalytics.CatalogService.Application.Features.GameModes.Delete;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -25,6 +26,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(() => Ok(result.Value));
+        }
+
+        [HttpDelete("{gameModeId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Delete([FromRoute] int gameModeId)
+        {
+            var command = new DeleteGameModeCommand(gameModeId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
     }
 }

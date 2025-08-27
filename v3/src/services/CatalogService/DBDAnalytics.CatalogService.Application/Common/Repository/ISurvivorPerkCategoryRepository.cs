@@ -5,6 +5,7 @@ namespace DBDAnalytics.CatalogService.Application.Common.Repository
 {
     public interface ISurvivorPerkCategoryRepository : IBaseRepository<SurvivorPerkCategory>
     {
+        Task<SurvivorPerkCategory> Get(int id);
         Task<bool> Exist(string name);
     }
 }

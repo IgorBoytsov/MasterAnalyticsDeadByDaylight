@@ -36,7 +36,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
             builder.HasMany(m => m.Maps)
                 .WithOne(m => m.Measurement)
                 .HasForeignKey(m => m.MeasurementId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(m => m.Maps).HasField("_maps").UsePropertyAccessMode(PropertyAccessMode.Field);
         }

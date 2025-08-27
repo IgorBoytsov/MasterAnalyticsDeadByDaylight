@@ -43,12 +43,16 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return newPerk;
         }
 
-        public void RemovePerk(Guid perkId)
+        public bool RemovePerk(Guid perkId)
         {
             var perkToRemove = _survivorPerks.FirstOrDefault(p => p.Id == perkId);
 
-            if (perkToRemove is not null)
-                _survivorPerks.Remove(perkToRemove);
+            if (perkToRemove is null)
+                return false;
+            
+            _survivorPerks.Remove(perkToRemove);
+
+            return true;
         }
 
         public void ClearPerks() => _survivorPerks.Clear();

@@ -3,6 +3,9 @@ using DBDAnalytics.CatalogService.Application.Features.Killers.AddAddon;
 using DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk;
 using DBDAnalytics.CatalogService.Application.Features.Killers.AssignCategoryToPerk;
 using DBDAnalytics.CatalogService.Application.Features.Killers.Create;
+using DBDAnalytics.CatalogService.Application.Features.Killers.Delete;
+using DBDAnalytics.CatalogService.Application.Features.Killers.RemoveAddon;
+using DBDAnalytics.CatalogService.Application.Features.Killers.RemovePerk;
 using DBDAnalytics.Shared.Contracts.Requests.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -94,6 +97,39 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
 
             return result.ToActionResult(Ok);
         }
-    
+
+        [HttpDelete("{killerId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> DeleteKiller([FromRoute] Guid killerId)
+        {
+            var command = new DeleteKillerCommand(killerId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
+        [HttpDelete("{killerId}/addons/{killerAddonId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> DeleteAddon([FromRoute] Guid killerId, [FromRoute] Guid killerAddonId)
+        {
+            var command = new DeleteKillerAddonCommand(killerId, killerAddonId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
+        [HttpDelete("{killerId}/perks/{killerPerkId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> DeletePerk([FromRoute] Guid killerId, [FromRoute] Guid killerPerkId)
+        {
+            var command = new DeleteKillerPerkCommand(killerId, killerPerkId);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
     }
 }

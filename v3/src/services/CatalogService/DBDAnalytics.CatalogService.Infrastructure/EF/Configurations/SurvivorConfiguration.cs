@@ -47,7 +47,7 @@ namespace DBDAnalytics.CatalogService.Infrastructure.EF.Configurations
             builder.HasMany(s => s.SurvivorPerks)
                 .WithOne(sp => sp.Survivor)
                 .HasForeignKey(sp => sp.SurvivorId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(s => s.SurvivorPerks).HasField("_survivorPerks").UsePropertyAccessMode(PropertyAccessMode.Field);
         }

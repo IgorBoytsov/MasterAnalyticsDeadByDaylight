@@ -6,8 +6,10 @@ using Shared.Api.Infrastructure.EFBase;
 
 namespace DBDAnalytics.CatalogService.Infrastructure.Repositories
 {
-    internal sealed class RarityRepository(IApplicationDbContext context) : BaseRepository<Rarity, IApplicationDbContext>(context), IRarityRepository
+    internal sealed class RarityRepository(IApplicationDbContext context) 
+        : BaseRepository<Rarity, IApplicationDbContext>(context), IRarityRepository
     {
+        public async Task<Rarity> Get(int id) => await _context.Rarities.FirstOrDefaultAsync(r => r.Id == id);
         public async Task<bool> Exist(string name) => await _context.Rarities.AnyAsync(r => r.Name == name);
     }
 }

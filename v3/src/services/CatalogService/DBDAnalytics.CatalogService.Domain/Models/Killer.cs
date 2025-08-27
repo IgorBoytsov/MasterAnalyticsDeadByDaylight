@@ -50,12 +50,16 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return newAddon;
         }
 
-        public void RemoveAddon(Guid addonId)
+        public bool RemoveAddon(Guid addonId)
         {
             var addonToRemove = _killerAddons.FirstOrDefault(a => a.Id == addonId);
 
-            if (addonToRemove is not null)
-                _killerAddons.Remove(addonToRemove);
+            if (addonToRemove is null)
+                return false;
+            
+            _killerAddons.Remove(addonToRemove);
+
+            return true;
         }
 
         public void ClearAddons() => _killerAddons.Clear();
@@ -75,12 +79,16 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return newPerk;
         }
 
-        public void RemovePerk(Guid perkId)
+        public bool RemovePerk(Guid perkId)
         {
             var perkToRemove = _killerPerks.FirstOrDefault(p => p.Id == perkId);
 
-            if (perkToRemove is not null)
-                _killerPerks.Remove(perkToRemove);
+            if (perkToRemove is null)
+                return false;
+            
+            _killerPerks.Remove(perkToRemove);
+
+            return true;
         }
 
         public void ClearPerks() => _killerPerks.Clear();
