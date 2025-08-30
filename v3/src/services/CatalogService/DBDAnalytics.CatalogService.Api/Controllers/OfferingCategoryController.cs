@@ -1,4 +1,4 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Delete;

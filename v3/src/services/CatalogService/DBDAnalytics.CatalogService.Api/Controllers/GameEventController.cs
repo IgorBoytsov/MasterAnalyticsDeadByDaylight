@@ -1,4 +1,4 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.Delete;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.Update;
@@ -21,7 +21,7 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
 
         [HttpPost]
         //[Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> Create([FromBody] GameEventRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateGameEventRequest request)
         {
             var command = new CreateGameEventCommand(request.OldId, request.Name);
 

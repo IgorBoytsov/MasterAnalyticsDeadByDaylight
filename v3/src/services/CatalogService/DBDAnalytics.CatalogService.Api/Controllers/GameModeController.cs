@@ -1,4 +1,4 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.Create;
 using DBDAnalytics.CatalogService.Application.Features.GameModes.Delete;
@@ -21,7 +21,7 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
 
         [HttpPost]
         //[Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> Create([FromBody] GameModeRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateGameModeRequest request)
         {
             var command = new CreateGameModeCommand(request.OldId, request.Name);
 

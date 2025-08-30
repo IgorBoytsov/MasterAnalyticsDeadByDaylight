@@ -1,4 +1,4 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Delete;
