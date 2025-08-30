@@ -1,9 +1,12 @@
 ﻿using DBDAnalytics.CatalogService.Domain.Exceptions;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Survivor;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerk;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerkCategory;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Exceptions.Guard;
 using DBDAnalytics.Shared.Domain.Primitives;
+using DBDAnalytics.Shared.Domain.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {
@@ -73,6 +76,28 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             GuardException.Against.That(perk is null, () => new InvalidOperationException("Перк не найден."));
 
             perk!.RemoveCategory();
+        }
+
+        public void UpdatePerk(Guid perkId, string name, ImageKey? newImageKey)
+        {
+            var perk = _survivorPerks.FirstOrDefault(sp => sp.Id == perkId);
+            
+            GuardException.Against.That(perk is null, () => new DomainException(new Error(ErrorCode.NotFound, $"Перк с id {perkId} не был найден у выжившего {this.Id}.")));
+
+            perk!.UpdateName(SurvivorPerkName.Create(name));
+            perk.UpdateImageKey(newImageKey);
+        }
+
+        public void UpdateName(SurvivorName survivorName)
+        {
+            if (Name != survivorName)
+                Name = survivorName;
+        }
+
+        public void UpdateImageKey(ImageKey? newImageKey)
+        {
+            if (ImageKey != newImageKey)
+                ImageKey = newImageKey;
         }
     }
 }

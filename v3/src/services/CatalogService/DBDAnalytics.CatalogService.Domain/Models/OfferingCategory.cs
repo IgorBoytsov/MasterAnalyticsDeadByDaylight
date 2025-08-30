@@ -22,5 +22,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             
             return new OfferingCategory(oldId, nameVo);
         }
+
+        public void UpdateName(OfferingCategoryName offeringCategoryName)
+        {
+            if(Name != offeringCategoryName)
+                Name = offeringCategoryName;
+        }
     }
 }

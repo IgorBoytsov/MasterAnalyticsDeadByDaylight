@@ -1,9 +1,12 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.Survivors.AddPerk;
 using DBDAnalytics.CatalogService.Application.Features.Survivors.AssignCategory;
 using DBDAnalytics.CatalogService.Application.Features.Survivors.Create;
 using DBDAnalytics.CatalogService.Application.Features.Survivors.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Survivors.RemovePerk;
+using DBDAnalytics.CatalogService.Application.Features.Survivors.Update;
+using DBDAnalytics.CatalogService.Application.Features.Survivors.UpdatePerk;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -37,6 +40,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             return result.ToActionResult(onSuccess: () => Ok(result.Value));
         }
 
+        [HttpPatch("{survivorId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Update([FromRoute] Guid survivorId, [FromForm] UpdateSurvivorRequest request)
+        {
+            var command = new UpdateSurvivorCommand(survivorId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SemanticName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
         [HttpPost("{survivorId}/perks")]
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> CreatePerk(Guid survivorId, [FromForm] CreateSurvivorPerkRequest request)
@@ -51,6 +65,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(onSuccess: () => Ok(result.Value));
+        }
+
+        [HttpPatch("{survivorId}/perks/{addonId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> UpdatePerk([FromRoute] Guid survivorId, [FromRoute] Guid addonId, [FromForm] UpdateSurvivorPerkRequest request)
+        {
+            var command = new UpdateSurvivorPerkCommand(survivorId, addonId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SemanticName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpPut("{survivorId}/perks/{perkId}/category")]

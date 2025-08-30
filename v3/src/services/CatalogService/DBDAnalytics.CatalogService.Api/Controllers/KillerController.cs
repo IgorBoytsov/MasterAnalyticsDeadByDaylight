@@ -1,4 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
+using DBDAnalytics.CatalogService.Application.Features.Items.Update;
+using DBDAnalytics.CatalogService.Application.Features.Items.UpdateAddon;
 using DBDAnalytics.CatalogService.Application.Features.Killers.AddAddon;
 using DBDAnalytics.CatalogService.Application.Features.Killers.AddPerk;
 using DBDAnalytics.CatalogService.Application.Features.Killers.AssignCategoryToPerk;
@@ -6,6 +9,9 @@ using DBDAnalytics.CatalogService.Application.Features.Killers.Create;
 using DBDAnalytics.CatalogService.Application.Features.Killers.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Killers.RemoveAddon;
 using DBDAnalytics.CatalogService.Application.Features.Killers.RemovePerk;
+using DBDAnalytics.CatalogService.Application.Features.Killers.Update;
+using DBDAnalytics.CatalogService.Application.Features.Killers.UpdateAddon;
+using DBDAnalytics.CatalogService.Application.Features.Killers.UpdatePerk;
 using DBDAnalytics.Shared.Contracts.Requests.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +61,19 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             return result.ToActionResult(onSuccess: _ => Ok(result.Value));
         }
 
+        [HttpPatch("{killerId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Update([FromRoute] Guid killerId, [FromForm] UpdateKillerRequest request)
+        {
+            var command = new UpdateKillerCommand(killerId, request.Name,
+                ControllerExtensions.ToFileInput(request.ImageAbility), request.SemanticImageAbilityName, 
+                ControllerExtensions.ToFileInput(request.ImagePortrait), request.SemanticImagePortraitName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
         [HttpPost("{killerId}/addons")]
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> AddAddon([FromRoute] Guid killerId, [FromForm] CreateKillerAddonRequest request)
@@ -71,6 +90,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             return result.ToActionResult(onSuccess: _ => Ok(result.Value));
         }
 
+        [HttpPatch("{killerId}/addons/{killerAddonId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> UpdateAddon([FromRoute] Guid killerId, [FromRoute] Guid killerAddonId, [FromForm] UpdateKillerAddonRequest request)
+        {
+            var command = new UpdateKillerAddonCommand(killerId, killerAddonId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SematicName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
         [HttpPost("{killerId}/perks")]
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> AddPerk([FromRoute] Guid killerId, [FromForm] CreateKillerPerkRequest request)
@@ -85,6 +115,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(onSuccess: _ => Ok(result.Value));
+        }
+
+        [HttpPatch("{killerId}/perks/{killerPerkId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> UpdatePerk([FromRoute] Guid killerId, [FromRoute] Guid killerPerkId, [FromForm] UpdateKillerPerkRequest request)
+        {
+            var command = new UpdateKillerPerkCommand(killerId, killerPerkId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SematicName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpPut("{killerId}/perks/{perkId}/category")]

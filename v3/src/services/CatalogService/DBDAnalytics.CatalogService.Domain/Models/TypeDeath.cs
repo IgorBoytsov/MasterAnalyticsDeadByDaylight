@@ -20,5 +20,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new TypeDeath(oldId, nameVo);
         }
+
+        public void UpdateName(TypeDeathName typeDeathName)
+        {
+            if(Name != typeDeathName)
+                Name = typeDeathName;
+        }
     }
 }

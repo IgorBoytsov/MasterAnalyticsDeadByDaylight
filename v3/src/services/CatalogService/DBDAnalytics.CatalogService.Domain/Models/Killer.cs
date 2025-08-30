@@ -1,9 +1,13 @@
 ﻿using DBDAnalytics.CatalogService.Domain.Exceptions;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerAddon;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Exceptions.Guard;
 using DBDAnalytics.Shared.Domain.Primitives;
+using DBDAnalytics.Shared.Domain.Results;
+using System.Xml.Linq;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {
@@ -35,6 +39,24 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         {
             var nameVo = KillerName.Create(name);
             return new Killer(Guid.NewGuid(), oldId, nameVo, killerImageKey, abilityImageKey);
+        }
+
+        public void UpdateName(KillerName killerName)
+        {
+            if (Name != killerName)
+                Name = killerName;
+        }
+
+        public void UpdateImagePortrait(ImageKey? newImagePortraitKey)
+        {
+            if (KillerImageKey != newImagePortraitKey)
+                KillerImageKey = newImagePortraitKey;
+        }
+
+        public void UpdateImageAbility(ImageKey? newImageAbilityKey)
+        {
+            if (AbilityImageKey != newImageAbilityKey)
+                AbilityImageKey = newImageAbilityKey;
         }
 
         #region Улучшения
@@ -100,6 +122,26 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             GuardException.Against.That(perk is null, () => new InvalidOperationException("Перк не найден."));
 
             perk!.AssignCategory(categoryId);
+        }
+
+        public void UpdateAddon(Guid addonId, KillerAddonName killerAddonName, ImageKey? newImageKey)
+        {
+            var killerAddon = _killerAddons.FirstOrDefault(ka => ka.Id == addonId);
+
+            GuardException.Against.That(killerAddon is null, () => new DomainException(new Error(ErrorCode.NotFound, $"Улучшение с id {addonId} не было найдено у киллера {this.Id}.")));
+
+            killerAddon!.UpdateName(killerAddonName);
+            killerAddon.UpdateImageKey(newImageKey);
+        }
+
+        public void UpdatePerk(Guid perkId, KillerPerkName killerPerkName, ImageKey? newImageKey)
+        {
+            var killerPerk = _killerPerks.FirstOrDefault(ka => ka.Id == perkId);
+
+            GuardException.Against.That(killerPerk is null, () => new DomainException(new Error(ErrorCode.NotFound, $"Перк с id {perkId} не был найден у киллера {this.Id}.")));
+
+            killerPerk!.UpdateName(killerPerkName);
+            killerPerk.UpdateImageKey(newImageKey);
         }
 
         #endregion

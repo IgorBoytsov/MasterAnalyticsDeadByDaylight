@@ -1,8 +1,10 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignCategory;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignRarity;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Create;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Delete;
+using DBDAnalytics.CatalogService.Application.Features.Offerings.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -29,6 +31,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(onSuccess: () => Ok(result.Value));
+        }
+
+        [HttpPatch("{offeringId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Update([FromRoute] Guid offeringId, [FromForm] UpdateOfferingRequest request)
+        {
+            var command = new UpdateOfferingCommand(offeringId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SemanticName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpPut("{offeringId}/category")]

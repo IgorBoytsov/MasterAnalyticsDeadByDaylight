@@ -22,5 +22,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new PlayerAssociation(oldId, nameVo);    
         }
+
+        public void UpdateName(PlayerAssociationName playerAssociationName)
+        {
+            if(Name != playerAssociationName)
+                Name = playerAssociationName;
+        }
     }
 }

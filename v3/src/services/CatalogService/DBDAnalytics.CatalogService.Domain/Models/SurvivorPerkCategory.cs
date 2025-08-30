@@ -22,5 +22,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new SurvivorPerkCategory(oldId, nameVo);
         }
+
+        public void UpdateName(SurvivorPerkCategoryName survivorPerkCategoryName)
+        {
+            if(Name != survivorPerkCategoryName)
+                Name = survivorPerkCategoryName;
+        }
     }
 }

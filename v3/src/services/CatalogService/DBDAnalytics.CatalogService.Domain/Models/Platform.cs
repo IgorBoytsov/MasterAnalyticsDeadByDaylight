@@ -20,5 +20,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new Platform(oldId, nameVo);
         }
+
+        public void UpdateName(PlatformName platformName)
+        {
+            if(Name != platformName)
+                Name = platformName;
+        }
     }
 }

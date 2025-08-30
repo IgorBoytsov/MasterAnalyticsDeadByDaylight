@@ -38,5 +38,17 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         }
 
         public void AssignCategory(RarityId rarityId) => this.RarityId = rarityId;
+
+        internal void UpdateName(ItemAddonName itemAddonName)
+        {
+            if(Name != itemAddonName)
+                Name = itemAddonName;
+        }
+
+        internal void UpdateImageKey(ImageKey? imageKey)
+        {
+            if (ImageKey != imageKey)
+                ImageKey = imageKey;
+        }
     }
 }

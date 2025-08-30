@@ -22,5 +22,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new Rarity(oldId, nameVo);
         }
+
+        public void UpdateName(RarityName rarityName)
+        {
+            if(Name != rarityName)
+                Name = rarityName;
+        }
     }
 }

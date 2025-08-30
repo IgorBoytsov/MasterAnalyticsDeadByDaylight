@@ -61,5 +61,17 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         }
 
         public void RemoveRarity() => RarityId = null;
+
+        public void UpdateName(OfferingName offeringName)
+        {
+            if (Name != offeringName)
+                Name = offeringName;
+        }
+
+        public void UpdateImageKey(ImageKey? newImageKey)
+        {
+            if (ImageKey != newImageKey)
+                ImageKey = newImageKey;
+        }
     }
 }

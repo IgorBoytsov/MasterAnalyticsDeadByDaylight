@@ -1,6 +1,8 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.TypeDeaths.Create;
 using DBDAnalytics.CatalogService.Application.Features.TypeDeaths.Delete;
+using DBDAnalytics.CatalogService.Application.Features.TypeDeaths.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -27,6 +29,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(onSuccess: () => Ok(result.Value));
+        }
+
+        [HttpPatch("{typeDeathId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Update([FromRoute] int typeDeathId, [FromBody] UpdateTypeDeathRequest request)
+        {
+            var command = new UpdateTypeDeathCommand(typeDeathId, request.NewName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpDelete("{typeDeathId}")]

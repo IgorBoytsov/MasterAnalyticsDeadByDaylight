@@ -22,5 +22,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new GameMode(oldId, nameVo);
         }
+
+        public void UpdateName(GameModeName gameModeName)
+        {
+            if(Name != gameModeName)
+                Name = gameModeName;
+        }
     }
 }

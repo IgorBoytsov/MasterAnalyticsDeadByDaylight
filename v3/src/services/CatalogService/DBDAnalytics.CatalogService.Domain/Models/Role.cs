@@ -22,5 +22,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new Role(oldId, nameVo);
         }
+
+        public void UpdateName(RoleName roleName)
+        {
+            if(Name != roleName)
+                Name = roleName;
+        }
     }
 }

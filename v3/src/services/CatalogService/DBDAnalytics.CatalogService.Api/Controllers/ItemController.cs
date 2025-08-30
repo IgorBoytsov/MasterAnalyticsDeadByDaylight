@@ -1,10 +1,13 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Items.AddAddon;
 using DBDAnalytics.CatalogService.Application.Features.Items.AssignRarity;
 using DBDAnalytics.CatalogService.Application.Features.Items.Create;
 using DBDAnalytics.CatalogService.Application.Features.Items.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Items.RemoveAddon;
+using DBDAnalytics.CatalogService.Application.Features.Items.Update;
+using DBDAnalytics.CatalogService.Application.Features.Items.UpdateAddon;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -38,6 +41,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             return result.ToActionResult(onSuccess: () => Ok(result.Value));
         }
 
+        [HttpPatch("{itemId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Update([FromRoute] Guid itemId, [FromForm] UpdateItemRequest request)
+        {
+            var command = new UpdateItemCommand(itemId, request.NewName, ControllerExtensions.ToFileInput(request.NewImage), request.SemanticName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
         [HttpPost("{itemId}/addons")]
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> AddAddon([FromRoute] Guid itemId, [FromForm] CreateItemAddonRequest request)
@@ -52,6 +66,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(onSuccess: () => Ok(result.Value));
+        }
+
+        [HttpPatch("{itemId}/addons/{itemAddonId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> UpdateAddon([FromRoute] Guid itemId, [FromRoute] Guid itemAddonId, [FromForm] UpdateItemAddonRequest request)
+        {
+            var command = new UpdateItemAddonCommand(itemId,itemAddonId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SematicName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpPut("{itemId}/addons/{itemAddonId}/rarity")]

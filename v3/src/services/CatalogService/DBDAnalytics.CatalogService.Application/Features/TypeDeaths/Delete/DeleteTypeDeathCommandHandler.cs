@@ -22,7 +22,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.TypeDeaths.Delete
                     return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
 
                 _typeDeathRepository.Remove(typeDeath);
-                ''
+
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();

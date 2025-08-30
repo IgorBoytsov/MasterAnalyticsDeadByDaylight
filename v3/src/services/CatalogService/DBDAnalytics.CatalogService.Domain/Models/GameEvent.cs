@@ -22,5 +22,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new GameEvent(oldId, nameVo);
         }
+
+        public void UpdateName(GameEventName name)
+        {
+            if (Name != name)
+                Name = name;
+        }
     }
 }

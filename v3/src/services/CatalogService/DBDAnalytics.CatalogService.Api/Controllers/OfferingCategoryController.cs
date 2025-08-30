@@ -1,6 +1,8 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Delete;
+using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -27,6 +29,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(onSuccess: () => Ok(result.Value));
+        }
+
+        [HttpPatch("{offeringCategoryId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Update([FromRoute] int offeringCategoryId, [FromBody] UpdateOfferingCategoryRequest request)
+        {
+            var command = new UpdateOfferingCategoryCommand(offeringCategoryId, request.NewName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpDelete("{offeringCategoryId}")]

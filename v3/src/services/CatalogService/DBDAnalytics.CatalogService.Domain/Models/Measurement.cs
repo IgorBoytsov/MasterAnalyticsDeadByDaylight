@@ -1,8 +1,14 @@
 ﻿using DBDAnalytics.CatalogService.Domain.Exceptions;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.ItemAddon;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.Map;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Measurement;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.OfferingCategory;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Exceptions.Guard;
 using DBDAnalytics.Shared.Domain.Primitives;
+using DBDAnalytics.Shared.Domain.Results;
+using System.Xml.Linq;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {
@@ -52,6 +58,22 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return true;
         }
 
-        public void ClearMaps() => _maps.Clear();   
+        public void ClearMaps() => _maps.Clear();
+
+        public void UpdateName(MeasurementName measurementName)
+        {
+            if(Name !=  measurementName)
+                Name = measurementName;
+        }
+
+        public void UpdateMap(Guid mapId, MapName mapName, ImageKey? newImageKey)
+        {
+            var map = _maps.FirstOrDefault(m => m.Id == mapId);
+            
+            GuardException.Against.That(map is null, () => new DomainException(new Error(ErrorCode.NotFound, $"Карта с id {mapId} не была найдено у измерения {this.Id}.")));
+
+            map!.UpdateName(mapName);
+            map.UpdateImageKey(newImageKey);
+        }
     }
 }

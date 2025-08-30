@@ -38,5 +38,17 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         }
 
         public void AssignCategory(KillerPerkCategoryId categoryId) => this.CategoryId = categoryId;
+
+        internal void UpdateName(KillerPerkName killerPerkName)
+        {
+            if (Name != killerPerkName)
+                Name = killerPerkName;
+        }
+
+        internal void UpdateImageKey(ImageKey? newImageKey)
+        {
+            if (ImageKey != newImageKey)
+                ImageKey = newImageKey;
+        }
     }
 }

@@ -22,5 +22,11 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new WhoPlacedMap(oldId, nameVo);
         }
+
+        public void UpdateName(PlacedMapName placedMapName)
+        {
+            if(Name != placedMapName)
+                Name = placedMapName;
+        }
     }
 }

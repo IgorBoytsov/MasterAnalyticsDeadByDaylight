@@ -1,5 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.Delete;
+using DBDAnalytics.CatalogService.Application.Features.GameEvents.Update;
 using DBDAnalytics.CatalogService.Application.Features.GameModes.Create;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +28,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(() => Ok(result.Value));
+        }
+
+        [HttpPatch("{gameEventID}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Update([FromRoute] int gameEventID, [FromBody] UpdateGameEventRequest request)
+        {
+            var command = new UpdateGameEventCommand(gameEventID, request.NewName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpDelete("{gameEventId}")]

@@ -1,10 +1,12 @@
 ﻿using DBDAnalytics.CatalogService.Domain.Exceptions;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Item;
-using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.ItemAddon;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Exceptions.Guard;
 using DBDAnalytics.Shared.Domain.Primitives;
+using DBDAnalytics.Shared.Domain.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {
@@ -33,6 +35,14 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return new Item(Guid.NewGuid(), oldId, nameVo, imageKey);
         }
 
+        public void UpdateName(ItemName newItemName)
+        {
+            if (Name != newItemName)
+                Name = newItemName;
+        }
+
+        public void UpdateImageKey(ImageKey? newImageKey) => ImageKey = newImageKey;
+
         public ItemAddon AddAddon(int oldId, string name, ImageKey? imageKey, int? rarityId)
         {
             GuardException.Against.That(_itemAddons.Any(p => p.Name.Value == name), () => new DuplicateException($"Улучшение {name} уже существует у предмета."));
@@ -40,6 +50,15 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             var itemAddon = ItemAddon.Create(this.Id, oldId, name, imageKey, rarityId);
             _itemAddons.Add(itemAddon);
             return itemAddon;
+        }
+
+        public void UpdateItemAddon(Guid addonId, string name, ImageKey? imageKey)
+        {
+            var itemAddon = _itemAddons.FirstOrDefault(ia => ia.Id == addonId) 
+                ?? throw new DomainException(new Error(ErrorCode.NotFound, $"Улучшение с id {addonId} не было найдено у предмета {this.Id}."));
+
+            itemAddon.UpdateName(ItemAddonName.Create(name));
+            itemAddon.UpdateImageKey(imageKey);
         }
 
         public bool RemoveAddon(Guid idItem)

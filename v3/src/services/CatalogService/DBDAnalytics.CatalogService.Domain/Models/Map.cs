@@ -29,5 +29,17 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new Map(Guid.NewGuid(), oldId, nameVo, image, measurementId);
         }
+
+        internal void UpdateName(MapName mapName)
+        {
+            if(Name != mapName)
+                Name = mapName;
+        }
+
+        internal void UpdateImageKey(ImageKey? newImageKey)
+        {
+            if(ImageKey != newImageKey)
+                ImageKey = newImageKey;
+        }
     }
 }

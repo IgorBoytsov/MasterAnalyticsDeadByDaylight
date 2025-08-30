@@ -1,9 +1,11 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
-using DBDAnalytics.CatalogService.Application.Features.Killers.RemovePerk;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.AddMap;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.Create;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.RemoveMap;
+using DBDAnalytics.CatalogService.Application.Features.Measurements.Update;
+using DBDAnalytics.CatalogService.Application.Features.Measurements.UpdateMap;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -37,6 +39,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             return result.ToActionResult(() => Ok(result.Value));
         }
 
+        [HttpPatch("{measurementId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Update([FromRoute] Guid measurementId, [FromForm] UpdateMeasurementRequest request)
+        {
+            var command = new UpdateMeasurementCommand(measurementId, request.NewName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
+        }
+
         [HttpPost("{measurementId}/maps")]
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> AddMap([FromRoute] Guid measurementId, [FromForm] CreateMapRequest request)
@@ -51,6 +64,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(() => Ok(result.Value));
+        }
+
+        [HttpPatch("{measurementId}/maps/{mapId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> UpdateMap([FromRoute] Guid measurementId, [FromRoute] Guid mapId, [FromForm] UpdateMapRequest request)
+        {
+            var command = new UpdateMapCommand(measurementId, mapId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SemanticName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpDelete("{measurementId}")]

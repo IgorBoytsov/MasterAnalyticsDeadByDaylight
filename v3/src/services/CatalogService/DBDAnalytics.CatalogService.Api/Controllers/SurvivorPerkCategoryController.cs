@@ -1,7 +1,8 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request;
-using DBDAnalytics.CatalogService.Application.Features.GameEvents.Delete;
+using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Delete;
+using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -28,6 +29,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             var result = await _mediator.Send(command);
 
             return result.ToActionResult(() => Ok(result.Value));
+        }
+
+        [HttpPatch("{survivorPerkCategoryId}")]
+        //[Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> Delete([FromRoute] int survivorPerkCategoryId, [FromBody] UpdateSurvivorPerkCategoryRequest request)
+        {
+            var command = new UpdateSurvivorPerkCategoryCommand(survivorPerkCategoryId, request.NewName);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(Ok);
         }
 
         [HttpDelete("{survivorPerkCategoryId}")]

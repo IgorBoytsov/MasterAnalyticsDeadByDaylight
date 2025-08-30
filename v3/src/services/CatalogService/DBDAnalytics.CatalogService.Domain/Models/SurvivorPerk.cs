@@ -40,5 +40,17 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         internal void AssignCategory(SurvivorPerkCategoryId categoryId) => CategoryId = categoryId;
 
         internal void RemoveCategory() => CategoryId = null;
+
+        internal void UpdateName(SurvivorPerkName survivorPerkName)
+        {
+            if (Name != survivorPerkName)
+                Name = survivorPerkName;
+        }
+
+        internal void UpdateImageKey(ImageKey? newImageKey)
+        {
+            if (ImageKey != newImageKey)
+                ImageKey = newImageKey;
+        }
     }
 }

@@ -24,6 +24,10 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return new KillerPerkCategory(oldId, nameVo);
         }
 
-        public void UpdateName(string newName) => Name = KillerPerkCategoryName.Create(newName);
+        public void UpdateName(KillerPerkCategoryName newName)
+        {
+            if(Name != newName)
+                Name = newName;
+        }
     }
 }

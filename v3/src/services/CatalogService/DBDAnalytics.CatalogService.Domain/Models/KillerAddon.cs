@@ -29,5 +29,17 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
             return new KillerAddon(Guid.NewGuid(), oldId, nameVo, imageKey, killerId);
         }
+
+        internal void UpdateName(KillerAddonName killerAddonName)
+        {
+            if(Name != killerAddonName)
+                Name = killerAddonName;
+        }
+
+        internal void UpdateImageKey(ImageKey? newImageKey)
+        {
+            if(ImageKey != newImageKey)
+                ImageKey = newImageKey;
+        }
     }
 }
