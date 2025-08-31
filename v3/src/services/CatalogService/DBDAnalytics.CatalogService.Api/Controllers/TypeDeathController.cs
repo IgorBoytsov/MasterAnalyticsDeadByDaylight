@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.TypeDeaths.Create;
 using DBDAnalytics.CatalogService.Application.Features.TypeDeaths.Delete;
+using DBDAnalytics.CatalogService.Application.Features.TypeDeaths.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.TypeDeaths.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,16 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public TypeDeathController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllTypeDeathsQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPost]

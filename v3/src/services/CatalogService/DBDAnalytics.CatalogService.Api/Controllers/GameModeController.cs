@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.Create;
 using DBDAnalytics.CatalogService.Application.Features.GameModes.Delete;
+using DBDAnalytics.CatalogService.Application.Features.GameModes.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.GameModes.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,16 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public GameModeController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllGameModesQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPost]

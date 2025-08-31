@@ -2,7 +2,7 @@
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity
 {
-    public readonly struct RarityId
+    public readonly record struct RarityId
     {
         public int Value { get; }
 

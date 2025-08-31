@@ -2,7 +2,7 @@
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.OfferingCategory
 {
-    public readonly struct OfferingCategoryId
+    public readonly record struct OfferingCategoryId
     {
         public int Value { get; }
 

@@ -2,7 +2,7 @@
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory
 {
-    public readonly struct KillerPerkCategoryId
+    public readonly record struct KillerPerkCategoryId
     {
         public int Value { get; }
 

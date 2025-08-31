@@ -15,41 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\GameEvents\Hide\" />
-    <Folder Include="Features\GameEvents\GetAll\" />
-    <Folder Include="Features\GameModes\GetAll\" />
-    <Folder Include="Features\GameModes\Hide\" />
-    <Folder Include="Features\Items\GetAll\" />
-    <Folder Include="Features\KillerAddons\GetByIdKiller\" />
-    <Folder Include="Features\KillerAddons\GetById\" />
-    <Folder Include="Features\KillerPerkCategories\GetAll\" />
-    <Folder Include="Features\KillerPerkCategories\Hide\" />
-    <Folder Include="Features\KillerPerks\GetByIdKiller\" />
-    <Folder Include="Features\KillerPerks\GetById\" />
-    <Folder Include="Features\Killers\HideAddon\" />
-    <Folder Include="Features\Killers\GetById\" />
-    <Folder Include="Features\Killers\GetAll\" />
-    <Folder Include="Features\Killers\Hide\" />
-    <Folder Include="Features\Killers\HidePerk\" />
-    <Folder Include="Features\Maps\GetByIdMeasurement\" />
-    <Folder Include="Features\Maps\GetAll\" />
-    <Folder Include="Features\Measurements\Hide\" />
-    <Folder Include="Features\Measurements\GetAll\" />
-    <Folder Include="Features\Measurements\Validators\" />
-    <Folder Include="Features\OfferingCategories\GetAll\" />
-    <Folder Include="Features\OfferingCategories\Hide\" />
-    <Folder Include="Features\Offerings\GetAll\" />
-    <Folder Include="Features\Offerings\Hide\" />
-    <Folder Include="Features\Platforms\GetAll\" />
-    <Folder Include="Features\PlayerAssociations\GetAll\" />
-    <Folder Include="Features\Rarities\GetAll\" />
-    <Folder Include="Features\Roles\GetAll\" />
-    <Folder Include="Features\SurvivorPerkCategories\GetAll\" />
-    <Folder Include="Features\SurvivorPerks\GetById\" />
-    <Folder Include="Features\SurvivorPerks\GetAll\" />
-    <Folder Include="Features\Survivors\GetAll\" />
-    <Folder Include="Features\TypeDeaths\GetAll\" />
-    <Folder Include="Features\WhoPlacedMaps\GetAll\" />
     <Folder Include="Services\Abstractions\" />
     <Folder Include="Services\Implementations\" />
   </ItemGroup>

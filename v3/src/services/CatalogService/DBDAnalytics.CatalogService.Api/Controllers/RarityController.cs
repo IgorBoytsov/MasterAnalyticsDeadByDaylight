@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.Rarities.Create;
 using DBDAnalytics.CatalogService.Application.Features.Rarities.Delete;
+using DBDAnalytics.CatalogService.Application.Features.Rarities.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.Rarities.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,16 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public RarityController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllRaritiesQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPost]

@@ -1,14 +1,9 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request.Assign;
-using DBDAnalytics.CatalogService.Api.Models.Request.Create;
+﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
-using DBDAnalytics.CatalogService.Application.Features.GameEvents.Delete;
-using DBDAnalytics.CatalogService.Application.Features.Items.AddAddon;
-using DBDAnalytics.CatalogService.Application.Features.Items.AssignRarity;
 using DBDAnalytics.CatalogService.Application.Features.Items.Create;
 using DBDAnalytics.CatalogService.Application.Features.Items.Delete;
-using DBDAnalytics.CatalogService.Application.Features.Items.RemoveAddon;
+using DBDAnalytics.CatalogService.Application.Features.Items.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.Items.Update;
-using DBDAnalytics.CatalogService.Application.Features.Items.UpdateAddon;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -24,6 +19,16 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public ItemController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllItemsQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -52,61 +57,12 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
 
             return result.ToActionResult(Ok);
         }
-
-        [HttpPost("{itemId}/addons")]
-        //[Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> AddAddon([FromRoute] Guid itemId, [FromForm] CreateItemAddonRequest request)
-        {
-            List<AddItemAddonCommandData> createdAddons = [];
-
-            foreach (var item in request.Addons)
-                createdAddons.Add(new AddItemAddonCommandData(itemId, item.OldId, item.Name, ControllerExtensions.ToFileInput(item.Image), item.SemanticImageName, item.RarityId));
-
-            var command = new CreateItemAddonCommand(createdAddons);
-
-            var result = await _mediator.Send(command);
-
-            return result.ToActionResult(onSuccess: () => Ok(result.Value));
-        }
-
-        [HttpPatch("{itemId}/addons/{itemAddonId}")]
-        //[Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> UpdateAddon([FromRoute] Guid itemId, [FromRoute] Guid itemAddonId, [FromForm] UpdateItemAddonRequest request)
-        {
-            var command = new UpdateItemAddonCommand(itemId,itemAddonId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SematicName);
-
-            var result = await _mediator.Send(command);
-
-            return result.ToActionResult(Ok);
-        }
-
-        [HttpPut("{itemId}/addons/{itemAddonId}/rarity")]
-        //[Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> AssignRarityToAddon(Guid itemId, Guid itemAddonId, [FromBody] AssignRarityToItemAddonRequest request)
-        {
-            var command = new AssignRarityToItemAddonCommand(itemId, itemAddonId, request.RarityId);
-
-            var result = await _mediator.Send(command);
-
-            return result.ToActionResult(Ok);
-        }
-
+   
         [HttpDelete("{itemId}")]
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> Delete([FromRoute] Guid itemId)
         {
             var command = new DeleteItemCommand(itemId);
-
-            var result = await _mediator.Send(command);
-
-            return result.ToActionResult(Ok);
-        }
-
-        [HttpDelete("{itemId}/addons/{itemAddonId}")]
-        //[Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> Delete([FromRoute] Guid itemId, [FromRoute] Guid itemAddonId)
-        {
-            var command = new DeleteItemAddonCommand(itemId, itemAddonId);
 
             var result = await _mediator.Send(command);
 

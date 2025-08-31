@@ -2,7 +2,7 @@
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.TypeDeath
 {
-    public readonly struct TypeDeathId
+    public readonly record struct TypeDeathId
     {
         public int Value { get; }
 

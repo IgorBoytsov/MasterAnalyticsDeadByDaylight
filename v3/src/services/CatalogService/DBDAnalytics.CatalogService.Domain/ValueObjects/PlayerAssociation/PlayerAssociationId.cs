@@ -2,7 +2,7 @@
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.PlayerAssociation
 {
-    public readonly struct PlayerAssociationId
+    public readonly record struct PlayerAssociationId
     {
         public int Value { get; }
 

@@ -3,7 +3,7 @@ using DBDAnalytics.Shared.Domain.Exceptions.Guard;
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Platform
 {
-    public readonly struct PlatformId
+    public readonly record struct PlatformId
     {
         public int Value { get; }
 

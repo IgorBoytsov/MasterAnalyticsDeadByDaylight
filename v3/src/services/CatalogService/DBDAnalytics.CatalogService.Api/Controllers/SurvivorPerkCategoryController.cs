@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Delete;
+using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,16 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public SurvivorPerkCategoryController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllSurvivorPerkCategoriesQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPost]

@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.Roles.Create;
 using DBDAnalytics.CatalogService.Application.Features.Roles.Delete;
+using DBDAnalytics.CatalogService.Application.Features.Roles.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.Roles.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,17 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         {
             _mediator = mediator;
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllRolesQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
         [HttpPost]
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> Create([FromBody] CreateRoleRequest request)

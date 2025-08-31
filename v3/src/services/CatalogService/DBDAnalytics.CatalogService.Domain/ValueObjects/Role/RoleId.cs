@@ -2,7 +2,7 @@
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Role
 {
-    public readonly struct RoleId
+    public readonly record struct RoleId
     {
         public int Value { get; }
 

@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Create;
 using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Delete;
+using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,16 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public PlayerAssociationController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllPlayerAssociationsQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPost]

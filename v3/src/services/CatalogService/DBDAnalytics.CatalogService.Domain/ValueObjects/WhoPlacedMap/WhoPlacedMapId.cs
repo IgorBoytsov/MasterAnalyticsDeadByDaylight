@@ -2,7 +2,7 @@
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.WhoPlacedMap
 {
-    public readonly struct WhoPlacedMapId
+    public readonly record struct WhoPlacedMapId
     {
         public int Value { get; }
 

@@ -13,6 +13,12 @@ namespace DBDAnalytics.CatalogService.Application.AutoMappers.Profiles
                 .ForMember(dest => dest.OldId, opt => opt.MapFrom(src => src.OldId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToString()))
                 .ForMember(dest => dest.ImageKey, opt => opt.MapFrom(src => src.ImageKey != null ? src.ImageKey.ToString() : null));
+
+            CreateMap<Survivor, SurvivorSoloResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.OldId, opt => opt.MapFrom(src => src.OldId))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToString()))
+                .ForMember(dest => dest.ImageKey, opt => opt.MapFrom(src => src.ImageKey != null ? src.ImageKey.ToString() : null));
         }
     }
 }

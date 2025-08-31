@@ -12,6 +12,11 @@ namespace DBDAnalytics.CatalogService.Application.AutoMappers.Profiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.OldId, opt => opt.MapFrom(src => src.OldId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.Value));
+
+            CreateMap<Measurement, MeasurementSoloResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                .ForMember(dest => dest.OldId, opt => opt.MapFrom(src => src.OldId))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.Value));
         }
     }
 }

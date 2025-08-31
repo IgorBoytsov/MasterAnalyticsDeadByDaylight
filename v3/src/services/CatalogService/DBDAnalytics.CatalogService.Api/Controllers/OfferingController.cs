@@ -5,6 +5,7 @@ using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignCategory;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignRarity;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Create;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Delete;
+using DBDAnalytics.CatalogService.Application.Features.Offerings.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,16 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public OfferingController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllOfferingQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -69,7 +80,7 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
 
         [HttpDelete("{offeringId}")]
         //[Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> AssignRarity(Guid offeringId)
+        public async Task<IActionResult> Delete(Guid offeringId)
         {
             var command = new DeleteOfferingCommand(offeringId);
 

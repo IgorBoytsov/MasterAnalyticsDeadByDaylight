@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Delete;
+using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,16 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public KillerPerkCategoriesController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllKillerPerkCategoriesQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPost]
