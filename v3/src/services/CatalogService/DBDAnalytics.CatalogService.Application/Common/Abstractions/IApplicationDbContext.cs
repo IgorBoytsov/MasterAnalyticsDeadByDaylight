@@ -20,6 +20,8 @@ namespace DBDAnalytics.CatalogService.Application.Common.Abstractions
         public DbSet<Platform> Platforms { get; set; }
         public DbSet<PlayerAssociation> PlayerAssociations { get; set; }
 
+        public DbSet<Patch> Patches { get; set; }
+
         public DbSet<Offering> Offerings { get; set; }
         public DbSet<OfferingCategory> OfferingCategories { get; set; }
 
