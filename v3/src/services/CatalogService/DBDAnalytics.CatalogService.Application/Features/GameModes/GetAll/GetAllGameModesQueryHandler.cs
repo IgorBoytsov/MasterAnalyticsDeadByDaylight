@@ -15,7 +15,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.GameModes.GetAll
         private readonly IMapper _mapper = mapper;
 
         public async Task<List<GameModeResponse>> Handle(GetAllGameModesQuery request, CancellationToken cancellationToken)
-            => await _context.GameEvents
+            => await _context.GameModes
                 .AsNoTracking()
                     .ProjectTo<GameModeResponse>(_mapper.ConfigurationProvider)
                         .ToListAsync(cancellationToken);

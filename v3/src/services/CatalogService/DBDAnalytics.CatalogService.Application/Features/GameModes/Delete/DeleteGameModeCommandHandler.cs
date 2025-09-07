@@ -21,6 +21,8 @@ namespace DBDAnalytics.CatalogService.Application.Features.GameModes.Delete
                 if (gameMode == null)
                     return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
 
+                _gameModeRepository.Remove(gameMode);
+
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
