@@ -2,7 +2,7 @@
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.GameMode
 {
-    public readonly struct GameModeId
+    public readonly record struct GameModeId
     {
         public int Value { get; }
 
