@@ -1,9 +1,9 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
-using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Delete;
 using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Update;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;

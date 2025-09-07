@@ -1,4 +1,4 @@
-﻿namespace DBDAnalytics.CatalogService.Api.Models.Request.Update
+﻿namespace DBDAnalytics.Shared.Contracts.Requests.CatalogService.Update
 {
     public sealed record UpdateKillerPerkCategoryRequest(string NewName);
 }

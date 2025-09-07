@@ -1,9 +1,9 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
-using DBDAnalytics.CatalogService.Api.Models.Request.Update;
-using DBDAnalytics.CatalogService.Application.Features.Rarities.Create;
+﻿using DBDAnalytics.CatalogService.Application.Features.Rarities.Create;
 using DBDAnalytics.CatalogService.Application.Features.Rarities.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Rarities.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.Rarities.Update;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Create;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;

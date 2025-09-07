@@ -1,5 +1,4 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request.Assign;
-using DBDAnalytics.CatalogService.Api.Models.Request.Create;
+﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
 using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignCategory;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignRarity;
@@ -7,6 +6,7 @@ using DBDAnalytics.CatalogService.Application.Features.Offerings.Create;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Update;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Assign;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;

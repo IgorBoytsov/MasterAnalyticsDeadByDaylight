@@ -1,9 +1,9 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
-using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Delete;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Update;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;

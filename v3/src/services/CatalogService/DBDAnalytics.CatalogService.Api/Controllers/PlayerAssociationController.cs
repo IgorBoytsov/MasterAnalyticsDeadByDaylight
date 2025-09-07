@@ -1,9 +1,9 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
-using DBDAnalytics.CatalogService.Api.Models.Request.Update;
-using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Create;
+﻿using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Create;
 using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Delete;
 using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Update;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Create;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;

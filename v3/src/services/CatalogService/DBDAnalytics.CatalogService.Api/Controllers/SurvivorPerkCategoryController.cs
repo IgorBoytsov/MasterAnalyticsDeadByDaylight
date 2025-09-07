@@ -1,9 +1,9 @@
-﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
-using DBDAnalytics.CatalogService.Api.Models.Request.Update;
-using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Create;
+﻿using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Create;
 using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Delete;
 using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategories.Update;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Create;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
