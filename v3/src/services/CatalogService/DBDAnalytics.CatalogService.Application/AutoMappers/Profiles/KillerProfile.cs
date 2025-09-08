@@ -10,12 +10,14 @@ namespace DBDAnalytics.CatalogService.Application.AutoMappers.Profiles
         {
             CreateMap<Killer, KillerResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                .ForMember(dest => dest.OldId, opt => opt.MapFrom(src => src.OldId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToString()))
                 .ForMember(dest => dest.KillerImageKey, opt => opt.MapFrom(src => src.KillerImageKey != null ? src.KillerImageKey.ToString() : null))
                 .ForMember(dest => dest.AbilityImageKey, opt => opt.MapFrom(src => src.AbilityImageKey != null ? src.AbilityImageKey.ToString() : null));
 
             CreateMap<Killer, KillerSoloResponse>()
                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+               .ForMember(dest => dest.OldId, opt => opt.MapFrom(src => src.OldId))
                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToString()))
                .ForMember(dest => dest.KillerImageKey, opt => opt.MapFrom(src => src.KillerImageKey != null ? src.KillerImageKey.ToString() : null))
                .ForMember(dest => dest.AbilityImageKey, opt => opt.MapFrom(src => src.AbilityImageKey != null ? src.AbilityImageKey.ToString() : null));
