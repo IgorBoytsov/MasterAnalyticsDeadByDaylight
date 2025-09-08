@@ -11,7 +11,7 @@ using Shared.Api;
 namespace DBDAnalytics.CatalogService.Api.Controllers
 {
     [ApiController]
-    [Route("api/measurements/{measurementsId}/maps")]
+    [Route("api/measurements/{measurementId}/maps")]
     public class MapController : Controller
     {
         private readonly IMediator _mediator;
@@ -22,9 +22,9 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromRoute] Guid measurementsId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll([FromRoute] Guid measurementId, CancellationToken cancellationToken)
         {
-            var query = new GetMapsByMeasurementIdQuery(measurementsId);
+            var query = new GetMapsByMeasurementIdQuery(measurementId);
 
             var result = await _mediator.Send(query, cancellationToken);
 
