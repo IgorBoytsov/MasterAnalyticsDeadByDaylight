@@ -12,7 +12,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Create
         IHasSemanticImageName,
         IHasPerks<CreateSurvivorPerkCommandData>;
 
-    public sealed record CreateSurvivorPerkCommandData(int OldId, string Name, FileInput? Image, string SemanticImageName) :
+    public sealed record CreateSurvivorPerkCommandData(int OldId, string Name, FileInput? Image, string SemanticImageName, int? CategoryId) :
         IHasName,
         IMayHasFileInput,
         IHasSemanticImageName;

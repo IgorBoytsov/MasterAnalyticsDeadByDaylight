@@ -32,7 +32,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Create
                 foreach (var item in request.Perks)
                 {
                     ImageKey? perkImageKey = await _fileUploadManager.UploadImageAsync(item.Image, FileStoragePaths.SurvivorPerks(survivor.Name), item.SemanticImageName, cancellationToken);
-                    survivor.AddPerk(item.Name, item.OldId, perkImageKey, null);
+                    survivor.AddPerk(item.Name, item.OldId, perkImageKey, item.CategoryId);
                 }
 
                 await _survivorRepository.AddAsync(survivor, cancellationToken);
