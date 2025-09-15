@@ -29,5 +29,6 @@
         NotFound = 4001,
         Conflict = 4002,
         Exist = 4003,
+        ApiError = 4004,
     }
 }
