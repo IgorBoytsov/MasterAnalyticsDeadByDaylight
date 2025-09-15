@@ -61,11 +61,11 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> UpdateAddon([FromRoute] Guid killerId, [FromRoute] Guid killerAddonId, [FromForm] UpdateKillerAddonRequest request)
         {
-            var command = new UpdateKillerAddonCommand(killerId, killerAddonId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SematicName);
+            var command = new UpdateKillerAddonCommand(killerId, killerAddonId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SemanticName);
 
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult(Ok);
+            return result.ToActionResult(() => Ok(result.Value));
         }
 
         [HttpDelete("{killerAddonId}")]

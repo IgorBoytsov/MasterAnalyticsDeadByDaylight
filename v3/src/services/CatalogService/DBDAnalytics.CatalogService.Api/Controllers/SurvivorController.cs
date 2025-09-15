@@ -38,7 +38,7 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             List<CreateSurvivorPerkCommandData> createSurvivorPerks = [];
 
             foreach (var item in request.Perks)
-                createSurvivorPerks.Add(new CreateSurvivorPerkCommandData(item.OldId, item.Name, ControllerExtensions.ToFileInput(item.Image), item.SemanticImageName));
+                createSurvivorPerks.Add(new CreateSurvivorPerkCommandData(item.OldId, item.Name, ControllerExtensions.ToFileInput(item.Image), item.SemanticImageName, item.CategoryId));
 
             var command = new CreateSurvivorCommand(request.OldId, request.Name, ControllerExtensions.ToFileInput(request.Image), request.SemanticImageName, createSurvivorPerks);
 
@@ -55,7 +55,7 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
 
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult(Ok);
+            return result.ToActionResult(() => Ok(result.Value));
         }
 
         [HttpDelete("{survivorId}")]

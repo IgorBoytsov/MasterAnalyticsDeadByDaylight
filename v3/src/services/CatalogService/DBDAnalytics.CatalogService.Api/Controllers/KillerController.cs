@@ -42,11 +42,13 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
             List<CreateAddonCommandData> addonData = [];
             List<CreatePerkCommandData> perkData = [];
 
-            foreach (var addon in request.Addons)
-                addonData.Add(new CreateAddonCommandData(addon.OldId, addon.Name, ControllerExtensions.ToFileInput(addon.Image), addon.SemanticImageName));
+            if (request.Addons is not null)
+                foreach (var addon in request.Addons)
+                    addonData.Add(new CreateAddonCommandData(addon.OldId, addon.Name, ControllerExtensions.ToFileInput(addon.Image), addon.SemanticImageName));
 
-            foreach (var perk in request.Perks)
-                perkData.Add(new CreatePerkCommandData(perk.OldId, perk.Name, ControllerExtensions.ToFileInput(perk.Image), perk.SemanticImageName));
+            if(request.Perks is not null)
+                foreach (var perk in request.Perks)
+                    perkData.Add(new CreatePerkCommandData(perk.OldId, perk.Name, ControllerExtensions.ToFileInput(perk.Image), perk.SemanticImageName));
 
             var command = new CreateKillerCommand(
                 request.OldId,

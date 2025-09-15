@@ -55,7 +55,7 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
 
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult(Ok);
+            return result.ToActionResult(() => Ok(result.Value));
         }
    
         [HttpDelete("{itemId}")]

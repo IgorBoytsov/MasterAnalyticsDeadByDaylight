@@ -12,13 +12,13 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Update
     public sealed class UpdateSurvivorCommandHandler(
         IApplicationDbContext context,
         ISurvivorRepository survivorRepository,
-        IFileStorageService fileStorageService) : IRequestHandler<UpdateSurvivorCommand, Result>
+        IFileStorageService fileStorageService) : IRequestHandler<UpdateSurvivorCommand, Result<string>>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly ISurvivorRepository _survivorRepository = survivorRepository;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
 
-        public async Task<Result> Handle(UpdateSurvivorCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(UpdateSurvivorCommand request, CancellationToken cancellationToken)
         {
             var survivor = await _survivorRepository.GetSurvivor(request.Id);
             var fileCategory = FileStoragePaths.SurvivorPortraits;
@@ -47,7 +47,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Update
                     }
                 }
 
-                return Result.Success();
+                return Result<string>.Success(newImageKey!);
             }
             catch (Exception ex)
             {
@@ -55,9 +55,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Update
                     await _fileStorageService.DeleteImageAsync($"{fileCategory}/{newImageKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<string>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
 
-                return Result.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
+                return Result<string>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
             }
         }
     }

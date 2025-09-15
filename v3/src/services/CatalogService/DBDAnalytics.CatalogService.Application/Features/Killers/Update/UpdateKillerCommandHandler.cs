@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Application.Common.Repository;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
+using DBDAnalytics.Shared.Contracts.Responses.Killers;
 using DBDAnalytics.Shared.Domain.Constants;
 using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Results;
@@ -12,13 +13,13 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Update
     public sealed class UpdateKillerCommandHandler(
         IApplicationDbContext context,
         IKillerRepository killerRepository,
-        IFileStorageService fileStorageService) : IRequestHandler<UpdateKillerCommand, Result>
+        IFileStorageService fileStorageService) : IRequestHandler<UpdateKillerCommand, Result<KillersImageKeysResponse>>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly IKillerRepository _killerRepository = killerRepository;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
 
-        public async Task<Result> Handle(UpdateKillerCommand request, CancellationToken cancellationToken)
+        public async Task<Result<KillersImageKeysResponse>> Handle(UpdateKillerCommand request, CancellationToken cancellationToken)
         {
             var killer = await _killerRepository.GetKiller(request.Id);
 
@@ -26,7 +27,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Update
             ImageKey? newImageAbilityKey = null;
 
             if (killer is null)
-                return Result.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
+                return Result<KillersImageKeysResponse>.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
 
             try
             {
@@ -66,7 +67,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Update
                     }
                 }
 
-                return Result.Success();
+                var response = new KillersImageKeysResponse(newImagePortraitKey!, newImageAbilityKey!);
+
+                return Result<KillersImageKeysResponse>.Success(response);
             }
             catch (Exception ex)
             {
@@ -77,9 +80,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Update
                     await _fileStorageService.DeleteImageAsync($"{FileStoragePaths.KillerAbilities}/{newImageAbilityKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<KillersImageKeysResponse>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
 
-                return Result.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
+                return Result<KillersImageKeysResponse>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
             }
         }
     }

@@ -6,7 +6,7 @@ using Shared.Api.Application.Validators.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Update
 {
-    public sealed record UpdateSurvivorCommand(Guid Id, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result>,
+    public sealed record UpdateSurvivorCommand(Guid Id, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result<string>>,
         IHasGuidId,
         IHasName,
         IMayHasFileInput,

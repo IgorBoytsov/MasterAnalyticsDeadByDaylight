@@ -63,11 +63,11 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> UpdatePerk([FromRoute] Guid killerId, [FromRoute] Guid killerPerkId, [FromForm] UpdateKillerPerkRequest request)
         {
-            var command = new UpdateKillerPerkCommand(killerId, killerPerkId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SematicName);
+            var command = new UpdateKillerPerkCommand(killerId, killerPerkId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SemanticName);
 
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult(Ok);
+            return result.ToActionResult(() => Ok(result.Value));
         }
 
         [HttpDelete("{killerPerkId}")]

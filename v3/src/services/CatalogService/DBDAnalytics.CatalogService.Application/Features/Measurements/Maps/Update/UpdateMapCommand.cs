@@ -6,7 +6,7 @@ using Shared.Api.Application.Validators.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Maps.Update
 {
-    public sealed record UpdateMapCommand(Guid MeasurementId, Guid MapId, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result>,
+    public sealed record UpdateMapCommand(Guid MeasurementId, Guid MapId, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result<string>>,
         IHasName,
         IMayHasFileInput,
         IHasSemanticImageName;

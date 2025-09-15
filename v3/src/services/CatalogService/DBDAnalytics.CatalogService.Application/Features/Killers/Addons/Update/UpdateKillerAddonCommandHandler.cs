@@ -12,20 +12,20 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Addons.Update
     public sealed class UpdateKillerAddonCommandHandler(
         IApplicationDbContext context,
         IKillerRepository killerRepository,
-        IFileStorageService fileStorageService) : IRequestHandler<UpdateKillerAddonCommand, Result>
+        IFileStorageService fileStorageService) : IRequestHandler<UpdateKillerAddonCommand, Result<string>>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly IKillerRepository _killerRepository = killerRepository;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
 
-        public async Task<Result> Handle(UpdateKillerAddonCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(UpdateKillerAddonCommand request, CancellationToken cancellationToken)
         {
             var killer = await _killerRepository.GetKiller(request.KillerId);
             var fileCategory = FileStoragePaths.KillerAddons(killer.Name);
             ImageKey? newImageKey = null;
 
             if (killer is null)
-                return Result.Failure(new Error(ErrorCode.NotFound, "Запись с киллером не найдена."));
+                return Result<string>.Failure(new Error(ErrorCode.NotFound, "Запись с киллером не найдена."));
 
             try
             {
@@ -49,7 +49,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Addons.Update
                     }
                 }
 
-                return Result.Success();
+                return Result<string>.Success(newImageKey!);
             }
             catch (Exception ex)
             {
@@ -57,9 +57,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Addons.Update
                     await _fileStorageService.DeleteImageAsync($"{fileCategory}/{newImageKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<string>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
 
-                return Result.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
+                return Result<string>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
             }
         }
     }

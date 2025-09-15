@@ -6,7 +6,7 @@ using Shared.Api.Application.Validators.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Killers.Perks.Update
 {
-    public sealed record UpdateKillerPerkCommand(Guid KillerId, Guid PerkId, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result>,
+    public sealed record UpdateKillerPerkCommand(Guid KillerId, Guid PerkId, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result<string>>,
         IHasName,
         IMayHasFileInput,
         IHasSemanticImageName;

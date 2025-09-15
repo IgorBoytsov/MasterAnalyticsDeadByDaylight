@@ -1,9 +1,9 @@
 ﻿using DBDAnalytics.CatalogService.Api.Models.Request.Create;
-using DBDAnalytics.CatalogService.Api.Models.Request.Update;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.Create;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.Measurements.Update;
+using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
@@ -49,7 +49,7 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
 
         [HttpPatch("{measurementId}")]
         //[Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> Update([FromRoute] Guid measurementId, [FromForm] UpdateMeasurementRequest request)
+        public async Task<IActionResult> Update([FromRoute] Guid measurementId, [FromBody] UpdateMeasurementRequest request)
         {
             var command = new UpdateMeasurementCommand(measurementId, request.NewName);
 

@@ -11,13 +11,13 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Perks.Updat
     public sealed class UpdateSurvivorPerkCommandHandler(
         IApplicationDbContext context,
         ISurvivorRepository survivorRepository,
-        IFileStorageService fileStorageService) : IRequestHandler<UpdateSurvivorPerkCommand, Result>
+        IFileStorageService fileStorageService) : IRequestHandler<UpdateSurvivorPerkCommand, Result<string>>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly ISurvivorRepository _survivorRepository = survivorRepository;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
 
-        public async Task<Result> Handle(UpdateSurvivorPerkCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(UpdateSurvivorPerkCommand request, CancellationToken cancellationToken)
         {
             var survivor = await _survivorRepository.GetSurvivor(request.SurvivorId);
             var fileCategory = FileStoragePaths.SurvivorPerks(survivor.Name);
@@ -28,7 +28,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Perks.Updat
                 var itemAddonToUpdate = survivor.SurvivorPerks.FirstOrDefault(sp => sp.Id == request.PerkId);
 
                 if (itemAddonToUpdate is null)
-                    return Result.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
+                    return Result<string>.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
 
                 var oldImageKey = itemAddonToUpdate.ImageKey;
 
@@ -50,7 +50,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Perks.Updat
                     }
                 }
 
-                return Result.Success();
+                return Result<string>.Success(newImageKey!);
             }
             catch (Exception ex)
             {
@@ -58,9 +58,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Perks.Updat
                     await _fileStorageService.DeleteImageAsync($"{fileCategory}/{newImageKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<string>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
 
-                return Result.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
+                return Result<string>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
             }
         }
     }

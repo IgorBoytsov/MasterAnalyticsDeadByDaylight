@@ -12,13 +12,13 @@ namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Maps.Upd
     public sealed class UpdateMapCommandHandler(
         IApplicationDbContext context,
         IMeasurementRepository measurementRepository,
-        IFileStorageService fileStorageService) : IRequestHandler<UpdateMapCommand, Result>
+        IFileStorageService fileStorageService) : IRequestHandler<UpdateMapCommand, Result<string>>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly IMeasurementRepository _measurementRepository = measurementRepository;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
 
-        public async Task<Result> Handle(UpdateMapCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(UpdateMapCommand request, CancellationToken cancellationToken)
         {
             var measurement = await _measurementRepository.GetMeasurement(request.MeasurementId);
             ImageKey? newImageKey = null;
@@ -28,7 +28,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Maps.Upd
                 var map = measurement.Maps.FirstOrDefault(m => m.Id == request.MapId);
 
                 if (map is null)
-                    return Result.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
+                    return Result<string>.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
 
                 var oldImageKey = map.ImageKey;
 
@@ -50,7 +50,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Maps.Upd
                     }
                 }
 
-                return Result.Success();
+                return Result<string>.Success(newImageKey!);
             }
             catch (Exception ex)
             {
@@ -58,9 +58,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Maps.Upd
                     await _fileStorageService.DeleteImageAsync($"{FileStoragePaths.Maps}/{newImageKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<string>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
 
-                return Result.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
+                return Result<string>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
             }
         }
     }

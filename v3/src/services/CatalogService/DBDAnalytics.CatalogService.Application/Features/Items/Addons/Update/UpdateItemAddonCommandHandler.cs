@@ -11,13 +11,13 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Addons.Update
     public sealed class UpdateItemAddonCommandHandler(
         IApplicationDbContext context,
         IItemRepository itemRepository,
-        IFileStorageService fileStorageService) : IRequestHandler<UpdateItemAddonCommand, Result>
+        IFileStorageService fileStorageService) : IRequestHandler<UpdateItemAddonCommand, Result<string>>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly IItemRepository _itemRepository = itemRepository;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
 
-        public async Task<Result> Handle(UpdateItemAddonCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(UpdateItemAddonCommand request, CancellationToken cancellationToken)
         {
             var item = await _itemRepository.GetItem(request.Id);
             var fileCategory = FileStoragePaths.ItemAddons(item.Name);
@@ -28,7 +28,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Addons.Update
                 var itemAddonToUpdate = item.ItemAddons.FirstOrDefault(ia => ia.Id == request.ItemAddonId);
 
                 if (itemAddonToUpdate is null)
-                    return Result.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
+                    return Result<string>.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
 
                 var oldImageKey = itemAddonToUpdate.ImageKey;
 
@@ -52,7 +52,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Addons.Update
                     }
                 }
 
-                return Result.Success();
+                return Result<string>.Success(newImageKey!);
             }
             catch (Exception ex)
             {
@@ -60,9 +60,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Addons.Update
                     await _fileStorageService.DeleteImageAsync($"{fileCategory}/{newImageKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<string>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
 
-                return Result.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
+                return Result<string>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
             }
         }
     }

@@ -6,7 +6,7 @@ using Shared.Api.Application.Validators.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Items.Addons.Update
 {
-    public sealed record UpdateItemAddonCommand(Guid Id, Guid ItemAddonId, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result>,
+    public sealed record UpdateItemAddonCommand(Guid Id, Guid ItemAddonId, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result<string>>,
         IHasGuidId,
         IHasName,
         IMayHasFileInput,

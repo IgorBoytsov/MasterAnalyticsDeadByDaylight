@@ -49,11 +49,13 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         //[Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> Update([FromRoute] Guid offeringId, [FromForm] UpdateOfferingRequest request)
         {
-            var command = new UpdateOfferingCommand(offeringId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SemanticName);
+            var command = new UpdateOfferingCommand(
+                offeringId, request.NewName, ControllerExtensions.ToFileInput(request.Image), request.SemanticName,
+                request.RoleId, request.RarityId, request.CategoryId);
 
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult(Ok);
+            return result.ToActionResult(() => Ok(result.Value));
         }
 
         [HttpPut("{offeringId}/category")]

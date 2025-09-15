@@ -6,7 +6,7 @@ using Shared.Api.Application.Validators.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Perks.Update
 {
-    public sealed record UpdateSurvivorPerkCommand(Guid SurvivorId, Guid PerkId, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result>,
+    public sealed record UpdateSurvivorPerkCommand(Guid SurvivorId, Guid PerkId, string Name, FileInput? Image, string SemanticImageName) : IRequest<Result<string>>,
         IHasName,
         IMayHasFileInput,
         IHasSemanticImageName;

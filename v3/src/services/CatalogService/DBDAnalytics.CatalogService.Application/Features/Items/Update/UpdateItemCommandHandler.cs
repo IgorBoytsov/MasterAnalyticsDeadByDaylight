@@ -12,20 +12,20 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Update
     public sealed class UpdateItemCommandHandler(
         IApplicationDbContext context,
         IItemRepository itemRepository,
-        IFileStorageService fileStorageService) : IRequestHandler<UpdateItemCommand, Result>
+        IFileStorageService fileStorageService) : IRequestHandler<UpdateItemCommand, Result<string>>
     {
         private readonly IApplicationDbContext _context = context;
         private readonly IItemRepository _itemRepository = itemRepository;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
 
-        public async Task<Result> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
         {
             var item = await _itemRepository.GetItem(request.Id);
             var fileCategory = FileStoragePaths.Items;
             ImageKey? newImageKey = null;
 
             if (item is null)
-                return Result.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
+                return Result<string>.Failure(new Error(ErrorCode.NotFound, "Запись не найдена."));
 
             try
             {
@@ -50,7 +50,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Update
                     }
                 }
 
-                return Result.Success();
+                return Result<string>.Success(newImageKey!);
             }
             catch (Exception ex)
             {
@@ -58,9 +58,9 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Update
                     await _fileStorageService.DeleteImageAsync($"{fileCategory}/{newImageKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<string>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
 
-                return Result.Failure(new Error(ErrorCode.Create, "Произошла непредвиденная ошибка при обновлении записи."));
+                return Result<string>.Failure(new Error(ErrorCode.Create, "Произошла непредвиденная ошибка при обновлении записи."));
             }
         }
     }
