@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
 using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
@@ -19,12 +20,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Offerings.AssignRarit
                 if (offerings is null)
                     return Result.Failure(new Error(ErrorCode.NotFound, "Данное подношение не найдено"));
 
-                var rarity = await _context.Rarities.FirstOrDefaultAsync(c => c.Id == request.RarityId, cancellationToken);
-
-                if (rarity is null)
-                    return Result.Failure(new Error(ErrorCode.NotFound, "Данная редкость не найдена"));
-
-                offerings.AssignRarity(rarity);
+                offerings.AssignRarity(RarityId.From(request.RarityId));
 
                 await _context.SaveChangesAsync(cancellationToken);
 

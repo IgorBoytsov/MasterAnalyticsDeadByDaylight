@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.OfferingCategory;
 using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
@@ -19,12 +20,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Offerings.AssignCateg
                 if (offerings is null)
                     return Result.Failure(new Error(ErrorCode.NotFound, "Данное подношение не найдено"));
 
-                var cat = await _context.OfferingCategories.FirstOrDefaultAsync(c => c.Id == request.CategoryId, cancellationToken);
-
-                if (cat is null)
-                    return Result.Failure(new Error(ErrorCode.NotFound, "Данная категория не найдена"));
-
-                offerings.AssignCategory(cat);
+                offerings.AssignCategory(OfferingCategoryId.From(request.CategoryId));
 
                 await _context.SaveChangesAsync(cancellationToken);
 

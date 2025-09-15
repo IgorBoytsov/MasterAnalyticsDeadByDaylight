@@ -44,21 +44,18 @@ namespace DBDAnalytics.CatalogService.Domain.Models
         }
 
         ///// <exception cref="InvalidKillerPropertyException"></exception>
-        public void AssignCategory(OfferingCategory category)
+        public void AssignRole(RoleId roleId)
         {
-            GuardException.Against.Null(category, nameof(category));
+            GuardException.Against.Null(roleId, nameof(roleId));
 
-            CategoryId = category.Id;
+            RoleId = roleId;
         }
+
+        public void AssignCategory(OfferingCategoryId? category) => CategoryId = category;
+
+        public void AssignRarity(RarityId? rarityId) => RarityId = rarityId;
 
         public void RemoveCategory() => CategoryId = null;
-
-        /// <exception cref="InvalidKillerPropertyException"></exception>
-        public void AssignRarity(Rarity rarity)
-        {
-            GuardException.Against.Null(rarity, nameof(rarity));
-            RarityId = rarity.Id;
-        }
 
         public void RemoveRarity() => RarityId = null;
 
