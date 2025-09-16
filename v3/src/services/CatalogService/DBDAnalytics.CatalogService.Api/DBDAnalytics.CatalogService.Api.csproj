@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Shared.Api\Shared.Api.csproj" />
+    <ProjectReference Include="..\..\..\shared\api\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\DBDAnalytics.CatalogService.Application\DBDAnalytics.CatalogService.Application.csproj" />
     <ProjectReference Include="..\DBDAnalytics.CatalogService.Domain\DBDAnalytics.CatalogService.Domain.csproj" />
     <ProjectReference Include="..\DBDAnalytics.CatalogService.Infrastructure\DBDAnalytics.CatalogService.Infrastructure.csproj" />
