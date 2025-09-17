@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DBDAnalytics.Shared.Domain.Primitives;
+using Microsoft.EntityFrameworkCore;
 
 namespace Shared.Api.Infrastructure.EFBase
 {
     public abstract class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity> 
-        where TEntity : class
+        where TEntity : class, IAggregateRoot
         where TContext : IBaseDbContext
     {
         protected readonly TContext _context;

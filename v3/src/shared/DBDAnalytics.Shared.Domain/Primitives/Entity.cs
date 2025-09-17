@@ -1,6 +1,6 @@
 ﻿namespace DBDAnalytics.Shared.Domain.Primitives
 {
-    public abstract class Entity<TId> : IEquatable<Entity<TId>> where TId : notnull
+    public abstract class Entity<TId> : IEntity, IEquatable<Entity<TId>> where TId : notnull
     {
         public TId Id { get; protected init; } = default!;
 
