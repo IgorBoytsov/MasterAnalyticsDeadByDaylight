@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\HttpApi\" />
+    <Folder Include="Views\UserControls\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\clients\DBDAnalytics.CatalogService.Client\DBDAnalytics.CatalogService.Client.csproj" />
+    <ProjectReference Include="..\..\clients\DBDAnalytics.FIleStorageService.Client\DBDAnalytics.FIleStorageService.Client.csproj" />
+    <ProjectReference Include="..\..\Shared\DBDAnalytics.Shared.Contracts\DBDAnalytics.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\Shared\DBDAnalytics.Shared.Domain\DBDAnalytics.Shared.Domain.csproj" />
+    <ProjectReference Include="..\..\shared\infrastructure\Shared.HttpClients\Shared.HttpClients.csproj" />
+    <ProjectReference Include="..\..\shared\ui\Shared.WPF\Shared.WPF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="apiconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
