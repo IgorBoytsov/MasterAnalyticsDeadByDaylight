@@ -1,61 +1,15 @@
 ﻿using DBDAnalytics.Shared.Domain.Results;
 using Shared.HttpClients.Abstractions;
 using System.Net.Http.Json;
-using System.Text.Json;
 
-//TODO: Добавить логирование ошибок
+//TODO: Добавить логирование ошибок. Если нужно будет, то в будущем добавить еще и BaseWriteApiService
 namespace Shared.HttpClients
 {
-    public abstract class BaseApiService<TResponse, TKey> : IBaseApiService<TResponse, TKey>
+    public abstract class BaseApiService<TResponse, TKey>(HttpClient httpClient, string endpoint) :
+        BaseReadApiService<TResponse, TKey>(httpClient, endpoint),
+        IBaseApiService<TResponse, TKey>
         where TResponse : class
     {
-        public readonly HttpClient _httpClient;
-        public readonly string _endpoint;
-        protected readonly JsonSerializerOptions _jsonSerializerOptions;
-
-        protected BaseApiService(HttpClient httpClient, string endpoint)
-        {
-            _httpClient = httpClient;
-            _endpoint = endpoint;
-            _jsonSerializerOptions = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-        }
-
-        public virtual async Task<List<TResponse>> GetAllAsync()
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync(_endpoint);
-                response.EnsureSuccessStatusCode();
-
-                var result = await response.Content.ReadFromJsonAsync<List<TResponse>>(_jsonSerializerOptions);
-                return result ?? [];
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"Ошибка при извлечении всех элементов из {_endpoint}: {ex.Message}");
-                return [];
-            }
-        }
-
-        public virtual async Task<TResponse?> GetByIdAsync(TKey id)
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync($"{_endpoint}/{id}");
-                response.EnsureSuccessStatusCode();
-
-                return await response.Content.ReadFromJsonAsync<TResponse>(_jsonSerializerOptions);
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"Ошибка при выборке элемента с идентификатором {id} из {_endpoint}: {ex.Message}");
-                return null;
-            }
-        }
-
         public virtual async Task<Result<TResponse?>> AddAsync<TRequest>(TRequest newItem)
         {
             try
