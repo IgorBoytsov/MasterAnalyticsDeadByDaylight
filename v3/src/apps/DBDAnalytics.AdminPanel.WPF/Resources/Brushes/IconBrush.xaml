@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="Solid.Icon.Close.Background" Color="White"/>
+    <SolidColorBrush x:Key="Solid.Icon.Trash.Background" Color="#8B0000"/>
+    <SolidColorBrush x:Key="Solid.Icon.UpdateIcon.Background" Color="#D0AD23"/>
+
+</ResourceDictionary>
