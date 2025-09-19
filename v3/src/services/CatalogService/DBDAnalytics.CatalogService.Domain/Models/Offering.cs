@@ -3,8 +3,8 @@ using DBDAnalytics.CatalogService.Domain.ValueObjects.Offering;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.OfferingCategory;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Role;
-using DBDAnalytics.Shared.Domain.Exceptions.Guard;
-using DBDAnalytics.Shared.Domain.Primitives;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {

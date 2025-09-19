@@ -1,7 +1,7 @@
 ﻿using DBDAnalytics.Shared.Contracts.Responses.CharacterInfo;
-using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
 using Shared.Api.Application.Validators.Abstractions;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Create
 {

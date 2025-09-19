@@ -1,6 +1,6 @@
-﻿using DBDAnalytics.Shared.Domain.Results;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Kernel.Results;
 
 namespace Shared.Api
 {

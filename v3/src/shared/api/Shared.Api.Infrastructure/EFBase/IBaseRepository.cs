@@ -1,4 +1,4 @@
-﻿using DBDAnalytics.Shared.Domain.Primitives;
+﻿using Shared.Kernel.Primitives;
 
 namespace Shared.Api.Infrastructure.EFBase
 {

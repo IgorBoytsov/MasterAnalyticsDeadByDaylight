@@ -1,7 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
-using DBDAnalytics.Shared.Domain.Primitives;
+using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {

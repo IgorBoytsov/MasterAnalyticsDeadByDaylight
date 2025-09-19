@@ -1,0 +1,101 @@
+﻿using DBDAnalytics.Shared.Contracts.Enums;
+using System.Net.Http.Headers;
+
+namespace DBDAnalytics.Shared.Contracts.Constants
+{
+    public static class FileStoragePaths
+    {
+        // Базовые категории
+        public const string KillersBase = "Killers";
+        public const string SurvivorsBase = "Survivors";
+
+        //Общие
+        public const string Perks = "Perks";
+        public const string Addons = "Addons";
+        public const string Maps = "Maps";
+        public const string Offerings = "Offerings";
+        public const string Items = "Items";
+
+        public const string KillerRole = "KillerRole";
+        public const string SurvivorRole = "SurvivorRole";
+        public const string GeneralRole = "GeneralRole";
+
+        /// <summary>
+        /// "Killers/Portraits"
+        /// </summary>
+        public const string KillerPortraits = KillersBase + "/Portraits";
+
+        /// <summary>
+        /// "Killers/Abilities"
+        /// </summary>
+        public const string KillerAbilities = KillersBase + "/Abilities";
+
+        /// <summary>
+        /// "Survivors/Portraits"
+        /// </summary>
+        public const string SurvivorPortraits = SurvivorsBase + "/Portraits";
+
+        /// <summary>
+        /// "Offerings/KillerRole"
+        /// </summary>
+        public static string OfferingKiller => $"{Offerings}/{KillerRole}";
+
+        /// <summary>
+        /// "Offerings/SurvivorRole"
+        /// </summary>
+        public static string OfferingSurvivor => $"{Offerings}/{SurvivorRole}";
+
+        /// <summary>
+        /// "Offerings/GeneralRole"
+        /// </summary>
+        public static string OfferingGeneral => $"{Offerings}/{GeneralRole}";
+
+
+        /// <summary>
+        /// Killers/Perks/Trapper
+        /// </summary>
+        public static string KillerPerks(string killerName) => $"{KillersBase}/{Perks}/{Sanitize(killerName)}";
+
+        /// <summary>
+        /// Killers/Addons/Trapper
+        /// </summary>
+        public static string KillerAddons(string killerName) => $"{KillersBase}/{Addons}/{Sanitize(killerName)}";
+
+        /// <summary>
+        /// Survivors/Perks/Кейт-Денсон
+        /// </summary>
+        /// <param name="survivorName"></param>
+        /// <returns></returns>
+        public static string SurvivorPerks(string survivorName) => $"{SurvivorsBase}/{Perks}/{Sanitize(survivorName)}";
+
+        public static string ItemAddons(string itemName) => $"{Items}/{itemName}";
+
+        //private static string Sanitize(string input) => input.Trim().ToLower().Replace(" ", "-");
+
+        /// <summary>
+        /// "  the Trapper  " -> "The-trapper"
+        /// </summary>
+        private static string Sanitize(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            string processedInput = input.Trim().ToLowerInvariant();
+            string capitalized = char.ToUpperInvariant(processedInput[0]) + processedInput[1..];
+            return capitalized.Replace(" ", "-");
+        }
+
+        public static string GetOfferingPathForRole(Roles role)
+        {
+            return role switch
+            {
+                Roles.Killer => OfferingKiller,
+                Roles.Survivor => OfferingSurvivor,
+                Roles.General => OfferingGeneral,
+                _ => throw new ArgumentOutOfRangeException(nameof(role))
+            };
+        }
+
+        public static string GetOfferingPathForRole(int roleId) => GetOfferingPathForRole((Roles)roleId);
+    }
+}

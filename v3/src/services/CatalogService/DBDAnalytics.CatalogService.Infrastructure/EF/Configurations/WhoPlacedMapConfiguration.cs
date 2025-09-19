@@ -1,6 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Domain.Models;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.WhoPlacedMap;
 using DBDAnalytics.CatalogService.Infrastructure.EF.Constants;
+using DBDAnalytics.Shared.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

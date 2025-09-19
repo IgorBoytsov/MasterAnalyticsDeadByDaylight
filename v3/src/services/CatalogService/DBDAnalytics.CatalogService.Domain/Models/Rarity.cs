@@ -1,5 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
-using DBDAnalytics.Shared.Domain.Primitives;
+using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {

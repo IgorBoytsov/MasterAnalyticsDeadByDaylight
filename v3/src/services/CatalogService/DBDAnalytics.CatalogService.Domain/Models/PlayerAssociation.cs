@@ -1,5 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.PlayerAssociation;
-using DBDAnalytics.Shared.Domain.Primitives;
+using DBDAnalytics.Shared.Domain.ValueObjects;
+using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {

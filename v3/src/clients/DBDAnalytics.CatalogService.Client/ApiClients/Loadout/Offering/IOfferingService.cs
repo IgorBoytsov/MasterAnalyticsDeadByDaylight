@@ -1,6 +1,6 @@
 ﻿using DBDAnalytics.Shared.Contracts.Responses.Offering;
-using DBDAnalytics.Shared.Domain.Results;
 using Shared.HttpClients.Abstractions;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Client.ApiClients.Loadout.Offering
 {

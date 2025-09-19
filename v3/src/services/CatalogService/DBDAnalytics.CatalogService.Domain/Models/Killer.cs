@@ -3,11 +3,10 @@ using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerAddon;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
-using DBDAnalytics.Shared.Domain.Exceptions;
-using DBDAnalytics.Shared.Domain.Exceptions.Guard;
-using DBDAnalytics.Shared.Domain.Primitives;
-using DBDAnalytics.Shared.Domain.Results;
-using System.Xml.Linq;
+using Shared.Kernel.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Primitives;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {

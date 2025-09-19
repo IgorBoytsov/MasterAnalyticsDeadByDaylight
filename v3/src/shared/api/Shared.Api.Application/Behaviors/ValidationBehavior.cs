@@ -1,7 +1,7 @@
-﻿using DBDAnalytics.Shared.Domain.Exceptions.Guard;
-using DBDAnalytics.Shared.Domain.Results;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 using System.Reflection;
 
 namespace Shared.Api.Application.Behaviors

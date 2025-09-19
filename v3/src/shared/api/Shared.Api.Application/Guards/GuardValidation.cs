@@ -1,5 +1,5 @@
-﻿using DBDAnalytics.Shared.Domain.Results;
-using FluentValidation.Results;
+﻿using FluentValidation.Results;
+using Shared.Kernel.Results;
 
 namespace Shared.Api.Application.Guards
 {

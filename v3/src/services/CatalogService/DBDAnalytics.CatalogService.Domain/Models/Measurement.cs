@@ -1,14 +1,11 @@
 ﻿using DBDAnalytics.CatalogService.Domain.Exceptions;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
-using DBDAnalytics.CatalogService.Domain.ValueObjects.ItemAddon;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Map;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Measurement;
-using DBDAnalytics.CatalogService.Domain.ValueObjects.OfferingCategory;
-using DBDAnalytics.Shared.Domain.Exceptions;
-using DBDAnalytics.Shared.Domain.Exceptions.Guard;
-using DBDAnalytics.Shared.Domain.Primitives;
-using DBDAnalytics.Shared.Domain.Results;
-using System.Xml.Linq;
+using Shared.Kernel.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Primitives;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {

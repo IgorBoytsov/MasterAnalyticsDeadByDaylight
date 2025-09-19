@@ -1,8 +1,8 @@
 ﻿using DBDAnalytics.Shared.Contracts.Requests.Shared;
 using DBDAnalytics.Shared.Contracts.Responses.Killers;
-using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
 using Shared.Api.Application.Validators.Abstractions;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Killers.Update
 {

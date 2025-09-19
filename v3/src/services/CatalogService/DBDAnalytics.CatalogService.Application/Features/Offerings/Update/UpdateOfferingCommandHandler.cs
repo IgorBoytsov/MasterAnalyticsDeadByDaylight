@@ -5,11 +5,10 @@ using DBDAnalytics.CatalogService.Domain.ValueObjects.Offering;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.OfferingCategory;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Role;
-using DBDAnalytics.Shared.Domain.Constants;
-using DBDAnalytics.Shared.Domain.Exceptions;
-using DBDAnalytics.Shared.Domain.Results;
+using DBDAnalytics.Shared.Contracts.Constants;
 using MediatR;
-using System.Data;
+using Shared.Kernel.Exceptions;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Offerings.Update
 {
@@ -37,19 +36,8 @@ namespace DBDAnalytics.CatalogService.Application.Features.Offerings.Update
             {
                 if (request.Image is not null)
                 {
-                    if (request.RoleId == (int)Shared.Domain.Enums.Roles.Survivor)
-                        newStoragePath = FileStoragePaths.OfferingSurvivor;
-                    if (request.RoleId == (int)Shared.Domain.Enums.Roles.Killer)
-                        newStoragePath = FileStoragePaths.OfferingKiller;
-                    if (request.RoleId == (int)Shared.Domain.Enums.Roles.General)
-                        newStoragePath = FileStoragePaths.OfferingGeneral;
-
-                    if (offering.RoleId == (int)Shared.Domain.Enums.Roles.Survivor)
-                        oldStoragePath = FileStoragePaths.OfferingSurvivor;
-                    if (offering.RoleId == (int)Shared.Domain.Enums.Roles.Killer)
-                        oldStoragePath = FileStoragePaths.OfferingKiller;
-                    if (offering.RoleId == (int)Shared.Domain.Enums.Roles.General)
-                        oldStoragePath = FileStoragePaths.OfferingGeneral;
+                    newStoragePath = FileStoragePaths.GetOfferingPathForRole(request.RoleId);
+                    oldStoragePath = FileStoragePaths.GetOfferingPathForRole(offering.RoleId);
 
                     oldImageKey = offering.ImageKey;
 

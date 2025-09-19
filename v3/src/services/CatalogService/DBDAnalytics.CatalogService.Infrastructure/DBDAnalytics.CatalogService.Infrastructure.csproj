@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\api\Shared.Api.Infrastructure\Shared.Api.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Shared\DBDAnalytics.Shared.Contracts\DBDAnalytics.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\shared\Shared.Kernel\Shared.Kernel.csproj" />
     <ProjectReference Include="..\..\..\Shared\DBDAnalytics.Shared.Domain\DBDAnalytics.Shared.Domain.csproj" />
     <ProjectReference Include="..\DBDAnalytics.CatalogService.Application\DBDAnalytics.CatalogService.Application.csproj" />
     <ProjectReference Include="..\DBDAnalytics.CatalogService.Domain\DBDAnalytics.CatalogService.Domain.csproj" />

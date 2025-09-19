@@ -1,8 +1,8 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
-using DBDAnalytics.Shared.Domain.Constants;
-using DBDAnalytics.Shared.Domain.Results;
+using DBDAnalytics.Shared.Contracts.Constants;
 using MediatR;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Offerings.Delete
 {
@@ -24,18 +24,12 @@ namespace DBDAnalytics.CatalogService.Application.Features.Offerings.Delete
                 if (offering is null)
                     return Result.Failure(new Error(ErrorCode.Delete, "Такой записи не существует."));
 
-                var roleId = offering.RoleId;
-                var offeringImageKey = offering.ImageKey;
-                var imageKeyPath = string.Empty;
+                var imageKeyPath = FileStoragePaths.GetOfferingPathForRole(offering.RoleId);
 
                 _offeringRepository.Remove(offering);
 
-                if ((int)Shared.Domain.Enums.Roles.Survivor == roleId) imageKeyPath = $"{FileStoragePaths.OfferingSurvivor}/{offeringImageKey}";
-                if ((int)Shared.Domain.Enums.Roles.Killer == roleId) imageKeyPath = $"{FileStoragePaths.OfferingKiller}/{offeringImageKey}";
-                if ((int)Shared.Domain.Enums.Roles.General == roleId) imageKeyPath = $"{FileStoragePaths.OfferingGeneral}/{offeringImageKey}";
-
                 if (!string.IsNullOrWhiteSpace(imageKeyPath)) 
-                    await _fileStorageService.DeleteImageAsync(imageKeyPath, cancellationToken);
+                    await _fileStorageService.DeleteImageAsync($"{imageKeyPath}/{offering.ImageKey}", cancellationToken);
 
                 await _context.SaveChangesAsync(cancellationToken);
 

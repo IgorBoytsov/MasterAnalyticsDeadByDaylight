@@ -1,7 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Client.Models;
 using DBDAnalytics.Shared.Contracts.Responses.Maps;
-using DBDAnalytics.Shared.Domain.Results;
 using Shared.HttpClients.Abstractions;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Client.ApiClients.Matches.Measurement
 {

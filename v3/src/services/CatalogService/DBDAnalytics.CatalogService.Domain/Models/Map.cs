@@ -1,6 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Map;
-using DBDAnalytics.Shared.Domain.Primitives;
+using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {

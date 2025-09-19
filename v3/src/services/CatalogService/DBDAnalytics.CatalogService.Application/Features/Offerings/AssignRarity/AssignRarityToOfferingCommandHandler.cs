@@ -1,9 +1,9 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
-using DBDAnalytics.Shared.Domain.Exceptions;
-using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Shared.Kernel.Exceptions;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Offerings.AssignRarity
 {

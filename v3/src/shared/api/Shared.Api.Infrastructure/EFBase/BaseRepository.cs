@@ -1,5 +1,5 @@
-﻿using DBDAnalytics.Shared.Domain.Primitives;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Shared.Kernel.Primitives;
 
 namespace Shared.Api.Infrastructure.EFBase
 {

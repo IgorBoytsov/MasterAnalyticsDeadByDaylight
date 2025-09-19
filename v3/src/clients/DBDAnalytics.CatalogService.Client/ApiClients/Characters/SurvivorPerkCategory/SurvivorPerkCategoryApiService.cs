@@ -1,6 +1,6 @@
 ﻿using DBDAnalytics.Shared.Contracts.Responses.Survivor;
-using DBDAnalytics.Shared.Domain.Results;
 using Shared.HttpClients;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Client.ApiClients.Characters.SurvivorPerkCategory
 {

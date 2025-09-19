@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DBDAnalytics.CatalogService.Domain.ValueObjects.GameEvent;
+using DBDAnalytics.Shared.Domain.ValueObjects;
 
 namespace DBDAnalytics.CatalogService.Application.AutoMappers.ValueObjectProfiles
 {

@@ -1,4 +1,4 @@
-﻿using DBDAnalytics.Shared.Domain.Results;
+﻿using Shared.Kernel.Results;
 
 namespace Shared.HttpClients.Abstractions
 {

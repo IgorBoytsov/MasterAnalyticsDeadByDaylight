@@ -2,10 +2,10 @@
 using DBDAnalytics.CatalogService.Application.Common.Repository;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Survivor;
-using DBDAnalytics.Shared.Domain.Constants;
-using DBDAnalytics.Shared.Domain.Exceptions;
-using DBDAnalytics.Shared.Domain.Results;
+using DBDAnalytics.Shared.Contracts.Constants;
 using MediatR;
+using Shared.Kernel.Exceptions;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Update
 {

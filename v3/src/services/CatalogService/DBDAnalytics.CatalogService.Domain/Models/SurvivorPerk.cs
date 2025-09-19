@@ -1,7 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerk;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerkCategory;
-using DBDAnalytics.Shared.Domain.Primitives;
+using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
 {

@@ -24,8 +24,8 @@
     <ProjectReference Include="..\..\clients\DBDAnalytics.CatalogService.Client\DBDAnalytics.CatalogService.Client.csproj" />
     <ProjectReference Include="..\..\clients\DBDAnalytics.FIleStorageService.Client\DBDAnalytics.FIleStorageService.Client.csproj" />
     <ProjectReference Include="..\..\Shared\DBDAnalytics.Shared.Contracts\DBDAnalytics.Shared.Contracts.csproj" />
-    <ProjectReference Include="..\..\Shared\DBDAnalytics.Shared.Domain\DBDAnalytics.Shared.Domain.csproj" />
     <ProjectReference Include="..\..\shared\infrastructure\Shared.HttpClients\Shared.HttpClients.csproj" />
+    <ProjectReference Include="..\..\shared\Shared.Kernel\Shared.Kernel.csproj" />
     <ProjectReference Include="..\..\shared\ui\Shared.WPF\Shared.WPF.csproj" />
   </ItemGroup>
 

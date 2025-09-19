@@ -1,5 +1,5 @@
-﻿using DBDAnalytics.Shared.Domain.Results;
-using Shared.HttpClients.Abstractions;
+﻿using Shared.HttpClients.Abstractions;
+using Shared.Kernel.Results;
 using System.Net.Http.Json;
 
 //TODO: Добавить логирование ошибок. Если нужно будет, то в будущем добавить еще и BaseWriteApiService

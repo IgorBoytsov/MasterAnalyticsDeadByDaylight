@@ -1,9 +1,8 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
-using DBDAnalytics.CatalogService.Domain.ValueObjects.GameEvent;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
-using DBDAnalytics.Shared.Domain.Results;
 using MediatR;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Rarities.Update
 {

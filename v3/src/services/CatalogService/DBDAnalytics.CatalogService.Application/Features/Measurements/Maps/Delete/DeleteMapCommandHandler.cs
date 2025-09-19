@@ -1,8 +1,8 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
-using DBDAnalytics.Shared.Domain.Constants;
-using DBDAnalytics.Shared.Domain.Results;
+using DBDAnalytics.Shared.Contracts.Constants;
 using MediatR;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Maps.Delete
 {

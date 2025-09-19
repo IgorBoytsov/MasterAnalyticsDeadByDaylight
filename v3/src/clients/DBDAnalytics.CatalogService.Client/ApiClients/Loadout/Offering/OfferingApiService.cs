@@ -1,6 +1,6 @@
 ﻿using DBDAnalytics.Shared.Contracts.Responses.Offering;
-using DBDAnalytics.Shared.Domain.Results;
 using Shared.HttpClients;
+using Shared.Kernel.Results;
 using Shared.Utilities;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;

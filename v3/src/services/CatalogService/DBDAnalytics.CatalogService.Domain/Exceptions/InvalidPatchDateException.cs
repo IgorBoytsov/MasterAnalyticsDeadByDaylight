@@ -1,5 +1,5 @@
-﻿using DBDAnalytics.Shared.Domain.Exceptions;
-using DBDAnalytics.Shared.Domain.Results;
+﻿using Shared.Kernel.Exceptions;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.Exceptions
 {

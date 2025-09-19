@@ -1,5 +1,4 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
-using DBDAnalytics.Shared.Domain.Exceptions.Guard;
+﻿using Shared.Kernel.Exceptions.Guard;
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Survivor
 {
