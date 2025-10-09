@@ -5,7 +5,7 @@ namespace Shared.Api.Infrastructure.EFBase
 {
     public abstract class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity> 
         where TEntity : class, IAggregateRoot
-        where TContext : IBaseDbContext
+        where TContext : IBaseWriteDbContext
     {
         protected readonly TContext _context;
         protected readonly DbSet<TEntity> _dbSet;

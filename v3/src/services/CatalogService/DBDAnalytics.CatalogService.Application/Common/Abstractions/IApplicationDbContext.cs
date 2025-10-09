@@ -4,7 +4,7 @@ using Shared.Api.Infrastructure.EFBase;
 
 namespace DBDAnalytics.CatalogService.Application.Common.Abstractions
 {
-    public interface IApplicationDbContext : IBaseDbContext
+    public interface IApplicationDbContext : IBaseWriteDbContext
     {
         public DbSet<Rarity> Rarities { get; set; }
         public DbSet<Role> Roles { get; set; }
