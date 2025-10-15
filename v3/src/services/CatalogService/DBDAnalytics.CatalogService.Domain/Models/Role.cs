@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Role;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
@@ -16,6 +17,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             Name = name;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
         public static Role Create(int oldId, string name)
         {
             var nameVo = RoleName.Create(name);

@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.Shared.Domain.ValueObjects
 {
@@ -8,9 +10,10 @@ namespace DBDAnalytics.Shared.Domain.ValueObjects
 
         internal TypeDeathId(int value) => Value = value;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static TypeDeathId From(int typeDeathId)
         {
-            GuardException.Against.That(typeDeathId <= 0, () => new ArgumentException("Id для типа смерти должно быть положительным числом."));
+            GuardException.Against.That(typeDeathId <= 0, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id типа смерти должен быть положительным числом.")));
 
             return new TypeDeathId(typeDeathId);
         }

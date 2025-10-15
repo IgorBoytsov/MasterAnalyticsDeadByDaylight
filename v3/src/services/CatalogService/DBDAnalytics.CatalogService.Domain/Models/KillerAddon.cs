@@ -1,5 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerAddon;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
@@ -23,6 +24,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             KillerId = killerId;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
         public static KillerAddon Create(int oldId, string name, ImageKey? imageKey, Guid killerId)
         {
             var nameVo = KillerAddonName.Create(name);

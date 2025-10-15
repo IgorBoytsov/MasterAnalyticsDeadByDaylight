@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory
 {
@@ -8,9 +10,10 @@ namespace DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory
 
         internal KillerPerkCategoryId(int value) => Value = value;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static KillerPerkCategoryId From(int value)
         {
-            GuardException.Against.That(value <= 0, () => new ArgumentException("Id категории перка должен быть положительным числом.", nameof(value)));
+            GuardException.Against.That(value <= 0, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id категории перка должен быть положительным числом.")));
 
             return new KillerPerkCategoryId(value);
         }

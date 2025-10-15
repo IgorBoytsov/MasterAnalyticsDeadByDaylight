@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
@@ -16,6 +17,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             Name = rarityName;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
         public static Rarity Create(int oldId, string name)
         {
             var nameVo = RarityName.Create(name);

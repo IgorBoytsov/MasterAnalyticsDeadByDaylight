@@ -3,6 +3,7 @@ using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerAddon;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Exceptions;
 using Shared.Kernel.Exceptions.Guard;
 using Shared.Kernel.Primitives;
@@ -33,7 +34,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             AbilityImageKey = abilityImageKey;
         }
 
-        /// <exception cref="InvalidKillerPropertyException"></exception>
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
         public static Killer Create(int oldId, string name, ImageKey? killerImageKey, ImageKey? abilityImageKey)
         {
             var nameVo = KillerName.Create(name);
@@ -60,6 +62,7 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
         #region Улучшения
 
+        /// <exception cref="DuplicateException"></exception>
         public KillerAddon AddAddon(int oldId, string addonName, ImageKey? imageKey)
         {
             GuardException.Against.That(_killerAddons.Any(a => a.Name.Value == addonName), () => new DuplicateException($"Улучшение {addonName} уже существует у киллера."));
@@ -71,14 +74,14 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return newAddon;
         }
 
+        /// <exception cref="NotFoundException"></exception>
         public bool RemoveAddon(Guid addonId)
         {
             var addonToRemove = _killerAddons.FirstOrDefault(a => a.Id == addonId);
 
-            if (addonToRemove is null)
-                return false;
+            GuardException.Against.That(addonToRemove is null, () => new NotFoundException(new Error(ErrorCode.NotFound, $"Улучшение c ID {addonId} не существует у {this.Name}.")));
             
-            _killerAddons.Remove(addonToRemove);
+            _killerAddons.Remove(addonToRemove!);
 
             return true;
         }
@@ -89,6 +92,7 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
         #region Перки
 
+        /// <exception cref="DuplicateException"></exception>
         public KillerPerk AddPerk(int oldId, string name, ImageKey? image, int? categoryId)
         {
             GuardException.Against.That(_killerPerks.Any(p => p.Name.Value == name), () => new DuplicateException($"Перк {name} уже существует у киллера."));
@@ -100,44 +104,47 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return newPerk;
         }
 
+        /// <exception cref="NotFoundException"></exception>
         public bool RemovePerk(Guid perkId)
         {
             var perkToRemove = _killerPerks.FirstOrDefault(p => p.Id == perkId);
 
-            if (perkToRemove is null)
-                return false;
-            
-            _killerPerks.Remove(perkToRemove);
+            GuardException.Against.That(perkToRemove is null, () => new NotFoundException(new Error(ErrorCode.NotFound, $"Перк c ID {perkId} не существует у {this.Name}.")));
+
+            _killerPerks.Remove(perkToRemove!);
 
             return true;
         }
 
         public void ClearPerks() => _killerPerks.Clear();
 
+        /// <exception cref="NotFoundException"></exception>
         public void AssignCategoryToPerk(Guid perkId, KillerPerkCategoryId categoryId)
         {
             var perk = _killerPerks.FirstOrDefault(p => p.Id == perkId);
 
-            GuardException.Against.That(perk is null, () => new InvalidOperationException("Перк не найден."));
+            GuardException.Against.That(perk is null, () => new NotFoundException(new Error(ErrorCode.NotFound, $"Перк c ID {perkId} не существует у {this.Name}.")));
 
             perk!.AssignCategory(categoryId);
         }
 
+        /// <exception cref="NotFoundException"></exception>
         public void UpdateAddon(Guid addonId, KillerAddonName killerAddonName, ImageKey? newImageKey)
         {
             var killerAddon = _killerAddons.FirstOrDefault(ka => ka.Id == addonId);
 
-            GuardException.Against.That(killerAddon is null, () => new DomainException(new Error(ErrorCode.NotFound, $"Улучшение с id {addonId} не было найдено у киллера {this.Id}.")));
+            GuardException.Against.That(killerAddon is null, () => new NotFoundException(new Error(ErrorCode.NotFound, $"Улучшение с id {addonId} не было найдено у киллера {this.Id}.")));
 
             killerAddon!.UpdateName(killerAddonName);
             killerAddon.UpdateImageKey(newImageKey);
         }
 
+        /// <exception cref="NotFoundException"></exception>
         public void UpdatePerk(Guid perkId, KillerPerkName killerPerkName, ImageKey? newImageKey)
         {
             var killerPerk = _killerPerks.FirstOrDefault(ka => ka.Id == perkId);
 
-            GuardException.Against.That(killerPerk is null, () => new DomainException(new Error(ErrorCode.NotFound, $"Перк с id {perkId} не был найден у киллера {this.Id}.")));
+            GuardException.Against.That(killerPerk is null, () => new NotFoundException(new Error(ErrorCode.NotFound, $"Перк с id {perkId} не был найден у киллера {this.Id}.")));
 
             killerPerk!.UpdateName(killerPerkName);
             killerPerk.UpdateImageKey(newImageKey);

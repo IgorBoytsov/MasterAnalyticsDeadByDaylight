@@ -1,4 +1,5 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.PlayerAssociation;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.ValueObjects;
 using Shared.Kernel.Primitives;
 
@@ -17,6 +18,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             Name = name;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
         public static PlayerAssociation Create(int oldId, string name)
         {
             var nameVo = PlayerAssociationName.Create(name);

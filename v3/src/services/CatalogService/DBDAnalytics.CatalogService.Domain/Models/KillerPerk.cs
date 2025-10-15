@@ -1,6 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
@@ -25,6 +26,9 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             ImageKey = image;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static KillerPerk Create(Guid killerId, int oldId, string name, ImageKey? image, int? categoryId)
         {
             var nameVo = KillerPerkName.Create(name);

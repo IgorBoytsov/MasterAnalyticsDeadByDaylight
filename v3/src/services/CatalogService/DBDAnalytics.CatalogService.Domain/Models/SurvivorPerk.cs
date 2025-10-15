@@ -1,6 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerk;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerkCategory;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
@@ -25,6 +26,9 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             SurvivorId = survivorId;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static SurvivorPerk Create(Guid survivorId, string name, int oldId, ImageKey? imageKey, int? categoryId)
         {
             var nameVo = SurvivorPerkName.Create(name);

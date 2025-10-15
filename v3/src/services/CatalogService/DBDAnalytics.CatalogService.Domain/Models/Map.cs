@@ -1,5 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Map;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
@@ -23,6 +24,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             MeasurementId = measurementId;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
         public static Map Create(int oldId, string name, ImageKey? image, Guid measurementId)
         {
             var nameVo = MapName.Create(name);
@@ -32,7 +35,7 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
         internal void UpdateName(MapName mapName)
         {
-            if(Name != mapName)
+            if (Name != mapName)
                 Name = mapName;
         }
 

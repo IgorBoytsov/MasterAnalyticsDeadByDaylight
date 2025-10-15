@@ -3,6 +3,7 @@ using DBDAnalytics.CatalogService.Domain.ValueObjects.Offering;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.OfferingCategory;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Role;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Exceptions.Guard;
 using Shared.Kernel.Primitives;
 
@@ -27,6 +28,9 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             RoleId = roleId;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static Offering Create(int oldId, string offeringName, ImageKey? imageKey, int roleId, int? rarityId, int? offeringCategoryId)
         {
             var offeringNameVo = OfferingName.Create(offeringName);
@@ -38,18 +42,12 @@ namespace DBDAnalytics.CatalogService.Domain.Models
                 offering.RarityId = ValueObjects.Rarity.RarityId.From(rarityId.Value);
 
             if(offeringCategoryId.HasValue)
-                offering.CategoryId = ValueObjects.OfferingCategory.OfferingCategoryId.From(offeringCategoryId.Value);
+                offering.CategoryId = OfferingCategoryId.From(offeringCategoryId.Value);
 
             return offering;
         }
 
-        ///// <exception cref="InvalidKillerPropertyException"></exception>
-        public void AssignRole(RoleId roleId)
-        {
-            GuardException.Against.Null(roleId, nameof(roleId));
-
-            RoleId = roleId;
-        }
+        public void AssignRole(RoleId roleId) => RoleId = roleId;
 
         public void AssignCategory(OfferingCategoryId? category) => CategoryId = category;
 

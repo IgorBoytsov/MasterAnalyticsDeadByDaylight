@@ -1,6 +1,7 @@
 ﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.ItemAddon;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
@@ -25,6 +26,9 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             ImageKey = imageKey;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         internal static ItemAddon Create(Guid itemId, int oldId, string name, ImageKey? imageKey, int? rarityId)
         {
             var nameVo = ItemAddonName.Create(name);

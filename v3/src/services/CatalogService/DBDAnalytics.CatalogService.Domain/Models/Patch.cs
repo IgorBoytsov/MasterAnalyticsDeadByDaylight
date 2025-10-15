@@ -1,4 +1,6 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Patch;
+﻿using DBDAnalytics.CatalogService.Domain.Exceptions;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.Patch;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using DBDAnalytics.Shared.Domain.ValueObjects;
 using Shared.Kernel.Primitives;
 
@@ -19,6 +21,9 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             Date = date;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
+        /// <exception cref="InvalidPatchDateException"></exception>
         public static Patch Create(int oldId, string name, DateTime date)
         {
             var nameVo = PatchName.Create(name);

@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.Shared.Domain.ValueObjects
 {
@@ -8,9 +10,10 @@ namespace DBDAnalytics.Shared.Domain.ValueObjects
 
         internal GameModeId(int value) => Value = value;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static GameModeId From(int value)
         {
-            GuardException.Against.That(value <= 0, () => new ArgumentException("Id игрового режима должен быть положительным числом.", nameof(value)));
+            GuardException.Against.That(value <= 0, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id игрового режима должен быть положительным числом.")));
 
             return new GameModeId(value);
         }

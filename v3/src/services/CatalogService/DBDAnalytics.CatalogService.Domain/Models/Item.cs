@@ -3,6 +3,7 @@ using DBDAnalytics.CatalogService.Domain.ValueObjects.Image;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Item;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.ItemAddon;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Exceptions;
 using Shared.Kernel.Exceptions.Guard;
 using Shared.Kernel.Primitives;
@@ -28,6 +29,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             ImageKey = imageKey;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
         public static Item Create(int oldId, string name, ImageKey? imageKey)
         {
             var nameVo = ItemName.Create(name);
@@ -43,6 +46,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
 
         public void UpdateImageKey(ImageKey? newImageKey) => ImageKey = newImageKey;
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="DuplicateException"></exception>
         public ItemAddon AddAddon(int oldId, string name, ImageKey? imageKey, int? rarityId)
         {
             GuardException.Against.That(_itemAddons.Any(p => p.Name.Value == name), () => new DuplicateException($"Улучшение {name} уже существует у предмета."));
@@ -52,18 +57,23 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return itemAddon;
         }
 
+        /// <exception cref="NotFoundException"></exception>
         public void UpdateItemAddon(Guid addonId, string name, ImageKey? imageKey)
         {
-            var itemAddon = _itemAddons.FirstOrDefault(ia => ia.Id == addonId) 
-                ?? throw new DomainException(new Error(ErrorCode.NotFound, $"Улучшение с id {addonId} не было найдено у предмета {this.Id}."));
+            var itemAddon = _itemAddons.FirstOrDefault(ia => ia.Id == addonId);
 
-            itemAddon.UpdateName(ItemAddonName.Create(name));
+            GuardException.Against.That(itemAddon is null, () => new NotFoundException(new Error(ErrorCode.NotFound, $"Улучшение с id {addonId} не было найдено у предмета {this.Id}.")));
+
+            itemAddon!.UpdateName(ItemAddonName.Create(name));
             itemAddon.UpdateImageKey(imageKey);
         }
 
+        /// <exception cref="NotFoundException"></exception>
         public bool RemoveAddon(Guid idItem)
         {
             var itemAddonToDelete = _itemAddons.FirstOrDefault(ia => ia.Id == idItem);
+
+            GuardException.Against.That(itemAddonToDelete is null, () => new NotFoundException(new Error(ErrorCode.NotFound, $"Улучшение с id {idItem} не было найдено у предмета {this.Name}:{this.Id}.")));
 
             if (itemAddonToDelete is null)
                 return false;
@@ -73,11 +83,12 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             return true;
         }
 
+        /// <exception cref="NotFoundException"></exception>
         public void AssignRarity(Guid itemAddonId, RarityId rarityId)
         {
             var itemAddon = _itemAddons.FirstOrDefault(p => p.Id == itemAddonId);
 
-            GuardException.Against.That(itemAddon is null, () => new InvalidOperationException("Аддон не найден."));
+            GuardException.Against.That(itemAddon is null, () => new NotFoundException(new Error(ErrorCode.NotFound, $"Улучшение с id {itemAddonId} не было найдено у предмета {this.Name}:{this.Id}.")));
 
             itemAddon!.AssignCategory(rarityId);
         }

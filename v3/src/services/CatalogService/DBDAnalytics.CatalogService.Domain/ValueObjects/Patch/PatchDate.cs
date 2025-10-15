@@ -1,4 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Patch
 {
@@ -15,11 +17,8 @@ namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Patch
         {
             var utcDate = dateTime.ToUniversalTime();
 
-            if (utcDate > DateTime.UtcNow)
-                throw new InvalidPatchDateException("Дата патча не может быть в будущем.");
-
-            if (utcDate < MinValue)
-                throw new InvalidPatchDateException($"Дата патча не может быть раньше {MinValue:yyyy-MM-dd}.");
+            GuardException.Against.That(utcDate > DateTime.UtcNow, () => new InvalidPatchDateException(new Error( ErrorCode.Validation, "Дата патча не может быть в будущем.")));
+            GuardException.Against.That(utcDate > DateTime.UtcNow, () => new InvalidPatchDateException(new Error(ErrorCode.Validation, $"Дата патча не может быть раньше {MinValue:yyyy-MM-dd}.")));
 
             return new PatchDate(utcDate);
         }

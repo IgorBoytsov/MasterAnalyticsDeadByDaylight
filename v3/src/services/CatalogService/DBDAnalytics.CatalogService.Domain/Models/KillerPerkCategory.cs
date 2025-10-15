@@ -1,5 +1,5 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
-using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
+﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
+using DBDAnalytics.Shared.Domain.Exceptions;
 using Shared.Kernel.Primitives;
 
 namespace DBDAnalytics.CatalogService.Domain.Models
@@ -17,6 +17,8 @@ namespace DBDAnalytics.CatalogService.Domain.Models
             Name = name;
         }
 
+        /// <exception cref="NameException"></exception>
+        /// <exception cref="LengthException"></exception>
         public static KillerPerkCategory Create(int oldId, string name)
         {
             var nameVo = KillerPerkCategoryName.Create(name);

@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.Shared.Domain.ValueObjects
 {
@@ -8,9 +10,10 @@ namespace DBDAnalytics.Shared.Domain.ValueObjects
 
         internal PlayerAssociationId(int value) => Value = value;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static PlayerAssociationId Form(int playerAssociationId)
         {
-            GuardException.Against.That(playerAssociationId <= 0, () => new ArgumentException("Id для игровой ассоциации должно быть положительным числом."));
+            GuardException.Against.That(playerAssociationId <= 0, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id игровой ассоциации должен быть положительным числом.")));
 
             return new PlayerAssociationId(playerAssociationId);
         }

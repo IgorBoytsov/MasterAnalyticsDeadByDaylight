@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.Shared.Domain.ValueObjects
 {
@@ -8,9 +10,10 @@ namespace DBDAnalytics.Shared.Domain.ValueObjects
 
         internal PlatformId(int value) => Value = value;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static PlatformId From(int platformId)
         {
-            GuardException.Against.That(platformId <= 0, () => new ArgumentException("Id для платформы должно быть положительным числом."));
+            GuardException.Against.That(platformId <= 0, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id игровой платформы должен быть положительным числом.")));
 
             return new PlatformId(platformId);
         }

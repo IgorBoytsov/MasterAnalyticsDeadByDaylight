@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerkCategory
 {
@@ -8,10 +10,11 @@ namespace DBDAnalytics.CatalogService.Domain.ValueObjects.SurvivorPerkCategory
 
         internal SurvivorPerkCategoryId(int value) => Value = value;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static SurvivorPerkCategoryId From(int value)
         {
-            GuardException.Against.That(value <= 0, () => new ArgumentException("Id для категории перков выжившего должно быть положительным числом."));
-            
+            GuardException.Against.That(value <= 0, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id для категории должно быть положительным числом.")));
+
             return new SurvivorPerkCategoryId(value);
         }
 

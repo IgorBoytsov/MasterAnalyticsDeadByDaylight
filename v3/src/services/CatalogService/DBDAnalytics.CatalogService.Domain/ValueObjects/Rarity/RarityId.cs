@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity
 {
@@ -8,10 +10,11 @@ namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Rarity
 
         internal RarityId(int rarityId) => Value = rarityId;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static RarityId From(int value)
         {
-            GuardException.Against.That(value <= 0, () => new ArgumentException("Id для качества должно быть положительным числом."));
-            
+            GuardException.Against.That(value <= 0, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id для редкости должно быть положительным числом.")));
+
             return new RarityId(value);
         }
 

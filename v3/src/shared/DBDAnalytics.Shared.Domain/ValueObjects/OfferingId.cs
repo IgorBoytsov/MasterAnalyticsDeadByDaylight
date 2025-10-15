@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.Shared.Domain.ValueObjects
 {
@@ -8,9 +10,10 @@ namespace DBDAnalytics.Shared.Domain.ValueObjects
 
         internal OfferingId(Guid value) => Value = value;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static OfferingId From(Guid value)
         {
-            GuardException.Against.That(value == Guid.Empty, () => new ArgumentException("Идентификатор подношения не может быть пустым"));
+            GuardException.Against.That(value == Guid.Empty, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id подношения не должен быть пустым GUID.")));
 
             return new OfferingId(value);
         }

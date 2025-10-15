@@ -1,4 +1,6 @@
-﻿using Shared.Kernel.Exceptions.Guard;
+﻿using DBDAnalytics.Shared.Domain.Exceptions;
+using Shared.Kernel.Exceptions.Guard;
+using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Role
 {
@@ -8,9 +10,10 @@ namespace DBDAnalytics.CatalogService.Domain.ValueObjects.Role
 
         internal RoleId(int value) => Value = value;
 
+        /// <exception cref="IdentifierOutOfRangeException"></exception>
         public static RoleId Form(int value)
         {
-            GuardException.Against.That(value <= 0, () => new ArgumentException("Id для роли должно быть положительным числом."));
+            GuardException.Against.That(value <= 0, () => new IdentifierOutOfRangeException(new Error(ErrorCode.InvalidIdentifier, "Id для роли должно быть положительным числом.")));
 
             return new RoleId(value);
         }
