@@ -1,5 +1,4 @@
 ﻿using DBDAnalytics.CatalogService.Domain.Models;
-using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
 using DBDAnalytics.CatalogService.Infrastructure.EF.Constants;
 using Microsoft.EntityFrameworkCore;
