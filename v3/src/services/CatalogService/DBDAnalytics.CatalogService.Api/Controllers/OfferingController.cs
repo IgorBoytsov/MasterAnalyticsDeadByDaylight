@@ -5,6 +5,8 @@ using DBDAnalytics.CatalogService.Application.Features.Offerings.AssignRarity;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Create;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Delete;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.GetAll;
+using DBDAnalytics.CatalogService.Application.Features.Offerings.GetAllForKiller;
+using DBDAnalytics.CatalogService.Application.Features.Offerings.GetAllForSurvivor;
 using DBDAnalytics.CatalogService.Application.Features.Offerings.Update;
 using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Assign;
 using MediatR;
@@ -28,6 +30,26 @@ namespace DBDAnalytics.CatalogService.Api.Controllers
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var query = new GetAllOfferingQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("killers")]
+        public async Task<IActionResult> GetAllForKiller(CancellationToken cancellationToken)
+        {
+            var query = new GetAllOfferingForKillerQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("survivors")]
+        public async Task<IActionResult> GetAllForSurvivor(CancellationToken cancellationToken)
+        {
+            var query = new GetAllOfferingForSurvivorQuery();
 
             var result = await _mediator.Send(query, cancellationToken);
 
