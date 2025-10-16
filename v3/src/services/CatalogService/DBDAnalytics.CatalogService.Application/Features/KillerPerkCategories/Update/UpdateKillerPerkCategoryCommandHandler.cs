@@ -1,6 +1,6 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
-using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
+using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
 using MediatR;
 using Shared.Kernel.Results;
 

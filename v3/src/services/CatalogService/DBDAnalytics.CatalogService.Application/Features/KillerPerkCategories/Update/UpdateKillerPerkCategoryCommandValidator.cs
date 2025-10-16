@@ -1,4 +1,4 @@
-﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.Killer;
+﻿using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
 using FluentValidation;
 using Shared.Api.Application.Validators.Implementations;
 
