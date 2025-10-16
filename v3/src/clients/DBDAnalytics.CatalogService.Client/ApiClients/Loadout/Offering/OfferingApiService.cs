@@ -118,5 +118,37 @@ namespace DBDAnalytics.CatalogService.Client.ApiClients.Loadout.Offering
                 return Result<OfferingResponse>.Failure(new Error(ErrorCode.ApiError, ex.Message));
             }
         }
+
+        public async Task<List<OfferingResponse>> GetAllForKillerAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{_endpoint}/killers");
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<List<OfferingResponse>>(_jsonSerializerOptions);
+                return result ?? [];
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Ошибка при извлечении всех элементов из {_endpoint}: {ex.Message}");
+                return [];
+            }
+        }
+
+        public async Task<List<OfferingResponse>> GetAllForSurvivorAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{_endpoint}/survivors");
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<List<OfferingResponse>>(_jsonSerializerOptions);
+                return result ?? [];
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Ошибка при извлечении всех элементов из {_endpoint}: {ex.Message}");
+                return [];
+            }
+        }
     }
 }

@@ -5,5 +5,7 @@ namespace DBDAnalytics.CatalogService.Client.ApiClients.Loadout.Offering
 {
     public interface IOfferingReadOnlyService : IBaseReadApiService<OfferingResponse, string>
     {
+        Task<List<OfferingResponse>> GetAllForKillerAsync();
+        Task<List<OfferingResponse>> GetAllForSurvivorAsync();
     }
 }
