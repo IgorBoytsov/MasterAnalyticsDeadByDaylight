@@ -1,4 +1,4 @@
-﻿using DBDAnalytics.CatalogService.Application.Features.GameEvents.Create;
+﻿using DBDAnalytics.CatalogService.Application.Features.GameModes.Create;
 using DBDAnalytics.CatalogService.Application.Features.GameModes.Delete;
 using DBDAnalytics.CatalogService.Application.Features.GameModes.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.GameModes.Update;

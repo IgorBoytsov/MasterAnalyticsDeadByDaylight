@@ -5,6 +5,6 @@ using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.GameEvents.Create
 {
-    public sealed record CreateGameModeCommand(int OldId, string Name) : IRequest<Result<GameModeResponse>>,
+    public sealed record CreateGameEventCommand(int OldId, string Name) : IRequest<Result<GameEventResponse>>,
         IHasName;
 }

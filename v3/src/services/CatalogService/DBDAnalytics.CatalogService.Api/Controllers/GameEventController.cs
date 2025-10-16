@@ -1,7 +1,7 @@
-﻿using DBDAnalytics.CatalogService.Application.Features.GameEvents.Delete;
+﻿using DBDAnalytics.CatalogService.Application.Features.GameEvents.Create;
+using DBDAnalytics.CatalogService.Application.Features.GameEvents.Delete;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.GetAll;
 using DBDAnalytics.CatalogService.Application.Features.GameEvents.Update;
-using DBDAnalytics.CatalogService.Application.Features.GameModes.Create;
 using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Create;
 using DBDAnalytics.Shared.Contracts.Requests.CatalogService.Update;
 using MediatR;

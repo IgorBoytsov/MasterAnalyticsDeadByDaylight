@@ -7,7 +7,7 @@ using MediatR;
 using Shared.Kernel.Exceptions;
 using Shared.Kernel.Results;
 
-namespace DBDAnalytics.CatalogService.Application.Features.GameModes.Create
+namespace DBDAnalytics.CatalogService.Application.Features.GameEvents.Create
 {
     public sealed class CreateGameEventCommandHandler(
         IApplicationDbContext context,
