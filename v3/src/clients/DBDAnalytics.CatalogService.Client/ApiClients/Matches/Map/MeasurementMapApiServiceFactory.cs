@@ -1,15 +1,15 @@
 ﻿namespace DBDAnalytics.CatalogService.Client.ApiClients.Matches.Map
 {
-    internal class MapReadOnlyApiServiceFactory(IHttpClientFactory httpClientFactory) : IMapReadOnlyApiServiceFactory
+    internal class MeasurementMapApiServiceFactory(IHttpClientFactory httpClientFactory) : IMeasurementMapApiServiceFactory
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
         private readonly string _clientName = "CatalogApiClient";
 
-        public IMapReadOnlyApiService Create(string measurementsId)
+        public IMeasurementMapApiService Create(string measurementsId)
         {
             var httpClient = _httpClientFactory.CreateClient(_clientName);
 
-            return new MapApiService(httpClient, measurementsId);
+            return new MeasurementMapApiService(httpClient, measurementsId);
         }
     }
 }

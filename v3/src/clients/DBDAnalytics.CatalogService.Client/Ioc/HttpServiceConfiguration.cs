@@ -56,7 +56,7 @@ namespace DBDAnalytics.CatalogService.Client.Ioc
             services.AddHttpClient<IItemService, ItemApiService>(catalogApiClientName);
             services.AddHttpClient<ISurvivorService, SurvivorApiService>(catalogApiClientName);
 
-            services.AddScoped<IMapApiServiceFactory, MapApiServiceFactory>();
+            services.AddScoped<IMeasurementMapApiServiceFactory, MeasurementMapApiServiceFactory>();
             services.AddScoped<IKillerPerkApiServiceFactory, KillerPerkApiServiceFactory>();
             services.AddScoped<IKillerAddonApiServiceFactory, KillerAddonApiServiceFactory>();
             services.AddScoped<IItemAddonApiServiceFactory, ItemAddonApiServiceFactory>();

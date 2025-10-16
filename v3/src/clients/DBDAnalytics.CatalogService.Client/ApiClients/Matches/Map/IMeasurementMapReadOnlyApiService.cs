@@ -3,7 +3,7 @@ using Shared.HttpClients.Abstractions;
 
 namespace DBDAnalytics.CatalogService.Client.ApiClients.Matches.Map
 {
-    public interface IMapReadOnlyApiService : IBaseReadApiService<MapResponse, string>
+    public interface IMeasurementMapReadOnlyApiService : IBaseReadApiService<MapResponse, string>
     {
     }
 }

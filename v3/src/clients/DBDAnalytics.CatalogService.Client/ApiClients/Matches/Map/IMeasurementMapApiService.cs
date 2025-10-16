@@ -4,8 +4,8 @@ using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Client.ApiClients.Matches.Map
 {
-    public interface IMapApiService : 
-        IMapReadOnlyApiService,
+    public interface IMeasurementMapApiService : 
+        IMeasurementMapReadOnlyApiService,
         IDeleteApiService<string>
     {
         Task<Result<string>> UpdateAsync(ClientUpdateMapRequest request);
