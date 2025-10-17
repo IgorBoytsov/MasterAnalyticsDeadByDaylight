@@ -32,7 +32,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.GameModes.Update
             }
             catch (DomainException ex)
             {
-                return Result<GameModeResponse>.Failure(ex.Error));
+                return Result<GameModeResponse>.Failure(ex.Error);
             }
             catch (Exception)
             {
