@@ -6,14 +6,8 @@ namespace Shared.Kernel.Exceptions
     {
         public Error Error { get; } = null!;
 
-        public DomainException(Error error) : base(error.Message)
-        {
-            
-        }
+        public DomainException(Error error) : base(error.Message) => this.Error = error;
 
-        public DomainException(Error error, Exception? innerException) : base(error.Message, innerException)
-        {
-            
-        }
+        public DomainException(Error error, Exception? innerException) : base(error.Message, innerException) => this.Error = error;
     }
 }
