@@ -1,7 +1,9 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.GameEvent;
+using DBDAnalytics.Shared.Contracts.Responses.Match;
 using MediatR;
+using Shared.Kernel.Exceptions;
 using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.GameEvents.Update
@@ -27,6 +29,10 @@ namespace DBDAnalytics.CatalogService.Application.Features.GameEvents.Update
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
+            }
+            catch (DomainException ex)
+            {
+                return Result<GameEventResponse>.Failure(ex.Error);
             }
             catch (Exception)
             {

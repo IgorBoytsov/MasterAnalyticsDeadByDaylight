@@ -33,7 +33,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Roles.Create
             }
             catch (DomainException ex)
             {
-                return Result<RoleResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<RoleResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

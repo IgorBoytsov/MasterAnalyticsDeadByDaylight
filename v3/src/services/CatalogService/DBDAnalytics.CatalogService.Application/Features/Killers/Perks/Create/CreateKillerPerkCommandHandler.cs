@@ -73,7 +73,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Perks.Create
                 await _fileUploadManager.RollbackUploadsAsync(cancellationToken);
                     
                 if (ex is DomainException domainEx)
-                    return Result<List<KillerPerkResponse>>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<List<KillerPerkResponse>>.Failure(domainEx.Error);
 
                 return Result<List<KillerPerkResponse>>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при создание/сохранение записи об перки убийцы {ex.Message} {ex.InnerException?.Message}"));
             }

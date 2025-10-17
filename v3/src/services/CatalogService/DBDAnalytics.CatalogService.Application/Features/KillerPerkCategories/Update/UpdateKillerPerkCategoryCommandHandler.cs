@@ -1,7 +1,9 @@
 ﻿using DBDAnalytics.CatalogService.Application.Common.Abstractions;
 using DBDAnalytics.CatalogService.Application.Common.Repository;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.KillerPerkCategory;
+using DBDAnalytics.Shared.Contracts.Responses.Killers;
 using MediatR;
+using Shared.Kernel.Exceptions;
 using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.Update
@@ -27,6 +29,10 @@ namespace DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
+            }
+            catch (DomainException ex)
+            {
+                return Result<KillerPerkCategoryResponse>.Failure(ex.Error);
             }
             catch (Exception)
             {

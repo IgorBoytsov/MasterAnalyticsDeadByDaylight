@@ -56,7 +56,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Create
                 await _fileUploadManager.RollbackUploadsAsync(cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result<KillerResponse>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<KillerResponse>.Failure(domainEx.Error);
 
                 return Result<KillerResponse>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при создание/сохранение записи об убийцы {ex.Message} {ex.InnerException?.Message}"));
             }

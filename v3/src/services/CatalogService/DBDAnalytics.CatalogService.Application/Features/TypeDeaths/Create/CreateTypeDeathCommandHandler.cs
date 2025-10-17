@@ -34,7 +34,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.TypeDeaths.Create
             }
             catch (DomainException ex)
             {
-                return Result<TypeDeathResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<TypeDeathResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

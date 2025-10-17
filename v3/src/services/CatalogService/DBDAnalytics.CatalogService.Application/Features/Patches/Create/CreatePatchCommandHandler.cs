@@ -34,7 +34,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Patches.Create
             }
             catch (DomainException ex)
             {
-                return Result<PatchResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<PatchResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

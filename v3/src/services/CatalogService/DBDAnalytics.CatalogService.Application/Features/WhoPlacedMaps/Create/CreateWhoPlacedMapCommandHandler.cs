@@ -34,7 +34,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.WhoPlacedMaps.Create
             }
             catch (DomainException ex)
             {
-                return Result<WhoPlacedMapResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<WhoPlacedMapResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

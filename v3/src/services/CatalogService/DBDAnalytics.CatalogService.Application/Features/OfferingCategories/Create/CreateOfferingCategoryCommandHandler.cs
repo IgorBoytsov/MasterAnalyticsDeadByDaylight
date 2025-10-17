@@ -34,7 +34,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.OfferingCategories.Cr
             }
             catch (DomainException ex)
             {
-                return Result<OfferingCategoryResponse>.Failure(new Error(ErrorCode.Domain, ex.Message));
+                return Result<OfferingCategoryResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

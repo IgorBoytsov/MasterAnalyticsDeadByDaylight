@@ -80,7 +80,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Update
                     await _fileStorageService.DeleteImageAsync($"{FileStoragePaths.KillerAbilities}/{newImageAbilityKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result<KillersImageKeysResponse>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<KillersImageKeysResponse>.Failure(domainEx.Error);
 
                 return Result<KillersImageKeysResponse>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
             }

@@ -73,7 +73,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Perks.Creat
                 await _fileUploadManager.RollbackUploadsAsync(cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result<List<SurvivorPerkResponse>>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<List<SurvivorPerkResponse>>.Failure(domainEx.Error);
 
                 return Result<List<SurvivorPerkResponse>>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при создание/сохранение записи об перки выжившего {ex.Message} {ex.InnerException?.Message}"));
             }

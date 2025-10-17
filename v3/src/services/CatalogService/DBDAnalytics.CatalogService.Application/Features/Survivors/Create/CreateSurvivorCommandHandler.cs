@@ -48,7 +48,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Survivors.Create
                 await _fileUploadManager.RollbackUploadsAsync(cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result<SurvivorResponse>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<SurvivorResponse>.Failure(domainEx.Error);
 
                 return Result<SurvivorResponse>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при создание/сохранение записи об выжившем {ex.Message} {ex.InnerException?.Message}"));
             }

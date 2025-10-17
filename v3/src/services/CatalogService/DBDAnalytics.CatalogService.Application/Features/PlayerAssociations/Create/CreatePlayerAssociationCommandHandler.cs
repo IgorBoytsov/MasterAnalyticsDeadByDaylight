@@ -34,7 +34,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.PlayerAssociations.Cr
             }
             catch (DomainException ex)
             {
-                return Result<PlayerAssociationResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<PlayerAssociationResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

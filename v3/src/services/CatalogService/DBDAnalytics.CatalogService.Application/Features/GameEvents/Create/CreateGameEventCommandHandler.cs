@@ -33,7 +33,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.GameEvents.Create
             }
             catch (DomainException ex)
             {
-                return Result<GameEventResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<GameEventResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

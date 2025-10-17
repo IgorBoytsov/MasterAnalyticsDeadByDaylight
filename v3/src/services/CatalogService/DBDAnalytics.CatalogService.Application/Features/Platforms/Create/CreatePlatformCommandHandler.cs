@@ -34,7 +34,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Platforms.Create
             }
             catch (DomainException ex)
             {
-                return Result<PlatformResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<PlatformResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

@@ -34,7 +34,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.GameModes.Create
             }
             catch (DomainException ex)
             {
-                return Result<GameModeResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<GameModeResponse>.Failure(ex.Error));
             }
             catch (Exception ex)
             {

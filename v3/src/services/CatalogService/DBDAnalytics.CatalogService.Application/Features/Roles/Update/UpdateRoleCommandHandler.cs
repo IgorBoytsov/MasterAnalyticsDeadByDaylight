@@ -2,6 +2,7 @@
 using DBDAnalytics.CatalogService.Application.Common.Repository;
 using DBDAnalytics.CatalogService.Domain.ValueObjects.Role;
 using MediatR;
+using Shared.Kernel.Exceptions;
 using Shared.Kernel.Results;
 
 namespace DBDAnalytics.CatalogService.Application.Features.Roles.Update
@@ -27,6 +28,10 @@ namespace DBDAnalytics.CatalogService.Application.Features.Roles.Update
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return Result.Success();
+            }
+            catch (DomainException ex)
+            {
+                return Result.Failure(ex.Error);
             }
             catch (Exception)
             {

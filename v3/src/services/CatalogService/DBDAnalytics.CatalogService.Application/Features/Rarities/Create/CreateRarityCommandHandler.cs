@@ -33,7 +33,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Rarities.Create
 			}
 			catch (DomainException ex)
 			{
-                return Result<RarityResponse>.Failure(new Error(ErrorCode.Validation, ex.Message));
+                return Result<RarityResponse>.Failure(ex.Error);
             }
 			catch (Exception ex)
             {

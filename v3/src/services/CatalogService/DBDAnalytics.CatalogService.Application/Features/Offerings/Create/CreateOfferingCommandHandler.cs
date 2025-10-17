@@ -44,7 +44,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Offerings.Create
                 await _fileUploadManager.RollbackUploadsAsync(cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result<OfferingResponse>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<OfferingResponse>.Failure(domainEx.Error);
 
                 return Result<OfferingResponse>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при создание/сохранение записи об подношение {ex.Message} {ex.InnerException?.Message}"));
             }

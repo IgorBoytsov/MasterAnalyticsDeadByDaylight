@@ -49,7 +49,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Items.Create
                 await _fileUploadManager.RollbackUploadsAsync(cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result<ItemResponse>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<ItemResponse>.Failure(domainEx.Error);
 
                 return Result<ItemResponse>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при создание/сохранение записи об предметах {ex.Message} {ex.InnerException?.Message}"));
             }

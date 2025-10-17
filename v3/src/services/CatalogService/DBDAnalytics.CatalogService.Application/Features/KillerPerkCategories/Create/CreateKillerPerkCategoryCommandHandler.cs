@@ -37,7 +37,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.KillerPerkCategories.
             }
             catch(DomainException ex)
             {
-                return Result<KillerPerkCategoryResponse>.Failure(new Error(ErrorCode.Domain, ex.Message));
+                return Result<KillerPerkCategoryResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

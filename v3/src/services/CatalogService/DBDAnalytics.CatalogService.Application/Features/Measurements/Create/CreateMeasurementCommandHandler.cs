@@ -47,7 +47,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Measurements.Create
                 await _fileUploadManager.RollbackUploadsAsync(cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result<MeasurementResponse>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<MeasurementResponse>.Failure(domainEx.Error);
 
                 return Result<MeasurementResponse>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при создание/сохранение записи об измерение {ex.Message} {ex.InnerException?.Message}"));
             }

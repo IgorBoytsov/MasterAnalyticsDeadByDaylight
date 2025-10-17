@@ -37,7 +37,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.SurvivorPerkCategorie
             }
             catch (DomainException ex)
             {
-                return Result<SurvivorPerkCategoryResponse>.Failure(new Error(ErrorCode.Domain, ex.Message));
+                return Result<SurvivorPerkCategoryResponse>.Failure(ex.Error);
             }
             catch (Exception ex)
             {

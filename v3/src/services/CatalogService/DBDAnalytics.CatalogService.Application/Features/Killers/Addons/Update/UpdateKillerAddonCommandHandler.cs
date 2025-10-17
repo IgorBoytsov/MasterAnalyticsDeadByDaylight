@@ -57,7 +57,7 @@ namespace DBDAnalytics.CatalogService.Application.Features.Killers.Addons.Update
                     await _fileStorageService.DeleteImageAsync($"{fileCategory}/{newImageKey.Value}", cancellationToken);
 
                 if (ex is DomainException domainEx)
-                    return Result<string>.Failure(new Error(ErrorCode.Validation, domainEx.Message));
+                    return Result<string>.Failure(domainEx.Error);
 
                 return Result<string>.Failure(new Error(ErrorCode.Create, $"Произошла непредвиденная ошибка при обновлении записи."));
             }
