@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /v2/TemplateEngineHost/vs
 /v3/src/apps/DBDAnalytics.AdminPanel.WPF/apiconfig.json
+/TemplateEngineHost/vs
