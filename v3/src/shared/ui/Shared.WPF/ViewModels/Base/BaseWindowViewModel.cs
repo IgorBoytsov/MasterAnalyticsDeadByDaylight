@@ -27,11 +27,22 @@ namespace Shared.WPF.ViewModels.Base
             set => SetProperty(ref _windowTitle, value);
         }
 
+        private PagesName _currentOpenPage;
+        public PagesName CurrentOpenPage
+        {
+            get => _currentOpenPage;
+            set
+            {
+                SetProperty(ref _currentOpenPage, value);
+                OpenPageCommand?.RaiseCanExecuteChanged();
+            }
+        }
+
         /*--Команды---------------------------------------------------------------------------------------*/
 
         private void SetValueCommands()
         {
-            OpenPageCommand = new RelayCommand<PagesName>(Execute_OpenPageCommand);
+            OpenPageCommand = new RelayCommand<PagesName>(Execute_OpenPageCommand, CanExecute_OpenPageCommand);
 
             ShutDownAppCommand = new RelayCommand(Execute_ShutDownAppCommand);
 
@@ -45,7 +56,13 @@ namespace Shared.WPF.ViewModels.Base
 
         public RelayCommand<PagesName>? OpenPageCommand { get; private set; }
 
-        private void Execute_OpenPageCommand(PagesName page) => _pageNavigation?.Navigate(page, FramesName.MainFrame);
+        private void Execute_OpenPageCommand(PagesName page)
+        {
+            _pageNavigation?.Navigate(page, FramesName.MainFrame);
+            CurrentOpenPage = _pageNavigation!.GetCurrentDisplayedPage(FramesName.MainFrame);
+        }
+
+        private bool CanExecute_OpenPageCommand(PagesName page) => CurrentOpenPage != page;
 
         #endregion
 
