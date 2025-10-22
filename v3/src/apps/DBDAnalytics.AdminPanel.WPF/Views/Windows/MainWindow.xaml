@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DBDAnalytics.AdminPanel.WPF.Views.Windows"
         xmlns:windows="clr-namespace:DBDAnalytics.AdminPanel.WPF.ViewModels.Windows" 
         xmlns:enum="clr-namespace:Shared.WPF.Enums;assembly=Shared.WPF" 
-        d:DataContext="{d:DesignInstance Type=windows:MainWindowVM}"
+        d:DataContext="{d:DesignInstance Type=windows:MainWindowViewModel}"
         mc:Ignorable="d"
         WindowStyle="ThreeDBorderWindow"
         WindowStartupLocation="CenterScreen"
