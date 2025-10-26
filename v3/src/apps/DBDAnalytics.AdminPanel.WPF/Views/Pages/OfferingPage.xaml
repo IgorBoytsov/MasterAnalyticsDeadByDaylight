@@ -1,0 +1,542 @@
+﻿<Page x:Class="DBDAnalytics.AdminPanel.WPF.Views.Pages.OfferingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DBDAnalytics.AdminPanel.WPF.Views.Pages" 
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:behaviors="clr-namespace:Shared.WPF.Behaviors;assembly=Shared.WPF" 
+      xmlns:attach="clr-namespace:DBDAnalytics.AdminPanel.WPF.Resources.Attachable" 
+      xmlns:pages="clr-namespace:DBDAnalytics.AdminPanel.WPF.ViewModels.Pages" 
+      xmlns:vm="clr-namespace:DBDAnalytics.AdminPanel.WPF.ViewModels.Components"
+      d:DataContext="{d:DesignInstance Type=pages:OfferingPageViewModel}"
+      mc:Ignorable="d" 
+      d:Background="{StaticResource Solid.Application.Background}"
+      d:Width="950"
+      d:Height="500"
+      Title="OfferingPage">
+
+    <b:Interaction.Behaviors>
+        <behaviors:AsyncInitializeBehavior />
+    </b:Interaction.Behaviors>
+
+    <Page.Resources>
+             
+        <DropShadowEffect x:Key="TooltipShadow" 
+                  ShadowDepth="0" 
+                  BlurRadius="8" 
+                  Color="#80000000" 
+                  Opacity="0.6"/>
+
+        <!--#region ToolTip для информации об подношение -->
+       
+        <ControlTemplate x:Key="IconInfoWithTooltip" TargetType="Control">
+            <Grid ToolTipService.InitialShowDelay="100">
+                <ToolTipService.ToolTip>
+                    <ToolTip OverridesDefaultStyle="True" HasDropShadow="False"
+                             Foreground="White"
+                             Background="#333333"
+                             BorderBrush="#555555"
+                             BorderThickness="1"
+                             Effect="{StaticResource TooltipShadow}">
+
+                        <Grid Margin="8" d:DataContext="{d:DesignInstance Type=vm:OfferingViewModel, IsDesignTimeCreatable=False}">
+                            <Grid.Resources>
+                                
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Margin" Value="0,2,10,2"/>
+                                </Style>
+                                
+                                <Style TargetType="TextBox">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Margin" Value="0,2,10,2"/>
+                                </Style>
+                                
+                            </Grid.Resources>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto" MinWidth="100"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="ID:"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Id}"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="ImageKey:"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ImageKey}" TextWrapping="Wrap"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Старое ID:"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding OldId}"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Название:"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Name}" TextWrapping="Wrap"/>
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Категория:"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Category.Name}"/>
+
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Редкость:"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Rarity.Name}"/>
+
+                        </Grid>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+                <Grid>
+                    <Ellipse Stroke="{TemplateBinding Foreground}" StrokeThickness="1.5"/>
+                    <TextBlock Text="i" 
+                               FontFamily="Georgia"
+                               FontWeight="Bold"
+                               FontSize="10"
+                               Foreground="{TemplateBinding Foreground}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="0,-1,0,0"/>
+                </Grid>
+            </Grid>
+        </ControlTemplate>
+
+        <!--#endregion-->
+
+    </Page.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--#region MenuPopup -->
+
+        <Popup IsOpen="{Binding MenuPopup.IsOpen}"
+               PlacementTarget="{Binding MenuPopup.PlacementTarget}"
+               Tag="{Binding}" 
+               Placement="Right"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade"> 
+
+            <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                    Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="5">
+
+                <StackPanel MinWidth="150">
+                    
+                    <Button Content="Редактировать"
+                            DataContext="{Binding Tag, RelativeSource={RelativeSource AncestorType=Popup}}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Edit}">
+                        <Button.Command>
+                            <Binding Path="ShowEditAndHideMenuCommand"/>
+                        </Button.Command>
+                    </Button>
+
+                    <Button Content="Выбрать изображение" 
+                            Command="{Binding SelectUpdateImageCommand}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource ImagePicture}"/>
+
+                    <Button Content="Откатить изменения" 
+                            Command="{Binding RevertChangeCommand}"
+                            CommandParameter="{Binding SelectedOffering}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Revert}"/>
+                    
+                    <Separator Margin="0,5,0,5"/>
+                    
+                    <Button Content="Удалить" 
+                            Command="{Binding DeleteCommandAsync}"
+                            CommandParameter="{Binding SelectedOffering}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Trash}"/>
+                    
+                    <Separator Margin="0,5,0,5"/>
+                    
+                    <Button Content="Копировать информацию" 
+                            Command="{Binding CopyAllInfoOfferingCommand}"
+                            CommandParameter="{Binding SelectedOffering}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource CopyIcon}"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!--#endregion-->
+
+        <!--#region EditPopup -->
+
+        <Popup IsOpen="{Binding EditPopup.IsOpen}"
+               PlacementTarget="{Binding EditPopup.PlacementTarget}"
+               Placement="Right"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade">
+
+            <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                    Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                    BorderThickness="4"
+                    CornerRadius="5"
+                    Padding="10"
+                    Width="400">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel Grid.Column="0" Margin="0,0,5,0">
+
+                        <TextBlock Text="Название" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+                        
+                        <TextBox Text="{Binding SelectedOffering.Name, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TextBox.InputData}"
+                                 DockPanel.Dock="Top"/>
+
+                        <TextBlock Text="Старое ID" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+
+                        <TextBox Text="{Binding SelectedOffering.OldId, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TextBox.InputData}"
+                                 VerticalAlignment="Top"/>
+
+                    </DockPanel>
+
+                    <DockPanel Grid.Column="1" Margin="5,0,0,0">
+
+                        <TextBlock Text="Роль"
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+
+                        <ComboBox ItemsSource="{Binding Roles}"
+                                  SelectedItem="{Binding SelectedOffering.Role}"
+                                  Style="{StaticResource BaseComboBox}"
+                                  DisplayMemberPath="Name"
+                                  DockPanel.Dock="Top"/>
+
+                        <TextBlock Text="Качество"
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+
+                        <ComboBox ItemsSource="{Binding Rarities}"
+                                  SelectedItem="{Binding SelectedOffering.Rarity}"
+                                  Style="{StaticResource BaseComboBox}"
+                                  DisplayMemberPath="Name"
+                                  DockPanel.Dock="Top"/>
+
+                        <TextBlock Text="Категория"
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+
+                        <ComboBox ItemsSource="{Binding OfferingCategories}"
+                                  SelectedItem="{Binding SelectedOffering.Category}"
+                                  Style="{StaticResource BaseComboBox}"
+                                  DisplayMemberPath="Name"
+                                  VerticalAlignment="Top"/>
+
+                    </DockPanel>
+
+                </Grid>
+            </Border>
+        </Popup>
+
+        <!--#endregion-->
+
+        <!--#region Меню: Добавление -->
+
+        <Border Grid.Column="0"
+                Style="{StaticResource Border.ContentBlock}">
+            
+            <DockPanel Grid.Column="0">
+
+                <TextBlock Text="Название"
+                           Style="{StaticResource TextBlock.Title}"
+                           DockPanel.Dock="Top"/>
+                
+                <TextBox Text="{Binding NewOffering.Name, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource TextBox.InputData}"
+                         DockPanel.Dock="Top"/>
+
+                <TextBlock Text="Старое ID"
+                           Style="{StaticResource TextBlock.Title}"
+                           DockPanel.Dock="Top"/>
+                
+                <TextBox Text="{Binding NewOffering.OldId, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource TextBox.InputData}"
+                         DockPanel.Dock="Top"/>
+
+                <TextBlock Text="Роль"
+                           Style="{StaticResource TextBlock.Title}"
+                           DockPanel.Dock="Top"/>
+                
+                <ComboBox ItemsSource="{Binding Roles}"
+                          SelectedItem="{Binding NewOffering.Role}"
+                          Style="{StaticResource BaseComboBox}"
+                          DisplayMemberPath="Name"
+                          DockPanel.Dock="Top"/>
+
+                <TextBlock Text="Качество"
+                           Style="{StaticResource TextBlock.Title}"
+                            DockPanel.Dock="Top"/>
+                
+                <ComboBox ItemsSource="{Binding Rarities}"
+                          SelectedItem="{Binding NewOffering.Rarity}"
+                          Style="{StaticResource BaseComboBox}"
+                          DisplayMemberPath="Name"
+                          DockPanel.Dock="Top"/>
+
+                <TextBlock Text="Категория"
+                           Style="{StaticResource TextBlock.Title}"
+                           DockPanel.Dock="Top"/>
+                
+                <ComboBox ItemsSource="{Binding OfferingCategories}"
+                          SelectedItem="{Binding NewOffering.Category}"
+                          Style="{StaticResource BaseComboBox}"
+                          DisplayMemberPath="Name"
+                          DockPanel.Dock="Top"/>
+
+                <StackPanel DockPanel.Dock="Top" Margin="5">
+
+                    <Border BorderThickness="1" BorderBrush="Black">
+                        <Image Source="{Binding NewOffering.Image}" Height="90"/>
+                    </Border>
+
+                    <Button Content="Выбрать" 
+                            Command="{Binding SelectNewImageCommand}"
+                            Style="{StaticResource Button.App}"
+                            VerticalAlignment="Bottom"/>
+
+                </StackPanel>
+
+                <Button Content="Добавить" 
+                        Command="{Binding CreateCommandAsync}"
+                        Style="{StaticResource Button.App}"
+                        VerticalAlignment="Bottom"/>
+
+            </DockPanel>
+            
+        </Border>
+        
+        <!--#endregion-->
+
+        <!--#region Список данных -->
+
+        <Border Grid.Column="1"
+                Style="{StaticResource Border.ContentBlock}">
+
+            <ListView ItemsSource="{Binding Offerings}"
+                      d:ItemsSource="{d:SampleData ItemCount=10}"
+                      SelectedItem="{Binding SelectedOffering}"
+                      Style="{StaticResource ListView.Base}"
+                      SelectionMode="Single"
+                      ScrollViewer.CanContentScroll="False"
+                      VirtualizingPanel.ScrollUnit="Pixel"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling"
+                      VirtualizingPanel.CacheLength="15,15"
+                      VirtualizingPanel.CacheLengthUnit="Item">
+
+                <!--#region ItemTemplate: Разметка каждого элемента -->
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{StaticResource Solid.Border.ListView.ContentBlock.Background}"
+                                CornerRadius="10"
+                                Width="220"
+                                Height="220">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="70"/>
+                                </Grid.RowDefinitions>
+
+                                <!--#region Row 0: Кнопка открывабщая меню, обновления, информация о записи -->
+
+                                <DockPanel Margin="8,3,8,0"
+                                           HorizontalAlignment="Stretch">
+
+                                    <Button x:Name="btnUpdate"
+                                            Style="{StaticResource Button.App}"
+                                            Command="{Binding DataContext.UpdateCommandAsync, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                            CommandParameter="{Binding}"
+                                            Height="28"
+                                            Visibility="Collapsed"
+                                            HorizontalAlignment="Left">
+                                        <Button.Content>
+                                            <Control Template="{StaticResource SaveIcon}" Foreground="Yellow"/>
+                                        </Button.Content>
+                                    </Button>
+
+                                    <Button Style="{StaticResource Button.ListView.PopupMenu}"
+                                            Height="28"
+                                            DockPanel.Dock="Right">
+                                        <Button.Content>
+                                            <Control Template="{StaticResource TripleDotMenu}"
+                                                     Width="35"
+                                                     Foreground="White"/>
+                                        </Button.Content>
+                                        <Button.Command>
+                                            <Binding Path="DataContext.MenuPopup.ShowCommand" 
+                                                     RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                        </Button.Command>
+                                        <Button.CommandParameter>
+                                            <Binding RelativeSource="{RelativeSource AncestorType=ListViewItem}"/>
+                                        </Button.CommandParameter>
+                                        <b:Interaction.Triggers>
+                                            <b:EventTrigger EventName="Click">
+                                                <b:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                                        PropertyName="IsSelected"
+                                                                        Value="True" />
+                                            </b:EventTrigger>
+                                        </b:Interaction.Triggers>
+                                    </Button>
+
+                                    <Control Template="{StaticResource IconInfoWithTooltip}"
+                                             DataContext="{Binding}"
+                                             Width="15"
+                                             Height="15"
+                                             Margin="5,0,0,0"
+                                             Foreground="LightBlue"
+                                             HorizontalAlignment="Right"/>
+
+                                </DockPanel>
+
+                                <!--#endregion-->
+
+                                <!--#region Row 1: Название -->
+
+                                <TextBlock Grid.Row="1"
+                                           Text="{Binding Name}"
+                                           FontSize="14"
+                                           Foreground="White"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,2,0,2"
+                                           TextWrapping="Wrap"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                <!--#endregion-->
+
+                                <!--#region Row 2: Изображение -->
+
+                                <Image Grid.Row="2"
+                                       Source="{Binding Image}" 
+                                       Margin="5"
+                                       DockPanel.Dock="Top"/>
+
+                                <!--#endregion-->
+
+                                <!--#region Row 3: Separator, ID -->
+
+                                <Separator Grid.Row="3" VerticalAlignment="Top"/>
+
+                                <StackPanel Grid.Row="3" 
+                                            Margin="10,0,10,0"
+                                            VerticalAlignment="Center"
+                                            Orientation="Vertical">
+
+                                    <TextBlock Text="ID:"
+                                               Foreground="White"
+                                               FontSize="12"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center"/>
+
+                                    <TextBlock Text="{Binding Id, Mode=OneWay}"
+                                               Foreground="Aqua"
+                                               FontSize="12"
+                                               FontStyle="Italic"
+                                               Cursor="Hand"
+                                               HorizontalAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               ToolTipService.InitialShowDelay="500"
+                                               ToolTipService.Placement="Right"
+                                               ToolTip="Скопировать">
+                                        <b:Interaction.Triggers>
+                                            <b:EventTrigger EventName="MouseLeftButtonDown">
+                                                <b:InvokeCommandAction Command="{Binding DataContext.CopyIDCommand, RelativeSource={RelativeSource AncestorType=ListView}}" 
+                                                                       CommandParameter="{Binding Id}"/>
+                                            </b:EventTrigger>
+                                        </b:Interaction.Triggers>
+                                    </TextBlock>
+
+
+
+                                </StackPanel>
+
+                                <!--#endregion-->
+
+                            </Grid>
+
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                <Setter TargetName="btnUpdate" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+                <!--#endregion-->
+
+                <!--#region ItemContainerStyle: Внешний вид и повидение выделения элемента -->
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,5"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Border x:Name="mainBorder"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            Padding="{TemplateBinding Padding}"
+                                            Margin="{TemplateBinding Margin}"
+                                            CornerRadius="10"
+                                            SnapsToDevicePixels="true">
+                                        <ContentPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                <Setter Property="BorderBrush" Value="#A81930"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <!--#endregion-->
+
+            </ListView>
+
+        </Border>
+
+    </Grid>
+</Page>

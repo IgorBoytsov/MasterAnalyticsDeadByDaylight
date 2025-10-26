@@ -1,0 +1,1093 @@
+﻿<Page x:Class="DBDAnalytics.AdminPanel.WPF.Views.Pages.MeasurementPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DBDAnalytics.AdminPanel.WPF.Views.Pages"
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors" 
+      xmlns:behaviors="clr-namespace:Shared.WPF.Behaviors;assembly=Shared.WPF" 
+      xmlns:pages="clr-namespace:DBDAnalytics.AdminPanel.WPF.ViewModels.Pages"
+      xmlns:attach="clr-namespace:DBDAnalytics.AdminPanel.WPF.Resources.Attachable"
+      xmlns:vm="clr-namespace:DBDAnalytics.AdminPanel.WPF.ViewModels.Components"
+      d:DataContext="{d:DesignInstance Type=pages:MeasurementPageViewModel}"
+      mc:Ignorable="d" 
+      d:Width="1200"
+      d:Background="{StaticResource Solid.Application.Background}"
+      Title="MeasurementPage">
+
+    <b:Interaction.Behaviors>
+        <behaviors:AsyncInitializeBehavior />
+    </b:Interaction.Behaviors>
+
+    <Page.Resources>
+
+        <DropShadowEffect x:Key="TooltipShadow" 
+                          ShadowDepth="0" 
+                          BlurRadius="8" 
+                          Color="#80000000" 
+                          Opacity="0.6"/>
+
+        <!--#region ToolTip для информации об карте -->
+
+        <ControlTemplate x:Key="IconInfoWithTooltip" TargetType="Control">
+            <Grid ToolTipService.InitialShowDelay="100">
+                <ToolTipService.ToolTip>
+                    <ToolTip OverridesDefaultStyle="True" HasDropShadow="False"
+                             Foreground="White"
+                             Background="#333333"
+                             BorderBrush="#555555"
+                             BorderThickness="1"
+                             Effect="{StaticResource TooltipShadow}">
+
+                        <Grid Margin="8" d:DataContext="{d:DesignInstance Type=vm:MapViewModel, IsDesignTimeCreatable=False}">
+                            <Grid.Resources>
+
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Margin" Value="0,2,10,2"/>
+                                </Style>
+
+                                <Style TargetType="TextBox">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Margin" Value="0,2,10,2"/>
+                                </Style>
+
+                            </Grid.Resources>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto" MinWidth="100"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="ID:"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Id}"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="ImageKey:"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ImageKey}" TextWrapping="Wrap"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Старое ID:"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding OldId}"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Название:"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Name}" TextWrapping="Wrap"/>
+
+                        </Grid>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+                <Grid>
+                    <Ellipse Stroke="{TemplateBinding Foreground}" StrokeThickness="1.5"/>
+                    <TextBlock Text="i" 
+                               FontFamily="Georgia"
+                               FontWeight="Bold"
+                               FontSize="10"
+                               Foreground="{TemplateBinding Foreground}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="0,-1,0,0"/>
+                </Grid>
+            </Grid>
+        </ControlTemplate>
+
+        <!--#endregion-->
+
+    </Page.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--#region Меню: Добавление -->
+
+        <Border Grid.Column="0"
+                Style="{StaticResource Border.ContentBlock}">
+            <DockPanel>
+
+                <Border Background="Gray" 
+                        CornerRadius="10"
+                        DockPanel.Dock="Top">
+                    <TextBlock Text="Измерение"
+                               Style="{StaticResource TextBlock.Title}"/>
+                </Border>
+                
+                <TextBlock Text="Название"
+                           Style="{StaticResource TextBlock.Title}"
+                           DockPanel.Dock="Top"/>
+                
+                <TextBox Text="{Binding NewMeasurement.Name, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource TextBox.InputData}"
+                         DockPanel.Dock="Top"/>
+
+                <TextBlock Text="Старое ID"
+                           Style="{StaticResource TextBlock.Title}"
+                           DockPanel.Dock="Top"/>
+                
+                <TextBox Text="{Binding NewMeasurement.OldId, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource TextBox.InputData}"
+                         DockPanel.Dock="Top"/>
+
+                <Button Content="Добавить" 
+                        Command="{Binding CreateLocalMeasurementCommand}"
+                        Style="{StaticResource Button.App}"
+                        DockPanel.Dock="Top"/>
+
+                <Border Background="Gray" 
+                        CornerRadius="10"
+                        Margin="0,20,0,0"
+                        DockPanel.Dock="Top">
+                    
+                    <TextBlock Text="Карты"
+                               Style="{StaticResource TextBlock.Title}"/>
+                </Border>
+
+                <!--<TextBlock Text="Карты"
+                           Style="{StaticResource TextBlock.Title}"
+                           Margin="0,20,0,0"
+                           DockPanel.Dock="Top"/>-->
+
+                <DockPanel DockPanel.Dock="Top">
+
+                    <StackPanel DockPanel.Dock="Top" Margin="5">
+
+                        <Border BorderThickness="1" BorderBrush="Black">
+                            <Image Source="{Binding NewMap.Image}" Height="90"/>
+                        </Border>
+
+                        <Button Content="Выбрать" 
+                                Command="{Binding SelectNewImageCommand}"
+                                Style="{StaticResource Button.App}"
+                                VerticalAlignment="Bottom"/>
+
+                    </StackPanel>
+
+                    <TextBlock Text="Название"
+                               Style="{StaticResource TextBlock.Title}"
+                               DockPanel.Dock="Top"/>
+                    
+                    <TextBox Text="{Binding NewMap.Name, UpdateSourceTrigger=PropertyChanged}" 
+                             Style="{StaticResource TextBox.InputData}"
+                             DockPanel.Dock="Top"/>
+
+                    <TextBlock Text="Старое ID"
+                               Style="{StaticResource TextBlock.Title}"
+                               DockPanel.Dock="Top"/>
+                    
+                    <TextBox Text="{Binding NewMap.OldId, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource TextBox.InputData}"
+                             DockPanel.Dock="Top"/>
+
+                    <Button Content="Добавить локально" 
+                            Command="{Binding CreateLocalMapCommand}"
+                            Style="{StaticResource Button.App}"
+                            DockPanel.Dock="Top"/>
+
+                    <Button Content="Добавить в БД" 
+                            Style="{StaticResource Button.App}"
+                            VerticalAlignment="Top"/>
+
+                </DockPanel>
+
+            </DockPanel>
+        </Border>
+        
+        <!--#endregion-->
+
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MaxWidth="400"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+
+            <!--Локальные POPUP-->
+            
+            <!--#region MenuLocalMapPopup -->
+
+            <Popup IsOpen="{Binding MenuLocalMapPopup.IsOpen}"
+                   PlacementTarget="{Binding MenuLocalMapPopup.PlacementTarget}"
+                   Tag="{Binding}" 
+                   Placement="Right"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade">
+
+                <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                        Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="5">
+
+                    <StackPanel MinWidth="150">
+
+                        <Button Content="Редактировать"
+                                DataContext="{Binding Tag, RelativeSource={RelativeSource AncestorType=Popup}}"
+                                Style="{StaticResource Button.PopupMenu}" 
+                                attach:ButtonHelper.IconTemplate="{StaticResource Edit}">
+                            <Button.Command>
+                                <Binding Path="ShowEditAndHideMenuLocalMapCommand"/>
+                            </Button.Command>
+                        </Button>
+
+                        <Button Content="Выбрать изображение" 
+                                Command="{Binding SelectSelectedLocalMapImageCommand}"
+                                Style="{StaticResource Button.PopupMenu}" 
+                                attach:ButtonHelper.IconTemplate="{StaticResource ImagePicture}"/>
+
+                        <Separator Margin="0,5,0,5"/>
+
+                        <Button Content="Удалить" 
+                                Command="{Binding DeleteLocalMapCommand}"
+                                CommandParameter="{Binding SelectedLocalMap}"
+                                Style="{StaticResource Button.PopupMenu}" 
+                                attach:ButtonHelper.IconTemplate="{StaticResource Trash}"/>
+                        
+                    </StackPanel>
+                </Border>
+            </Popup>
+
+            <!--#endregion-->
+
+            <!--#region EditLocalMapPopup -->
+
+            <Popup IsOpen="{Binding EditLocalMapPopup.IsOpen}"
+                   PlacementTarget="{Binding EditLocalMapPopup.PlacementTarget}"
+                   Placement="Right"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade">
+
+                <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                        Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                        BorderThickness="4"
+                        CornerRadius="5"
+                        Padding="10"
+                        Width="400">
+                    <DockPanel Grid.Column="0" Margin="0,0,5,0">
+
+                        <TextBlock Text="Название" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+
+                        <TextBox Text="{Binding SelectedLocalMap.Name, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TextBox.InputData}"
+                                 DockPanel.Dock="Top"/>
+
+                        <TextBlock Text="Старое ID" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+
+                        <TextBox Text="{Binding SelectedLocalMap.OldId, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TextBox.InputData}"
+                                 VerticalAlignment="Top"/>
+
+                    </DockPanel>
+                </Border>
+            </Popup>
+
+            <!--#endregion-->
+
+            <!--#region EditLocalMeasurement -->
+
+            <Popup IsOpen="{Binding EditLocalMeasurementPopup.IsOpen}"
+                   PlacementTarget="{Binding EditLocalMeasurementPopup.PlacementTarget}"
+                   Placement="Left"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade">
+
+                <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                        Background="{StaticResource Solid.Border.ContentBlock.Background}"
+                        BorderThickness="4"
+                        CornerRadius="5"
+                        Padding="10">
+
+                    <DockPanel MinWidth="300" 
+                               DataContext="{Binding SelectedLocalMeasurement}">
+
+                        <Button Command="{Binding DataContext.EditLocalMeasurementPopup.HideCommand, RelativeSource={RelativeSource AncestorType=Popup}}"
+                                Style="{StaticResource Button.App}"
+                                Width="20"
+                                HorizontalAlignment="Right"
+                                DockPanel.Dock="Top">
+                            <Button.Content>
+                                <Control Template="{StaticResource Close}" Background="{StaticResource Solid.Icon.Close.Background}"/>
+                            </Button.Content>
+                        </Button>
+
+                        <TextBlock Text="Название" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TextBox.InputData}"
+                                 DockPanel.Dock="Top"/>
+
+                        <TextBlock Text="Старое ID" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+                        <TextBox Text="{Binding OldId, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource TextBox.InputData}"
+                                 DockPanel.Dock="Top"/>
+                    </DockPanel>
+                </Border>
+            </Popup>
+
+            <!--#endregion-->
+
+            <!--БД POPUP-->
+            
+            <!--#region MenuMapPopup -->
+
+            <Popup IsOpen="{Binding MenuMapPopup.IsOpen}"
+                   PlacementTarget="{Binding MenuMapPopup.PlacementTarget}"
+                   Tag="{Binding}" 
+                   Placement="Right"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade">
+
+                <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                        Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="5">
+
+                    <StackPanel MinWidth="150">
+
+                        <Button Content="Редактировать"
+                                DataContext="{Binding Tag, RelativeSource={RelativeSource AncestorType=Popup}}"
+                                Style="{StaticResource Button.PopupMenu}" 
+                                attach:ButtonHelper.IconTemplate="{StaticResource Edit}">
+                            <Button.Command>
+                                <Binding Path="ShowEditAndHideMenuMapCommand"/>
+                            </Button.Command>
+                        </Button>
+
+                        <Button Content="Выбрать изображение" 
+                                Command="{Binding SelectedMapImageCommand}"
+                                Style="{StaticResource Button.PopupMenu}" 
+                                attach:ButtonHelper.IconTemplate="{StaticResource ImagePicture}"/>
+
+                        <Button Content="Откатить изменения" 
+                                Command="{Binding RevertMapChangeCommand}"
+                                CommandParameter="{Binding SelectedMap}"
+                                Style="{StaticResource Button.PopupMenu}" 
+                                attach:ButtonHelper.IconTemplate="{StaticResource Revert}"/>
+
+                        <Separator Margin="0,5,0,5"/>
+
+                        <Button Content="Удалить" 
+                                Command="{Binding DeleteMapCommandAsync}"
+                                CommandParameter="{Binding SelectedMap}"
+                                Style="{StaticResource Button.PopupMenu}" 
+                                attach:ButtonHelper.IconTemplate="{StaticResource Trash}"/>
+                        
+                        <Separator Margin="0,5,0,5"/>
+
+                        <Button Content="Копировать информацию" 
+                                Command="{Binding CopyAllInfoMapCommand}"
+                                CommandParameter="{Binding SelectedMap}"
+                                Style="{StaticResource Button.PopupMenu}" 
+                                attach:ButtonHelper.IconTemplate="{StaticResource CopyIcon}"/>
+
+                    </StackPanel>
+                </Border>
+            </Popup>
+
+            <!--#endregion-->
+
+            <!--#region EditMapPopup -->
+
+            <Popup IsOpen="{Binding EditMapPopup.IsOpen}"
+                   PlacementTarget="{Binding EditMapPopup.PlacementTarget}"
+                   Placement="Right"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade">
+
+                <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                        Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                        BorderThickness="4"
+                        CornerRadius="5"
+                        Padding="10"
+                        Width="400">
+                    <DockPanel Grid.Column="0" Margin="0,0,5,0">
+
+                        <TextBlock Text="Название" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+
+                        <TextBox Text="{Binding SelectedMap.Name, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TextBox.InputData}"
+                                 DockPanel.Dock="Top"/>
+
+                        <TextBlock Text="Старое ID" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+
+                        <TextBox Text="{Binding SelectedMap.OldId, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TextBox.InputData}"
+                                 VerticalAlignment="Top"/>
+
+                    </DockPanel>
+                </Border>
+            </Popup>
+
+            <!--#endregion-->
+
+            <!--#region EditLocalMeasurementPopup -->
+
+            <Popup IsOpen="{Binding EditMeasurementPopup.IsOpen}"
+                   PlacementTarget="{Binding EditMeasurementPopup.PlacementTarget}"
+                   Placement="Left"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade">
+
+                <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                        Background="{StaticResource Solid.Border.ContentBlock.Background}"
+                        BorderThickness="4"
+                        CornerRadius="5"
+                        Padding="10">
+
+                    <DockPanel MinWidth="300" 
+                               DataContext="{Binding SelectedMeasurement}">
+
+                        <Button Command="{Binding DataContext.EditMeasurementPopup.HideCommand, RelativeSource={RelativeSource AncestorType=Popup}}"
+                                Style="{StaticResource Button.App}"
+                                Width="20"
+                                HorizontalAlignment="Right"
+                                DockPanel.Dock="Top">
+                            <Button.Content>
+                                <Control Template="{StaticResource Close}" Background="{StaticResource Solid.Icon.Close.Background}"/>
+                            </Button.Content>
+                        </Button>
+
+                        <TextBlock Text="Название" 
+                                   Style="{StaticResource TextBlock.Title}"
+                                   DockPanel.Dock="Top"/>
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource TextBox.InputData}"
+                                 DockPanel.Dock="Top"/>
+
+                        <TextBlock Text="Старое ID" 
+                               Style="{StaticResource TextBlock.Title}"
+                               DockPanel.Dock="Top"/>
+                        <TextBox Text="{Binding OldId, UpdateSourceTrigger=PropertyChanged}" 
+                                Style="{StaticResource TextBox.InputData}"
+                                DockPanel.Dock="Top"/>
+
+                        <WrapPanel DockPanel.Dock="Top" 
+                                   HorizontalAlignment="Right"
+                                   Margin="0,10,0,0">
+
+                            <Button Content="Обновить"
+                                    Command="{Binding DataContext.UpdateMeasurementCommandAsync, RelativeSource={RelativeSource AncestorType=Popup}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource Button.App}"/>
+
+                            <Button Content="Отменить изменения" Margin="5,0,0,0"
+                                    Command="{Binding DataContext.RevertChangeMeasurementCommand, RelativeSource={RelativeSource AncestorType=Popup}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource Button.App}"/>
+
+                        </WrapPanel>
+                    </DockPanel>
+                </Border>
+            </Popup>
+
+            <!--#endregion-->
+            
+            <!--Основной контент-->
+            
+            <!--#region Список данных (Измерения) -->
+
+            <Border Grid.Row="0" Grid.Column="0"
+                    Style="{StaticResource Border.ContentBlock}">
+
+                <TabControl SelectedIndex="{Binding SelectedTabControlIndexMeasurement}">
+
+                    <!--#region Данные из БД -->
+
+                    <TabItem Header="Актульные данные">
+
+                        <DataGrid ItemsSource="{Binding Measurements}" 
+                                 d:ItemsSource="{d:SampleData ItemCount=10}"
+                                 SelectedItem="{Binding SelectedMeasurement}"
+                                 Style="{StaticResource TransparentDataGridStyle}"
+                                 IsReadOnly="True"
+                                 Margin="0,0,0,0"
+                                 AutoGenerateColumns="False">
+
+                            <DataGrid.Columns>
+
+                                <DataGridTemplateColumn Header="Старое ID" SortMemberPath="OldId" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding OldId}"
+                                                       Style="{StaticResource TextBlock.DataGrid.Data}"
+                                                       HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Название" SortMemberPath="Name" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"
+                                                       Style="{StaticResource TextBlock.DataGrid.Data}"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="10,0,0,0"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Действие" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+
+                                            <WrapPanel HorizontalAlignment="Center">
+                                                <Button Command="{Binding DataContext.DeleteMeasurementCommandAsync, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding }"
+                                                        Style="{StaticResource Button.DataGrid}"
+                                                        ToolTip="Удалить"
+                                                        ToolTipService.Placement="Right">
+                                                    <Button.Content>
+                                                        <Control Template="{StaticResource Trash}" Foreground="{StaticResource Solid.Icon.Trash.Background}"/>
+                                                    </Button.Content>
+                                                </Button>
+
+                                                <Button Style="{StaticResource Button.DataGrid}"
+                                                        ToolTip="Обновить"
+                                                        ToolTipService.Placement="Right">
+                                                    <Button.Content>
+                                                        <Control Template="{StaticResource UpdateIcon}" Foreground="{StaticResource Solid.Icon.UpdateIcon.Background}"/>
+                                                    </Button.Content>
+                                                    <Button.Command>
+                                                        <Binding Path="DataContext.EditMeasurementPopup.ShowCommand" 
+                                                                 RelativeSource="{RelativeSource AncestorType=DataGrid}"/>
+                                                    </Button.Command>
+                                                    <Button.CommandParameter>
+                                                        <Binding RelativeSource="{RelativeSource Self}"/>
+                                                    </Button.CommandParameter>
+                                                </Button>
+                                            </WrapPanel>
+
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                            </DataGrid.Columns>
+
+                        </DataGrid>
+
+                    </TabItem>
+
+                    <!--#endregion-->
+
+                    <!--#region Локальные данные -->
+
+                    <TabItem Header="Локальные данные">
+
+                        <DataGrid Grid.Row="1" Grid.Column="0"
+                                  ItemsSource="{Binding LocalMeasurements}" 
+                                  d:ItemsSource="{d:SampleData ItemCount=10}"
+                                  SelectedItem="{Binding SelectedLocalMeasurement}"
+                                  Style="{StaticResource TransparentDataGridStyle}"
+                                  IsReadOnly="True"
+                                  Margin="0,0,0,0"
+                                  AutoGenerateColumns="False">
+
+                            <DataGrid.Columns>
+
+                                <DataGridTemplateColumn Header="LocalID" SortMemberPath="OldId" Width="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding LocalId}"
+                                                       Style="{StaticResource TextBlock.DataGrid.Data}"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Название" SortMemberPath="Name" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"
+                                                       Style="{StaticResource TextBlock.DataGrid.Data}"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="10,0,0,0"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Действие" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+
+                                            <WrapPanel HorizontalAlignment="Center">
+                                                <Button Command="{Binding DataContext.DeleteLocalMeasurementCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding }"
+                                                        Style="{StaticResource Button.DataGrid}"
+                                                        ToolTip="Удалить"
+                                                        ToolTipService.Placement="Right">
+                                                    <Button.Content>
+                                                        <Control Template="{StaticResource Trash}" Foreground="{StaticResource Solid.Icon.Trash.Background}"/>
+                                                    </Button.Content>
+                                                </Button>
+
+                                                <Button Style="{StaticResource Button.DataGrid}"
+                                                        ToolTip="Обновить"
+                                                        ToolTipService.Placement="Right">
+                                                    <Button.Content>
+                                                        <Control Template="{StaticResource UpdateIcon}" Foreground="{StaticResource Solid.Icon.UpdateIcon.Background}"/>
+                                                    </Button.Content>
+                                                    <Button.Command>
+                                                        <Binding Path="DataContext.EditLocalMeasurementPopup.ShowCommand" 
+                                                                 RelativeSource="{RelativeSource AncestorType=DataGrid}"/>
+                                                    </Button.Command>
+                                                    <Button.CommandParameter>
+                                                        <Binding RelativeSource="{RelativeSource Self}"/>
+                                                    </Button.CommandParameter>
+                                                </Button>
+                                            </WrapPanel>
+
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                            </DataGrid.Columns>
+
+                        </DataGrid>
+
+                    </TabItem>
+
+                    <!--#endregion-->
+
+                </TabControl>
+            </Border>
+
+            <!--#endregion-->
+
+            <!--#region Список данных (Карты) -->
+
+            <Border Grid.Row="0" Grid.Column="1"
+                    Style="{StaticResource Border.ContentBlock}">
+                
+                <TabControl SelectedIndex="{Binding SelectedTabControlIndexMap}">
+
+                    <!--#region Данные в бд -->
+
+                    <TabItem Header="Актуальные данные">
+
+                        <ListView ItemsSource="{Binding Maps}"
+                                  d:ItemsSource="{d:SampleData ItemCount=3}"
+                                  SelectedItem="{Binding SelectedMap}"
+                                  Style="{StaticResource ListView.Base}"
+                                  ItemsPanel="{StaticResource StackPanelTemplate}"
+                                  SelectionMode="Single"
+                                  ScrollViewer.CanContentScroll="False"
+                                  VirtualizingPanel.ScrollUnit="Pixel"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                  VirtualizingPanel.CacheLength="15,15"
+                                  VirtualizingPanel.CacheLengthUnit="Item">
+
+                            <!--#region ItemTemplate: Разметка каждого элемента -->
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Border Background="{StaticResource Solid.Border.ListView.ContentBlock.Background}"
+                                            CornerRadius="10"
+                                            Height="165">
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="25"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="200"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--#region Название / Id / Кнопка -->
+
+                                            <Grid Grid.ColumnSpan="2" Margin="30,5,5,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="150"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding Name}"
+                                                           Foreground="White"
+                                                           FontSize="15"
+                                                           TextWrapping="NoWrap"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           HorizontalAlignment="Left"/>
+
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Id, StringFormat=ID: {0}}"
+                                                           Foreground="White"
+                                                           FontSize="15"
+                                                           Margin="21,0,0,0"
+                                                           TextWrapping="NoWrap"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           HorizontalAlignment="Left"/>
+
+                                                <WrapPanel Grid.Column="2"
+                                                           HorizontalAlignment="Right">
+
+                                                    <Button x:Name="btnUpdate"
+                                                            Style="{StaticResource Button.SaveChange}"
+                                                            Command="{Binding DataContext.UpdateMapCommandAsync, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                            CommandParameter="{Binding}"
+                                                            Height="18"
+                                                            Margin="0,0,5,0"
+                                                            Visibility="Collapsed"
+                                                            HorizontalAlignment="Left">
+                                                        <Button.Content>
+                                                            <Control Template="{StaticResource SaveIcon}"/>
+                                                        </Button.Content>
+                                                    </Button>
+
+                                                    <Control Template="{StaticResource IconInfoWithTooltip}"
+                                                              DataContext="{Binding}"
+                                                              Width="15"
+                                                              Height="15"
+                                                              Margin="0,0,5,0"
+                                                              Foreground="LightBlue"
+                                                              HorizontalAlignment="Right"/>
+
+                                                    <Button Style="{StaticResource Button.ListView.PopupMenu}"
+                                                            DockPanel.Dock="Right">
+                                                        <Button.Content>
+                                                            <Control Template="{StaticResource TripleDotMenu}"
+                                                                     Width="35"
+                                                                     Foreground="White"/>
+                                                        </Button.Content>
+                                                        <Button.Command>
+                                                            <Binding Path="DataContext.MenuMapPopup.ShowCommand" 
+                                                                      RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                                        </Button.Command>
+                                                        <Button.CommandParameter>
+                                                            <Binding RelativeSource="{RelativeSource Self}"/>
+                                                        </Button.CommandParameter>
+                                                        <b:Interaction.Triggers>
+                                                            <b:EventTrigger EventName="Click">
+                                                                <b:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                                                        PropertyName="IsSelected"
+                                                                                        Value="True"/>
+                                                            </b:EventTrigger>
+                                                        </b:Interaction.Triggers>
+                                                    </Button>
+
+                                                </WrapPanel>
+
+                                            </Grid>
+
+                                            <!--#endregion-->
+
+                                            <!--#region Информация о карте -->
+
+                                            <TextBlock Grid.Column="1" Grid.Row="1"
+                                                       Text="Могучее промышленное космическое судно, где комфорт для экипажа был принесен в жертву сугубой практичности. В этом Лабиринте палуб смерть подстерегает вас за каждым углом. Мрачные, лишающие всяких надежд территории из воспоминаний Рипли воплотились в виде еще более жуткого кошмара. Могучее промышленное космическое судно, где комфорт для экипажа был принесен в жертву сугубой практичности. В этом Лабиринте палуб смерть подстерегает вас за каждым углом. Мрачные, лишающие всяких надежд территории из воспоминаний Рипли воплотились в виде еще более жуткого кошмара."
+                                                       Foreground="LightGray"
+                                                       FontStyle="Oblique"
+                                                       Margin="0,10,0,0"
+                                                       TextWrapping="WrapWithOverflow"
+                                                       TextTrimming="CharacterEllipsis"/>
+
+                                            <!--#endregion-->
+
+                                            <!--#region Изображение -->
+
+                                            <Image Grid.Row="1" 
+                                                   Source="{Binding Image}"
+                                                   Stretch="Uniform"/>
+
+                                            <!--#endregion-->
+
+                                        </Grid>
+
+                                    </Border>
+                                    
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                            <Setter TargetName="btnUpdate" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                    
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+
+                            <!--#endregion-->
+
+                            <!--#region ItemContainerStyle: Внешний вид и повидение выделения элемента -->
+
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="5"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="5,0,0,0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListViewItem">
+                                                <Border x:Name="mainBorder"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        Padding="{TemplateBinding Padding}"
+                                                        Margin="{TemplateBinding Margin}"
+                                                        CornerRadius="10"
+                                                        SnapsToDevicePixels="true">
+                                                    <ContentPresenter />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                            <Setter Property="BorderBrush" Value="#A81930"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+                            <!--#endregion-->
+
+                        </ListView>
+
+                    </TabItem>
+
+                    <!--#endregion-->
+
+                    <!--#region Локальные данные -->
+
+                    <TabItem Header="Локальные данные">
+
+                        <ListView ItemsSource="{Binding LocalMapsView}"
+                                  d:ItemsSource="{d:SampleData ItemCount=3}"
+                                  SelectedItem="{Binding SelectedLocalMap}"
+                                  Style="{StaticResource ListView.Base}"
+                                  ItemsPanel="{StaticResource StackPanelTemplate}"
+                                  SelectionMode="Single"
+                                  ScrollViewer.CanContentScroll="False"
+                                  VirtualizingPanel.ScrollUnit="Pixel"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                  VirtualizingPanel.CacheLength="15,15"
+                                  VirtualizingPanel.CacheLengthUnit="Item">
+
+                            <!--#region ItemTemplate: Разметка каждого элемента -->
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Border Background="{StaticResource Solid.Border.ListView.ContentBlock.Background}"
+                                            CornerRadius="10"
+                                            Height="165">
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="25"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="200"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--#region Название / Id / Кнопка -->
+
+                                            <Grid Grid.ColumnSpan="2" Margin="30,5,5,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="150"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="70"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding Name}"
+                                                           Foreground="White"
+                                                           FontSize="15"
+                                                           TextWrapping="NoWrap"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           HorizontalAlignment="Left"/>
+
+                                                <!--<TextBlock Grid.Column="1"
+                                                           Text="{Binding Id, StringFormat=ID: {0}}"
+                                                           Foreground="White"
+                                                           FontSize="15"
+                                                           Margin="21,0,0,0"
+                                                           TextWrapping="NoWrap"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           HorizontalAlignment="Left"/>-->
+
+                                                <WrapPanel Grid.Column="2"
+                                                           HorizontalAlignment="Right">
+
+                                                    <Control Template="{StaticResource IconInfoWithTooltip}"
+                                                             DataContext="{Binding}"
+                                                             Width="15"
+                                                             Height="15"
+                                                             Margin="0,0,5,0"
+                                                             Foreground="LightBlue"
+                                                             HorizontalAlignment="Right"/>
+
+                                                    <Button Style="{StaticResource Button.ListView.PopupMenu}"
+                                                            DockPanel.Dock="Right">
+                                                        <Button.Content>
+                                                            <Control Template="{StaticResource TripleDotMenu}"
+                                                                     Width="35"
+                                                                     Foreground="White"/>
+                                                        </Button.Content>
+                                                        <Button.Command>
+                                                            <Binding Path="DataContext.MenuLocalMapPopup.ShowCommand" 
+                                                                     RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                                        </Button.Command>
+                                                        <Button.CommandParameter>
+                                                            <Binding RelativeSource="{RelativeSource Self}"/>
+                                                        </Button.CommandParameter>
+                                                        <b:Interaction.Triggers>
+                                                            <b:EventTrigger EventName="Click">
+                                                                <b:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                                                        PropertyName="IsSelected"
+                                                                                        Value="True"/>
+                                                            </b:EventTrigger>
+                                                        </b:Interaction.Triggers>
+                                                    </Button>
+
+                                                </WrapPanel>
+
+                                            </Grid>
+
+                                            <!--#endregion-->
+
+                                            <!--#region Информация о карте -->
+
+                                            <TextBlock Grid.Column="1" Grid.Row="1"
+                                                       Text="Могучее промышленное космическое судно, где комфорт для экипажа был принесен в жертву сугубой практичности. В этом Лабиринте палуб смерть подстерегает вас за каждым углом. Мрачные, лишающие всяких надежд территории из воспоминаний Рипли воплотились в виде еще более жуткого кошмара. Могучее промышленное космическое судно, где комфорт для экипажа был принесен в жертву сугубой практичности. В этом Лабиринте палуб смерть подстерегает вас за каждым углом. Мрачные, лишающие всяких надежд территории из воспоминаний Рипли воплотились в виде еще более жуткого кошмара."
+                                                       Foreground="LightGray"
+                                                       FontStyle="Oblique"
+                                                       Margin="0,10,0,0"
+                                                       TextWrapping="WrapWithOverflow"
+                                                       TextTrimming="CharacterEllipsis"/>
+
+                                            <!--#endregion-->
+
+                                            <!--#region Изображение -->
+
+                                            <!--<Image Grid.Row="1" 
+                                                   Source="C:\Users\light\OneDrive\Desktop\Изображение дбд\Карты\Заросли Дварки - Крушение 'Ностромо'.png"
+                                                   Stretch="Uniform"/>-->
+                                            
+                                            <Image Grid.Row="1" 
+                                                   Source="{Binding Image}"
+                                                   Stretch="Uniform"/>
+
+                                            <!--#endregion-->
+
+                                        </Grid>
+
+                                    </Border>
+                                    
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            
+                            <!--#endregion-->
+                            
+                            <!--#region ItemContainerStyle: Внешний вид и повидение выделения элемента -->
+
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="5"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="5,0,0,0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListViewItem">
+                                                <Border x:Name="mainBorder"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        Padding="{TemplateBinding Padding}"
+                                                        Margin="{TemplateBinding Margin}"
+                                                        CornerRadius="10"
+                                                        SnapsToDevicePixels="true">
+                                                    <ContentPresenter />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+                            <!--#endregion-->
+
+                        </ListView>
+
+                    </TabItem>
+
+                    <!--#endregion-->
+
+                </TabControl>
+                
+            </Border>
+           
+            <!--#endregion-->
+
+            <!--#region Кнопка сохранения -->
+
+            <Button Grid.Column="1" Grid.Row="1"
+                    Content="Сохранить"
+                    Command="{Binding SaveDataCommandAsync}"
+                    Style="{StaticResource Button.App}"
+                    HorizontalAlignment="Right"/>
+
+            <!--#endregion-->
+
+        </Grid>
+        
+    </Grid>
+</Page>

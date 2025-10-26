@@ -1,0 +1,1647 @@
+﻿<Page x:Class="DBDAnalytics.AdminPanel.WPF.Views.Pages.ItemPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DBDAnalytics.AdminPanel.WPF.Views.Pages"
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors" 
+      xmlns:behaviors="clr-namespace:Shared.WPF.Behaviors;assembly=Shared.WPF" 
+      xmlns:pages="clr-namespace:DBDAnalytics.AdminPanel.WPF.ViewModels.Pages"
+      xmlns:vm="clr-namespace:DBDAnalytics.AdminPanel.WPF.ViewModels.Components"
+      xmlns:attach="clr-namespace:DBDAnalytics.AdminPanel.WPF.Resources.Attachable"
+      d:DataContext="{d:DesignInstance Type=pages:ItemPageViewModel}"
+      mc:Ignorable="d" 
+      d:Height="700"
+      d:Width="1200"
+      d:Background="{StaticResource Solid.Application.Background}"
+      Title="ItemPage">
+
+    <b:Interaction.Behaviors>
+        <behaviors:AsyncInitializeBehavior />
+    </b:Interaction.Behaviors>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="330"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--==========Popups==========-->
+
+        <!--Предмет-->
+
+        <!--#region MenuItem -->
+
+        <Popup IsOpen="{Binding MenuItemPopup.IsOpen}"
+               PlacementTarget="{Binding MenuItemPopup.PlacementTarget}"
+               Placement="Right"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade">
+
+            <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                    Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="5">
+
+                <StackPanel MinWidth="150">
+
+                    <Button Content="Редактировать"
+                            Command="{Binding ManagementItemEditCommand}"
+                            CommandParameter="{x:Static Visibility.Visible}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Edit}"/>
+
+                    <Button Content="Откатить изменения" 
+                            Command="{Binding RevertItemChangeCommand}"
+                            CommandParameter="{Binding SelectedItem}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Revert}"/>
+
+                    <Separator Margin="0,5,0,5"/>
+
+                    <Button Content="Удалить" 
+                            Command="{Binding DeletItemCommandAsync}"
+                            CommandParameter="{Binding SelectedItem}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Trash}"/>
+
+                    <Separator Margin="0,5,0,5"/>
+
+                    <Button Content="Копировать информацию" 
+                            Command="{Binding CopyAllInfoItemCommand}"
+                            CommandParameter="{Binding SelectedItem}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource CopyIcon}"/>
+
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!--#endregion-->
+
+        <!--#region MenuLocalItem -->
+
+        <Popup IsOpen="{Binding MenuLocalItemPopup.IsOpen}"
+               PlacementTarget="{Binding MenuLocalItemPopup.PlacementTarget}"
+               Placement="Right"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade">
+
+            <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                    Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="5">
+
+                <StackPanel MinWidth="150">
+
+                    <Button Content="Редактировать"
+                            Command="{Binding ManagementLocalItemEditCommand}"
+                            CommandParameter="{x:Static Visibility.Visible}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Edit}"/>
+
+                    <Button Content="Удалить" 
+                            Command="{Binding DeleteLocalItemCommand}"
+                            CommandParameter="{Binding SelectedLocalItem}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Trash}"/>
+
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!--#endregion-->
+
+        <!--Улучшение-->
+
+        <!--#region MenuAddon -->
+
+        <Popup IsOpen="{Binding MenuAddonPopup.IsOpen}"
+               PlacementTarget="{Binding MenuAddonPopup.PlacementTarget}"
+               Tag="{Binding}" 
+               Placement="Right"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade">
+
+            <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                    Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="5">
+
+                <StackPanel MinWidth="150">
+
+                    <Button Content="Редактировать"
+                            Command="{Binding ManagementAddonEditCommand}"
+                            CommandParameter="{x:Static Visibility.Visible}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Edit}"/>
+
+                    <Button Content="Откатить изменения" 
+                            Command="{Binding RevertAddonChangeCommand}"
+                            CommandParameter="{Binding SelectedAddon}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Revert}"/>
+
+                    <Separator Margin="0,5,0,5"/>
+
+                    <Button Content="Удалить" 
+                            Command="{Binding DeleteAddonCommandAsync}"
+                            CommandParameter="{Binding SelectedAddon}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Trash}"/>
+
+                    <Separator Margin="0,5,0,5"/>
+
+                    <Button Content="Копировать информацию" 
+                            Command="{Binding CopyAllInfoAddonCommand}"
+                            CommandParameter="{Binding SelectedAddon}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource CopyIcon}"/>
+
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!--#endregion-->
+
+        <!--#region MenuLocalAddon -->
+
+        <Popup IsOpen="{Binding MenuLocalAddonPopup.IsOpen}"
+               PlacementTarget="{Binding MenuLocalAddonPopup.PlacementTarget}"
+               Tag="{Binding}" 
+               Placement="Right"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade">
+
+            <Border BorderBrush="{StaticResource Solid.Border.Popup.ContentBlock.BorderBrush}"
+                    Background="{StaticResource Solid.Border.Popup.ContentBlock.Background}"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="5">
+
+                <StackPanel MinWidth="150">
+
+                    <Button Content="Редактировать"
+                            Command="{Binding ManagementLocalAddonEditCommand}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Edit}"/>
+
+                    <Button Content="Удалить" 
+                            Command="{Binding DeleteLocalAddonCommand}"
+                            CommandParameter="{Binding SelectedLocalAddon}"
+                            Style="{StaticResource Button.PopupMenu}" 
+                            attach:ButtonHelper.IconTemplate="{StaticResource Trash}"/>
+
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!--#endregion-->
+
+        <!--==========Modal==========-->
+
+        <!--Предмет-->
+
+        <!--#region Добавление Item (Локально) -->
+
+        <Border Grid.ColumnSpan="3" Grid.RowSpan="2" Panel.ZIndex="2"
+                Background="Transparent"
+                Visibility="{Binding ItemAddModalVisibility}" d:Visibility="Collapsed">
+
+            <Border Background="{StaticResource Solid.Border.ContentBlock.BorderBrush}" BorderBrush="Gray"
+                 BorderThickness="2"
+                 CornerRadius="12"
+                 Width="620"
+                 Height="620">
+
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!--#region Header -->
+
+                    <Border Grid.Row="0" Style="{StaticResource Border.ContentBlock}" Margin="15,0,15,0">
+
+                        <DockPanel>
+
+                            <Button Style="{StaticResource Button.App}"
+                                    Command="{Binding ManagementItemAddCommand}"
+                                    CommandParameter="{x:Static Visibility.Collapsed}"
+                                    Margin="2"
+                                    DockPanel.Dock="Right">
+                                <Button.Content>
+                                    <Control Template="{StaticResource Close}" Foreground="White"/>
+                                </Button.Content>
+                            </Button>
+
+                            <TextBlock Text="Добавление предмета"
+                                    Margin="20,5,0,0"
+                                    Style="{StaticResource TextBlock.Title}"/>
+
+                        </DockPanel>
+
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Ввод данных -->
+
+                    <Border Grid.Row="1" Style="{StaticResource Border.ContentBlock}">
+
+                        <DockPanel>
+
+                            <TextBlock Text="Название"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding NewItem.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                      Style="{StaticResource TextBox.InputData}"
+                                      DockPanel.Dock="Top"/>
+
+                            <TextBlock Text="Старое ID"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding NewItem.OldId, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource TextBox.InputData}"
+                                     VerticalAlignment="Top"/>
+                        </DockPanel>
+
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource Border.ContentBlock}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Column="0" Grid.Row="0">
+                                <Image Source="{Binding NewItem.Image}"/>
+                            </Border>
+
+                            <Button Content="Выбрать" 
+                                    Grid.Column="0" Grid.Row="1" 
+                                    Style="{StaticResource Button.App}"
+                                    Command="{Binding SelectItemImageCommand}"
+                                    CommandParameter="{Binding NewItem}"
+                                    HorizontalAlignment="Center"/>
+
+                        </Grid>
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Кнопка -->
+
+                    <Button Grid.Row="3" Content="Добавить"
+                            Style="{StaticResource Button.App}"
+                            Command="{Binding AddLocalItemCommand}">
+                    </Button>
+
+                    <!--#endregion-->
+
+                </Grid>
+            </Border>
+
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region Редактиврование LocalItem -->
+
+        <Border Grid.ColumnSpan="3" Grid.RowSpan="2" Panel.ZIndex="2"
+                Background="Transparent"
+                Visibility="{Binding LocalItemEditModalVisibility}" d:Visibility="Collapsed">
+
+            <Border Background="{StaticResource Solid.Border.ContentBlock.BorderBrush}" BorderBrush="Gray"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Width="620"
+                    Height="620">
+
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--#region Header -->
+
+                    <Border Grid.Row="0" Style="{StaticResource Border.ContentBlock}" Margin="15,0,15,0">
+
+                        <DockPanel>
+
+                            <Button Style="{StaticResource Button.App}"
+                                    Command="{Binding ManagementLocalItemEditCommand}"
+                                    CommandParameter="{x:Static Visibility.Collapsed}"
+                                    Margin="2"
+                                    DockPanel.Dock="Right">
+                                <Button.Content>
+                                    <Control Template="{StaticResource Close}" Foreground="White"/>
+                                </Button.Content>
+                            </Button>
+
+                            <TextBlock Text="{Binding SelectedLocalItem.Name, StringFormat=Локальные изменения: {0}}" d:Text="Локальные изменения: Аптечка"
+                                       Margin="20,5,0,0"
+                                       Style="{StaticResource TextBlock.Title}"/>
+
+                        </DockPanel>
+
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Поля ввода -->
+
+                    <Border Grid.Row="1" Style="{StaticResource Border.ContentBlock}">
+
+                        <DockPanel>
+
+                            <TextBlock Text="Название"
+                                    Style="{StaticResource TextBlock.Title}"
+                                    DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding SelectedLocalSurvivor.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                  Style="{StaticResource TextBox.InputData}"
+                                  DockPanel.Dock="Top"/>
+
+                            <TextBlock Text="Старое ID"
+                                    Style="{StaticResource TextBlock.Title}"
+                                    DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding SelectedLocalSurvivor.OldId, UpdateSourceTrigger=PropertyChanged}" 
+                                  Style="{StaticResource TextBox.InputData}"
+                                  VerticalAlignment="Top"/>
+                        </DockPanel>
+
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource Border.ContentBlock}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Column="0" Grid.Row="0">
+                                <Image Source="{Binding SelectedLocalItem.Image}"/>
+                            </Border>
+
+                            <Button Content="Выбрать" 
+                                 Grid.Column="0" Grid.Row="1" 
+                                 Style="{StaticResource Button.App}"
+                                 Command="{Binding SelectItemImageCommand}"
+                                 CommandParameter="{Binding SelectedLocalItem}"
+                                 HorizontalAlignment="Center"/>
+
+                        </Grid>
+                    </Border>
+
+                    <!--#endregion-->
+
+                </Grid>
+            </Border>
+
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region Редактиврование Item -->
+
+        <Border Grid.ColumnSpan="3" Grid.RowSpan="2" Panel.ZIndex="2"
+                Background="Transparent"
+                Visibility="{Binding ItemEditModalVisibility}" d:Visibility="Collapsed">
+
+            <Border Background="{StaticResource Solid.Border.ContentBlock.BorderBrush}" BorderBrush="Gray"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Width="620"
+                    Height="620">
+
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--#region Header -->
+
+                    <Border Grid.Row="0" Style="{StaticResource Border.ContentBlock}" Margin="15,0,15,0">
+
+                        <DockPanel>
+
+                            <Button Style="{StaticResource Button.App}"
+                                    Command="{Binding ManagementItemEditCommand}"
+                                    CommandParameter="{x:Static Visibility.Collapsed}"
+                                    Margin="2"
+                                    DockPanel.Dock="Right">
+                                <Button.Content>
+                                    <Control Template="{StaticResource Close}" Foreground="White"/>
+                                </Button.Content>
+                            </Button>
+
+                            <TextBlock Text="{Binding SelectedItem.Name, StringFormat=Изменения: {0}}" d:Text="Изменения: Аптечка"
+                                       Margin="20,5,0,0"
+                                       Style="{StaticResource TextBlock.Title}"/>
+
+                        </DockPanel>
+
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Поля ввода -->
+
+                    <Border Grid.Row="1" Style="{StaticResource Border.ContentBlock}">
+
+                        <DockPanel>
+
+                            <TextBlock Text="Название"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding SelectedItem.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource TextBox.InputData}"
+                                     DockPanel.Dock="Top"/>
+
+                            <TextBlock Text="Старое ID"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding SelectedItem.OldId, UpdateSourceTrigger=PropertyChanged}" 
+                                      Style="{StaticResource TextBox.InputData}"
+                                      VerticalAlignment="Top"/>
+                        </DockPanel>
+
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource Border.ContentBlock}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Column="0" Grid.Row="0">
+                                <Image Source="{Binding SelectedItem.Image}"/>
+                            </Border>
+
+                            <Button Content="Выбрать" 
+                                    Grid.Column="0" Grid.Row="1" 
+                                    Style="{StaticResource Button.App}"
+                                    Command="{Binding SelectItemImageCommand}"
+                                    CommandParameter="{Binding SelectedItem}"
+                                    HorizontalAlignment="Center"/>
+
+                        </Grid>
+                    </Border>
+
+                    <!--#endregion-->
+
+                </Grid>
+            </Border>
+
+        </Border>
+
+        <!--#endregion-->
+
+        <!--Улучшение-->
+
+        <!--#region Добавление LocalAddon -->
+
+        <Border Grid.ColumnSpan="3" Grid.RowSpan="2" Panel.ZIndex="2"
+                Background="Transparent"
+                Visibility="{Binding AddonAddModalVisibility}" d:Visibility="Collapsed">
+
+            <Border Background="{StaticResource Solid.Border.ContentBlock.BorderBrush}" BorderBrush="Gray"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Width="620"
+                    Height="620">
+
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--#region Header -->
+
+                    <Border Grid.Row="0" Style="{StaticResource Border.ContentBlock}" Margin="15,0,15,0">
+
+                        <DockPanel>
+
+                            <Button Style="{StaticResource Button.App}"
+                                    Command="{Binding ManagementAddonAddCommand}"
+                                    CommandParameter="{x:Static Visibility.Collapsed}"
+                                    Margin="2"
+                                    DockPanel.Dock="Right">
+                                <Button.Content>
+                                    <Control Template="{StaticResource Close}" Foreground="White"/>
+                                </Button.Content>
+                            </Button>
+
+                            <TextBlock Text="Добавление улучшения"
+                                       Margin="20,5,0,0"
+                                       Style="{StaticResource TextBlock.Title}"/>
+
+                        </DockPanel>
+
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Поля ввода -->
+
+                    <Border Grid.Row="1" Style="{StaticResource Border.ContentBlock}">
+
+                        <DockPanel>
+
+                            <TextBlock Text="Название"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding NewAddon.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource TextBox.InputData}"
+                                     DockPanel.Dock="Top"/>
+
+                            <TextBlock Text="Старое ID"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding NewAddon.OldId, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource TextBox.InputData}"
+                                     VerticalAlignment="Top"/>
+                        </DockPanel>
+
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource Border.ContentBlock}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Column="0" Grid.Row="0">
+                                <Image Source="{Binding NewAddon.Image}"/>
+                            </Border>
+
+                            <Button Content="Выбрать"
+                                    Grid.Row="1" 
+                                    Style="{StaticResource Button.App}"
+                                    Command="{Binding SelectAddonImageCommand}"
+                                    CommandParameter="{Binding NewAddon}"
+                                    HorizontalAlignment="Center"/>
+
+                            <Button Content="Добавить"
+                                    Grid.Row="2" 
+                                    Style="{StaticResource Button.App}"
+                                    Command="{Binding AddLocalAddonCommand}"
+                                    HorizontalAlignment="Center"/>
+
+                        </Grid>
+                    </Border>
+
+                    <!--#endregion-->
+
+                </Grid>
+            </Border>
+
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region Редактиврование LocalAddon -->
+
+        <Border Grid.ColumnSpan="3" Grid.RowSpan="2" Panel.ZIndex="2"
+                Background="Transparent"
+                Visibility="{Binding LocalAddonEditModalVisibility}" d:Visibility="Collapsed">
+
+            <Border Background="{StaticResource Solid.Border.ContentBlock.BorderBrush}" BorderBrush="Gray"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Width="620"
+                    Height="620">
+
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--#region Header -->
+
+                    <Border Grid.Row="0" Style="{StaticResource Border.ContentBlock}" Margin="15,0,15,0">
+
+                        <DockPanel>
+
+                            <Button Style="{StaticResource Button.App}"
+                                    Command="{Binding ManagementLocalAddonEditCommand}"
+                                    CommandParameter="{x:Static Visibility.Collapsed}"
+                                    Margin="2"
+                                    DockPanel.Dock="Right">
+                                <Button.Content>
+                                    <Control Template="{StaticResource Close}" Foreground="White"/>
+                                </Button.Content>
+                            </Button>
+
+                            <TextBlock Text="{Binding SelectedLocalAddon.Name, StringFormat=Изменения: {0}}" d:Text="Изменения: Пружина"
+                                       Margin="20,5,0,0"
+                                       Style="{StaticResource TextBlock.Title}"/>
+                                       
+                        </DockPanel>
+
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Поля ввода -->
+
+                    <Border Grid.Row="1" Style="{StaticResource Border.ContentBlock}">
+
+                        <DockPanel>
+
+                            <TextBlock Text="Название"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding SelectedLocalAddon.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource TextBox.InputData}"
+                                     DockPanel.Dock="Top"/>
+
+                            <TextBlock Text="Старое ID"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding SelectedLocalAddon.OldId, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource TextBox.InputData}"
+                                     VerticalAlignment="Top"/>
+                        </DockPanel>
+
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource Border.ContentBlock}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Column="0" Grid.Row="0">
+                                <Image Source="{Binding SelectedLocalAddon.Image}"/>
+                            </Border>
+
+                            <Button Content="Выбрать"
+                                    Grid.Row="1" 
+                                    Style="{StaticResource Button.App}"
+                                    Command="{Binding SelectAddonImageCommand}"
+                                    CommandParameter="{Binding SelectedLocalAddon}"
+                                    HorizontalAlignment="Center"/>
+
+                        </Grid>
+                    </Border>
+
+                    <!--#endregion-->
+
+                </Grid>
+            </Border>
+
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region Редактиврование Addon -->
+
+        <Border Grid.ColumnSpan="3" Grid.RowSpan="2" Panel.ZIndex="2"
+                Background="Transparent"
+                Visibility="{Binding AddonEditModalVisibility}" d:Visibility="Collapsed">
+
+            <Border Background="{StaticResource Solid.Border.ContentBlock.BorderBrush}" BorderBrush="Gray"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Width="620"
+                    Height="620">
+
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--#region Header -->
+
+                    <Border Grid.Row="0" Style="{StaticResource Border.ContentBlock}" Margin="15,0,15,0">
+
+                        <DockPanel>
+
+                            <Button Style="{StaticResource Button.App}"
+                                    Command="{Binding ManagementAddonEditCommand}"
+                                    CommandParameter="{x:Static Visibility.Collapsed}"
+                                    Margin="2"
+                                    DockPanel.Dock="Right">
+                                <Button.Content>
+                                    <Control Template="{StaticResource Close}" Foreground="White"/>
+                                </Button.Content>
+                            </Button>
+
+                            <TextBlock Text="{Binding SelectedAddon.Name, StringFormat=Изменения: {0}}" d:Text="Изменения: Пружина"
+                                       Margin="20,5,0,0"
+                                       Style="{StaticResource TextBlock.Title}"/>
+
+                        </DockPanel>
+
+                    </Border>
+
+                    <!--#endregion-->
+
+                    <!--#region Поля ввода -->
+
+                    <Border Grid.Row="1" Style="{StaticResource Border.ContentBlock}">
+
+                        <DockPanel>
+
+                            <TextBlock Text="Название"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding SelectedAddon.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource TextBox.InputData}"
+                                     DockPanel.Dock="Top"/>
+
+                            <TextBlock Text="Старое ID"
+                                       Style="{StaticResource TextBlock.Title}"
+                                       DockPanel.Dock="Top"/>
+
+                            <TextBox Text="{Binding SelectedAddon.OldId, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource TextBox.InputData}"
+                                     VerticalAlignment="Top"/>
+                        </DockPanel>
+
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource Border.ContentBlock}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Column="0" Grid.Row="0">
+                                <Image Source="{Binding SelectedAddon.Image}"/>
+                            </Border>
+
+                            <Button Content="Выбрать"
+                                    Grid.Row="1" 
+                                    Style="{StaticResource Button.App}"
+                                    Command="{Binding SelectAddonImageCommand}"
+                                    CommandParameter="{Binding SelectedAddon}"
+                                    HorizontalAlignment="Center"/>
+
+                        </Grid>
+                    </Border>
+
+                    <!--#endregion-->
+
+                </Grid>
+            </Border>
+
+        </Border>
+
+        <!--#endregion-->
+
+        <!--==========Основной контент страницы==========-->
+
+        <!--#region Управление Items -->
+
+        <Border Grid.Column="0" Grid.Row="0" Margin="15,0,15,0" Style="{StaticResource Border.ContentBlock}">
+            <DockPanel HorizontalAlignment="Left">
+                <Button Style="{StaticResource Button.KillerPage.Management}"
+                        Command="{Binding ManagementItemAddCommand}"
+                        CommandParameter="{x:Static Visibility.Visible}"
+                        DockPanel.Dock="Left"
+                        HorizontalAlignment="Left">
+                    <Button.Content>
+                        <Control Template="{StaticResource Create}" 
+                                 Foreground="Green"/>
+                    </Button.Content>
+                </Button>
+            </DockPanel>
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region [Items] -->
+
+        <Border Grid.Column="0" Grid.Row="1"
+                Style="{StaticResource Border.ContentBlock}">
+
+            <TabControl SelectedIndex="{Binding TabControlItemIndex}">
+
+                <!--#region Данные из БД -->
+
+                <TabItem Header="Акт. данные">
+                    <ListView ItemsSource="{Binding Items}"
+                              d:ItemsSource="{d:SampleData ItemCount=10}"
+                              SelectedItem="{Binding SelectedItem}"
+                              Style="{StaticResource ListView.Base}"
+                              ItemsPanel="{StaticResource WrapPanelTemplate}"
+                              SelectionMode="Single"
+                              ScrollViewer.CanContentScroll="False"
+                              VirtualizingPanel.ScrollUnit="Pixel"
+                              ScrollViewer.VerticalScrollBarVisibility="Visible"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="15,15"
+                              VirtualizingPanel.CacheLengthUnit="Item">
+
+                        <!--#region ItemTemplate: Разметка каждого элемента -->
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource Solid.Border.ListView.ContentBlock.Background}"
+                                        CornerRadius="10"
+                                        Width="220"
+                                        Height="220">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="70"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--#region Row 0: Кнопка открывающая меню, обновления, информация о записи -->
+
+                                        <DockPanel Margin="8,3,8,0"
+                                                   HorizontalAlignment="Stretch">
+
+                                            <Button Style="{StaticResource Button.ListView.PopupMenu}"
+                                                    Height="28"
+                                                    DockPanel.Dock="Right">
+                                                <Button.Content>
+                                                    <Control Template="{StaticResource TripleDotMenu}"
+                                                             Width="35"
+                                                             Foreground="White"/>
+                                                </Button.Content>
+                                                <Button.Command>
+                                                    <Binding Path="DataContext.MenuItemPopup.ShowCommand" 
+                                                             RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                                </Button.Command>
+                                                <Button.CommandParameter>
+                                                    <Binding RelativeSource="{RelativeSource Self}"/>
+                                                </Button.CommandParameter>
+                                                <b:Interaction.Triggers>
+                                                    <b:EventTrigger EventName="Click">
+                                                        <b:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                                                PropertyName="IsSelected"
+                                                                                Value="True" />
+                                                    </b:EventTrigger>
+                                                </b:Interaction.Triggers>
+                                            </Button>
+
+                                            <!--<Control Template="{StaticResource IconInfoWithTooltip}"
+                                                  DataContext="{Binding}"
+                                                  Width="15"
+                                                  Height="15"
+                                                  Margin="5,0,0,0"
+                                                  Foreground="LightBlue"
+                                                  DockPanel.Dock="Right"/>-->
+
+                                            <Button x:Name="btnUpdate"
+                                                    Style="{StaticResource Button.App}"
+                                                    Command="{Binding DataContext.UpdateItemCommandAsync, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                    CommandParameter="{Binding}"
+                                                    Height="28"
+                                                    Visibility="Collapsed"
+                                                    DockPanel.Dock="Right">
+                                                <Button.Content>
+                                                    <Control Template="{StaticResource SaveIcon}" Foreground="Yellow"/>
+                                                </Button.Content>
+                                            </Button>
+
+                                            <TextBlock Grid.Row="1"
+                                                       Text="{Binding Name}"
+                                                       FontSize="14"
+                                                       Foreground="White"
+                                                       FontWeight="Bold"
+                                                       Margin="0,2,0,2"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       HorizontalAlignment="Left"/>
+
+                                        </DockPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Row 1: Изображение -->
+
+                                        <Image Grid.Row="1"
+                                               Source="{Binding Image}" 
+                                               Margin="5"
+                                               DockPanel.Dock="Top"/>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Row 3: Separator, ID -->
+
+                                        <Separator Grid.Row="3" VerticalAlignment="Top"/>
+
+                                        <StackPanel Grid.Row="3" 
+                                                    Margin="10,0,10,0"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Vertical">
+
+                                            <TextBlock Text="ID:"
+                                                       Foreground="White"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"/>
+
+                                            <TextBlock Text="{Binding Id, Mode=OneWay}"
+                                                       Foreground="Aqua"
+                                                       FontSize="12"
+                                                       FontStyle="Italic"
+                                                       Cursor="Hand"
+                                                       HorizontalAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       ToolTipService.InitialShowDelay="500"
+                                                       ToolTipService.Placement="Right"
+                                                       ToolTip="Скопировать">
+                                             <b:Interaction.Triggers>
+                                                 <b:EventTrigger EventName="MouseLeftButtonDown">
+                                                     <b:InvokeCommandAction Command="{Binding DataContext.CopyIDCommand, RelativeSource={RelativeSource AncestorType=ListView}}" 
+                                                                            CommandParameter="{Binding Id}"/>
+                                                 </b:EventTrigger>
+                                             </b:Interaction.Triggers>
+                                            </TextBlock>
+
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                    </Grid>
+
+                                </Border>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                        <Setter TargetName="btnUpdate" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+
+                        <!--#endregion-->
+
+                        <!--#region ItemContainerStyle: Внешний вид и повидение выделения элемента -->
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="5"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,5"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border x:Name="mainBorder"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Padding="{TemplateBinding Padding}"
+                                                    Margin="{TemplateBinding Margin}"
+                                                    CornerRadius="10"
+                                                    SnapsToDevicePixels="true">
+                                                <ContentPresenter />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                        <Setter Property="BorderBrush" Value="#A81930"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+
+                        <!--#endregion-->
+
+                    </ListView>
+                </TabItem>
+
+                <!--#endregion-->
+
+                <!--#region Локальные данные -->
+
+                <TabItem Header="Лок. данные">
+                    <ListView ItemsSource="{Binding LocalItems}"
+                              d:ItemsSource="{d:SampleData ItemCount=10}"
+                              SelectedItem="{Binding SelectedLocalItem}"
+                              Style="{StaticResource ListView.Base}"
+                              ItemsPanel="{StaticResource WrapPanelTemplate}"
+                              SelectionMode="Single"
+                              ScrollViewer.CanContentScroll="False"
+                              VirtualizingPanel.ScrollUnit="Pixel"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="15,15"
+                              VirtualizingPanel.CacheLengthUnit="Item">
+
+                        <!--#region ItemTemplate: Разметка каждого элемента -->
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource Solid.Border.ListView.ContentBlock.Background}"
+                                        CornerRadius="10"
+                                        Width="220"
+                                        Height="220">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="70"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--#region Row 0: Кнопка открывабщая меню, обновления -->
+
+                                        <DockPanel Margin="8,3,8,0"
+                                                   HorizontalAlignment="Stretch">
+
+                                            <Button Style="{StaticResource Button.ListView.PopupMenu}"
+                                                    Height="28"
+                                                    DockPanel.Dock="Right">
+                                                <Button.Content>
+                                                    <Control Template="{StaticResource TripleDotMenu}"
+                                                             Width="35"
+                                                             Foreground="White"/>
+                                                </Button.Content>
+                                                <Button.Command>
+                                                    <Binding Path="DataContext.MenuLocalItemPopup.ShowCommand" 
+                                                             RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                                </Button.Command>
+                                                <Button.CommandParameter>
+                                                    <Binding RelativeSource="{RelativeSource Self}"/>
+                                                </Button.CommandParameter>
+                                                <b:Interaction.Triggers>
+                                                    <b:EventTrigger EventName="Click">
+                                                        <b:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                                                PropertyName="IsSelected"
+                                                                                Value="True" />
+                                                    </b:EventTrigger>
+                                                </b:Interaction.Triggers>
+                                            </Button>
+
+                                            <TextBlock Grid.Row="1"
+                                                       Text="{Binding Name}"
+                                                       FontSize="14"
+                                                       Foreground="White"
+                                                       FontWeight="Bold"
+                                                       Margin="0,2,0,2"
+                                                       TextWrapping="Wrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       HorizontalAlignment="Left"/>
+
+                                        </DockPanel>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Row 1: Изображение -->
+
+                                        <Image Grid.Row="1"
+                                               Source="{Binding Image}" 
+                                               Margin="5"
+                                               DockPanel.Dock="Top"/>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Row 3: Separator, ID -->
+
+                                        <Separator Grid.Row="3" VerticalAlignment="Top"/>
+
+                                        <StackPanel Grid.Row="3" 
+                                                    Margin="10,0,10,0"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Vertical">
+
+                                            <TextBlock Text="Локальный ID:"
+                                                       Foreground="White"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"/>
+
+                                            <TextBlock Text="{Binding LocalId, Mode=OneWay}"
+                                                       Foreground="Aqua"
+                                                       FontSize="12"
+                                                       FontStyle="Italic"
+                                                       Cursor="Hand"
+                                                       HorizontalAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       ToolTipService.InitialShowDelay="500"
+                                                       ToolTipService.Placement="Right"
+                                                       ToolTip="Скопировать">
+                                                 <b:Interaction.Triggers>
+                                                     <b:EventTrigger EventName="MouseLeftButtonDown">
+                                                         <b:InvokeCommandAction Command="{Binding DataContext.CopyIDCommand, RelativeSource={RelativeSource AncestorType=ListView}}" 
+                                                                                CommandParameter="{Binding Id}"/>
+                                                     </b:EventTrigger>
+                                                 </b:Interaction.Triggers>
+                                            </TextBlock>
+
+                                        </StackPanel>
+
+                                        <!--#endregion-->
+
+                                    </Grid>
+
+                                </Border>
+
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+
+                        <!--#endregion-->
+
+                        <!--#region ItemContainerStyle: Внешний вид и повидение выделения элемента -->
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="5"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,5"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border x:Name="mainBorder"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Padding="{TemplateBinding Padding}"
+                                                    Margin="{TemplateBinding Margin}"
+                                                    CornerRadius="10"
+                                                    SnapsToDevicePixels="true">
+                                                <ContentPresenter />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+
+                        <!--#endregion-->
+
+                    </ListView>
+                </TabItem>
+
+                <!--#endregion-->
+
+            </TabControl>
+
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region Управление Addons -->
+
+        <Border Grid.Column="1" Grid.Row="0" Margin="15,0,10,0" Style="{StaticResource Border.ContentBlock}">
+            <DockPanel HorizontalAlignment="Left">
+                <Button Style="{StaticResource Button.App}"
+                        Command="{Binding ManagementAddonAddCommand}"
+                        CommandParameter="{x:Static Visibility.Visible}"
+                        DockPanel.Dock="Left"
+                        HorizontalAlignment="Left">
+                    <Button.Content>
+                        <Control Template="{StaticResource Create}" 
+                                 Foreground="Green"/>
+                    </Button.Content>
+                </Button>
+            </DockPanel>
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region [Addons] -->
+
+        <Border Grid.Column="1" Grid.Row="1"
+               Style="{StaticResource Border.ContentBlock}">
+            <TabControl SelectedIndex="{Binding TabControlAddonIndex}">
+
+                <!--#region Данные из БД -->
+
+                <TabItem Header="Актуальные данные">
+                    <ListView ItemsSource="{Binding Addons}"
+                              d:ItemsSource="{d:SampleData ItemCount=10}"
+                              SelectedItem="{Binding SelectedAddon}"
+                              Style="{StaticResource ListView.Base}"
+                              ItemsPanel="{StaticResource StackPanelTemplate}"
+                              SelectionMode="Single"
+                              ScrollViewer.CanContentScroll="False"
+                              VirtualizingPanel.ScrollUnit="Pixel"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="15,15"
+                              VirtualizingPanel.CacheLengthUnit="Item">
+
+                        <!--#region ItemTemplate: Разметка каждого элемента -->
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+
+                                <Border Background="{StaticResource Solid.Border.ListView.ContentBlock.Background}"
+                                        CornerRadius="10"
+                                        Height="165">
+
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="200"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--#region Название / Id / Кнопка -->
+
+                                        <Grid Grid.ColumnSpan="2" Margin="30,5,5,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Name}"
+                                                       Foreground="White"
+                                                       FontSize="15"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       HorizontalAlignment="Left"/>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Id, StringFormat=ID: {0}}"
+                                                       Foreground="White"
+                                                       FontSize="15"
+                                                       Margin="21,0,0,0"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       HorizontalAlignment="Left"/>
+
+                                            <WrapPanel Grid.Column="2"
+                                                       HorizontalAlignment="Right">
+
+                                                <Button x:Name="btnUpdate"
+                                                        Style="{StaticResource Button.SaveChange}"
+                                                        Command="{Binding DataContext.UpdateAddonCommandAsync, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                        CommandParameter="{Binding}"
+                                                        Height="18"
+                                                        Margin="0,0,5,0"
+                                                        Visibility="Collapsed"
+                                                        HorizontalAlignment="Left">
+                                                    <Button.Content>
+                                                        <Control Template="{StaticResource SaveIcon}"/>
+                                                    </Button.Content>
+                                                </Button>
+
+                                                <!--<Control Template="{StaticResource IconInfoWithTooltip}"
+                                                      DataContext="{Binding}"
+                                                      Width="15"
+                                                      Height="15"
+                                                      Margin="0,0,5,0"
+                                                      Foreground="LightBlue"
+                                                      HorizontalAlignment="Right"/>-->
+
+                                                <Button Style="{StaticResource Button.ListView.PopupMenu}"
+                                                        DockPanel.Dock="Right">
+                                                    <Button.Content>
+                                                        <Control Template="{StaticResource TripleDotMenu}"
+                                                                 Width="35"
+                                                                 Foreground="White"/>
+                                                    </Button.Content>
+                                                    <Button.Command>
+                                                        <Binding Path="DataContext.MenuAddonPopup.ShowCommand" 
+                                                                 RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                                    </Button.Command>
+                                                    <Button.CommandParameter>
+                                                        <Binding RelativeSource="{RelativeSource Self}"/>
+                                                    </Button.CommandParameter>
+                                                    <b:Interaction.Triggers>
+                                                        <b:EventTrigger EventName="Click">
+                                                            <b:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                                                    PropertyName="IsSelected"
+                                                                                    Value="True"/>
+                                                        </b:EventTrigger>
+                                                    </b:Interaction.Triggers>
+                                                </Button>
+
+                                            </WrapPanel>
+
+                                        </Grid>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Информация о Улучшение -->
+
+                                        <TextBlock Grid.Column="1" Grid.Row="1"
+                                                   Text="Специализированный набор инструментов для быстрой установки медвежьих капканов и повышения их эффективности. Увеличивает скорость установки медвежьих капканов на 50%. Увеличивает время, требуемое для спасения выжившего или на попытку побега из медвежьего капкана, на 25%."
+                                                   Foreground="LightGray"
+                                                   FontStyle="Oblique"
+                                                   Margin="0,10,0,0"
+                                                   TextWrapping="WrapWithOverflow"
+                                                   TextTrimming="CharacterEllipsis"/>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Изображение -->
+
+                                        <Image Grid.Row="1" 
+                                              Source="{Binding Image}"
+                                              Stretch="Uniform"/>
+
+                                        <!--#endregion-->
+
+                                    </Grid>
+
+                                </Border>
+
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                        <Setter TargetName="btnUpdate" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+
+                        <!--#endregion-->
+
+                        <!--#region ItemContainerStyle: Внешний вид и повидение выделения элемента -->
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="5"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="5,0,0,0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border x:Name="mainBorder"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Padding="{TemplateBinding Padding}"
+                                                    Margin="{TemplateBinding Margin}"
+                                                    CornerRadius="10"
+                                                    SnapsToDevicePixels="true">
+                                                <ContentPresenter />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                        <Setter Property="BorderBrush" Value="#A81930"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+
+                        <!--#endregion-->
+
+                    </ListView>
+                </TabItem>
+
+                <!--#endregion-->
+
+                <!--#region Локальные данные -->
+
+                <TabItem Header="Локальные данные">
+                    <ListView ItemsSource="{Binding LocalAddons}"
+                              d:ItemsSource="{d:SampleData ItemCount=10}"
+                              SelectedItem="{Binding SelectedLocalAddon}"
+                              Style="{StaticResource ListView.Base}"
+                              ItemsPanel="{StaticResource StackPanelTemplate}"
+                              SelectionMode="Single"
+                              ScrollViewer.CanContentScroll="False"
+                              VirtualizingPanel.ScrollUnit="Pixel"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.CacheLength="15,15"
+                              VirtualizingPanel.CacheLengthUnit="Item">
+
+                        <!--#region ItemTemplate: Разметка каждого элемента -->
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+
+                                <Border Background="{StaticResource Solid.Border.ListView.ContentBlock.Background}"
+                                     CornerRadius="10"
+                                     Height="165">
+
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="200"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--#region Название / Id / Кнопка -->
+
+                                        <Grid Grid.ColumnSpan="2" Margin="30,5,5,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Name}"
+                                                       Foreground="White"
+                                                       FontSize="15"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       HorizontalAlignment="Left"/>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding LocalItemId, StringFormat=ItemLocalID: {0}}"
+                                                       Foreground="White"
+                                                       FontSize="15"
+                                                       Margin="21,0,0,0"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       HorizontalAlignment="Left"/>
+
+                                            <Button Style="{StaticResource Button.ListView.PopupMenu}"
+                                                    Grid.Column="2"
+                                                    HorizontalAlignment="Right"
+                                                    DockPanel.Dock="Right">
+                                                <Button.Content>
+                                                    <Control Template="{StaticResource TripleDotMenu}"
+                                                             Width="35"
+                                                             Foreground="White"/>
+                                                </Button.Content>
+                                                <Button.Command>
+                                                    <Binding Path="DataContext.MenuLocalAddonPopup.ShowCommand" 
+                                                             RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                                </Button.Command>
+                                                <Button.CommandParameter>
+                                                    <Binding RelativeSource="{RelativeSource Self}"/>
+                                                </Button.CommandParameter>
+                                                <b:Interaction.Triggers>
+                                                    <b:EventTrigger EventName="Click">
+                                                        <b:ChangePropertyAction TargetObject="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                                                PropertyName="IsSelected"
+                                                                                Value="True"/>
+                                                    </b:EventTrigger>
+                                                </b:Interaction.Triggers>
+                                            </Button>
+
+                                        </Grid>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Информация о Улучшение -->
+
+                                        <TextBlock Grid.Column="1" Grid.Row="1"
+                                                   Text="Специализированный набор инструментов для быстрой установки медвежьих капканов и повышения их эффективности. Увеличивает скорость установки медвежьих капканов на 50%. Увеличивает время, требуемое для спасения выжившего или на попытку побега из медвежьего капкана, на 25%."
+                                                   Foreground="LightGray"
+                                                   FontStyle="Oblique"
+                                                   Margin="0,10,0,0"
+                                                   TextWrapping="WrapWithOverflow"
+                                                   TextTrimming="CharacterEllipsis"/>
+
+                                        <!--#endregion-->
+
+                                        <!--#region Изображение -->
+
+                                        <Image Grid.Row="1" 
+                                               Source="{Binding Image}"
+                                               Stretch="Uniform"/>
+
+                                        <!--#endregion-->
+
+                                    </Grid>
+
+                                </Border>
+
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+
+                        <!--#endregion-->
+
+                        <!--#region ItemContainerStyle: Внешний вид и повидение выделения элемента -->
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="5"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="5,0,0,0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border x:Name="mainBorder"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Padding="{TemplateBinding Padding}"
+                                                    Margin="{TemplateBinding Margin}"
+                                                    CornerRadius="10"
+                                                    SnapsToDevicePixels="true">
+                                                <ContentPresenter />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Solid.SelectedItem.Card}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+
+                        <!--#endregion-->
+
+                    </ListView>
+                </TabItem>
+
+                <!--#endregion-->
+
+            </TabControl>
+        </Border>
+
+        <!--#endregion-->
+
+        <!--#region Создать киллера + улучшения + перки -->
+
+        <Button Grid.Row="2" Grid.Column="2"
+                Content="Сохранить"
+                Style="{StaticResource Button.App}"
+                Command="{Binding CreateItemCommandAsync}"
+                HorizontalAlignment="Right"/>
+
+        <!--#endregion-->
+
+    </Grid>
+
+</Page>
