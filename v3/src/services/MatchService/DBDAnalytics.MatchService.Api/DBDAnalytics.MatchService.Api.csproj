@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b402640b-9a29-4e64-b93c-c0b22359eaeb</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\api\Shared.Api\Shared.Api.csproj" />
+    <ProjectReference Include="..\..\..\Shared\DBDAnalytics.Shared.Contracts\DBDAnalytics.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\DBDAnalytics.MatchService.Application\DBDAnalytics.MatchService.Application.csproj" />
+    <ProjectReference Include="..\DBDAnalytics.MatchService.Infrastructure\DBDAnalytics.MatchService.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

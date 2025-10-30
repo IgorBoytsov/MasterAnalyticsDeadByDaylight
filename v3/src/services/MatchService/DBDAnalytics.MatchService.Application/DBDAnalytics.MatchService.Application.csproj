@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Ioc\" />
+    <Folder Include="Mappers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\api\Shared.Api.Infrastructure\Shared.Api.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Shared\DBDAnalytics.Shared.Contracts\DBDAnalytics.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\DBDAnalytics.MatchService.Application.Abstractions\DBDAnalytics.MatchService.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\DBDAnalytics.MatchService.Domain\DBDAnalytics.MatchService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
