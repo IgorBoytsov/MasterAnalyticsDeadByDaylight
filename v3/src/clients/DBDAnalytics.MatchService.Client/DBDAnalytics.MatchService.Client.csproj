@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Ioc\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\DBDAnalytics.Shared.Contracts\DBDAnalytics.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\shared\infrastructure\Shared.HttpClients\Shared.HttpClients.csproj" />
+  </ItemGroup>
+
+</Project>
