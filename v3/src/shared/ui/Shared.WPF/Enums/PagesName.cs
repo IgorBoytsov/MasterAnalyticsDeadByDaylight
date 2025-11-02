@@ -23,5 +23,7 @@
         Killer,
         Survivor,
         Item,
+
+        AddMatch,
     }
 }

@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ControlTemplate x:Key="BaseTemplate" TargetType="TextBox" >
+        <Border x:Name="border" 
+                BorderBrush="#B0E0E6"
+                Background="{TemplateBinding Background}"
+                CornerRadius="5"
+                BorderThickness="1"
+                Margin="2">
+            <ScrollViewer x:Name="PART_ContentHost" 
+                          Focusable="false"
+                          Foreground="#F0F1F3"
+                          HorizontalScrollBarVisibility="Hidden" 
+                          VerticalScrollBarVisibility="Hidden"
+                          Padding="2"/>
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter TargetName="border" Property="BorderBrush" Value="#7AC0F7"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="border" Property="BorderBrush" Value="#7AC0F7"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="TextBox.InputData" TargetType="TextBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Margin" Value="0,5,0,5"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Margin" Value="0,5,0,5"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="CaretBrush" Value="White"/>
+        <Setter Property="Template" Value="{StaticResource BaseTemplate}"/>
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--====================Shared====================-->
+
+    <SolidColorBrush x:Key="Solid.Application.Background" Color="#0D0D0D"/>
+    <SolidColorBrush x:Key="Solid.Border.ContentBlock.Background" Color="#121212"/>
+    <SolidColorBrush x:Key="Solid.Border.ContentBlock.BorderBrush" Color="#1B1B1B"/>
+
+    <!--====================Popup====================-->
+    
+    <SolidColorBrush x:Key="Solid.Border.Popup.ContentBlock.BorderBrush" Color="#383838"/>
+    <SolidColorBrush x:Key="Solid.Border.Popup.ContentBlock.Background" Color="#1F1F1F"/>
+
+    <!--====================ListView And DataGrid====================-->
+
+    <!--<SolidColorBrush x:Key="Solid.Border.ListView.ContentBlock.Background" Color="#2C2C2C"/>-->
+    <SolidColorBrush x:Key="Solid.Border.ListView.ContentBlock.Background" Color="#202020"/>
+
+    <!--====================Selected====================-->
+    
+    <SolidColorBrush x:Key="Solid.SelectedItem" Color="#202020"/>
+    <SolidColorBrush x:Key="Solid.SelectedItem.MouseOver" Color="#4A4A4A"/>
+
+    <SolidColorBrush x:Key="Solid.SelectedItem.Card" Color="#0095F6"/>
+   
+    <!--====================TextBox====================-->
+
+    <LinearGradientBrush x:Key="Border.TextBox.BorderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="#049BE5" Offset="0.5"/>
+        <GradientStop Color="#049BE5" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!--====================Button====================-->
+    <SolidColorBrush x:Key="Button.SideMenu.BorderBrush" Color="#049BE5"/>
+    <SolidColorBrush x:Key="Button.SideMenu.Background" Color="#424242"/>
+    <SolidColorBrush x:Key="Button.SideMenu.Disable.Background" Color="#5F5F5F"/>
+
+    <SolidColorBrush x:Key="Button.Management.Window.Background.IsMouseOver" Color="Gray"/>
+
+</ResourceDictionary>
