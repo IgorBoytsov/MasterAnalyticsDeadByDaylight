@@ -35,5 +35,5 @@
         <Setter Property="CaretBrush" Value="White"/>
         <Setter Property="Template" Value="{StaticResource BaseTemplate}"/>
     </Style>
-
+    
 </ResourceDictionary>

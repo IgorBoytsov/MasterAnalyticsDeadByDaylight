@@ -8,20 +8,18 @@
                 <ResourceDictionary Source="/Resources/Brushes/SharedBrush.xaml"/>
                 <ResourceDictionary Source="/Resources/Brushes/IconBrush.xaml"/>
                 
-                <ResourceDictionary Source="/Resources/PathElements/Icon.xaml"/>
-                
-                <ResourceDictionary Source="/Resources/Styles/ScrollViewer.xaml"/>
+                <ResourceDictionary Source="/Shared.WPF;component/Resources/Geometries/Icons.xaml"/>
 
-                <ResourceDictionary Source="/Resources/Styles/Border.xaml"/>
+                <ResourceDictionary Source="/Shared.WPF;component/Resources/Styles/ScrollViewer.xaml"/>
+
+                <ResourceDictionary Source="/Shared.WPF;component/Resources/Styles/Border.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Button.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/ComboBox.xaml"/>
+                <ResourceDictionary Source="/Shared.WPF;component/Resources/Styles/ComboBox.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/DataGrid.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/Grid.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/ListView.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/Page.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/TabControl.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/TextBlock.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/TextBox.xaml"/>
+                <ResourceDictionary Source="/Shared.WPF;component/Resources/Styles/ListView.xaml"/>
+                <ResourceDictionary Source="/Shared.WPF;component/Resources/Styles/TabCotrol.xaml"/>
+                <ResourceDictionary Source="/Shared.WPF;component/Resources/Styles/TextBlock.xaml"/>
+                <ResourceDictionary Source="/Shared.WPF;component/Resources/Styles/TextBox.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/ToolTip.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Window.xaml"/>
             </ResourceDictionary.MergedDictionaries>

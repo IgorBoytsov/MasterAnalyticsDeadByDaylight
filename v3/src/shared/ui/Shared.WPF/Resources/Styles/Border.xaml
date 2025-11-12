@@ -8,5 +8,5 @@
         <Setter Property="BorderBrush" Value="{StaticResource Solid.Border.ContentBlock.BorderBrush}"/>
         <Setter Property="CornerRadius" Value="6"/>
     </Style>
-    
+
 </ResourceDictionary>
