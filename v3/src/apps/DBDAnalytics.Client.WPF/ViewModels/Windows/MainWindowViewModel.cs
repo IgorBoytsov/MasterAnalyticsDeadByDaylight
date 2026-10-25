@@ -1,29 +1,43 @@
 ﻿using DBDAnalytics.UserService.Client.ApiClients;
-using DBDAnalytics.UserService.Client.Models.Requests;
-using DBDAnalytics.UserService.Client.Services;
 using Shared.WPF.Commands;
+using Shared.WPF.Enums;
 using Shared.WPF.Navigations.Pages;
 using Shared.WPF.Navigations.Windows;
+using Shared.WPF.Services.Initializers;
 using Shared.WPF.ViewModels.Base;
 using System.Windows;
 
 namespace DBDAnalytics.Client.WPF.ViewModels.Windows
 {
-    internal sealed class MainWindowViewModel : BaseWindowViewModel
+    internal sealed class MainWindowViewModel : BaseWindowViewModel, IAsyncInitializable
     {
-        private readonly IUserService _userService;
         private readonly IAuthorizationService _authorizationService;
 
         public MainWindowViewModel(
         IWindowNavigation windowNavigation,
         IPageNavigation pageNavigation,
-        IUserService userService,
         IAuthorizationService authorizationService) : base(windowNavigation, pageNavigation)
         {
-            _userService = userService;
+            //_authService = authService;
             _authorizationService = authorizationService;
 
             InitializeCommand();
+        }
+
+        async Task IAsyncInitializable.InitializeAsync()
+        {
+            if (IsInitialize)
+                return;
+
+            var result = await _authorizationService.AuthenticationByTokenAsync(AppType.Client);
+
+            result.Switch(onSuccess: () =>
+            {
+                MenuVisibility = Visibility.Visible;
+                MenuAuthVisibility = Visibility.Collapsed;
+            }, onFailure: errors => MessageBox.Show($"Действие сессии окончено. Вам нужно снова зайти в учетную запись."));
+
+            IsInitialize = true;
         }
 
         /*--Коллекции-------------------------------------------------------------------------------------*/
@@ -42,13 +56,6 @@ namespace DBDAnalytics.Client.WPF.ViewModels.Windows
         {
             get => _autLogin;
             set => SetProperty(ref _autLogin, value);
-        }
-
-        private string? _autEmail;
-        public string? AuthEmail
-        {
-            get => _autEmail;
-            set => SetProperty(ref _autEmail, value);
         }
 
         private Visibility _menuVisibility = Visibility.Collapsed;
@@ -78,28 +85,20 @@ namespace DBDAnalytics.Client.WPF.ViewModels.Windows
 
         private async Task Execute_LoginCommandAsync()
         {
-            //var loginUserRequest = new LoginUserRequest(AuthPassword!, AuthLogin!, AuthEmail!);
+             MenuAuthVisibility = Visibility.Collapsed;
+            // var result = await _authorizationService.AuthenticationAsync(AuthLogin!, AuthPassword!, AppType.Client);
 
-            var result = await _authorizationService.AuthenticationAsync(AuthLogin!, AuthPassword!, AuthEmail!);
-
-            if (!result.IsSuccess)
-            {
-                MessageBox.Show($"Ошибки при входе {result.StringMessage}");
-                return;
-            }
-
-            result.Switch(
-                onSuccess: user => 
-                {
-                    MenuVisibility = Visibility.Visible;
-                    MenuAuthVisibility = Visibility.Collapsed;
-                },
-                onFailure: errors => MessageBox.Show($"Ошибки при входе {errors[0].Message}"));
+            // result.Switch(
+            //     onSuccess: user => 
+            //     {
+            //         MenuVisibility = Visibility.Visible;
+            //         MenuAuthVisibility = Visibility.Collapsed;
+            //     },
+            //     onFailure: errors => MessageBox.Show($"Ошибки при входе {errors[0].Message}"));
         }
 
-        //private bool CanExecute_LoginCommandAsync() => !string.IsNullOrWhiteSpace(AuthPassword) && !string.IsNullOrWhiteSpace(AuthLogin) && !string.IsNullOrWhiteSpace(AuthEmail);
         private bool CanExecute_LoginCommandAsync() => true;
-       
+
         #endregion
 
         /*--Методы----------------------------------------------------------------------------------------*/

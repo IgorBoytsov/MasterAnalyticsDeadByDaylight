@@ -25,5 +25,6 @@
         Item,
 
         AddMatch,
+        Matches,
     }
 }

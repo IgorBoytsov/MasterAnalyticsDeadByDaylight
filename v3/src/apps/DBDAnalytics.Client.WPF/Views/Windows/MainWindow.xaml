@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:DBDAnalytics.Client.WPF.Views.Windows"
         xmlns:enum="clr-namespace:Shared.WPF.Enums;assembly=Shared.WPF"
         xmlns:windows="clr-namespace:DBDAnalytics.Client.WPF.ViewModels.Windows" 
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors" 
+        xmlns:behaviors="clr-namespace:Shared.WPF.Behaviors;assembly=Shared.WPF"
         d:DataContext="{d:DesignInstance Type=windows:MainWindowViewModel}"
         mc:Ignorable="d"
         WindowStyle="ThreeDBorderWindow"
@@ -20,6 +22,10 @@
                       CornerRadius="0"/>
     </WindowChrome.WindowChrome>
 
+    <b:Interaction.Behaviors>
+        <behaviors:AsyncInitializeBehavior />
+    </b:Interaction.Behaviors>
+
     <Border x:Name="MainWindowBorder" BorderBrush="LightCoral" BorderThickness="0">
         <Grid>
             <Grid.RowDefinitions>
@@ -29,7 +35,7 @@
 
             <!--==========Modal==========-->
 
-            <!--#region Добавление Killer (Локально) -->
+            <!--#region Авторизация -->
 
             <Border Grid.ColumnSpan="3" Grid.Row="1"  Panel.ZIndex="2"
                     Background="{StaticResource Solid.Border.ContentBlock.BorderBrush}"
@@ -81,14 +87,6 @@
                                 <TextBox Text="{Binding AuthPassword, UpdateSourceTrigger=PropertyChanged}" 
                                          Style="{StaticResource TextBox.InputData}"
                                          DockPanel.Dock="Top"/>
-
-                                <TextBlock Text="Почта"
-                                           Style="{StaticResource TextBlock.Title}"
-                                           DockPanel.Dock="Top"/>
-
-                                <TextBox Text="{Binding AuthEmail, UpdateSourceTrigger=PropertyChanged}" 
-                                         Style="{StaticResource TextBox.InputData}"
-                                         VerticalAlignment="Top"/>
                             </DockPanel>
 
                         </Border>
@@ -228,6 +226,8 @@
                     </Button>
 
                     <Button Style="{StaticResource Button.MainWindow.SideMenu}"
+                            Command="{Binding OpenPageCommand}"
+                            CommandParameter="{x:Static enum:PagesName.Matches}"
                             DockPanel.Dock="Top">
                         <StackPanel>
                             <Viewbox>

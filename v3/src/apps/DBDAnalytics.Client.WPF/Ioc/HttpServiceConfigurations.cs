@@ -35,7 +35,8 @@ namespace DBDAnalytics.Client.WPF.Ioc
         {
             string? catalogServiceApiUrl = configuration.GetValue<string>("BaseCatalogApiServiceUrl");
             string? matchServiceApiUrl = configuration.GetValue<string>("BaseMatchApiServiceUrl");
-            string? userServiceApiUrl = configuration.GetValue<string>("BaseUserApiServiceUrl");
+            string? authServiceApiUrl = configuration.GetValue<string>("BaseAuthApiServiceUrl");
+            string? userMenagementApiServiceUrl = configuration.GetValue<string>("BaseUserMenagementApiServiceUrl");
 
             if (string.IsNullOrEmpty(catalogServiceApiUrl))
                 throw new InvalidOperationException("BaseCatalogApiServiceUrl не сконфигурирована.");
@@ -43,8 +44,11 @@ namespace DBDAnalytics.Client.WPF.Ioc
             if (string.IsNullOrEmpty(matchServiceApiUrl))
                 throw new InvalidOperationException("BaseMatchApiServiceUrl не сконфигурирована.");
 
-            if (string.IsNullOrEmpty(userServiceApiUrl))
-                throw new InvalidOperationException("BaseUserApiServiceUrl не сконфигурирована.");
+            if (string.IsNullOrEmpty(authServiceApiUrl))
+                throw new InvalidOperationException("BaseAuthApiServiceUrl не сконфигурирована.");
+
+            if (string.IsNullOrEmpty(userMenagementApiServiceUrl))
+                throw new InvalidOperationException("BaseUserMenagementApiServiceUrl не сконфигурирована.");
 
             const string catalogApiClientName = "CatalogApiClient";
             service.AddHttpClient(catalogApiClientName, client => client.BaseAddress = new Uri(catalogServiceApiUrl));
@@ -52,8 +56,11 @@ namespace DBDAnalytics.Client.WPF.Ioc
             const string matchApiClientName = "MatchApiClient";
             service.AddHttpClient(matchApiClientName, client => client.BaseAddress = new Uri(matchServiceApiUrl));
 
-            const string userApiClientName = "UserApiClient";
-            service.AddHttpClient(userApiClientName, client => client.BaseAddress = new Uri(userServiceApiUrl));
+            const string authApiClientName = "AuthApiClient";
+            service.AddHttpClient(authApiClientName, client => client.BaseAddress = new Uri(authServiceApiUrl));
+
+            const string userMenagementApiClientName = "UserMenagementApiClient";
+            service.AddHttpClient(userMenagementApiClientName, client => client.BaseAddress = new Uri(userMenagementApiServiceUrl));
 
             service.AddHttpClient<IPlayerAssociationReadOnlyService, AssociationApiService>(catalogApiClientName);
             service.AddHttpClient<IPlatformReadOnlyService, PlatformApiService>(catalogApiClientName);
@@ -86,7 +93,8 @@ namespace DBDAnalytics.Client.WPF.Ioc
 
             service.AddHttpClient<IMatchService, MatchApiService>(matchApiClientName);
 
-            service.AddHttpClient<IUserService, UserApiService>(userApiClientName);
+            service.AddHttpClient<IAuthService, AuthApiService>(authApiClientName);
+            service.AddHttpClient<IUserManagementSerivce, UserManagementSerivce>(userMenagementApiClientName);
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using DBDAnalytics.Client.WPF.Ioc;
 using DBDAnalytics.FIleStorageService.Client;
-using DBDAnalytics.UserService.Client.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.WPF.Enums;
 using Shared.WPF.Navigations.Pages;
 using Shared.WPF.Navigations.Windows;
 using Shared.WPF.Services;
+using Shared.WPF.Services.Initializers;
 using System.Windows;
 
 namespace DBDAnalytics.Client.WPF
@@ -34,6 +34,8 @@ namespace DBDAnalytics.Client.WPF
             services.ConfigureWindows();
 
             services.AddSingleton<IFileDialogService, FileDialogService>();
+
+            services.AddSingleton<ITokenService, TokenService>();
 
             services.AddSingleton<IWindowNavigation, WindowNavigation>();
             services.AddSingleton<IPageNavigation, PageNavigation>();

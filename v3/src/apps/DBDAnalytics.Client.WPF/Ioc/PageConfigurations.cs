@@ -12,6 +12,10 @@ namespace DBDAnalytics.Client.WPF.Ioc
             service.AddTransient<IPageFactory, AddMatchPageFactory>();
             service.AddTransient<AddMatchPageViewModel>();
             service.AddSingleton<Func<AddMatchPageViewModel>>(provider => () => provider.GetRequiredService<AddMatchPageViewModel>());
+
+            service.AddTransient<IPageFactory, MatchesPageFactory>();
+            service.AddTransient<MatchesPageViewModel>();
+            service.AddSingleton<Func<MatchesPageViewModel>>(provider => () => provider.GetRequiredService<MatchesPageViewModel>());
         }
     }
 }
