@@ -365,3 +365,6 @@ FodyWeavers.xsd
 /v3/src/apps/DBDAnalytics.AdminPanel.WPF/apiconfig.json
 /TemplateEngineHost/vs
 /v3/src/apps/DBDAnalytics.Client.WPF/apiconfig.json
+
+# Python 
+.venv
