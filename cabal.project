@@ -1,0 +1,4 @@
+store-dir: .cabal-store
+
+packages:
+    services/analyze
