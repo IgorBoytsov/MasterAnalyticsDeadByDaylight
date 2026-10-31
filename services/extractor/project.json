@@ -1,0 +1,22 @@
+{
+    "name": "extractor",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "services/extractor",
+    "projectType": "application",
+    "targets": {
+        "serve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "uv run python main.py",
+                "cwd": "services/extractor"
+            }
+        },
+        "serve:watch": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "uv run uvicorn main:app --reload --host 127.0.0.1 --port 8001",
+                "cwd": "services/extractor"
+            }
+        }
+    }
+}

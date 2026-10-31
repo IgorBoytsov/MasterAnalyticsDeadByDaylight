@@ -1,0 +1,42 @@
+{
+    "name": "catalog",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "services/catalog/MatchTrace.Catalog.Api",
+    "projectType": "application",
+    "targets": {
+        "serve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "dotnet run",
+                "cwd": "services/catalog/MatchTrace.Catalog.Api"
+            },
+            "configurations": {
+                "watch": {
+                    "command": "dotnet watch run",
+                    "cwd": "services/catalog/MatchTrace.Catalog.Api"
+                },
+                "production": {
+                    "command": "dotnet run --configuration Release",
+                    "cwd": "services/catalog/MatchTrace.Catalog.Api"
+                }
+            }
+        },
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "dotnet build",
+                "cwd": "services/catalog/MatchTrace.Catalog.Api"
+            },
+            "configurations": {
+                "watch": {
+                    "command": "dotnet watch build",
+                    "cwd": "services/catalog/MatchTrace.Catalog.Api"
+                },
+                "production": {
+                    "command": "dotnet build --configuration Release",
+                    "cwd": "services/catalog/MatchTrace.Catalog.Api"
+                }
+            }
+        }
+    }
+}

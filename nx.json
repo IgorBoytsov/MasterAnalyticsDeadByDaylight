@@ -2,7 +2,6 @@
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "analytics": false,
     "plugins": [
-        "@nx/dotnet",
         {
             "plugin": "@nx/playwright/plugin",
             "options": {

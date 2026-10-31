@@ -1,0 +1,29 @@
+{
+    "name": "analyze",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "services/analyze",
+    "projectType": "application",
+    "targets": {
+        "serve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "cabal run analyze-service",
+                "cwd": "services/analyze"
+            }
+        },
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "cabal build",
+                "cwd": "services/analyze"
+            }
+        },
+        "build:watch": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "ghcid --command=\"cabal repl analyze-service\"",
+                "cwd": "services/analyze"
+            }
+        }
+    }
+}

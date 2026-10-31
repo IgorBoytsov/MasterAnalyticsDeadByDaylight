@@ -11,6 +11,7 @@ import Network.Wai.Handler.Warp (run)
 import Data.Aeson (ToJSON, FromJSON)
 import Data.Text (Text)
 import GHC.Generics (Generic)
+import System.IO (stdout, hSetBuffering, BufferMode(..))
 
 type API = "health" :> Get '[JSON] HealthResponse
       :<|> "analyze" :> ReqBody '[JSON] AnalyzeRequest :> Post '[JSON] AnalyzeResponse
@@ -43,5 +44,6 @@ server = healthHandler :<|> analyzeHandler
 
 main :: IO ()
 main = do
+    hSetBuffering stdout NoBuffering
     putStrLn "Starting Analyze Service (Haskell) on port 8002..."
     run 8002 (serve (Proxy :: Proxy API) server)
