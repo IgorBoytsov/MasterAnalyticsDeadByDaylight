@@ -372,3 +372,8 @@ FodyWeavers.xsd
 # Haskell
 dist-newstyle
 .cabal-store
+
+.nx
+.angular
+
+__screenshots__/
