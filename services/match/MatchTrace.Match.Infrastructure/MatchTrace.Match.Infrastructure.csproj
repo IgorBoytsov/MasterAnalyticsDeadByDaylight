@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Crossdyne.Toolkit"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MatchTrace.Match.Application\MatchTrace.Match.Application.csproj" />
+    <ProjectReference Include="..\MatchTrace.Match.Domain\MatchTrace.Match.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

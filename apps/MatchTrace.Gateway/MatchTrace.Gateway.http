@@ -1,0 +1,6 @@
+@MatchTrace.Gateway_HostAddress = http://localhost:5079
+
+GET {{MatchTrace.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

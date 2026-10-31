@@ -1,0 +1,42 @@
+{
+    "name": "gateway",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/MatchTrace.Gateway",
+    "projectType": "application",
+    "targets": {
+        "serve": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "dotnet run",
+                "cwd": "apps/MatchTrace.Gateway"
+            },
+            "configurations": {
+                "watch": {
+                    "command": "dotnet watch run",
+                    "cwd": "apps/MatchTrace.Gateway"
+                },
+                "production": {
+                    "command": "dotnet run --configuration Release",
+                    "cwd": "apps/MatchTrace.Gateway"
+                }
+            }
+        },
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "dotnet build",
+                "cwd": "apps/MatchTrace.Gateway"
+            },
+            "configurations": {
+                "watch": {
+                    "command": "dotnet watch build",
+                    "cwd": "apps/MatchTrace.Gateway"
+                },
+                "production": {
+                    "command": "dotnet build --configuration Release",
+                    "cwd": "apps/MatchTrace.Gateway"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,34 @@
+<Solution>
+  <Folder Name="/apps/">
+    <Project Path="apps/MatchTrace.Gateway/MatchTrace.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/libs/" />
+  <Folder Name="/libs/dotnet/" />
+  <Folder Name="/libs/dotnet/core/">
+    <Project Path="libs/dotnet/core/Shared.Api/Shared.Api.csproj" />
+    <Project Path="libs/dotnet/core/Shared.Application/Shared.Application.csproj" />
+    <Project Path="libs/dotnet/core/Shared.Kernel/Shared.Kernel.csproj" />
+  </Folder>
+  <Folder Name="/libs/dotnet/infrastructure/">
+    <Project Path="libs/dotnet/infrastructure/Shared.Caching/Shared.Caching.csproj" />
+    <Project Path="libs/dotnet/infrastructure/Shared.Http/Shared.Http.csproj" />
+    <Project Path="libs/dotnet/infrastructure/Shared.Messaging/Shared.Messaging.csproj" />
+  </Folder>
+  <Folder Name="/libs/dotnet/observability/">
+    <Project Path="libs/dotnet/observability/Shared.Logging/Shared.Logging.csproj" />
+  </Folder>
+  <Folder Name="/services/" />
+  <Folder Name="/services/catalog/">
+    <Project Path="services/catalog/MatchTrace.Catalog.Api/MatchTrace.Catalog.Api.csproj" />
+    <Project Path="services/catalog/MatchTrace.Catalog.Application/MatchTrace.Catalog.Application.csproj" />
+    <Project Path="services/catalog/MatchTrace.Catalog.Domain/MatchTrace.Catalog.Domain.csproj" />
+    <Project Path="services/catalog/MatchTrace.Catalog.Infrastructure/MatchTrace.Catalog.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/services/match/">
+    <Project Path="services/match/MatchTrace.Match.Api/MatchTrace.Match.Api.csproj" />
+    <Project Path="services/match/MatchTrace.Match.Application/MatchTrace.Match.Application.csproj" />
+    <Project Path="services/match/MatchTrace.Match.Domain/MatchTrace.Match.Domain.csproj" />
+    <Project Path="services/match/MatchTrace.Match.Infrastructure/MatchTrace.Match.Infrastructure.csproj" />
+  </Folder>
+
+</Solution>
