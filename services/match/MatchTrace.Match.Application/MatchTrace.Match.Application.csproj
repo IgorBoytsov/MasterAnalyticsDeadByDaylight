@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Crossdyne.Toolkit"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MatchTrace.Match.Domain\MatchTrace.Match.Domain.csproj" />
   </ItemGroup>
 
